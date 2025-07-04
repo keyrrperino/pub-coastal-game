@@ -19,6 +19,8 @@ export enum SplineTriggersEnum {
 
 
 interface GameState {
+  isGameLoaded: boolean;
+  isGameStarted: boolean;
   seawallValue: number | null;
   revetmentValue: number | null;
   singleBuild: SplineTriggersEnum | null;
@@ -31,6 +33,8 @@ interface GameState {
   setIsRevetmentBuilding: (val: boolean) => void;
   triggerRevetmentBuild: () => void;
   triggerSingleBuild: (val: SplineTriggersEnum) => void;
+  setIsGameLoaded: (val: boolean) => void;
+  setIsGameStarted: (val: boolean) => void;
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -47,10 +51,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isSeaWallBuilding, setIsSeaWallBuilding] = useState(false);
   const [isRevetmentBuilding, setIsRevetmentBuilding] = useState(false);
   const [singleBuild, setSingleBuild] = useState<SplineTriggersEnum | null>(null);
+  const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false);
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
 
   const triggerSeawallBuild = () => setIsSeaWallBuilding(true);
   const triggerRevetmentBuild = () => setIsRevetmentBuilding(true);
-  const triggerSingleBuild = (val: SplineTriggersEnum) => setSingleBuild(val);
+
+  const triggerSingleBuild = (val: SplineTriggersEnum) => {
+    if (val === SplineTriggersEnum.RAISE_WATER_BTN) setIsGameStarted(true);
+    if (val === SplineTriggersEnum.RESTART_BTN) setIsGameStarted(false);
+    setSingleBuild(val);
+  };
 
   return (
     <GameContext.Provider value={{
@@ -65,7 +76,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsRevetmentBuilding,
       triggerRevetmentBuild,
       triggerSingleBuild,
-      singleBuild
+      singleBuild,
+      isGameLoaded,
+      setIsGameLoaded,
+      setIsGameStarted,
+      isGameStarted
     }}>
       {children}
     </GameContext.Provider>

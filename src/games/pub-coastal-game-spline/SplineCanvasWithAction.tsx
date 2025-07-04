@@ -17,16 +17,18 @@ const SplineCanvasWithAction: React.FC = () => {
     isRevetmentBuilding,
     setIsRevetmentBuilding,
     singleBuild,
-    triggerSingleBuild
+    setIsGameLoaded,
+    setIsGameStarted,
+    isGameLoaded
   } = useGameContext();
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (canvasRef.current && !splineAppRef.current) {
       const app = new Application(canvasRef.current);
       app.load(SPLINE_URL).then(() => {
         splineAppRef.current = app;
-        setLoaded(true);
+        setIsGameLoaded(true);
+        setIsGameStarted(false);
       });
     }
     // Cleanup on unmount
@@ -38,7 +40,7 @@ const SplineCanvasWithAction: React.FC = () => {
 
   // Seawall build trigger
   useEffect(() => {
-    if (!loaded || !splineAppRef.current) return;
+    if (!isGameLoaded || !splineAppRef.current) return;
     
     if (!seawallValue) return;
     // Trigger the selected sw clicker
@@ -59,11 +61,11 @@ const SplineCanvasWithAction: React.FC = () => {
       buildBtn.state = 'clicked';
     }
     setIsSeaWallBuilding(false);
-  }, [isSeaWallBuilding, loaded, seawallValue, setIsSeaWallBuilding]);
+  }, [isSeaWallBuilding, isGameLoaded, seawallValue, setIsSeaWallBuilding]);
 
   // Revetment build trigger
   useEffect(() => {
-    if (!loaded || !splineAppRef.current) return;
+    if (!isGameLoaded || !splineAppRef.current) return;
     if (!revetmentValue) return;
     // Trigger the selected revetment clicker
     let objName, stateName;
@@ -84,15 +86,14 @@ const SplineCanvasWithAction: React.FC = () => {
       buildBtn.state = 'clicked';
     }
     setIsRevetmentBuilding(false);
-  }, [isRevetmentBuilding, loaded, revetmentValue, setIsRevetmentBuilding]);
+  }, [isRevetmentBuilding, isGameLoaded, revetmentValue, setIsRevetmentBuilding]);
 
   useEffect(() => {
-    if (!loaded || !splineAppRef.current) return;
+    if (!isGameLoaded || !splineAppRef.current) return;
     if (!singleBuild) return;
 
     const obj = splineAppRef.current.findObjectByName?.(singleBuild);
 
-    console.log(obj);
     if (obj) {
       obj.state = 'hovered';
       obj.state = 'clicked';
@@ -102,12 +103,16 @@ const SplineCanvasWithAction: React.FC = () => {
   }, [singleBuild]);
 
   return (
-    <div className="flex flex-col items-start gap-4 p-4 bg-gray-100 rounded-xl">
-      <div className="flex gap-2">
-        <ResetButton onClick={() => triggerSingleBuild(SplineTriggersEnum.RESTART_BTN)} />
-        <StartButton onClick={() => triggerSingleBuild(SplineTriggersEnum.RAISE_WATER_BTN)} />
+    <div className="flex flex-col items-start gap-4 p-4 bg-gray-100 rounded-xl mb-3">
+      <div className="relative w-full">
+        <canvas ref={canvasRef} className="rounded-lg border w-full" />
+        {!isGameLoaded && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10 rounded-lg">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+            <span className="text-xl font-semibold text-blue-700">Loading...</span>
+          </div>
+        )}
       </div>
-      <canvas ref={canvasRef} className="rounded-lg border" />
     </div>
   );
 };
