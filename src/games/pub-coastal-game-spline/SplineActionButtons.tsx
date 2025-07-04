@@ -39,7 +39,7 @@ const SplineActionButtons: React.FC = () => {
         {/* Seawall */}
         <div className="bg-[#8EC3E6] rounded-[1vw] py-6 px-8 mb-6 flex items-center">
           <span className="font-bold text-[100%] text-white tracking-wider mr-6 flex items-center">
-            <span role="img" aria-label="seawall" className="text-[48px] mr-3">🌊</span>SEAWALL
+            SEAWALL
           </span>
           {[5, 10, 15].map((val) => (
             <span
