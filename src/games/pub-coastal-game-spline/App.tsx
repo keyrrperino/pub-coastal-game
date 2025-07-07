@@ -1,15 +1,19 @@
 import React from 'react';
-import Spline from '@splinetool/react-spline';
-import SplineActionButtons from './SplineActionButtons';
 import { GameProvider } from './GlobalGameContext';
-import SplineCanvasWithAction from './SplineCanvasWithAction';
+import SplineCanvasWithAction, { SplineViewer } from './SplineCanvasWithAction';
+import SplineActionButtons from './SplineActionButtons';
 
-export default function PubCoastalGameSplineApp() {
+interface AppProps {
+  showViewer?: boolean;
+  showController?: boolean;
+}
+
+export default function PubCoastalGameSplineApp({ showViewer = true, showController = true }: AppProps) {
   return (
     <GameProvider>
       <div className='flex flex-col justify-center'>
-          <SplineCanvasWithAction />
-          <SplineActionButtons />
+        {showViewer && <SplineViewer />}
+        {showController && <SplineActionButtons />}
       </div>
     </GameProvider>
   );
