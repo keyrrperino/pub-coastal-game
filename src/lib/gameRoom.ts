@@ -8,15 +8,166 @@ import {
   off, 
   onDisconnect, 
   serverTimestamp,
-  update
+  update,
+  remove
 } from 'firebase/database';
 
 export enum ActivityTypeEnum {
-  RAISE_SEA_WALL = "RAISE SEA WALL",
-  EXTEND_EARTH_BUND = "EXTEND EARTH BUND",
-  EXTEND_LAND_RECLAMATION = "EXTEND LAND RECLAMATION",
-  RAISE_REVERTMENT = "RAISE REVERTMENT",
-  START_GAME = "START_GAME"
+  START_GAME = "UI Play Btn",
+  BUILD_SEA_WALL = "UI SW 1",
+  RAISE_SEA_WALL = "UI SW 2",
+  EXTEND_EARTH_BUND = "UI EB 2",
+  BUILD_EARTH_BUND = "UI EB 1",
+  BUILD_LAND_RECLAMATION = "UI RC 1",
+  EXTEND_LAND_RECLAMATION = "UI RC 2",
+  FLOOD_AREA = "UI FLOOD",
+  DEPLOY_HUGE_WAVE = "UI WAVE",
+  BUILD_REVERTMENT = "UI RV 1",
+  RAISE_REVERTMENT = "UI RV 2",
+  PLANT_MANGROVES = "UI MG",
+  RESET_SCENE = "UI RST"
+}
+
+export enum GameEnum {
+  DEFAULT_ROOM_NAME = "default",
+  DEFAULT_USERNAME = "master",
+};
+
+export enum UserSectorEnum {
+  USER_SECTOR_ONE = "user_sector_one",
+  USER_SECTOR_TWO = "user_sector_two",
+  USER_SECTOR_THREE = "user_sector_three",
+}
+
+export type SplineTriggerConfigItem = {
+  state: string[];
+  events: string[];
+  buttonValue: string;
+  activityType: ActivityTypeEnum
+};
+
+type SplineTriggersConfigType = {
+  [key in ActivityTypeEnum]: SplineTriggerConfigItem;
+};
+
+export const SplineTriggersConfig: SplineTriggersConfigType = {
+  [ActivityTypeEnum.BUILD_EARTH_BUND]: {
+    state: ['hidden'],
+    events: ['mouseUp'],
+    buttonValue: "BUILD EARTH BUND",
+    activityType: ActivityTypeEnum.BUILD_EARTH_BUND
+  },
+  [ActivityTypeEnum.EXTEND_EARTH_BUND]: {
+    state: ['state'],
+    events: ['stateChange', 'mouseUp'],
+    buttonValue: "EXTEND EARTH BUND",
+    activityType: ActivityTypeEnum.EXTEND_EARTH_BUND
+  },
+  [ActivityTypeEnum.BUILD_LAND_RECLAMATION]: {
+    state: ['hidden'],
+    events: ['mouseUp'],
+    buttonValue: "RECLAIM LAND",
+    activityType: ActivityTypeEnum.BUILD_LAND_RECLAMATION
+  },
+  [ActivityTypeEnum.EXTEND_LAND_RECLAMATION]: {
+    state: ['state'],
+    events: ['stateChange', 'mouseUp'],
+    buttonValue: "EXTEND LAND RECLAMATION",
+    activityType: ActivityTypeEnum.EXTEND_LAND_RECLAMATION
+  },
+  [ActivityTypeEnum.START_GAME]: {
+    state: ['State', 'hovered'],
+    events: ['mouseUp', 'start', 'mouseHover'],
+    buttonValue: "Click to Start",
+    activityType: ActivityTypeEnum.START_GAME
+  },
+  [ActivityTypeEnum.BUILD_SEA_WALL]: {
+    state: ['hidden'],
+    events: ['mouseUp'],
+    buttonValue: 'BUILD SEA WALL',
+    activityType: ActivityTypeEnum.BUILD_SEA_WALL
+  },
+  [ActivityTypeEnum.RAISE_SEA_WALL]: {
+    state: ['state'],
+    events: ['stateChange', 'mouseUp'],
+    buttonValue: 'RAISE SEA WALL',
+    activityType: ActivityTypeEnum.RAISE_SEA_WALL
+  },
+  [ActivityTypeEnum.FLOOD_AREA]: {
+    state: [],
+    events: ['mouseUp'],
+    buttonValue: 'FLOOD THE AREA',
+    activityType: ActivityTypeEnum.FLOOD_AREA
+  },
+  [ActivityTypeEnum.DEPLOY_HUGE_WAVE]: {
+    state: [],
+    events: ['mouseUp'],
+    buttonValue: 'DEPLOY HUGE WAVE',
+    activityType: ActivityTypeEnum.DEPLOY_HUGE_WAVE
+  },
+  [ActivityTypeEnum.BUILD_REVERTMENT]: {
+    state: ['hidden'],
+    events: ['mouseUp'],
+    buttonValue: 'BUILD REVERTMENT',
+    activityType: ActivityTypeEnum.BUILD_REVERTMENT
+  },
+  [ActivityTypeEnum.RAISE_REVERTMENT]: {
+    state: ['state'],
+    events: ['stateChange', 'mouseUp'],
+    buttonValue: 'RAISE REVERTMENT',
+    activityType: ActivityTypeEnum.RAISE_REVERTMENT
+  },
+  [ActivityTypeEnum.PLANT_MANGROVES]: {
+    state: [],
+    events: ['mouseUp'],
+    buttonValue: 'PLANT MANGROVES',
+    activityType: ActivityTypeEnum.PLANT_MANGROVES
+  },
+  [ActivityTypeEnum.RESET_SCENE]: {
+    state: [],
+    events: ['mouseUp'],
+    buttonValue: 'RESET SCENE',
+    activityType: ActivityTypeEnum.RESET_SCENE
+  },
+}
+
+export type SectorsButtonConfigType = {
+  [key in UserSectorEnum]: Array<{
+    state: string[];
+    events: string[];
+    buttonValue: string;
+    activityType: ActivityTypeEnum;
+  }>;
+};
+
+export const SectorsButtonConfig: SectorsButtonConfigType = {
+  [UserSectorEnum.USER_SECTOR_ONE]: [
+    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
+    SplineTriggersConfig[ActivityTypeEnum.BUILD_SEA_WALL],
+    SplineTriggersConfig[ActivityTypeEnum.RAISE_SEA_WALL],
+    SplineTriggersConfig[ActivityTypeEnum.BUILD_EARTH_BUND],
+    SplineTriggersConfig[ActivityTypeEnum.EXTEND_EARTH_BUND],
+    SplineTriggersConfig[ActivityTypeEnum.FLOOD_AREA],
+    SplineTriggersConfig[ActivityTypeEnum.DEPLOY_HUGE_WAVE],
+    SplineTriggersConfig[ActivityTypeEnum.RESET_SCENE],
+  ],
+  [UserSectorEnum.USER_SECTOR_TWO]: [
+    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
+    SplineTriggersConfig[ActivityTypeEnum.BUILD_REVERTMENT],
+    SplineTriggersConfig[ActivityTypeEnum.RAISE_REVERTMENT],
+    SplineTriggersConfig[ActivityTypeEnum.BUILD_LAND_RECLAMATION],
+    SplineTriggersConfig[ActivityTypeEnum.EXTEND_LAND_RECLAMATION],
+    SplineTriggersConfig[ActivityTypeEnum.FLOOD_AREA],
+    SplineTriggersConfig[ActivityTypeEnum.DEPLOY_HUGE_WAVE],
+    SplineTriggersConfig[ActivityTypeEnum.RESET_SCENE],
+  ],
+  [UserSectorEnum.USER_SECTOR_THREE]: [
+    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
+    SplineTriggersConfig[ActivityTypeEnum.PLANT_MANGROVES],
+    SplineTriggersConfig[ActivityTypeEnum.FLOOD_AREA],
+    SplineTriggersConfig[ActivityTypeEnum.DEPLOY_HUGE_WAVE],
+    SplineTriggersConfig[ActivityTypeEnum.RESET_SCENE],
+  ]
 }
 
 export interface GameElement {
@@ -31,7 +182,7 @@ export interface ActivityLog {
   id: string;
   userId: string;
   userName: string;
-  action: string;
+  action: ActivityTypeEnum;
   timestamp: number;
   round?: number;
 }
@@ -73,7 +224,7 @@ export class GameRoomService {
   }
 
   async createRoom(isDefault?: true): Promise<string> {
-    const newRoomId = isDefault ? "default" : this.generateRoomId();
+    const newRoomId = isDefault ? GameEnum.DEFAULT_ROOM_NAME : this.generateRoomId();
     const roomRef = ref(database, `rooms/${newRoomId}`);
     
     await set(roomRef, {
@@ -100,6 +251,17 @@ export class GameRoomService {
     this.listenToWaterLevel();
     
     return true;
+  }
+
+  async getActivities(roomId: string): Promise<ActivityLog[]> {
+    const activitiesRef = ref(database, `rooms/${roomId}/activity`);
+    const snapshot = await get(activitiesRef);
+
+    if (!snapshot.exists()) return [];
+    const activities = Object.values(snapshot.val()) as ActivityLog[];
+    // Sort by timestamp, oldest first
+    activities.sort((a, b) => a.timestamp - b.timestamp);
+    return activities;
   }
 
   private setupPresence() {
@@ -135,7 +297,7 @@ export class GameRoomService {
       if (snapshot.exists()) {
         const activities = Object.values(snapshot.val()) as ActivityLog[];
         // Sort by timestamp, newest first
-        activities.sort((a, b) => b.timestamp - a.timestamp);
+        activities.sort((a, b) => a.timestamp - b.timestamp);
         this.activityCallback!(activities.slice(0, 10)); // Show last 10 activities
       }
     });
@@ -196,7 +358,7 @@ export class GameRoomService {
       userId: this.userId,
       userName: this.userName,
       action: activityType,
-      round,
+      round: round ?? 1,
       timestamp: Date.now()
     };
 
@@ -231,6 +393,11 @@ export class GameRoomService {
     if (this.roomId) {
       this.listenToWaterLevel();
     }
+  }
+
+  async deleteActivities(roomId: string): Promise<void> {
+    const activitiesRef = ref(database, `rooms/${roomId}/activity`);
+    await remove(activitiesRef);
   }
 
   getCurrentUserId(): string {
