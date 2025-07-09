@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameProvider } from './GlobalGameContext';
-import SplineCanvasWithAction, { SplineViewer } from './SplineCanvasWithAction';
+import { SplineViewer } from './SplineCanvasWithAction';
 import SplineActionButtons from './SplineActionButtons';
 
 interface AppProps {

@@ -11,15 +11,16 @@ import {
   update
 } from 'firebase/database';
 
-export interface GameState {
-  treeCount: number;
-  islandCount: number;
-  waterCount: number;
-  elements: GameElement[];
+export enum ActivityTypeEnum {
+  RAISE_SEA_WALL = "RAISE SEA WALL",
+  EXTEND_EARTH_BUND = "EXTEND EARTH BUND",
+  EXTEND_LAND_RECLAMATION = "EXTEND LAND RECLAMATION",
+  RAISE_REVERTMENT = "RAISE REVERTMENT",
+  START_GAME = "START_GAME"
 }
 
 export interface GameElement {
-  type: 'tree' | 'island' | 'water';
+  type: ActivityTypeEnum;
   x: number;
   y: number;
   scale: number;
@@ -32,6 +33,7 @@ export interface ActivityLog {
   userName: string;
   action: string;
   timestamp: number;
+  round?: number;
 }
 
 export interface UserPresence {
@@ -45,9 +47,9 @@ export class GameRoomService {
   private roomId: string | null = null;
   private userId: string;
   private userName: string;
-  private gameStateCallback: ((state: GameState) => void) | null = null;
   private activityCallback: ((activities: ActivityLog[]) => void) | null = null;
   private presenceCallback: ((users: UserPresence[]) => void) | null = null;
+  private waterLevelCallback: ((waterLevel: number) => void) | null = null;
 
   constructor(customUserName?: string) {
     this.userName = customUserName || this.generateUserName();
@@ -70,21 +72,14 @@ export class GameRoomService {
     return 'room_' + Math.random().toString(36).substr(2, 8).toUpperCase();
   }
 
-  async createRoom(): Promise<string> {
-    const newRoomId = this.generateRoomId();
+  async createRoom(isDefault?: true): Promise<string> {
+    const newRoomId = isDefault ? "default" : this.generateRoomId();
     const roomRef = ref(database, `rooms/${newRoomId}`);
     
-    const initialGameState: GameState = {
-      treeCount: 0,
-      islandCount: 0,
-      waterCount: 0,
-      elements: []
-    };
-
     await set(roomRef, {
-      gameState: initialGameState,
       createdAt: serverTimestamp(),
-      createdBy: this.userId
+      createdBy: this.userId,
+      waterLevel: 0
     });
 
     return newRoomId;
@@ -100,9 +95,9 @@ export class GameRoomService {
 
     this.roomId = roomId;
     this.setupPresence();
-    this.listenToGameState();
     this.listenToActivity();
     this.listenToPresence();
+    this.listenToWaterLevel();
     
     return true;
   }
@@ -130,17 +125,6 @@ export class GameRoomService {
     setInterval(() => {
       update(userPresenceRef, { lastSeen: serverTimestamp() });
     }, 30000);
-  }
-
-  private listenToGameState() {
-    if (!this.roomId || !this.gameStateCallback) return;
-
-    const gameStateRef = ref(database, `rooms/${this.roomId}/gameState`);
-    onValue(gameStateRef, (snapshot) => {
-      if (snapshot.exists()) {
-        this.gameStateCallback!(snapshot.val());
-      }
-    });
   }
 
   private listenToActivity() {
@@ -179,39 +163,29 @@ export class GameRoomService {
     });
   }
 
-  async addElement(type: 'tree' | 'island' | 'water', x: number, y: number): Promise<void> {
-    if (!this.roomId) return;
+  private listenToWaterLevel() {
+    if (!this.roomId || !this.waterLevelCallback) return;
 
-    const elementId = 'element_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-    const newElement: GameElement = {
-      type,
-      x,
-      y,
-      scale: 1,
-      id: elementId
-    };
-
-    // Update game state
-    const gameStateRef = ref(database, `rooms/${this.roomId}/gameState`);
-    const snapshot = await get(gameStateRef);
-    
-    if (snapshot.exists()) {
-      const currentState = snapshot.val() as GameState;
-      const currentElements = Array.isArray(currentState.elements) ? currentState.elements : [];
-      const updatedState: GameState = {
-        ...currentState,
-        elements: [...currentElements, newElement],
-        [`${type}Count`]: (currentState[`${type}Count` as keyof GameState] as number || 0) + 1
-      };
-
-      await set(gameStateRef, updatedState);
-    }
-
-    // Log activity
-    await this.logActivity(`Added ${type}`);
+    const presenceRef = ref(database, `rooms/${this.roomId}/waterLevel`);
+    onValue(presenceRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const waterLevel = snapshot.val();
+        this.waterLevelCallback!(waterLevel);
+      } else {
+        // No presence data exists yet
+        this.waterLevelCallback!(0);
+      }
+    });
   }
 
-  private async logActivity(action: string) {
+  async addElement(activityType: ActivityTypeEnum): Promise<void> {
+    if (!this.roomId) return;
+
+    // Log activity
+    await this.logActivity(activityType);
+  }
+
+  private async logActivity(activityType: ActivityTypeEnum, round?: number) {
     if (!this.roomId) return;
 
     const activityRef = ref(database, `rooms/${this.roomId}/activity`);
@@ -221,18 +195,21 @@ export class GameRoomService {
       id: newActivityRef.key!,
       userId: this.userId,
       userName: this.userName,
-      action,
+      action: activityType,
+      round,
       timestamp: Date.now()
     };
 
     await set(newActivityRef, activity);
   }
 
-  onGameStateChange(callback: (state: GameState) => void) {
-    this.gameStateCallback = callback;
-    if (this.roomId) {
-      this.listenToGameState();
-    }
+  async updateWaterLevel(waterLevel: number): Promise<void> {
+    if (!this.roomId) return;
+
+    const waterLevelRef = ref(database, `rooms/${this.roomId}/waterLevel`);
+    const newWaterLevelRef = push(waterLevelRef);
+
+    await set(newWaterLevelRef, waterLevel);
   }
 
   onActivityChange(callback: (activities: ActivityLog[]) => void) {
@@ -246,6 +223,13 @@ export class GameRoomService {
     this.presenceCallback = callback;
     if (this.roomId) {
       this.listenToPresence();
+    }
+  }
+
+  onWaterLevelChange(callback: (waterLevel: number) => void) {
+    this.waterLevelCallback = callback;
+    if (this.roomId) {
+      this.listenToWaterLevel();
     }
   }
 
