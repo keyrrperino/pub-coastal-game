@@ -53,7 +53,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
         {buttonConfigs.map((btn, idx) => (
           <button
             key={idx}
-            className="flex-1 p-[8%] bg-blue-500 text-white text-[100%] rounded shadow"
+            className="flex-1 p-[8%] bg-blue-500 text-white text-[100%] cursor-pointer rounded shadow transition-colors duration-200 hover:bg-blue-700 active:bg-blue-900"
             onClick={() => {
               if (btn.activityType === ActivityTypeEnum.RESET_SCENE) {
                 onResetClick();
