@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import Error from 'next/error';
-import { GameEnum, SectorsButtonConfig } from '@/lib/gameRoom';
 
 const ControllerWithoutSSR = dynamic(() => import("@/games/pub-coastal-game/Controller"), { ssr: false });
 

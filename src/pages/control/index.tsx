@@ -2,7 +2,9 @@ import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { GameEnum, GameRoomService, UserPresence, UserSectorEnum } from "@/lib/gameRoom";
+import { GameRoomService } from "@/lib/gameRoom";
+import { GameEnum, UserSectorEnum } from "@/lib/enums";
+import { UserPresenceType } from "@/lib/types";
 
 const SECTORS = [
   { id: 1, slug: "sector-one", username: UserSectorEnum.USER_SECTOR_ONE, label: "Sector 1" },
@@ -35,7 +37,7 @@ export default function SectorSelection() {
     const service = new GameRoomService(GameEnum.DEFAULT_USERNAME);
     // Join the room for presence tracking (roomId = sector.slug)
     service.joinRoom(GameEnum.DEFAULT_ROOM_NAME).then(() => {
-      service.onPresenceChange((users: UserPresence[]) => {
+      service.onPresenceChange((users: UserPresenceType[]) => {
         console.log(users);
         setOnlineStatus((prev) => {
           const updatedStatus = { ...prev };
@@ -77,7 +79,7 @@ export default function SectorSelection() {
     // For now, just use the same naming convention
     const userName = `user-${sectorSlug}`;
     const service = new GameRoomService(userName);
-    service.joinRoom(sectorSlug).then(() => {
+    service.joinRoom('default').then(() => {
       // Optionally, store service in context or global state
       router.push(`/control/${sectorSlug}`);
     });
@@ -86,14 +88,14 @@ export default function SectorSelection() {
   return (
     <>
       <Head>
-        <title>Select Sector</title>
+        <title>Select Player</title>
         <meta name="description" content="Select a sector to play" />
       </Head>
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-100 to-blue-200">
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-b b">
         <div className="flex flex-col gap-8 w-full max-w-md items-center">
-          <h1 className="text-3xl font-bold mb-8 text-center">Select a Sector</h1>
+          <h1 className="text-3xl font-bold mb-8 text-center">Select Player</h1>
           {loading ? (
-            <div>Loading sector status...</div>
+            <div>Loading player status...</div>
           ) : (
             SECTORS.map(sector => (
               <Button
@@ -103,7 +105,7 @@ export default function SectorSelection() {
                 onClick={() => handleSelect(sector.id)}
                 disabled={onlineStatus[sector.username]}
               >
-                {sector.label} {onlineStatus[sector.username] ? "(Online)" : ""}
+                {sector.label.replace('Sector', 'Player') } {onlineStatus[sector.username] ? "(Online)" : ""}
               </Button>
             ))
           )}

@@ -1,5 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ActivityTypeEnum, GameEnum, GameRoomService, SectorsButtonConfig, SectorsButtonConfigType, SplineTriggerConfigItem } from '@/lib/gameRoom';
+import { GameRoomService } from '@/lib/gameRoom';
+import { GAME_STARST_IN_COUNTDOWN, SectorsButtonConfig } from '@/lib/constants';
+import { SplineTriggerConfigItem } from '@/lib/types';
+import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
 
 type PubCoastalGameSplineControllerAppType = {
   sector: string;
@@ -33,10 +36,15 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     setupRoom();
   }, []);
 
-  const onButtonClick = (btn: SplineTriggerConfigItem) => {
+  const onButtonClick = async (btn: SplineTriggerConfigItem) => {
     if (!gameRoomService.current) return;
+    
+    await gameRoomService.current.addElement(btn.activityType);
 
-    gameRoomService.current.addElement(btn.activityType);
+    if (btn.activityType === ActivityTypeEnum.START_GAME) {
+      // this will show a new scene with 5 second countdown
+      await gameRoomService.current.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPAIRING);
+    }
   }
 
   const onResetClick = async () => {
@@ -48,17 +56,13 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
 
   return (
     <div className='flex flex-col justify-center gap-10'>
-      <h1 className="text-[250%]">{sector.replace('-', ' ').toLocaleUpperCase()}</h1>
+      <h1 className="text-[250%]">{sector.replace('sector', 'PLAYER').replace('-', ' ').toLocaleUpperCase()}</h1>
       <div className='flex flex-row justify-center gap-4 flex-wrap'>
         {buttonConfigs.map((btn, idx) => (
           <button
             key={idx}
             className="flex-1 p-[8%] bg-blue-500 text-white text-[100%] cursor-pointer rounded shadow transition-colors duration-200 hover:bg-blue-700 active:bg-blue-900"
             onClick={() => {
-              if (btn.activityType === ActivityTypeEnum.RESET_SCENE) {
-                onResetClick();
-              }
-
               onButtonClick(btn as SplineTriggerConfigItem)
             }}
           >
