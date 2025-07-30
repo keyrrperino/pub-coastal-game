@@ -81,7 +81,6 @@ const SplineCanvasWithAction: React.FC = () => {
     if (!isRevetmentBuilding) return;
     // Trigger the Revetment Build Btn
     const buildBtn = splineAppRef.current.findObjectByName?.('RV Build Btn');
-    console.log(buildBtn);
     if (buildBtn) {
       buildBtn.state = 'clicked';
     }
@@ -192,7 +191,6 @@ export const SplineViewer: React.FC = () => {
     if (!isRevetmentBuilding) return;
     // Trigger the Revetment Build Btn
     const buildBtn = splineAppRef.current.findObjectByName?.('RV Build Btn');
-    console.log(buildBtn);
     if (buildBtn) {
       buildBtn.state = 'clicked';
     }

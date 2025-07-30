@@ -57,6 +57,7 @@ export type LobbyStateType = {
   [LobbyStateEnum.WATER_LEVEL_KEY]: number;
   [LobbyStateEnum.ROUND_TIMER]: number;
   [LobbyStateEnum.IS_DONE_SHOWING_INSTRUCTIONS]: boolean;
+  [LobbyStateEnum.RANDOMIZE_EFFECT]: number;
   [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus;
   [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: number;
   [LobbyStateEnum.COUNTDOWN_START_TIME]: number;

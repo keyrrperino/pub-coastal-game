@@ -18,7 +18,6 @@ export function useHideAllTriggers(
         }
 
         const obj = splineAppRef.current?.findObjectByName?.(ActivityTypeEnum[enumKey]);
-        console.log(obj, keyOf);
         if (obj) {
           obj.visible = false;
         }

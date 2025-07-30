@@ -172,7 +172,8 @@ export enum LobbyStateEnum {
   GAME_LOBBY_STATUS = "gameLobbyStatus",
   IS_DONE_SHOWING_INSTRUCTIONS = "isDoneShowingInstructions",
   ROUND_TIMER_PERCENTAGE = "roundTimerPercentage",
-  COUNTDOWN_START_TIME = "countdownStartTime"
+  COUNTDOWN_START_TIME = "countdownStartTime",
+  RANDOMIZE_EFFECT = "randomizeEffect"
 }
 
 export enum GameLobbyStatus {

@@ -77,7 +77,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   );
 
   const { currentCutScene, canvasCutSceneRef, isSequenceActive } = 
-    useCutSceneSequence(progress, gameRoomServiceRef, lobbyState);
+    useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
   // Main Progress logic
 
   const renderCutScenes = (
@@ -91,6 +91,21 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             ref={canvasCutSceneRef}
             className="fixed w-full h-full m-0 p-0 z-10"
             style={{ borderRadius: 0, border: "none", display: "block" }}
+          />
+          {/* Frame Overlay */}
+          <div
+            className="fixed inset-0 pointer-events-none z-20"
+            style={{
+              width: "100vw",
+              height: "100vh",
+              pointerEvents: "none", // So it doesn't block interaction if needed
+            }}
+          />
+          <img
+            src={`/games/pub-coastal-spline/flash-reports/${currentCutScene}.png`}
+            className="fixed inset-0 w-full h-full z-20 pointer-events-none"
+            style={{ objectFit: "cover" }}
+            alt="Frame Overlay"
           />
         </div>
       )}

@@ -60,7 +60,6 @@ export class GameRoomService {
 
   async joinRoom(roomId: string): Promise<boolean> {
     const roomRef = ref(database, `${ROOM_NAME}/${roomId}`);
-    console.log( `${ROOM_NAME}/${roomId}`);
     const snapshot = await get(roomRef);
     
     if (!snapshot.exists()) {

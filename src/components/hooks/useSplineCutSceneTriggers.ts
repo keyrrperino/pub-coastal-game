@@ -4,12 +4,13 @@ import { CutScenesEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { splineCutScenesUrls } from "@/lib/constants";
 import { GameRoomService } from "@/lib/gameRoom";
 import { getCutScenes } from "@/lib/utils";
-import { LobbyStateType } from "@/lib/types";
+import { ActivityLogType, LobbyStateType } from "@/lib/types";
 
 export function useCutSceneSequence(
   progress: number,
   gameRoomServiceRef: React.RefObject<GameRoomService | null>,
-  lobbyState: LobbyStateType
+  lobbyState: LobbyStateType,
+  activities: ActivityLogType[]
 ) {
   const [currentCutSceneIndex, setCurrentCutSceneIndex] = useState<number | null>(null);
   const [currentCutScene, setCurrentCutScene] = useState<CutScenesEnum | null>(null);
@@ -17,20 +18,15 @@ export function useCutSceneSequence(
   const splineAppRef = useRef<Application | null>(null);
 
   // List of cutscenes to show
-  const cutScenes: CutScenesEnum[] = [
-    CutScenesEnum.R1_1A_0,
-    CutScenesEnum.R1_1B_0,
-    CutScenesEnum.R1_2A_0,
-    CutScenesEnum.R1_2B_0,
-    CutScenesEnum.R1_3A_0,
-    CutScenesEnum.R1_3B_0
-  ];
+  const [cutScenes, setCutScenes] = useState<CutScenesEnum[]>([]);
 
   // Start sequence when progress is done
   useEffect(() => {
     if (progress <= 0.02) {
-      // const dynamicCutScenes = getCutScenes(0.3, randomizeEffect, activities);
+      const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect, activities);
+      setCutScenes(dynamicCutScenes);
 
+      console.log('dynamicCutScenes: ', dynamicCutScenes);
 
       gameRoomServiceRef.current
         ?.updateLobbyStateKeyValue(
@@ -91,5 +87,5 @@ export function useCutSceneSequence(
     };
   }, []);
 
-  return { currentCutScene, canvasCutSceneRef: canvasRef, isSequenceActive: currentCutSceneIndex !== null };
+  return { currentCutScene, canvasCutSceneRef: canvasRef, isSequenceActive: currentCutSceneIndex !== null, currentCutSceneIndex };
 }

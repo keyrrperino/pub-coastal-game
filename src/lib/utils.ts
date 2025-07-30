@@ -26,6 +26,7 @@ export function isCountdownExpired(countdownStartTime: number, countdown: number
 }
 
 export function getCutScenes(minSeaLevel = 0.3, randomizeEffect: number, activities: ActivityLogType[]) {
+  console.log("activities", activities)
   const subSectors = [
     { sector: 1, subSector: "1A", activities: [
       "None",
@@ -242,8 +243,10 @@ export function getCutScenes(minSeaLevel = 0.3, randomizeEffect: number, activit
     [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, cutscene: CutScenesEnum.R1_3B_2 },
   };
 
+  console.log(sceneSectorConfigurations);
+
   // For each sub-sector, find the latest activity and get the cutscene
-  const cutScenes = subSectors.map(({ sector, subSector }) => {
+  const cutScenes: CutScenesEnum[] = subSectors.map(({ sector, subSector }) => {
     // Find the latest activity for this sector/subSector
     const activity = activities
       .filter((a) => {
@@ -259,15 +262,17 @@ export function getCutScenes(minSeaLevel = 0.3, randomizeEffect: number, activit
       if (activityType !== "None") {
         key = `${sector}_${subSector}_${activityType}-${minSeaLevel}-${randomizeEffect}`;
       } else {
-        key = `${sector}_${subSector}_${minSeaLevel}-${randomizeEffect}`;
+        key = `${sector}_${subSector}_None-${minSeaLevel}-${randomizeEffect}`;
       }
     } else {
-      key = `${sector}_${subSector}_${minSeaLevel}-${randomizeEffect}`;
+      key = `${sector}_${subSector}_None-${minSeaLevel}-${randomizeEffect}`;
     }
+
+    console.log("key: ", key, sceneSectorConfigurations[key]);
 
     const config = sceneSectorConfigurations[key];
     return config ? config.cutscene : null;
-  });
+  }).filter((value) => !!value);
 
   return cutScenes; // [1A, 1B, 2A, 2B, 3A, 3B]
 
