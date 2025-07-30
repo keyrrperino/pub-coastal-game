@@ -182,14 +182,14 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum): Promise<void> {
+  async addElement(activityType: ActivityTypeEnum, ActivityValue: string): Promise<void> {
     if (!this.roomId) return;
 
     // Log activity
-    await this.logActivity(activityType);
+    await this.logActivity(activityType, ActivityValue);
   }
 
-  private async logActivity(activityType: ActivityTypeEnum, round?: number) {
+  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number) {
     if (!this.roomId) return;
 
     const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
@@ -200,6 +200,7 @@ export class GameRoomService {
       userId: this.userId,
       userName: this.userName,
       action: activityType,
+      value: activityValue,
       round: round ?? 1,
       timestamp: Date.now()
     };

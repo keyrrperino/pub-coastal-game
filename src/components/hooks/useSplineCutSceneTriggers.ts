@@ -1,70 +1,95 @@
-import { useEffect, useState } from "react";
-import { Application, SPEObject, SplineEventName } from "@splinetool/runtime";
-import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { SplineTriggersConfig } from "@/lib/constants";
-import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, UserSectorEnum } from "@/lib/enums";
-import { isGameOnGoing } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { Application } from "@splinetool/runtime";
+import { CutScenesEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
+import { splineCutScenesUrls } from "@/lib/constants";
+import { GameRoomService } from "@/lib/gameRoom";
+import { getCutScenes } from "@/lib/utils";
+import { LobbyStateType } from "@/lib/types";
 
-type UseSplineTriggersProps = {
-  progress: number;
-  splineAppCutScenesRefs: { [key in CutScenesEnum]: React.RefObject<Application | null> },
-  activities: ActivityLogType[] | null;
-  lobbyState: LobbyStateType;
-  setLoadCutScenes: React.Dispatch<React.SetStateAction<CutScenesEnum[]>>;
-  loadCutScenes:CutScenesEnum[];
-};
-
-export function useCutSceneSplineTriggers({
-  progress,
-  loadCutScenes,
-  setLoadCutScenes,
-}: UseSplineTriggersProps) {
+export function useCutSceneSequence(
+  progress: number,
+  gameRoomServiceRef: React.RefObject<GameRoomService | null>,
+  lobbyState: LobbyStateType
+) {
   const [currentCutSceneIndex, setCurrentCutSceneIndex] = useState<number | null>(null);
+  const [currentCutScene, setCurrentCutScene] = useState<CutScenesEnum | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const splineAppRef = useRef<Application | null>(null);
 
-  // Start the cutscene sequence when progress <= 0
+  // List of cutscenes to show
+  const cutScenes: CutScenesEnum[] = [
+    CutScenesEnum.R1_1A_0,
+    CutScenesEnum.R1_1B_0,
+    CutScenesEnum.R1_2A_0,
+    CutScenesEnum.R1_2B_0,
+    CutScenesEnum.R1_3A_0,
+    CutScenesEnum.R1_3B_0
+  ];
+
+  // Start sequence when progress is done
   useEffect(() => {
     if (progress <= 0.02) {
-      const cutScenes = [
-        CutScenesEnum.R1_1A_0,
-        CutScenesEnum.R1_1B_0,
-        CutScenesEnum.R1_2A_0,
-        CutScenesEnum.R1_2B_0,
-        CutScenesEnum.R1_3A_0,
-        CutScenesEnum.R1_3B_0
-      ];
-      setLoadCutScenes(cutScenes);
+      // const dynamicCutScenes = getCutScenes(0.3, randomizeEffect, activities);
+
+
+      gameRoomServiceRef.current
+        ?.updateLobbyStateKeyValue(
+          LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_ONE_GAME_ENDED);
       setCurrentCutSceneIndex(0);
     }
   }, [progress]);
 
-  // Advance the cutscene every 3 seconds
+  // Load the current cutscene
   useEffect(() => {
     if (
-      loadCutScenes.length > 0 &&
       currentCutSceneIndex !== null &&
-      currentCutSceneIndex < loadCutScenes.length
+      currentCutSceneIndex >= 0 &&
+      currentCutSceneIndex < cutScenes.length
     ) {
+      setCurrentCutScene(cutScenes[currentCutSceneIndex]);
+
+      // Clean up previous Spline app
+      if (splineAppRef.current) {
+        splineAppRef.current.dispose?.();
+        splineAppRef.current = null;
+      }
+
+      // Load new Spline scene
+      if (canvasRef.current) {
+        const app = new Application(canvasRef.current);
+        app.load(splineCutScenesUrls[cutScenes[currentCutSceneIndex]]).then(() => {
+          splineAppRef.current = app;
+        });
+      }
+
+      // Set up timer for next scene
       const timer = setTimeout(() => {
-        setCurrentCutSceneIndex(currentCutSceneIndex + 1);
-      }, 5000);
+        setCurrentCutSceneIndex((idx) =>
+          idx !== null && idx + 1 < cutScenes.length ? idx + 1 : null
+        );
+      }, 4000);
 
       return () => clearTimeout(timer);
-    } else if (
-      loadCutScenes.length > 0 &&
-      currentCutSceneIndex === loadCutScenes.length
-    ) {
-      // All cutscenes shown, reset state or trigger next logic
-      setCurrentCutSceneIndex(null);
-      setLoadCutScenes([]);
-      
+    } else {
+      // Sequence finished, clean up
+      setCurrentCutScene(null);
+      if (splineAppRef.current) {
+        splineAppRef.current.dispose?.();
+        splineAppRef.current = null;
+      }
     }
-  }, [currentCutSceneIndex, loadCutScenes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCutSceneIndex]);
 
-  // The currently displayed cutscene (or null if none)
-  const currentCutScene =
-    currentCutSceneIndex !== null && currentCutSceneIndex < loadCutScenes.length
-      ? loadCutScenes[currentCutSceneIndex]
-      : null;
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (splineAppRef.current) {
+        splineAppRef.current.dispose?.();
+        splineAppRef.current = null;
+      }
+    };
+  }, []);
 
-  return { currentCutScene, loadCutScenes, isSequenceActive: currentCutSceneIndex !== null };
+  return { currentCutScene, canvasCutSceneRef: canvasRef, isSequenceActive: currentCutSceneIndex !== null };
 }

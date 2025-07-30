@@ -1,58 +1,53 @@
-// ... existing code ...
+import { useEffect, useRef, useState } from "react";
 import { GAME_ROUND_TIMER } from "@/lib/constants";
 import { GameLobbyStatus } from "@/lib/enums";
 import { isGameOnGoing } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
 
 export function useMainProgress(
   countdown: number = GAME_ROUND_TIMER,
   gameLobbyStatus: GameLobbyStatus,
   triggersLoading: boolean,
-  countdownStartTime: number // <-- new param
+  countdownStartTime: number,
+  delayBeforeStart: number = 0 // in seconds
 ) {
   const [progress, setProgress] = useState(1);
+  const [isStarting, setIsStarting] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!isGameOnGoing(gameLobbyStatus)) {
+    if (!isGameOnGoing(gameLobbyStatus) || triggersLoading) {
       setProgress(1);
+      setIsStarting(true);
+      if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
 
-    if (triggersLoading) {
-      setProgress(1);
-      return;
-    }
-
-    // Calculate initial progress based on countdownStartTime
-    const now = Date.now();
-    const elapsed = now - countdownStartTime;
-    const duration = countdown * 1000;
-    let initialProgress = Math.max(0, 1 - elapsed / duration);
-    setProgress(initialProgress);
-
-    if (initialProgress <= 0) {
-      return;
-    }
-
-    // Clear any previous timer
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
       const now = Date.now();
       const elapsed = now - countdownStartTime;
-      const newProgress = Math.max(0, 1 - elapsed / duration);
-      setProgress(newProgress);
 
-      if (newProgress <= 0.01) {
-        clearInterval(intervalRef.current!);
+      if (elapsed < delayBeforeStart * 1000) {
+        setProgress(1); // Still in delay phase
+        setIsStarting(true);
+      } else {
+        setIsStarting(false);
+        const countdownElapsed = elapsed - delayBeforeStart * 1000;
+        const duration = countdown * 1000;
+        const newProgress = Math.max(0, 1 - countdownElapsed / duration);
+        setProgress(newProgress);
+
+        if (newProgress <= 0.01) {
+          clearInterval(intervalRef.current!);
+        }
       }
     }, 30);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [countdown, triggersLoading, gameLobbyStatus, countdownStartTime]);
+  }, [countdown, triggersLoading, gameLobbyStatus, countdownStartTime, delayBeforeStart]);
 
-  return progress;
+  return { progress, isStarting };
 }

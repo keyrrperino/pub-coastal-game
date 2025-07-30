@@ -39,7 +39,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   const onButtonClick = async (btn: SplineTriggerConfigItem) => {
     if (!gameRoomService.current) return;
     
-    await gameRoomService.current.addElement(btn.activityType);
+    await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '');
 
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown

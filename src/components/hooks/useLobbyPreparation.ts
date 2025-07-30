@@ -19,7 +19,7 @@ export function useLobbyPreparation({ lobbyState, gameRoomServiceRef }: UseLobby
             GameLobbyStatus.STARTED);
         
         gameRoomServiceRef.current
-          ?.addElement(ActivityTypeEnum.DISPLAY_INSTRUCTION);
+          ?.addElement(ActivityTypeEnum.DISPLAY_INSTRUCTION, "");
         
         gameRoomServiceRef.current
           ?.updateLobbyStateKeyValue(

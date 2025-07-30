@@ -39,6 +39,7 @@ export type ActivityLogType = {
   userId: string;
   userName: string;
   action: ActivityTypeEnum;
+  value: string;
   timestamp: number;
   round?: number;
 }

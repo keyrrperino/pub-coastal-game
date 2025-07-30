@@ -7,6 +7,12 @@ export const GAME_ROUND_TIMER = 30;
 export const GAME_STARST_IN_COUNTDOWN = 5;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 
+export const userIdToSector: Record<string, number> = {
+  user_sector_one: 1,
+  user_sector_two: 2,
+  user_sector_three: 3,
+};
+
 export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.START_GAME]: {
     state: ['State', 'hidden'],

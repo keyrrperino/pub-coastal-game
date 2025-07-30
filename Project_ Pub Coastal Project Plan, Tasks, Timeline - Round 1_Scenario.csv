@@ -1,0 +1,208 @@
+ROUND 1 SCENARIOS,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(1 - Changi & East Coast)","Subsector
+1A (Changi) / 1B (East Coast)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect for the Round,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,Cut Scene to Display
+1,1A ,None,/,0,"Changi flooded! 
+Flights cancelled causing huge disruption to Singapore as an aviation hub ",0.3,1x,0.3,Yes,0.8,-50,,,
+1,1A ,None,/,0,"Changi flooded! 
+Flights cancelled causing huge disruption to Singapore as an aviation hub ",0.3,1x,0.3,No,0.3,-30,0,1A,R1_1A_0
+1,1A ,None,/,0,"Changi flooded! 
+Flights cancelled causing huge disruption to Singapore as an aviation hub ",0.3,0.5x,0.2,Yes,0.7,-40,,,
+1,1A ,None,/,0,"Changi flooded! 
+Flights cancelled causing huge disruption to Singapore as an aviation hub ",0.3,0.5x,0.2,No,0.2,-20,0,1A,R1_1A_0
+1,1A ,None,/,0,"Changi flooded! 
+Flights cancelled causing huge disruption to Singapore as an aviation hub ",0.3,2x,0.6,No,0.6,-60,0,1A,R1_1A_0
+1,1A ,Mangrove,/,1,Mangroves are minimally helpful in protecting against rising sea levels and it blocks Changi industrial waterfront activities ,0.3,1x,0.3,No,0.3,-30,1,1A,R1_1A_1
+1,1A ,Mangrove,/,1,Mangroves are minimally helpful in protecting against rising sea levels and it blocks Changi industrial waterfront activities ,0.3,0.5,0.2,No,0.2,-20,1,1A,R1_1A_1
+1,1A ,Mangrove,/,1,Mangroves are minimally helpful in protecting against rising sea levels and it blocks Changi industrial waterfront activities ,0.3,2x,0.6,No,0.6,-60,1,1A,R1_1A_1
+1,1A ,Land Reclamation,0.5,,Changi is protected with new sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,0.5,,Changi is protected with new sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,0.5,,Changi is protected with new sloping embankment with slight flooding but business as usual,0.3,2x,0.6,No,0.6,-10,2,1A,R1_1A_2
+1,1A ,Land Reclamation,1.15,,Changi is protected with new sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,1.15,,Changi is protected with new sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,1.15,,Changi is protected with new sloping embankment,0.3,2x,0.6,No,0.6,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,2,,Changi is protected with new sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,2,,Changi is protected with new sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1A,R1_1A_2
+1,1A ,Land Reclamation,2,,Changi is protected with new sloping embankment,0.3,2x,0.6,No,0.6,No effect,2,1A,R1_1A_2
+1,1A ,Seawall ,0.5,,Changi is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,0.5,,Changi is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,0.5,,Changi is protected with sea walls with minimal flooding but business as usual,0.3,2x,0.6,No,0.6,-10,3,1A,R1_1A_3
+1,1A ,Seawall ,1.15,,Changi is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,1.15,,Changi is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,1.15,,Changi is protected with sea walls,0.3,2x,0.6,No,0.6,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,2,,Changi is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,2,,Changi is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,3,1A,R1_1A_3
+1,1A ,Seawall ,2,,Changi is protected with sea walls,0.3,2x,0.6,No,0.6,No effect,3,1A,R1_1A_3
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(1 - Changi & East Coast)","Subsector
+1A (Changi) / 1B (East Coast)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect ,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,
+1,1B,None,/,,"East Coast have been flooded causing damages to houses and buildings nearby
+Citizens are asking, where are the coastal protection measures? Still hope if we start building soon",0.3,1x,0.3,No,0.3,-30,0,1B,R1_1B_0
+1,1B,None,/,,"East Coast have been flooded causing damages to houses and buildings nearby
+Citizens are asking, where are the coastal protection measures? Still hope if we start building soon",0.3,0.5x,0.2,No,0.2,-20,0,1B,R1_1B_0
+1,1B,None,/,,"East Coast have been flooded causing damages to houses and buildings nearby
+Citizens are asking, where are the coastal protection measures? Still hope if we start building soon",0.3,2x,0.6,No,0.6,-60,0,1B,R1_1B_0
+1,1B,Mangrove,/,,"Newly grown mangroves are minimally effective, roads flooded causing jam on ECP",0.3,1x,0.3,No,0.3,-30,1,1B,R1_1B_0
+1,1B,Mangrove,/,,"Newly grown mangroves are minimally effective, roads flooded causing jam on ECP",0.3,0.5,0.2,No,0.2,-20,1,1B,R1_1B_0
+1,1B,Mangrove,/,,"Newly grown mangroves are minimally effective, roads flooded causing jam on ECP",0.3,2x,0.6,No,0.6,-60,1,1B,R1_1B_0
+1,1B,Land Reclamation,0.5,,Residents are happy with their sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,0.5,,Residents are happy with their sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,0.5,,Residents are happy with their sloping embankment with some flooding in ECP,0.3,2x,0.6,No,0.6,-10,2,1B,R1_1B_2
+1,1B,Land Reclamation,1.15,,Residents are happy with their sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,1.15,,Residents are happy with their sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,1.15,,Residents are happy with their sloping embankment,0.3,2x,0.6,No,0.6,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,2,,Residents are happy with their sloping embankment,0.3,1x,0.3,No,0.3,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,2,,Residents are happy with their sloping embankment,0.3,0.5,0.2,No,0.2,No effect,2,1B,R1_1B_2
+1,1B,Land Reclamation,2,,Residents are happy with their sloping embankment,0.3,2x,0.6,No,0.6,No effect,2,1B,R1_1B_2
+1,1B,Seawall ,0.5,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,1x,0.3,No,0.3,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,0.5,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,0.5,0.2,No,0.2,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,0.5,,"Residents are happy to be protected but are grumbling about the lack of sea view 
+Minimal flooding but business as usual",0.3,2x,0.6,No,0.6,-10,3,1B,R1_1B_3
+1,1B,Seawall ,1.15,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,1x,0.3,No,0.3,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,1.15,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,0.5,0.2,No,0.2,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,1.15,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,2x,0.6,No,0.6,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,2,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,1x,0.3,No,0.3,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,2,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,0.5,0.2,No,0.2,No effect,3,1B,R1_1B_3
+1,1B,Seawall ,2,,Residents are happy to be protected but are grumbling about the lack of sea view and it blocks their access to the beach,0.3,2x,0.6,No,0.6,No effect,3,1B,R1_1B_3
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(2 - CBD & Jurong)","Subsector
+2A (CBD) / 2B (Jurong)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect ,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,
+2,2A,None,/,,"CBD Flooded! 
+Huge disruption to the financial markets as people are very delayed getting to work ",0.3,1x,0.3,No,0.3,-30,0,2A,R1_2A_0
+2,2A,None,/,,"CBD Flooded! 
+Huge disruption to the financial markets as people are very delayed getting to work ",0.3,0.5x,0.2,No,0.2,-20,0,2A,R1_2A_0
+2,2A,None,/,,"CBD Flooded! 
+Huge disruption to the financial markets as people are very delayed getting to work ",0.3,2x,0.6,No,0.6,-60,0,2A,R1_2A_0
+2,2A,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2A,R1_2A_1
+2,2A,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,-20,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,1.15,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,1.15,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,1.15,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,2,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,2,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2A,R1_2A_0
+2,2A,Storm Surge Barrier,2,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,No effect,1,2A,R1_2A_0
+2,2A,Seawall ,0.5,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,1x,0.3,No,0.3,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,0.5,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,0.5,0.2,No,0.2,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,0.5,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,2x,0.6,No,0.6,-10,2,2A,R1_2A_2
+2,2A,Seawall ,1.15,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,1x,0.3,No,0.3,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,1.15,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,0.5,0.2,No,0.2,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,1.15,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,2x,0.6,No,0.6,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,2,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,1x,0.3,No,0.3,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,2,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,0.5,0.2,No,0.2,No effect,2,2A,R1_2A_2
+2,2A,Seawall ,2,,Vertical seawalls help protect our commercial district but it block sea views on the iconic waterfont which ruins photos,0.3,2x,0.6,No,0.6,No effect,2,2A,R1_2A_2
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+2,2A,Plant Mangroves,/,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(2 - CBD & Jurong)","Subsector
+2A (CBD) / 2B (Jurong)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect ,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,
+2,2B,None,/,,"Jurong Flooded! 
+Huge disruption as people are very delayed getting to work ",0.3,1x,0.3,No,0.3,-30,0,2B,R1_2B_0
+2,2B,None,/,,"Jurong Flooded! 
+Huge disruption as people are very delayed getting to work ",0.3,0.5x,0.2,No,0.2,-20,0,2B,R1_2B_0
+2,2B,None,/,,"Jurong Flooded! 
+Huge disruption as people are very delayed getting to work ",0.3,2x,0.6,No,0.6,-60,0,2B,R1_2B_0
+2,2B,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,0.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,-20,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,1x,0.3,No,0.3,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,0.5,0.2,No,0.2,No effect,1,2B,R1_2B_1
+2,2B,Storm Surge Barrier,1.5,,Storm surge barrier looks great but citizens are complaining about its high costs and higher taxes ,0.3,2x,0.6,No,0.6,No effect,1,2B,R1_2B_1
+2,2B,Seawall ,0.5,,Jurong is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,0.5,,Jurong is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,0.5,,Jurong is protected with sea walls with minimal flooding but business as usual,0.3,2x,0.6,No,0.6,-10,2,2B,R1_2B_2
+2,2B,Seawall ,1,,Jurong is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,1,,Jurong is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,1,,Jurong is protected with sea walls,0.3,2x,0.6,No,0.6,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,1.5,,Jurong is protected with sea walls,0.3,1x,0.3,No,0.3,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,1.5,,Jurong is protected with sea walls,0.3,0.5,0.2,No,0.2,No effect,2,2B,R1_2B_2
+2,2B,Seawall ,1.5,,Jurong is protected with sea walls,0.3,2x,0.6,No,0.6,No effect,2,2B,R1_2B_2
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+2,2B,Mangrove / Land Reclamation?,/,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(3 - North Woodlands to Punggol)","Subsector
+3A (Woodlands) / 3B (Punggol)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect ,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,
+3,3A,None,/,0,"Woodlands flooded! 
+Disastrous effect on constant flooding on our nature reserves ",0.3,1x,0.3,No,0.3,-30,0,3A,R1_3A_0
+3,3A,None,/,0,"Woodlands flooded! 
+Disastrous effect on constant flooding on our nature reserves ",0.3,0.5x,0.2,No,0.2,-20,0,3A,R1_3A_0
+3,3A,None,/,0,"Woodlands flooded! 
+Disastrous effect on constant flooding on our nature reserves ",0.3,2x,0.6,No,0.6,-60,0,3A,R1_3A_0
+3,3A,Place Artificial Reef,/,1,Mangroves are minimally helpful in protecting against rising sea levels but need to be build in conjuction with other measures ,0.3,1x,0.3,No,0.3,-20,1,3A,R1_3A_0
+3,3A,Place Artificial Reef,/,1,Mangroves are minimally helpful in protecting against rising sea levels but need to be build in conjuction with other measures ,0.3,0.5,0.2,No,0.2,-10,1,3A,R1_3A_1
+3,3A,Place Artificial Reef,/,1,Mangroves are minimally helpful in protecting against rising sea levels but need to be build in conjuction with other measures ,0.3,2x,0.6,No,0.6,-50,1,3A,R1_3A_1
+3,3A,Build hybrid measures?,,,,,,,,,,,3A,R1_3A_1
+,,,,,,,,,,,,,3A,R1_3A_1
+,,,,,,,,,,,,,3A,R1_3A_1
+3,3A,Seawall ,0.5,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,1x,0.3,No,0.3,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,0.5,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,0.5,0.2,No,0.2,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,0.5,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,2x,0.6,No,0.6,-10,2,3A,R1_3A_2
+3,3A,Seawall ,1.15,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,1x,0.3,No,0.3,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,1.15,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,0.5,0.2,No,0.2,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,1.15,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,2x,0.6,No,0.6,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,2,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,1x,0.3,No,0.3,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,2,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,0.5,0.2,No,0.2,No effect,2,3A,R1_3A_2
+3,3A,Seawall ,2,,Residents are happy to be protected but negative consequences to the nature reserves,0.3,2x,0.6,No,0.6,No effect,2,3A,R1_3A_2
+3,3A,,,,,,,,,,,,,
+3,3A,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+"Sector No. 
+(3 - North Woodlands to Punggol)","Subsector
+3A (Woodlands) / 3B (Punggol)",Measure,Height Built To,Costs,Scenario Triggered,"Mean Sea level rise
+(Round 1 = 0.3m)",Randomised Effect ,Sub sea level rise (m),"Trigger Storm Surge =1 / =0
++0.5m of water wave",Final sea level (m),Score Effect ,,,
+3,3B,None,/,,"Sector flooded! 
+HDBs, playgrounds and hawker centres flooded, residents unhappy about the situation",0.3,1x,0.3,No,0.3,-30,0,3B,R1_3B_0
+3,3B,None,/,,"Sector flooded! 
+HDBs, playgrounds and hawker centres flooded, residents unhappy about the situation",0.3,0.5x,0.2,No,0.2,-20,0,3B,R1_3B_0
+3,3B,None,/,,"Sector flooded! 
+HDBs, playgrounds and hawker centres flooded, residents unhappy about the situation",0.3,2x,0.6,No,0.6,-60,0,3B,R1_3B_0
+3,3B,Place Artificial Reef,/,,"Mangroves are minimally helpful but not preferred by some of the residents
+Not preferred by some residents, because of aesthetics and smell. 
+Need to be build in conjuction with other measures""",,,,,,,1,3B,R1_3B_1
+3,3B,Place Artificial Reef,/,,,,,,,,,,,
+3,3B,Place Artificial Reef,/,,,,,,,,,,,
+3,3B,Build hybrid measures?,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+3,3B,Seawall ,0.5,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,1x,0.3,No,0.3,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,0.5,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,0.5,0.2,No,0.2,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,0.5,,"Residents are happy to be protected but wish there was more uses than what it is now
+Minimal flooding but business as usual",0.3,2x,0.6,No,0.6,-10,2,3B,R1_3B_2
+3,3B,Seawall ,1.15,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,1x,0.3,No,0.3,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,1.15,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,0.5,0.2,No,0.2,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,1.15,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,2x,0.6,No,0.6,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,2,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,1x,0.3,No,0.3,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,2,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,0.5,0.2,No,0.2,No effect,2,3B,R1_3B_2
+3,3B,Seawall ,2,,Residents are happy to be protected but wish there was more uses than what it is now,0.3,2x,0.6,No,0.6,No effect,2,3B,R1_3B_2
