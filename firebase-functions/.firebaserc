@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "pub-coastal"
-  },
-  "engines": {
-    "node": "20"
-  }
-}
