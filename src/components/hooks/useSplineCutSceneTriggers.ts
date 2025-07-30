@@ -6,6 +6,12 @@ import { GameRoomService } from "@/lib/gameRoom";
 import { getCutScenes } from "@/lib/utils";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 
+export enum CutScenesStatusEnum {
+  "STARTED",
+  "ENDED",
+  "NOT_YET_STARTED"
+}
+
 export function useCutSceneSequence(
   progress: number,
   gameRoomServiceRef: React.RefObject<GameRoomService | null>,
@@ -14,6 +20,7 @@ export function useCutSceneSequence(
 ) {
   const [currentCutSceneIndex, setCurrentCutSceneIndex] = useState<number | null>(null);
   const [currentCutScene, setCurrentCutScene] = useState<CutScenesEnum | null>(null);
+  const [cutSceneStatus, setCutScenesStatus] = useState<CutScenesStatusEnum>(CutScenesStatusEnum.NOT_YET_STARTED);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const splineAppRef = useRef<Application | null>(null);
 
@@ -42,6 +49,7 @@ export function useCutSceneSequence(
       currentCutSceneIndex >= 0 &&
       currentCutSceneIndex < cutScenes.length
     ) {
+      setCutScenesStatus(CutScenesStatusEnum.STARTED);
       setCurrentCutScene(cutScenes[currentCutSceneIndex]);
 
       // Clean up previous Spline app
@@ -60,10 +68,13 @@ export function useCutSceneSequence(
 
       // Set up timer for next scene
       const timer = setTimeout(() => {
-        setCurrentCutSceneIndex((idx) =>
-          idx !== null && idx + 1 < cutScenes.length ? idx + 1 : null
-        );
-      }, 4000);
+        setCurrentCutSceneIndex((idx) => {
+          if (idx === 5) {
+            setCutScenesStatus(CutScenesStatusEnum.ENDED);
+          }
+          return idx !== null && idx + 1 < cutScenes.length ? idx + 1 : null
+        });
+      }, 500);
 
       return () => clearTimeout(timer);
     } else {
@@ -87,5 +98,5 @@ export function useCutSceneSequence(
     };
   }, []);
 
-  return { currentCutScene, canvasCutSceneRef: canvasRef, isSequenceActive: currentCutSceneIndex !== null, currentCutSceneIndex };
+  return { cutSceneStatus, currentCutScene, canvasCutSceneRef: canvasRef, isSequenceActive: currentCutSceneIndex !== null, currentCutSceneIndex };
 }

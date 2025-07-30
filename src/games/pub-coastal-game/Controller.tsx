@@ -1,9 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { GameRoomService } from '@/lib/gameRoom';
 import { GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SectorsButtonConfig, SplineTriggersConfig } from '@/lib/constants';
-import { LobbyStateType, SectorEnum, SplineTriggerConfigItem } from '@/lib/types';
+import { ActivityLogType, LobbyStateType, NormalizedActivities, SectorEnum, SplineTriggerConfigItem } from '@/lib/types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from '@/lib/enums';
 import clsx from 'clsx';
+import { hasActivityForSubSector, getNormalizeActivities } from '@/lib/utils';
+import Modal from './compontents/Modal';
+import LoadingModal from './compontents/LoadingModal';
+import AnimatedTitle from './compontents/AnimatedTitle';
+import AnimatedModal from './compontents/AnimatedModal';
+import LeaderboardModal from './compontents/LeaderboardModal';
 
 type PubCoastalGameSplineControllerAppType = {
   sector: string;
@@ -13,6 +19,16 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   const gameRoomService = useRef<GameRoomService | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [lobbyState, setLobbyState] = useState<LobbyStateType>(lobbyStateDefaultValue);
+  const [activities, setActivities] = useState<ActivityLogType[] | null>([]);
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isAnimatedModalOpen, setIsAnimatedModalOpen] = useState(false);
+  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(true);
+  const [normalizeActivities, setNormalizeActivities] = useState<NormalizedActivities>({
+    actions: {},
+    userIds: {},
+    rounds: {},
+    values: {},
+  });
 
     // Transform sector slug to SectorsButtonConfig key
     const getSectorKey = (slug: string) => `user_${slug.replace(/-/g, '_')}`;
@@ -21,6 +37,42 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   // Get the config for this sector
   const sectorKey = typeof sector === 'string' ? getSectorKey(sector) as keyof typeof SectorsButtonConfig : '';
   const buttonConfigs = SectorsButtonConfig[sectorKey as UserSectorEnum];
+
+  useEffect(() => {
+    const setupRoom = async () => {
+      gameRoomService.current = new GameRoomService(GameEnum.DEFAULT_USERNAME);
+      const joined = await gameRoomService.current.joinRoom(GameEnum.DEFAULT_ROOM_NAME);
+
+      if (!joined) {
+        await gameRoomService.current.createRoom(true);
+      }
+
+      gameRoomService.current.onLobbyStateChange((lobbyState: LobbyStateType) => {
+        setLobbyState(lobbyState);
+      });
+
+      gameRoomService.current.onActivityChange((updatedActivities) => {
+        setActivities(() => {
+          return updatedActivities;
+        });
+      });
+    };
+
+    setupRoom();
+
+    return () => {
+      gameRoomService.current?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsLoadingModalOpen(lobbyState.gameLobbyStatus === GameLobbyStatus.PREPAIRING);
+    setIsAnimatedModalOpen(lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_ONE_GAME_ENDED);
+  }, [lobbyState.gameLobbyStatus]);
+
+  useEffect(() => {
+    setNormalizeActivities(getNormalizeActivities(activities ?? []));
+  }, [activities]);
 
   useEffect(() => {
     const setupRoom = async () => {
@@ -43,12 +95,10 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     setupRoom();
   }, []);
 
-
-
   const onButtonClick = async (btn: SplineTriggerConfigItem) => {
     if (!gameRoomService.current) return;
     
-    await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '');
+    await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1);
 
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown
@@ -59,10 +109,11 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   const onResetClick = async () => {
     if (gameRoomService.current) {
       await gameRoomService.current.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
-    } 
+    }
   }
 
-  const isGameStarted = [GameLobbyStatus.STARTED, GameLobbyStatus.PREPAIRING].includes(lobbyState.gameLobbyStatus);
+  const isGameStarted = [GameLobbyStatus.STARTED, GameLobbyStatus.ROUND_ONE_GAME_ENDED].includes(lobbyState.gameLobbyStatus);
+  const isStartButtonDisabled = [GameLobbyStatus.STARTED, GameLobbyStatus.PREPAIRING].includes(lobbyState.gameLobbyStatus);
 
   const sectorTheme = {
     [UserSectorEnum.USER_SECTOR_ONE]: {
@@ -76,14 +127,24 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     }
   }
 
-  const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[]) => {
+  const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[], subSector: string) => {
+    const disabled = hasActivityForSubSector(activities ?? [], sectorKey, subSector);
     return (
       buttonConfigSector.map((btn, idx) => {
         const newButtonValue = btn.buttonValue?.split("/").slice(1).join("");
+        const isButtonTriggered = normalizeActivities.actions[btn.activityType];
 
         return <button
-          key={idx}
-          className="rounded-[10vh] pl-[2vw] pr-[2vw] bg-white p-[1vw] max-w-[18vw] h-[7vh]"
+          key={"mcp-" + idx}
+          disabled={disabled}
+          className={
+            clsx(
+              "rounded-[10vh] pl-[2vw] pr-[2vw] bg-white p-[1vw] max-w-[18vw] h-[7vh]",
+              "hover:bg-blue-100 active:bg-blue-400 transition hover:text-[#2f2f2f]",
+              "active:text-white disabled:cursor-not-allowed",
+              isButtonTriggered  ? "disabled:bg-blue-200 disabled:text-gray-100" : "disabled:bg-gray-200 disabled:text-gray-400" 
+            )
+          }
           onClick={() => {
             onButtonClick(btn as SplineTriggerConfigItem)
           }}
@@ -99,8 +160,10 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
       const sectorValue = sector as SectorEnum;
       const subSectorTitle = sectorValue.replace(" ", ` ${sectorNumber}`);
 
-      return (<div className={clsx(
-        `flex flex-col rounded-[1vw] p-[2vw] gap-[4vh]`
+      const [,subSector] = subSectorTitle.split(" ");
+
+      return (<div key={subSectorTitle} className={clsx(
+        `flex flex-col rounded-[1vw] p-[2vw] gap-[4vh]`,
       )}
       style={{
         backgroundColor: `${sectorTheme[sectorKey as UserSectorEnum].boxColor}`
@@ -110,14 +173,14 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           text-[3.5vw] leading-[0.8] text-center
         ">{subSectorTitle}</h1>
         <div className="grid grid-cols-2 flex-wrap gap-5">
-          {renderButtons(buttonConfigs[sectorValue])}
+          {renderButtons(buttonConfigs[sectorValue], subSector)}
         </div>
       </div>);
     });
   };
 
   const renderScene = isGameStarted ? (
-    <div className="flex flex-row gap-5">
+    <div className="grid grid-cols-2 gap-5">
       {renderUserSectors()}
     </div>
   )
@@ -128,7 +191,9 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
         COASTAL PROTECTORS
       </h1>
       <h1 className="mt-[5vh] flex items-center justify-center font-bold text-[30.35px] tracking-normal text-white">˗ˏˋ {sector.replace('sector', 'Player').replace('-', ' ').replace('one', '1').replace('two', '2').replace('three', '3')} ˎˊ˗</h1>
+      
       <button
+        disabled={isStartButtonDisabled}
         className="
           flex items-center justify-center
           w-[406px] h-[83px]
@@ -141,12 +206,13 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           transition
           hover:bg-[#2A81FA] active:bg-[#6EB6FF]
           cursor-pointer
+          disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed
         "
         onClick={() => {
           onButtonClick(SplineTriggersConfig[ActivityTypeEnum.START_GAME])
         }}
       >
-        START GAME
+        Start Game
       </button>
     </>
   )
@@ -174,6 +240,16 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
             </div>
           </div>
         </div>
+        <LoadingModal isOpen={isLoadingModalOpen} />
+        {/* <LeaderboardModal isOpen={true} /> */}
+        <AnimatedModal
+          isOpen={isAnimatedModalOpen}
+        >
+          <AnimatedTitle>
+          <h1>"˗ˏˋ Round 1 Finished ˎˊ˗</h1>
+          <h1>Prepare for Round 2</h1>
+          </AnimatedTitle>
+        </AnimatedModal>
       </main>
   );
-} 
+}

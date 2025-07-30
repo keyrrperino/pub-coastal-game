@@ -4,16 +4,18 @@ import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { lobbyStateDefaultValue, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig } from "@/lib/constants";
-import { ActivityTypeEnum, CutScenesEnum, GameEnum, GameLobbyStatus } from "@/lib/enums";
+import { ActivityTypeEnum, CutScenesEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
 import { isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
-import { useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
+import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
 import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
 import { useHideAllTriggers } from "./hooks/useHideAllSplineTriggers";
+import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
+import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
 
 interface SplineFirebaseProps {
 }
@@ -50,6 +52,37 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     splineAppCutScenesRefs
   );
 
+  const [showRoundEndModal, setShowRoundEndModal] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+
+  useEffect(() => {
+    if (!showRoundEndModal) return;
+    if (countdown === 0) {
+      // Start round 2 here!
+      setShowRoundEndModal(false);
+      // Example: update lobby state to round 2
+      if (gameRoomServiceRef.current) {
+        gameRoomServiceRef.current.updateLobbyStateKeyValue(
+          LobbyStateEnum.GAME_LOBBY_STATUS,
+          GameLobbyStatus.STARTED // or your actual enum value
+        );
+
+        gameRoomServiceRef.current.updateLobbyStateKeyValue(
+          LobbyStateEnum.COUNTDOWN_START_TIME,
+          Date.now()
+        );
+
+        gameRoomServiceRef.current.updateLobbyStateKeyValue(
+          LobbyStateEnum.ROUND,
+          (lobbyState.round ?? 1) + 1
+        );
+      }
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [showRoundEndModal, countdown, gameRoomServiceRef]);
+
   useEffect(() => {
     if (triggerProgress >= 100) {
       setTriggersLoading(false);
@@ -76,8 +109,16 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     3 // <-- 3 seconds delay before countdown starts
   );
 
-  const { currentCutScene, canvasCutSceneRef, isSequenceActive } = 
+  const { cutSceneStatus, currentCutScene, canvasCutSceneRef, isSequenceActive } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
+
+
+  useEffect(() => {
+    if (cutSceneStatus === CutScenesStatusEnum.ENDED) {
+      setShowRoundEndModal(true);
+      setCountdown(5); // reset countdown
+    }
+  }, [cutSceneStatus]);
   // Main Progress logic
 
   const renderCutScenes = (
@@ -93,25 +134,65 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             style={{ borderRadius: 0, border: "none", display: "block" }}
           />
           {/* Frame Overlay */}
-          <div
-            className="fixed inset-0 pointer-events-none z-20"
-            style={{
-              width: "100vw",
-              height: "100vh",
-              pointerEvents: "none", // So it doesn't block interaction if needed
-            }}
-          />
-          <img
-            src={`/games/pub-coastal-spline/flash-reports/${currentCutScene}.png`}
-            className="fixed inset-0 w-full h-full z-20 pointer-events-none"
-            style={{ objectFit: "cover" }}
-            alt="Frame Overlay"
-          />
+          <div className="fixed inset-0 z-20 flex items-center justify-center h-[100vh]">
+            <img
+              src={`/games/pub-coastal-spline/flash-reports/${currentCutScene}.png`}
+              className="pointer-events-none"
+              // style={{ objectFit: "" }}
+              alt="Frame Overlay"
+            />
+          </div>
         </div>
       )}
       {/* ...rest of your UI... */}
     </>
   );
+
+  const renderScore = (
+    (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && <div className="fixed inset-0 w-screen h-screen m-0 p-0 z-10">
+      <div className="flex w-full justify-between px-8 py-4  text-white text-[2vw]">
+        <div className="flex flex-col">
+          <h1>
+            Overall budget
+          </h1>
+          <div className="grid grid-cols-5 gap-2">
+          {Array.from({ length: 20 }).map((_, idx) => (
+            <img
+              key={idx}
+              src="/games/pub-coastal-spline/images/coin.svg"
+              alt="coin"
+              className="w-[3vw] h-[3vw]"
+            />
+          ))}
+          </div>
+        </div>
+        <div className="flex flex-col">
+        <h1 className="text-center text-[3vw]">
+            Round {lobbyState.round ?? 1}
+          </h1>
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-right">
+            Overall Score:
+          </h1>
+          <h2 className="text-right">
+            1000 PTS
+          </h2>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderProgressBar = (
+    (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && 
+      <ProgressBar
+        progress={progress}
+        key="lead"
+        round={lobbyState.round}
+        containerClassName="fixed z-10 top-[9vh] left-[30vw]"
+      />
+
+  )
 
   return (
     <div
@@ -127,14 +208,18 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
         className={"w-full z-9 h-full m-0 p-0 " + (triggersLoading && "d-none")}
         style={{ display: "block", borderRadius: 0, border: "none" }}
       />
-  
-      {!isStarting && !triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && (lobbyState.gameLobbyStatus === GameLobbyStatus.STARTED) &&
-        <ProgressBar
-          progress={progress}
-          key="lead"
-          containerClassName="fixed z-10 top-[10vh] left-[30vw]"
-        />}
 
+      {renderScore}
+      {renderProgressBar}
+
+      {showRoundEndModal && 
+        <AnimatedModal isOpen={true}>
+          <AnimatedTitle>
+          <h1>"˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
+          <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
+          </AnimatedTitle>
+        </AnimatedModal>
+      }
       
       {/* Loading overlay with percentage */}
       {(triggersLoading) && (
@@ -144,7 +229,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
         >
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
           <span className="text-xl font-semibold text-blue-700 mb-2">
-            {isLoaded ? `Loading Map... ${triggerProgress}% ${triggersLoading}` : "Loading Map..."}
+            {isLoaded ? `Loading Map... ${triggerProgress}%` : "Loading Map..."}
           </span>
         </div>
       )}

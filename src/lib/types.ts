@@ -68,4 +68,13 @@ export type LobbyStateType = {
   [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus;
   [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: number;
   [LobbyStateEnum.COUNTDOWN_START_TIME]: number;
+  [LobbyStateEnum.ROUND]: number;
 }
+
+
+export type NormalizedActivities = {
+  actions: { [action: string]: ActivityLogType[] };
+  userIds: { [userId: string]: ActivityLogType[] };
+  rounds: { [round: string]: ActivityLogType[] };
+  values: { [value: string]: ActivityLogType[] };
+};

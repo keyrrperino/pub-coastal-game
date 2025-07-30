@@ -181,11 +181,11 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum, ActivityValue: string): Promise<void> {
+  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number): Promise<void> {
     if (!this.roomId) return;
 
     // Log activity
-    await this.logActivity(activityType, ActivityValue);
+    await this.logActivity(activityType, ActivityValue, round);
   }
 
   private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number) {
