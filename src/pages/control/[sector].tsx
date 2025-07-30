@@ -5,12 +5,27 @@ import Error from 'next/error';
 
 const ControllerWithoutSSR = dynamic(() => import("@/games/pub-coastal-game/Controller"), { ssr: false });
 
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { sector: 'sector-1' } },
+      { params: { sector: 'sector-2' } },
+      { params: { sector: 'sector-3' } },
+    ],
+    fallback: false, // Only these paths will be generated
+  };
+}
+
+export async function getStaticProps() {
+  return { props: {} };
+}
+
 export default function SectorPage() {
   const router = useRouter();
   const { sector } = router.query;
 
   // Only allow these sector slugs
-  const allowedSectors = ['sector-one', 'sector-two', 'sector-three'];
+  const allowedSectors = ['sector-1', 'sector-2', 'sector-3'];
 
   // Show 404 if sector is not valid (only after router is ready)
   if (router.isReady && (typeof sector !== 'string' || !allowedSectors.includes(sector))) {
@@ -25,13 +40,7 @@ export default function SectorPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <main className="min-h-screen bg-gradient-to-b from-sky-100 to-blue-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col items-center gap-4">
-            <ControllerWithoutSSR sector={sector as string} />
-          </div>
-        </div>
-      </main>
+      <ControllerWithoutSSR sector={sector as string} />
     </>
   );
 }

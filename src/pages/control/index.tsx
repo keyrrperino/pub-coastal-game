@@ -7,9 +7,9 @@ import { GameEnum, UserSectorEnum } from "@/lib/enums";
 import { UserPresenceType } from "@/lib/types";
 
 const SECTORS = [
-  { id: 1, slug: "sector-one", username: UserSectorEnum.USER_SECTOR_ONE, label: "Sector 1" },
-  { id: 2, slug: "sector-two", username: UserSectorEnum.USER_SECTOR_TWO, label: "Sector 2" },
-  { id: 3, slug: "sector-three", username: UserSectorEnum.USER_SECTOR_THREE, label: "Sector 3" },
+  { id: 1, slug: "sector-1", username: UserSectorEnum.USER_SECTOR_ONE, label: "Sector 1" },
+  { id: 2, slug: "sector-2", username: UserSectorEnum.USER_SECTOR_TWO, label: "Sector 2" },
+  { id: 3, slug: "sector-3", username: UserSectorEnum.USER_SECTOR_THREE, label: "Sector 3" },
 ];
 
 // Add index signature to type
@@ -63,16 +63,16 @@ export default function SectorSelection() {
     let sectorSlug = '';
     switch (sector) {
       case 1:
-        sectorSlug = 'sector-one';
+        sectorSlug = 'sector-1';
         break;
       case 2:
-        sectorSlug = 'sector-two';
+        sectorSlug = 'sector-2';
         break;
       case 3:
-        sectorSlug = 'sector-three';
+        sectorSlug = 'sector-3';
         break;
       default:
-        sectorSlug = 'sector-one';
+        sectorSlug = 'sector-1';
     }
     // When user selects, join as themselves (not as the watcher user)
     // You may want to store the user's real name or a generated one

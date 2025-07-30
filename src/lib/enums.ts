@@ -160,9 +160,9 @@ export enum GameEnum {
 };
 
 export enum UserSectorEnum {
-  USER_SECTOR_ONE = "user_sector_one",
-  USER_SECTOR_TWO = "user_sector_two",
-  USER_SECTOR_THREE = "user_sector_three",
+  USER_SECTOR_ONE = "user_sector_1",
+  USER_SECTOR_TWO = "user_sector_2",
+  USER_SECTOR_THREE = "user_sector_3",
 }
 
 export enum LobbyStateEnum {

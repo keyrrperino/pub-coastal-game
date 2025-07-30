@@ -22,8 +22,15 @@ export type SplineTriggersConfigType = {
     SplineTriggerConfigItem;
 };
 
+export enum SectorEnum {
+  SECTOR_A = "Sector A",
+  SECTOR_B = "Sector B"
+};
+
 export type SectorsButtonConfigType = {
-  [key in UserSectorEnum]: SplineTriggerConfigItem[];
+  [key in UserSectorEnum]: {
+    [key in SectorEnum]: SplineTriggerConfigItem[]
+  };
 };
 
 export type GameElementType = {

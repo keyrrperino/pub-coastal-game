@@ -118,3 +118,23 @@
     @apply bg-background text-foreground;
     }
 }
+
+@font-face {
+  font-family: 'Novecento';
+  src: url('/games/pub-coastal-spline/fonts/novecento.woff2') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Novecento Bold';
+  src: url('/games/pub-coastal-spline/fonts/novecento-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+h1 {
+  font-family: 'Novecento Bold', sans-serif;
+}

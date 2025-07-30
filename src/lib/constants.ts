@@ -1,5 +1,5 @@
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, SplineEventName, UserSectorEnum } from "./enums";
-import { LobbyStateType, SectorsButtonConfigType, SplineTriggersConfigType } from "./types";
+import { LobbyStateType, SectorEnum, SectorsButtonConfigType, SplineTriggersConfigType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
 export const ROOM_NAME = "rooms-v2";
@@ -45,42 +45,42 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 0.5 LAND RECLAMATION",
+    buttonValue: "R1 1B / BUILD / 0.5M LAND RECLAMATION",
     activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 1.15 LAND RECLAMATION
   [ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 1.15 LAND RECLAMATION",
+    buttonValue: "R1 1B / BUILD / 1.15M LAND RECLAMATION",
     activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 2 LAND RECLAMATION
   [ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 2 LAND RECLAMATION",
+    buttonValue: "R1 1B / BUILD / 2M LAND RECLAMATION",
     activityType: ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 0.5 SEAWALL
   [ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 1B / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL
   },
   // R1 1B / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 1B / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL
   },
   // R1 1B / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1B / BUILD / 2 SEA WALL",
+    buttonValue: "R1 1B / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL
   },
   // R1 1A / BUILD PLANT MANGROVES
@@ -94,42 +94,42 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 0.5 LAND RECLAMATION",
+    buttonValue: "R1 1A / BUILD / 0.5M LAND RECLAMATION",
     activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 1.15 LAND RECLAMATION
   [ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 1.15 LAND RECLAMATION",
+    buttonValue: "R1 1A / BUILD / 1.15M LAND RECLAMATION",
     activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 2 Land Reclamation
   [ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 2 Land Reclamation",
+    buttonValue: "R1 1A / BUILD / 2M Land Reclamation",
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 0.5 SEAWALL
   [ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 1A / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL
   },
   // R1 1A / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 1A / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL
   },
   // R1 1A / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 1A / BUILD / 2 SEA WALL",
+    buttonValue: "R1 1A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL
   },
   // R1 2B / BUILD PLANT MANGROVES
@@ -143,42 +143,42 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 0.5 STORM SURGE BARRIER",
+    buttonValue: "R1 2B / BUILD / 0.5M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER
   },
   // R1 2B / BUILD / 1.15 STORM SURGE BARRIER
   [ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 1.15 STORM SURGE BARRIER",
+    buttonValue: "R1 2B / BUILD / 1.15M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER
   },
   // R1 2B / BUILD / 2 STORM SURGE BARRIER
   [ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 2 STORM SURGE BARRIER",
+    buttonValue: "R1 2B / BUILD / 2M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER
   },
   // R1 2B / BUILD / 0.5 SEAWALL
   [ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 2B / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL
   },
   // R1 2B / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 2B / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL
   },
   // R1 2B / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2B / BUILD / 2 SEA WALL",
+    buttonValue: "R1 2B / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL
   },
   // R1 2A / BUILD PLANT MANGROVES
@@ -192,42 +192,42 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 0.5 STORM SURGE BARRIER",
+    buttonValue: "R1 2A / BUILD / 0.5M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER
   },
   // R1 2A / BUILD / 1.15 STORM SURGE BARRIER
   [ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 1.15 STORM SURGE BARRIER",
+    buttonValue: "R1 2A / BUILD / 1.15M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER
   },
   // R1 2A / BUILD / 2 STORM SURGE BARRIER
   [ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 2 STORM SURGE BARRIER",
+    buttonValue: "R1 2A / BUILD / 2M STORM SURGE BARRIER",
     activityType: ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER
   },
   // R1 2A / BUILD / 0.5 SEAWALL
   [ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 2A / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL
   },
   // R1 2A / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 2A / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL
   },
   // R1 2A / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 2A / BUILD / 2 SEA WALL",
+    buttonValue: "R1 2A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL
   },
   // R1 3A / BUILD ARTIFICIAL REEF
@@ -241,21 +241,21 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3A / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 3A / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL
   },
   // R1 3A / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3A / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 3A / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL
   },
   // R1 3A / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3A / BUILD / 2 SEA WALL",
+    buttonValue: "R1 3A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL
   },
   // R1 3B / BUILD ARTIFICIAL REEF
@@ -269,73 +269,83 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   [ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3B / BUILD / 0.5 SEAWALL",
+    buttonValue: "R1 3B / BUILD / 0.5M SEAWALL",
     activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL
   },
   // R1 3B / BUILD / 1.15 SEA WALL
   [ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3B / BUILD / 1.15 SEA WALL",
+    buttonValue: "R1 3B / BUILD / 1.15M SEA WALL",
     activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL
   },
   // R1 3B / BUILD / 2 SEA WALL
   [ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
-    buttonValue: "R1 3B / BUILD / 2 SEA WALL",
+    buttonValue: "R1 3B / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL
   }
 };
 
 export const SectorsButtonConfig: SectorsButtonConfigType = {
-  [UserSectorEnum.USER_SECTOR_ONE]: [
-    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
-  ],
-  [UserSectorEnum.USER_SECTOR_TWO]: [
-    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
+  [UserSectorEnum.USER_SECTOR_ONE]: {
+    [SectorEnum.SECTOR_A]: [
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
+    ],
+    [SectorEnum.SECTOR_B]: [
+      // SplineTriggersConfig[ActivityTypeEnum.START_GAME],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
+    ]
+  },
+  [UserSectorEnum.USER_SECTOR_TWO]: {
+    [SectorEnum.SECTOR_A]: [
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL],
+    ],
+    [SectorEnum.SECTOR_B]: [
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL],
+    ]
+  },
+  [UserSectorEnum.USER_SECTOR_THREE]: {
+    [SectorEnum.SECTOR_A]: [
+      // SplineTriggersConfig[ActivityTypeEnum.START_GAME],
 
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL],
-  ],
-  [UserSectorEnum.USER_SECTOR_THREE]: [
-    SplineTriggersConfig[ActivityTypeEnum.START_GAME],
-
-    SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
-    SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
-  ]
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],
+    ],
+    [SectorEnum.SECTOR_B]: [
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
+    ]
+  }
 };
 
 export const lobbyStateDefaultValue = {
