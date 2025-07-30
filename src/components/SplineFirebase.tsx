@@ -76,7 +76,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     3 // <-- 3 seconds delay before countdown starts
   );
 
-  const { currentCutScene, canvasCutSceneRef, isSequenceActive } = useCutSceneSequence(progress, gameRoomServiceRef);
+  const { currentCutScene, canvasCutSceneRef, isSequenceActive } = 
+    useCutSceneSequence(progress, gameRoomServiceRef, lobbyState);
   // Main Progress logic
 
   const renderCutScenes = (
