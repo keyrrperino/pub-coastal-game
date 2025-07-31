@@ -286,7 +286,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
                 </>
               ) : (
                 <>
-                  <h1>˗ˏˋ Rouawefnd {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
+                  <h1>˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
                   <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
                 </>
               )
