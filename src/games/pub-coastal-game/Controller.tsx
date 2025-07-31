@@ -4,12 +4,14 @@ import { GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SectorsButtonConfig, 
 import { ActivityLogType, LobbyStateType, NormalizedActivities, SectorEnum, SplineTriggerConfigItem } from '@/lib/types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from '@/lib/enums';
 import clsx from 'clsx';
-import { hasActivityForSubSector, getNormalizeActivities } from '@/lib/utils';
+import { hasActivityForSubSector, getNormalizeActivities, isGameOnGoing } from '@/lib/utils';
 import Modal from './compontents/Modal';
 import LoadingModal from './compontents/LoadingModal';
 import AnimatedTitle from './compontents/AnimatedTitle';
 import AnimatedModal from './compontents/AnimatedModal';
 import LeaderboardModal from './compontents/LeaderboardModal';
+import ProgressBar from './compontents/ProcessBar';
+import { useMainProgress } from '@/components/hooks/useMainProgress';
 
 type PubCoastalGameSplineControllerAppType = {
   sector: string;
@@ -30,9 +32,9 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     values: {},
   });
 
-    // Transform sector slug to SectorsButtonConfig key
-    const getSectorKey = (slug: string) => `user_${slug.replace(/-/g, '_')}`;
-    const [,sectorNumber] = sector.split('-');
+  // Transform sector slug to SectorsButtonConfig key
+  const getSectorKey = (slug: string) => `user_${slug.replace(/-/g, '_')}`;
+  const [,sectorNumber] = sector.split('-');
 
   // Get the config for this sector
   const sectorKey = typeof sector === 'string' ? getSectorKey(sector) as keyof typeof SectorsButtonConfig : '';
@@ -127,25 +129,26 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     }
   }
 
-  const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[], subSector: string) => {
+  const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[], subSector: string, bgColor: string) => {
     const disabled = hasActivityForSubSector(activities ?? [], sectorKey, subSector, lobbyState.round ?? 1);
     return (
       buttonConfigSector.map((btn, idx) => {
         const newButtonValue = btn.buttonValue?.split("/").slice(1).join("");
-        console.log(newButtonValue);
         const isButtonTriggered = normalizeActivities.actions[btn.activityType];
-
-        console.log("isButtonTriggered", isButtonTriggered?.length, btn.activityType);
 
         return <button
           key={"mcp-" + idx}
           disabled={isButtonTriggered?.length > 0 || disabled}
+          style={{
+            backgroundColor: bgColor,
+
+          }}
           className={
             clsx(
               "rounded-[10vh] pl-[2vw] pr-[2vw] bg-white p-[1vw] max-w-[18vw] h-[7vh] leading-[100%]",
               "hover:bg-blue-100 active:bg-blue-400 transition hover:text-[#2f2f2f]",
               "active:text-white disabled:cursor-not-allowed",
-              isButtonTriggered?.length > 0  ? "disabled:bg-blue-200 disabled:text-gray-100" : "disabled:bg-gray-200 disabled:text-gray-400" 
+              isButtonTriggered?.length > 0  ? "disabled:bg-blue-200 disabled:text-[#6EB6FF]" : "disabled:bg-gray-200 disabled:text-gray-400" 
             )
           }
           onClick={() => {
@@ -165,6 +168,8 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
 
       const [,subSector] = subSectorTitle.split(" ");
 
+      console.log(buttonConfigs[sectorValue].stormsurgebarrier, sectorValue, sector)
+
       return (<div key={subSectorTitle} className={clsx(
         `flex flex-col rounded-[1vw] p-[2vw] gap-[4vh]`,
       )}
@@ -175,8 +180,19 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
         <h1 className="
           text-[3.5vw] leading-[0.8] text-center
         ">{subSectorTitle}</h1>
-        <div className="grid grid-cols-2 flex-wrap gap-5">
-          {renderButtons(buttonConfigs[sectorValue], subSector)}
+        <div className="grid grid-cols-3 flex-wrap gap-5 justify-end">
+          <div className="grid grid-cols-1 flex-wrap gap-5">
+            {renderButtons(buttonConfigs[sectorValue].mangroves ?? [], subSector, "rgba(165,245,221,1)")}
+            {renderButtons(buttonConfigs[sectorValue].artificialReef ?? [], subSector, "rgba(165,245,221,1)")}
+          </div>
+          <div className="grid grid-cols-1 flex-wrap gap-5">
+            {renderButtons(buttonConfigs[sectorValue].seawall ?? [], subSector, "rgba(227, 249, 255, 1)")}
+          </div>
+          <div className="grid grid-cols-1 flex-wrap gap-5">
+          {renderButtons(buttonConfigs[sectorValue].stormsurgebarrier ?? [], subSector, "rgba(227, 249, 255, 1)")}
+          {renderButtons(buttonConfigs[sectorValue].reclamation ?? [], subSector, "rgba(255, 234, 207, 1)")}
+          {renderButtons(buttonConfigs[sectorValue].hybrid ?? [], subSector, "rgba(255, 234, 207, 1)")}
+          </div>
         </div>
       </div>);
     });
@@ -238,15 +254,34 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     backgroundRepeat: 'no-repeat',
   }
 
+  const {progress, isStarting} = useMainProgress(
+    30, // countdown seconds
+    lobbyState.gameLobbyStatus,
+    false,
+    lobbyState.countdownStartTime,
+    3 // <-- 3 seconds delay before countdown starts
+  );
+
+  const renderProgressBar = (
+    (isGameOnGoing(lobbyState.gameLobbyStatus) && 
+      <ProgressBar
+        progress={progress}
+        key="lead"
+        round={lobbyState.round}
+        containerClassName="fixed z-10 top-[9vh] left-[30vw] w-[45vw] h-[4vw]"
+      />
+  ));
+
   return (
     <main
         className="min-h-screen bg-gradient-to-b"
         style={mainStyle}
       >
+        {renderProgressBar}
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col items-center gap-4">
             <div className='flex flex-col gap-10'>
-              <div className='flex flex-col items-center justify-center h-screen gap-5'>
+              <div className='flex flex-col items-center justify-center h-screen gap-5 mt-[-10vh]'>
                 {renderScene}
               </div>
             </div>

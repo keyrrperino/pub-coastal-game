@@ -27,10 +27,14 @@ export enum SectorEnum {
   SECTOR_B = "Sector B"
 };
 
+export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' | 'seawall' | 'hybrid' | 'artificialReef';
+
 export type SectorsButtonConfigType = {
-  [key in UserSectorEnum]: {
-    [key in SectorEnum]: SplineTriggerConfigItem[]
-  };
+  [userSector in UserSectorEnum]: {
+    [sector in SectorEnum]: {
+      [group in ButtonGroupKey]?: SplineTriggerConfigItem[];
+    }
+  }
 };
 
 export type GameElementType = {

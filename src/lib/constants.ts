@@ -326,68 +326,100 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
 
 export const SectorsButtonConfig: SectorsButtonConfigType = {
   [UserSectorEnum.USER_SECTOR_ONE]: {
-    [SectorEnum.SECTOR_A]: [
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
-    ],
-    [SectorEnum.SECTOR_B]: [
-      // SplineTriggersConfig[ActivityTypeEnum.START_GAME],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
-    ]
+    [SectorEnum.SECTOR_A]: {
+      mangroves: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES],
+      ],
+      reclamation: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
+      ],
+    },
+    [SectorEnum.SECTOR_B]: {
+      mangroves: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES],
+      ],
+      reclamation: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
+      ],
+    }
   },
   [UserSectorEnum.USER_SECTOR_TWO]: {
-    [SectorEnum.SECTOR_A]: [
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL],
-    ],
-    [SectorEnum.SECTOR_B]: [
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL],
-    ]
+    [SectorEnum.SECTOR_A]: {
+      mangroves: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES],
+      ],
+      stormsurgebarrier: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL],
+      ],
+    },
+    [SectorEnum.SECTOR_B]: {
+      mangroves: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES],
+      ],
+      stormsurgebarrier: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL],
+      ],
+    }
   },
   [UserSectorEnum.USER_SECTOR_THREE]: {
-    [SectorEnum.SECTOR_A]: [
-      // SplineTriggersConfig[ActivityTypeEnum.START_GAME],
-
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],
-
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE],
-    ],
-    [SectorEnum.SECTOR_B]: [
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE],
-      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE],
-    ]
+    [SectorEnum.SECTOR_A]: {
+      artificialReef: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],// ...seawall buttons here if any
+      ],
+      hybrid: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE],
+      ]
+    },
+    [SectorEnum.SECTOR_B]: {
+      artificialReef: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
+      ],
+      seawall: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
+      ],
+      hybrid: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE],
+        SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE],
+      ]
+    }
   }
 };
 

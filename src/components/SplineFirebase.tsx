@@ -206,7 +206,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
         round={lobbyState.round}
         containerClassName="fixed z-10 top-[9vh] left-[30vw]"
       />
-
   )
 
   const resetGame = async () => {
