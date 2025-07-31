@@ -151,7 +151,15 @@ export enum ActivityTypeEnum {
   R1_3B_BUILD_1_15_SEA_WALL = "r1 3b sw 1.15",
 
   // R1 3B / BUILD / 2 SEA WALL
-  R1_3B_BUILD_2_SEA_WALL = "r1 3b sw"
+  R1_3B_BUILD_2_SEA_WALL = "r1 3b sw",
+
+  R1_3A_BUILD_0_5_HYBRID_MEASURE = "r1 3a hb 0.5",
+  R1_3A_BUILD_1_15_HYBRID_MEASURE = "r1 3a hb 1.15",
+  R1_3A_BUILD_2_HYBRID_MEASURE = "r1 3a hb 2",
+
+  R1_3B_BUILD_0_5_HYBRID_MEASURE = "r1 3b hb 0.5",
+  R1_3B_BUILD_1_15_HYBRID_MEASURE = "r1 3b hb 1.15",
+  R1_3B_BUILD_2_HYBRID_MEASURE = "r1 3b hb 2",
 }
 
 export enum GameEnum {
@@ -179,7 +187,7 @@ export enum LobbyStateEnum {
 
 export enum GameLobbyStatus {
   INITIALIZING = "INITIALIZING",
-  PREPAIRING = "PREPAIRING",
+  PREPARING = "PREPARING",
   STARTED = "STARTED",
   ENDED = "ENDED",
   ROUND_ONE_GAME_ENDED = "ROUND_ONE_GAME_ENDED",

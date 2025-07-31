@@ -10,7 +10,7 @@ type UseLobbyPreparationProps = {
 
 export function useLobbyPreparation({ lobbyState, gameRoomServiceRef }: UseLobbyPreparationProps) {
   useEffect(() => {
-    if (lobbyState.gameLobbyStatus === GameLobbyStatus.PREPAIRING) {
+    if (lobbyState.gameLobbyStatus === GameLobbyStatus.PREPARING) {
       const timer = setTimeout(() => {
         // Update the lobby status to STARTED in Firebase
         gameRoomServiceRef.current

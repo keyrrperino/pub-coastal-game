@@ -14,10 +14,10 @@ export function getRandomEffectValue(): number {
   return values[randomIndex];
 }
 
-export function hasActivityForSubSector(activities: ActivityLogType[], userId: string, subSector: string) {
+export function hasActivityForSubSector(activities: ActivityLogType[], userId: string, subSector: string, round: number) {
   return activities.some(
     (a) => {
-      return a.userId === userId && extractSubSector(a.value) === subSector
+      return a.userId === userId && extractSubSector(a.value) === subSector && a.round === round
     }
   );
 }
@@ -47,7 +47,7 @@ export function getCutScenes(minSeaLevel = 0.3, randomizeEffect: number, activit
       .filter((a) => {
         const actSector = userIdToSector[a.userId];
         const actSubSector = extractSubSector(a.value);
-        return actSector === sector && actSubSector === subSector;
+        return a.value && a.value.trim() !== "" && actSector === sector && actSubSector === subSector;
       })
       .slice(-1)[0];
 
@@ -127,12 +127,9 @@ export function calculateOverallScore(
       .filter((a) => {
         const actSector = userIdToSector[a.userId];
         const actSubSector = extractSubSector(a.value);
-        console.log(actSector, actSubSector);
         return a.value && a.value.trim() !== "" && actSector === sector && actSubSector === subSector;
       })
       .slice(-1)[0];
-
-    console.log('activity: ', activity)
 
     let key: string;
     if (activity) {
@@ -148,14 +145,12 @@ export function calculateOverallScore(
 
     const config = sceneSectorConfigurations[key];
 
-    console.log(`${key}: `, config?.score);
     if (config) {
       totalScore += config.score;
     }
   });
 
   // Start from 10,000 and add the (negative) totalScore
-  console.log('totalScore: ', totalScore);
   return 10000 + totalScore;
 }
 

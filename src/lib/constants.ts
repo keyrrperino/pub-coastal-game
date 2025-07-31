@@ -258,6 +258,24 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     buttonValue: "R1 3A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL
   },
+  [ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3A / BUILD / 0.5M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3A / BUILD / 1.15M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3A / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE
+  },
   // R1 3B / BUILD ARTIFICIAL REEF
   [ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF]: {
     state: [],
@@ -285,7 +303,25 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3B / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL
-  }
+  },
+  [ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 0.5M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 1.15M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
 };
 
 export const SectorsButtonConfig: SectorsButtonConfigType = {
@@ -338,12 +374,19 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
       SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
       SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
       SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],
+
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE],
     ],
     [SectorEnum.SECTOR_B]: [
       SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
       SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
       SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
       SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE],
+      SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE],
     ]
   }
 };

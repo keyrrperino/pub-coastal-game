@@ -218,11 +218,8 @@ export class GameRoomService {
 
   async updateLobbyState(lobbyState: LobbyStateType): Promise<void> {
     if (!this.roomId) return;
-
     const lobbyStateRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState`);
-    const newLobbyStateRef = push(lobbyStateRef);
-
-    await set(newLobbyStateRef, lobbyState);
+    await set(lobbyStateRef, lobbyState); // Overwrites the object
   }
 
   async updateLobbyStateKeyValue(key: LobbyStateEnum, value: string | number| boolean | GameLobbyStatus): Promise<void> {

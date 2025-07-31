@@ -67,26 +67,20 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [activities]);
 
   useEffect(() => {
+    console.log("yow: ", countdown);
+
     if (!showRoundEndModal) return;
     if (countdown === 0) {
-      // Start round 2 here!
+
       setShowRoundEndModal(false);
-      // Example: update lobby state to round 2
+
       if (gameRoomServiceRef.current) {
-        gameRoomServiceRef.current.updateLobbyStateKeyValue(
-          LobbyStateEnum.GAME_LOBBY_STATUS,
-          GameLobbyStatus.STARTED // or your actual enum value
-        );
-
-        gameRoomServiceRef.current.updateLobbyStateKeyValue(
-          LobbyStateEnum.COUNTDOWN_START_TIME,
-          Date.now()
-        );
-
-        gameRoomServiceRef.current.updateLobbyStateKeyValue(
-          LobbyStateEnum.ROUND,
-          (lobbyState.round ?? 1) + 1
-        );
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
+        }});
       }
       return;
     }
@@ -123,8 +117,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const { cutSceneStatus, currentCutScene, canvasCutSceneRef, isSequenceActive } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
 
-
   useEffect(() => {
+    console.log(cutSceneStatus);
     if (cutSceneStatus === CutScenesStatusEnum.ENDED) {
       setShowRoundEndModal(true);
       setCountdown(5); // reset countdown

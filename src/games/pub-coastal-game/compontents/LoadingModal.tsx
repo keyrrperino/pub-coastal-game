@@ -67,7 +67,7 @@ function CoastalLoadingSVG() {
           opacity="0.8"
         />
       </svg>
-      <span className="text-[white] text-[5vw] mt-4 font-semibold text-lg">Prepairing...</span>
+      <span className="text-[white] text-[5vw] mt-4 font-semibold text-lg">Preparing...</span>
     </div>
   );
 }
