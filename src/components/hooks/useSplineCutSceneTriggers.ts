@@ -26,8 +26,6 @@ export function useCutSceneSequence(
 
   // List of cutscenes to show
   const [cutScenes, setCutScenes] = useState<CutScenesEnum[]>([]);
-  
-  console.log(cutScenes);
 
   // Start sequence when progress is done
   useEffect(() => {

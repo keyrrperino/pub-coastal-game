@@ -693,6 +693,9 @@ export const subSectors = [
     ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL,
     ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL,
     ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL,
+    ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE,
+    ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE,
+    ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE,
   ]},
   { sector: 3, subSector: "3B", activities: [
     "None",
@@ -700,6 +703,10 @@ export const subSectors = [
     ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL,
     ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL,
     ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL,
+
+    ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE,
+    ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE,
+    ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE,
   ]},
 ];
 

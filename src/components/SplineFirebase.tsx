@@ -58,7 +58,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [coinsLeft, setCoinsLeft] = useState(20); // 1. Add new state
 
   useEffect(() => {
-    const score = calculateOverallScore(activities ?? [], getMeanSeaLevelForRound(lobbyState.round ?? 1), lobbyState.randomizeEffect);
+    const score = calculateOverallScore(activities ?? [], lobbyState.randomizeEffect);
     setTotalScore(score);
 
     const activitiesWithValueCount = (activities ?? []).filter(a => a.value && a.value.trim() !== "").length;
