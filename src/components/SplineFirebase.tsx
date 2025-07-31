@@ -3,13 +3,13 @@ import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { lobbyStateDefaultValue, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig } from "@/lib/constants";
+import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig } from "@/lib/constants";
 import { ActivityTypeEnum, CutScenesEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
-import { calculateOverallScore, getMeanSeaLevelForRound, isGameOnGoing } from "@/lib/utils";
+import { calculateOverallScore, getMeanSeaLevelForRound, getRandomEffectValue, isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
 import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
 import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
@@ -54,8 +54,17 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   );
 
   const [showRoundEndModal, setShowRoundEndModal] = useState(false);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [coinsLeft, setCoinsLeft] = useState(20); // 1. Add new state
+
+  useEffect(() => {
+    if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
+      gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue).then(() => {
+        window.location.reload();
+      });
+    }
+  }, [lobbyState.gameLobbyStatus]);
 
   useEffect(() => {
     const score = calculateOverallScore(activities ?? [], lobbyState.randomizeEffect);
@@ -67,8 +76,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [activities]);
 
   useEffect(() => {
-    console.log("yow: ", countdown);
-
     if (!showRoundEndModal) return;
     if (countdown === 0) {
 
@@ -118,10 +125,13 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
 
   useEffect(() => {
-    console.log(cutSceneStatus);
-    if (cutSceneStatus === CutScenesStatusEnum.ENDED) {
+    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 2) {
       setShowRoundEndModal(true);
       setCountdown(5); // reset countdown
+    }
+
+    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round > 2) {
+      setShowGameOverModal(true);
     }
   }, [cutSceneStatus]);
   // Main Progress logic
@@ -199,6 +209,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
   )
 
+  const resetGame = async () => {
+    await gameRoomServiceRef.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
+    await gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue);
+    window.location.reload(); 
+  }
+
   return (
     <div
       className="fixed inset-0 w-screen h-screen m-0 p-0 bg-black z-0"
@@ -220,8 +236,41 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {showRoundEndModal && 
         <AnimatedModal isOpen={true}>
           <AnimatedTitle>
-          <h1>˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
-          <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
+            <h1>˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
+            <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
+          </AnimatedTitle>
+        </AnimatedModal>
+      }
+
+      {showGameOverModal && 
+        <AnimatedModal isOpen={true}>
+          <AnimatedTitle>
+            {
+              <>
+                <h1>˗ˏˋ Game Over ˎˊ˗</h1>
+                <button
+                  className="
+                    mt-[5vh]
+                    flex items-center justify-center
+                    w-[406px] h-[83px]
+                    pt-[37px] pr-[45px] pb-[37px] pl-[45px]
+                    gap-[10px]
+                    opacity-100
+                    rounded-[500px]
+                    bg-[#DD0046] text-white font-bold text-[48px]
+                    focus:outline-none
+                    transition
+                    hover:bg-[#FF2A6D] active:bg-[#FF4E86]
+                    cursor-pointer
+                  "
+                  onClick={() => {
+                    resetGame();
+                  }}
+                >
+                  Restart
+                </button>
+              </>
+            }
           </AnimatedTitle>
         </AnimatedModal>
       }

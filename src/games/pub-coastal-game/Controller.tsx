@@ -220,6 +220,15 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     </>
   )
 
+  const resetGame = async () => {
+    await gameRoomService.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
+    await gameRoomService.current?.updateLobbyState({
+      ...lobbyStateDefaultValue,
+      gameLobbyStatus: GameLobbyStatus.RESTARTING
+    });
+    window.location.reload(); 
+  }
+
   const mainStyle = isGameStarted ? {
     backgroundColor: "#202020"
   } : {
@@ -249,8 +258,39 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           isOpen={isAnimatedModalOpen}
         >
           <AnimatedTitle>
-          <h1>˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
-          <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
+            {
+              (lobbyState.round ?? 1) > 2 ? (
+                <>
+                  <h1 className="text-[3vh]">˗ˏˋ Game Over ˎˊ˗</h1>
+                  <button
+                    className="
+                      mt-[5vh]
+                      flex items-center justify-center
+                      w-[406px] h-[83px]
+                      pt-[37px] pr-[45px] pb-[37px] pl-[45px]
+                      gap-[10px]
+                      opacity-100
+                      rounded-[500px]
+                      bg-[#DD0046] text-white font-bold text-[48px]
+                      focus:outline-none
+                      transition
+                      hover:bg-[#FF2A6D] active:bg-[#FF4E86]
+                      cursor-pointer
+                    "
+                    onClick={() => {
+                      resetGame();
+                    }}
+                  >
+                    Restart
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h1>˗ˏˋ Rouawefnd {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
+                  <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
+                </>
+              )
+            }
           </AnimatedTitle>
         </AnimatedModal>
       </main>
