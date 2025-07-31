@@ -63,8 +63,6 @@ export function getCutScenes(minSeaLevel = 0.3, randomizeEffect: number, activit
       key = `${sector}_${subSector}_None-${minSeaLevel}-${randomizeEffect}`;
     }
 
-    console.log("key: ", key, sceneSectorConfigurations[key]);
-
     const config = sceneSectorConfigurations[key];
     return config ? config.cutscene : null;
   }).filter((value) => !!value);
@@ -106,4 +104,65 @@ export function getNormalizeActivities(activities: ActivityLogType[] = []): Norm
   }
 
   return normalized;
+}
+
+/**
+ * Calculates the overall score for the round based on activities and configuration.
+ * @param activities Array of ActivityLogType from Firebase.
+ * @param minSeaLevel The mean sea level for the round (e.g., 0.3).
+ * @param randomizeEffect The randomize effect for the round (e.g., 1, 0.5, 2).
+ * @returns The total score for all sub-sectors.
+ */
+export function calculateOverallScore(
+  activities: ActivityLogType[],
+  minSeaLevel: number,
+  randomizeEffect: number
+): number {
+  // For each sub-sector, find the latest activity and get the score
+  let totalScore = 0;
+
+  subSectors.forEach(({ sector, subSector }) => {
+    // Find the latest activity for this sector/subSector
+    const activity = activities
+      .filter((a) => {
+        const actSector = userIdToSector[a.userId];
+        const actSubSector = extractSubSector(a.value);
+        console.log(actSector, actSubSector);
+        return a.value && a.value.trim() !== "" && actSector === sector && actSubSector === subSector;
+      })
+      .slice(-1)[0];
+
+    console.log('activity: ', activity)
+
+    let key: string;
+    if (activity) {
+      const activityType: string = activity.action || "None";
+      if (activityType !== "None") {
+        key = `${sector}_${subSector}_${activityType}-${minSeaLevel}-${randomizeEffect}`;
+      } else {
+        key = `${sector}_${subSector}_None-${minSeaLevel}-${randomizeEffect}`;
+      }
+    } else {
+      key = `${sector}_${subSector}_None-${minSeaLevel}-${randomizeEffect}`;
+    }
+
+    const config = sceneSectorConfigurations[key];
+
+    console.log(`${key}: `, config?.score);
+    if (config) {
+      totalScore += config.score;
+    }
+  });
+
+  // Start from 10,000 and add the (negative) totalScore
+  console.log('totalScore: ', totalScore);
+  return 10000 + totalScore;
+}
+
+export function getMeanSeaLevelForRound(round: number): number {
+  if (round === 1) return 0.3;
+  if (round === 2) return 0.3;
+  if (round === 3) return 0.7;
+  if (round === 4) return 1;
+  return 0.3; // default/fallback
 }

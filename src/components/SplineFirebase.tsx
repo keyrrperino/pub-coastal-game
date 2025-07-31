@@ -9,7 +9,7 @@ import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
-import { isGameOnGoing } from "@/lib/utils";
+import { calculateOverallScore, getMeanSeaLevelForRound, isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
 import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
 import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
@@ -36,6 +36,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     triggerProgress, setTriggerProgress,
     cutScenesStatus, setCutScenesStatus
   } = useInitialize();
+  const [totalScore, setTotalScore] = useState<number>(10000);
   useHideAllTriggers(isLoaded, splineAppRef, lobbyState);
   useLobbyPreparation({ lobbyState, gameRoomServiceRef });
   useSplineLoader(
@@ -54,6 +55,16 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
   const [showRoundEndModal, setShowRoundEndModal] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [coinsLeft, setCoinsLeft] = useState(20); // 1. Add new state
+
+  useEffect(() => {
+    const score = calculateOverallScore(activities ?? [], getMeanSeaLevelForRound(lobbyState.round ?? 1), lobbyState.randomizeEffect);
+    setTotalScore(score);
+
+    const activitiesWithValueCount = (activities ?? []).filter(a => a.value && a.value.trim() !== "").length;
+  const totalCoins = 20;
+  setCoinsLeft(Math.max(totalCoins - activitiesWithValueCount, 0));
+  }, [activities]);
 
   useEffect(() => {
     if (!showRoundEndModal) return;
@@ -102,7 +113,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
 
   const {progress, isStarting} = useMainProgress(
-    30, // countdown seconds
+    30000, // countdown seconds
     lobbyState.gameLobbyStatus,
     triggersLoading,
     lobbyState.countdownStartTime,
@@ -156,9 +167,9 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             Overall budget
           </h1>
           <div className="grid grid-cols-5 gap-2">
-          {Array.from({ length: 20 }).map((_, idx) => (
+          {Array.from({ length: coinsLeft }).map((_, idx) => (
             <img
-              key={idx}
+              key={'coin-' + idx}
               src="/games/pub-coastal-spline/images/coin.svg"
               alt="coin"
               className="w-[3vw] h-[3vw]"
@@ -176,7 +187,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             Overall Score:
           </h1>
           <h2 className="text-right">
-            1000 PTS
+            {totalScore}/10000 PTS
           </h2>
         </div>
       </div>
