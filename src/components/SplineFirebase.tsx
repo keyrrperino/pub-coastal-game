@@ -113,7 +113,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
 
   const {progress, isStarting} = useMainProgress(
-    30000, // countdown seconds
+    30, // countdown seconds
     lobbyState.gameLobbyStatus,
     triggersLoading,
     lobbyState.countdownStartTime,

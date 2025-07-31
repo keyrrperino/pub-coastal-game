@@ -161,8 +161,7 @@ export function calculateOverallScore(
 
 export function getMeanSeaLevelForRound(round: number): number {
   if (round === 1) return 0.3;
-  if (round === 2) return 0.3;
-  if (round === 3) return 0.7;
-  if (round === 4) return 1;
+  if (round === 2) return 0.7;
+  if (round === 3) return 1;
   return 0.3; // default/fallback
 }
