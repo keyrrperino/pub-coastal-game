@@ -74,7 +74,7 @@ export function useCutSceneSequence(
           }
           return idx !== null && idx + 1 < cutScenes.length ? idx + 1 : null
         });
-      }, 500);
+      }, 5000);
 
       return () => clearTimeout(timer);
     } else {
