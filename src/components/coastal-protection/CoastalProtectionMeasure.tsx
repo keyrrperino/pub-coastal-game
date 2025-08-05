@@ -49,7 +49,7 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
 
   return (
     <div
-      className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-5 p-6 min-w-[260px] max-w-[400px] w-auto min-h-[180px] border border-white border-opacity-60 rounded-[32px] bg-white bg-opacity-10`}
+      className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-[20px] py-[20px] px-[30px] min-w-[320px] max-w-[400px] w-auto min-h-[194px] border border-white border-opacity-60 rounded-[26px] bg-white bg-opacity-10`}
       style={{
         opacity: isActive ? 1 : 0.3,
         pointerEvents: isActive ? 'auto' : 'none',

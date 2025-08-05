@@ -28,17 +28,17 @@ const SectorSection: React.FC<SectorSectionProps> = ({
   demolishOption 
 }) => {
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
+    <div className="flex flex-col items-center gap-[25px] w-full">
       <div className={`${styles.novecentoBold} text-[36.8px] font-bold leading-[29.44px] text-center text-white uppercase`}>
         {title}
       </div>
-      <div className="flex flex-row items-start justify-center gap-[48px] w-full mt-4 mb-[32px]">
+      <div className="flex flex-row items-start justify-center gap-[20px] w-full mt-4 mb-[32px]">
         {/* Demolish button and coin below */}
         {demolishOption && (
-          <div className="flex flex-col items-center gap-4 min-w-[135px]">
+          <div className="flex flex-col items-center gap-[11px] min-w-[135px]">
             <button
               onClick={demolishOption.onClick}
-              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-8 border-cyan-300`}
+              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-[8px] border-cyan-300`}
             >
               <div className={`${styles.novecentoBold} text-[20.3px] font-bold leading-[16.24px] text-white uppercase`}>
                 DEMOLISH

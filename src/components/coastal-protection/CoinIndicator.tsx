@@ -8,7 +8,7 @@ interface CoinIndicatorProps {
 
 const CoinIndicator: React.FC<CoinIndicatorProps> = ({ count = 1, direction = 'row' }) => {
   return (
-    <div className={`flex ${direction === 'row' ? 'flex-row' : 'flex-col'} gap-[2px] w-auto items-center`}>
+    <div className={`flex ${direction === 'row' ? 'flex-row' : 'flex-col'} gap-[2px] w-auto items-center`} style={{marginTop: direction === 'row' ? '8px' : '0'}}>
       {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="relative w-[20px] h-[20px]">
           {/* Circle background */}
