@@ -59,17 +59,13 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
     >
       <div className="flex items-center gap-[14.13px] w-full">
         <div 
-          className="flex justify-center items-center w-[36.95px] h-[36.95px] rounded-full"
+          className="flex justify-center items-center w-[36px] h-[36px] rounded-full overflow-hidden"
           style={{ backgroundColor: getIconBgColor() }}
         >
           <img 
             src={getIconSrc()} 
             alt={title}
-            className="w-[43.73px] h-[43.73px] object-cover"
-            style={{ 
-              marginLeft: '-3.08px', 
-              marginTop: '-3.08px' 
-            }}
+            className="w-[36px] h-[36px] object-cover"
           />
         </div>
         <div className="flex flex-col justify-center gap-1">
