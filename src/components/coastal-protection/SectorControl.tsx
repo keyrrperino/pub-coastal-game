@@ -115,7 +115,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
           {/* Top bar: Budget left, Timer right, Hint centered below */}
-          <div className="w-full flex flex-row items-start justify-between mb-4">
+          <div className="w-full flex flex-row items-start justify-between">
             {/* Budget display left */}
             <div className="flex-1 flex items-start justify-start">
               <BudgetDisplay totalCoins={10} />
@@ -126,7 +126,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             </div>
           </div>
           {/* Hint centered below */}
-          <div className="w-full flex flex-row items-center justify-center mb-8">
+          <div className="w-full flex flex-row items-center justify-center">
             <Hint text="HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE" />
           </div>
 
