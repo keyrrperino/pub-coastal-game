@@ -126,9 +126,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             </div>
           </div>
           {/* Hint centered below */}
-          <div className="w-full flex flex-row items-center justify-center">
-            <Hint text="HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE" />
-          </div>
 
           {/* Sector sections - now stacked vertically */}
           <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
