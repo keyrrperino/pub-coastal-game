@@ -1,6 +1,5 @@
 import React from 'react';
 import CoastalProtectionMeasure from './CoastalProtectionMeasure';
-import MeasureOption from './MeasureOption';
 import CoinIndicator from './CoinIndicator';
 import styles from './styles.module.css';
 
@@ -48,7 +47,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
           </div>
         )}
         {/* Measure cards */}
-        <div className="flex flex-row items-start gap-[40px] w-full justify-center">
+        <div className="flex flex-row items-start gap-[25px] w-full justify-center">
           {measures.map((measure, index) => (
             <CoastalProtectionMeasure
               key={index}
