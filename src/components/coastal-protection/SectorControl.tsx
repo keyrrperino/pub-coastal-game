@@ -131,7 +131,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           </div>
 
           {/* Sector sections - now stacked vertically */}
-          <div className="flex flex-col gap-[80px] mt-[48px] w-full items-center">
+          <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
             <SectorSection
               title={sector1AData.title}
               measures={sector1AData.measures.map(measure => ({
