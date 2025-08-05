@@ -3,11 +3,12 @@ import styles from './styles.module.css';
 
 interface CoinIndicatorProps {
   count?: number;
+  direction?: 'row' | 'col';
 }
 
-const CoinIndicator: React.FC<CoinIndicatorProps> = ({ count = 1 }) => {
+const CoinIndicator: React.FC<CoinIndicatorProps> = ({ count = 1, direction = 'row' }) => {
   return (
-    <div className="flex flex-col gap-[2px] w-[20px] items-center">
+    <div className={`flex ${direction === 'row' ? 'flex-row' : 'flex-col'} gap-[2px] w-auto items-center`}>
       {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="relative w-[20px] h-[20px]">
           {/* Circle background */}

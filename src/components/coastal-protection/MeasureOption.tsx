@@ -14,7 +14,7 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
   onClick 
 }) => {
   return (
-    <div className="flex items-center gap-[5.91px]">
+    <div className="flex flex-col items-center gap-[6px]">
       <button
         onClick={onClick}
         className="flex flex-col justify-center items-center gap-3 p-[50.63px] w-[76px] h-[76px]"
@@ -32,7 +32,7 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
         </div>
       </button>
       
-      <CoinIndicator count={coinCount} />
+      <CoinIndicator count={coinCount} direction="row" />
     </div>
   );
 };

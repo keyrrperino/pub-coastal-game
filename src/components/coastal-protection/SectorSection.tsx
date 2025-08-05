@@ -44,7 +44,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
                 DEMOLISH
               </div>
             </button>
-            <CoinIndicator count={demolishOption.coinCount} />
+            <CoinIndicator count={demolishOption.coinCount} direction="row" />
           </div>
         )}
         {/* Measure cards */}
