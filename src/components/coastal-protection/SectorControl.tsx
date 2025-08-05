@@ -131,13 +131,44 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
             <SectorSection
               title={sector1AData.title}
-              measures={sector1AData.measures.map(measure => ({
-                ...measure,
-                options: measure.options.map(option => ({
-                  ...option,
-                  onClick: () => handleMeasureClick(measure.title, option.title),
-                })),
-              }))}
+              measures={[
+                ...sector1AData.measures
+                  .filter(m => m.type === 'mangroves')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+                ...sector1AData.measures
+                  .filter(m => m.type === 'seawall')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+                ...sector1AData.measures
+                  .filter(m => m.type === 'land-reclamation')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+              ]}
               demolishOption={{
                 ...sector1AData.demolishOption,
                 onClick: () => handleDemolishClick(sector1AData.title),
@@ -145,13 +176,44 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             />
             <SectorSection
               title={sector1BData.title}
-              measures={sector1BData.measures.map(measure => ({
-                ...measure,
-                options: measure.options.map(option => ({
-                  ...option,
-                  onClick: () => handleMeasureClick(measure.title, option.title),
-                })),
-              }))}
+              measures={[
+                ...sector1BData.measures
+                  .filter(m => m.type === 'mangroves')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+                ...sector1BData.measures
+                  .filter(m => m.type === 'seawall')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+                ...sector1BData.measures
+                  .filter(m => m.type === 'land-reclamation')
+                  .map(measure => ({
+                    ...measure,
+                    options: measure.options
+                      .slice()
+                      .sort((a, b) => a.coinCount - b.coinCount)
+                      .map(option => ({
+                        ...option,
+                        onClick: () => handleMeasureClick(measure.title, option.title),
+                      })),
+                  })),
+              ]}
               demolishOption={{
                 ...sector1BData.demolishOption,
                 onClick: () => handleDemolishClick(sector1BData.title),
