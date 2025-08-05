@@ -11,13 +11,15 @@ interface CoastalProtectionMeasureProps {
     coinCount: number;
     onClick?: () => void;
   }>;
+  isActive?: boolean;
 }
 
 const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
   title,
   subtitle,
   icon,
-  options
+  options,
+  isActive = true
 }) => {
   const getIconSrc = () => {
     switch (icon) {
@@ -46,10 +48,18 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
   };
 
   return (
-    <div className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-5 p-5 w-full`}>
-      <div className="flex items-center gap-[14.13px]">
+    <div
+      className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-5 p-6 w-[260px] min-h-[180px] border border-white border-opacity-60 rounded-[32px] bg-white bg-opacity-10`}
+      style={{
+        opacity: isActive ? 1 : 0.3,
+        pointerEvents: isActive ? 'auto' : 'none',
+        filter: isActive ? 'none' : 'grayscale(0.7)',
+        transition: 'opacity 0.3s, filter 0.3s'
+      }}
+    >
+      <div className="flex items-center gap-[14.13px] w-full">
         <div 
-          className="flex justify-center items-center w-[36.95px] h-[36.95px] rounded-[274.64px]"
+          className="flex justify-center items-center w-[36.95px] h-[36.95px] rounded-full"
           style={{ backgroundColor: getIconBgColor() }}
         >
           <img 
@@ -62,20 +72,18 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
             }}
           />
         </div>
-        
         <div className="flex flex-col justify-center gap-1">
-          <div className={`${styles.novecentoBold} text-[22.07px] font-bold leading-[17.66px] text-white`}>
+          <div className={`${styles.novecentoBold} text-[22.07px] font-bold leading-[17.66px] text-white uppercase`}>
             {title}
           </div>
           {subtitle && (
-            <div className={`${styles.novecentoBold} text-[12px] font-bold leading-[9.6px] text-white`}>
+            <div className={`${styles.novecentoBold} text-[12px] font-bold leading-[9.6px] text-white uppercase`}>
               {subtitle}
             </div>
           )}
         </div>
       </div>
-      
-      <div className="flex flex-col justify-center gap-[16.05px] w-full">
+      <div className="flex flex-row justify-center gap-[16.05px] w-full mt-2">
         {options.map((option, index) => (
           <MeasureOption
             key={index}

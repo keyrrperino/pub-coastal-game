@@ -119,19 +119,24 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
-        {/* Timer and Hint */}
-        <div className="absolute top-[51.5px] left-[285.86px] flex flex-col gap-4">
-          <Timer initialSeconds={30} onTimeUp={handleTimeUp} />
+        {/* Top bar: Budget left, Timer right, Hint centered below */}
+        <div className="w-full flex flex-row items-start justify-between mb-4">
+          {/* Budget display left */}
+          <div className="flex-1 flex items-start justify-start">
+            <BudgetDisplay totalCoins={10} />
+          </div>
+          {/* Timer right */}
+          <div className="flex-1 flex items-start justify-end">
+            <Timer initialSeconds={30} onTimeUp={handleTimeUp} />
+          </div>
+        </div>
+        {/* Hint centered below */}
+        <div className="w-full flex flex-row items-center justify-center mb-8">
           <Hint text="HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE" />
         </div>
-        
-        {/* Budget display */}
-        <div className="absolute top-[38px] left-[19.89px]">
-          <BudgetDisplay totalCoins={20} />
-        </div>
-        
-        {/* Sector sections */}
-        <div className="flex gap-[60px] mt-[224.96px]">
+
+        {/* Sector sections - now stacked vertically */}
+        <div className="flex flex-col gap-[80px] mt-[48px] w-full items-center">
           <SectorSection
             title={sector1AData.title}
             measures={sector1AData.measures.map(measure => ({
@@ -146,7 +151,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
               onClick: () => handleDemolishClick(sector1AData.title)
             }}
           />
-          
           <SectorSection
             title={sector1BData.title}
             measures={sector1BData.measures.map(measure => ({

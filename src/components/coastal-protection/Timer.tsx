@@ -27,7 +27,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
   const progressPercentage = (seconds / initialSeconds) * 100;
 
   return (
-    <div className="flex items-center gap-[24px]">
+    <div className="flex items-center gap-6">
       <div 
         className="relative w-[621.14px] h-[53px] rounded-[11.89px] overflow-hidden"
         style={{ backgroundColor: '#FFFFFF' }}
@@ -81,11 +81,11 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
       </div>
       
       <div className="flex items-baseline">
-        <div className={`${styles.novecentoBold} text-[157.81px] font-bold leading-[126.25px] text-white`}
+        <div className={`${styles.novecentoBold} text-[157.81px] font-bold leading-[126.25px] text-white uppercase`}
              style={{ width: '199px', height: '119px' }}>
           {seconds}
         </div>
-        <div className={`${styles.novecentoBold} text-[42.75px] font-bold leading-[34.2px] text-white`}>
+        <div className={`${styles.novecentoBold} text-[42.75px] font-bold leading-[34.2px] text-white uppercase`}>
           s
         </div>
       </div>

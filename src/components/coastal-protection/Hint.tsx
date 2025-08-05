@@ -7,7 +7,7 @@ interface HintProps {
 
 const Hint: React.FC<HintProps> = ({ text }) => {
   return (
-    <div className={`${styles.novecentoBold} text-[20.7px] font-bold leading-[22.77px] text-center max-w-[600px] text-white`}
+    <div className={`${styles.novecentoBold} text-[20.7px] font-bold text-center max-w-[600px] text-white uppercase`}
          style={{ lineHeight: '1.1' }}>
       {text}
     </div>

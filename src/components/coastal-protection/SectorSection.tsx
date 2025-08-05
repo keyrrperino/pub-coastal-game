@@ -1,6 +1,7 @@
 import React from 'react';
 import CoastalProtectionMeasure from './CoastalProtectionMeasure';
 import MeasureOption from './MeasureOption';
+import CoinIndicator from './CoinIndicator';
 import styles from './styles.module.css';
 
 interface SectorSectionProps {
@@ -27,40 +28,38 @@ const SectorSection: React.FC<SectorSectionProps> = ({
   demolishOption 
 }) => {
   return (
-    <div className="flex flex-col items-center gap-[16px]">
-      <div className={`${styles.novecentoBold} text-[36.8px] font-bold leading-[29.44px] text-center text-white`}>
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div className={`${styles.novecentoBold} text-[36.8px] font-bold leading-[29.44px] text-center text-white uppercase`}>
         {title}
       </div>
-      
-      <div className="flex flex-col justify-center items-center gap-[24.99px]">
-        {measures.map((measure, index) => (
-          <CoastalProtectionMeasure
-            key={index}
-            title={measure.title}
-            subtitle={measure.subtitle}
-            icon={measure.type}
-            options={measure.options}
-          />
-        ))}
-        
+      <div className="flex flex-row items-start justify-center gap-[48px] w-full mt-4 mb-[32px]">
+        {/* Demolish button and coin below */}
         {demolishOption && (
-          <div className="flex items-center gap-[12px]">
+          <div className="flex flex-col items-center gap-4 min-w-[135px]">
             <button
               onClick={demolishOption.onClick}
-              className={`${styles.demolishButton} flex flex-col justify-center items-center gap-[12.66px] p-[50.63px] w-[135px] h-[135px] rounded-[200px]`}
+              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-8 border-cyan-300`}
             >
-              <div className={`${styles.novecentoBold} text-[20.3px] font-bold leading-[16.24px] text-white`}>
-                Demolish
+              <div className={`${styles.novecentoBold} text-[20.3px] font-bold leading-[16.24px] text-white uppercase`}>
+                DEMOLISH
               </div>
             </button>
-            
-            <MeasureOption
-              title=""
-              coinCount={demolishOption.coinCount}
-              onClick={demolishOption.onClick}
-            />
+            <CoinIndicator count={demolishOption.coinCount} />
           </div>
         )}
+        {/* Measure cards */}
+        <div className="flex flex-row items-start gap-[40px] w-full justify-center">
+          {measures.map((measure, index) => (
+            <CoastalProtectionMeasure
+              key={index}
+              title={measure.title}
+              subtitle={measure.subtitle}
+              icon={measure.type}
+              options={measure.options}
+              isActive={index === 0} // Only the first measure is active for now
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
