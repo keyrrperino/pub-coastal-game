@@ -113,7 +113,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
-        <div className="w-full max-w-[1180px] mx-auto px-4">
+        <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
           {/* Top bar: Budget left, Timer right, Hint centered below */}
           <div className="w-full flex flex-row items-start justify-between mb-4">
             {/* Budget display left */}
