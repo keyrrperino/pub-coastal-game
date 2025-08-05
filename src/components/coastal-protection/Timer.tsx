@@ -65,8 +65,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
       {/* Timer value */}
       <div className="flex items-baseline ml-4">
         <div
-          className={`${styles.novecentoBold} text-[120px] font-bold leading-[1] text-white uppercase`}
-          style={{ minWidth: 120, textAlign: 'right' }}
+          className={`${styles.novecentoBold} text-[120px] font-bold leading-[1] text-white uppercase w-[150px] text-right`}
         >
           {seconds}
         </div>
