@@ -31,7 +31,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
       <div className={`${styles.novecentoBold} text-[36.8px] font-bold leading-[29.44px] text-center text-white uppercase`}>
         {title}
       </div>
-      <div className="flex flex-row items-start justify-center gap-[20px] w-full mt-4 mb-[32px]">
+      <div className="flex flex-row items-center justify-center gap-[20px] w-full mt-4 mb-[32px]">
         {/* Demolish button and coin below */}
         {demolishOption && (
           <div className="flex flex-col items-center gap-[11px] min-w-[135px]">
