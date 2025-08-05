@@ -82,12 +82,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       setShowRoundEndModal(false);
 
       if (gameRoomServiceRef.current) {
-        gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-          [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
-        }});
+        // gameRoomServiceRef.current.updateLobbyState({
+        //   ...lobbyState, ...{
+        //     [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+        //   [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+        //   [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
+        // }});
       }
       return;
     }
@@ -121,7 +121,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     3 // <-- 3 seconds delay before countdown starts
   );
 
-  const { cutSceneStatus, currentCutScene, canvasCutSceneRef, isSequenceActive } = 
+  const { cutSceneStatus, currentCutScene, isSequenceActive } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
 
   useEffect(() => {
@@ -143,15 +143,19 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           className="fixed inset-0 w-screen h-screen m-0 p-0 bg-black z-10"
           style={{ opacity: 1 }}
         >
-          <canvas
-            ref={canvasCutSceneRef}
+          <video
+            src={`/games/pub-coastal-spline/flash-reports/videos/${currentCutScene}.webm`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls={false}
             className="fixed w-full h-full m-0 p-0 z-10"
-            style={{ borderRadius: 0, border: "none", display: "block" }}
           />
           {/* Frame Overlay */}
           <div className="fixed inset-0 z-20 flex items-center justify-center h-[100vh]">
             <img
-              src={`/games/pub-coastal-spline/flash-reports/${currentCutScene}.png`}
+              src={`/games/pub-coastal-spline/flash-reports/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1`}
               className="pointer-events-none"
               // style={{ objectFit: "" }}
               alt="Frame Overlay"

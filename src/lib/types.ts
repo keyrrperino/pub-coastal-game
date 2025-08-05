@@ -1,5 +1,6 @@
 import {
   ActivityTypeEnum,
+  CutScenesEnum,
   GameLobbyStatus,
   LobbyStateEnum,
   UserSectorEnum
@@ -82,3 +83,5 @@ export type NormalizedActivities = {
   rounds: { [round: string]: ActivityLogType[] };
   values: { [value: string]: ActivityLogType[] };
 };
+
+export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum } };

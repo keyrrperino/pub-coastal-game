@@ -21,7 +21,6 @@ export function useCutSceneSequence(
   const [currentCutSceneIndex, setCurrentCutSceneIndex] = useState<number | null>(null);
   const [currentCutScene, setCurrentCutScene] = useState<CutScenesEnum | null>(null);
   const [cutSceneStatus, setCutScenesStatus] = useState<CutScenesStatusEnum>(CutScenesStatusEnum.NOT_YET_STARTED);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const splineAppRef = useRef<Application | null>(null);
 
   // List of cutscenes to show
@@ -57,13 +56,6 @@ export function useCutSceneSequence(
       }
 
       // Load new Spline scene
-      if (canvasRef.current) {
-        const app = new Application(canvasRef.current);
-        app.load(splineCutScenesUrls[cutScenes[currentCutSceneIndex]]).then(() => {
-          splineAppRef.current = app;
-        });
-      }
-
       // Set up timer for next scene
       const timer = setTimeout(() => {
         setCurrentCutSceneIndex((idx) => {
@@ -98,7 +90,6 @@ export function useCutSceneSequence(
 
   return {
     currentCutScene,
-    canvasCutSceneRef: canvasRef,
     isSequenceActive: currentCutSceneIndex !== null,
     currentCutSceneIndex,
     cutSceneStatus
