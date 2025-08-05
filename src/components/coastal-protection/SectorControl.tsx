@@ -96,10 +96,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Background with blur effect */}
       <div 
-        className="absolute inset-0 w-[2098px] h-[1001px]"
+        className="absolute inset-0 w-full h-full"
         style={{ 
-          left: '-452px', 
-          top: '-84px',
           backgroundImage: 'url(/assets/background-image.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -109,10 +107,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       {/* Dark overlay */}
       <div 
-        className="absolute inset-0 w-[1274px] h-[892px]"
+        className="absolute inset-0 w-full h-full"
         style={{ 
-          left: '-40px', 
-          top: '-20px',
           backgroundColor: 'rgba(51, 92, 143, 0.6)'
         }}
       />
