@@ -79,7 +79,7 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
           )}
         </div>
       </div>
-      <div className="flex flex-row justify-center gap-[5.91px] w-full mt-2">
+      <div className="flex flex-row justify-center gap-[16.05px] w-full mt-2">
         {options.map((option, index) => (
           <MeasureOption
             key={index}

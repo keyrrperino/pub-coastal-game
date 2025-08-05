@@ -54,30 +54,24 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
           }}
         />
         
-        {/* Circle indicator */}
-        <div 
-          className="absolute w-[33.19px] h-[33.19px] rounded-full border-[3.96px] border-black transition-all duration-1000 ease-linear"
-          style={{ 
-            left: `${20.31 + (532.48 * progressPercentage) / 100 - 16.595}px`, 
-            top: '9.91px'
+        {/* Fixed clock icon (SVG) */}
+        <svg
+          width="33.19"
+          height="33.19"
+          viewBox="0 0 34 35"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            position: 'absolute',
+            left: '20.31px',
+            top: '9.91px',
+            pointerEvents: 'none',
           }}
-        />
-        
-        {/* Pause lines */}
-        <div 
-          className="absolute w-[3.96px] h-[9.41px] bg-black transition-all duration-1000 ease-linear"
-          style={{ 
-            left: `${34.67 + (532.48 * progressPercentage) / 100 - 16.595}px`, 
-            top: '18.33px'
-          }}
-        />
-        <div 
-          className="absolute w-[7.93px] h-[3.96px] bg-black transition-all duration-1000 ease-linear"
-          style={{ 
-            left: `${34.67 + (532.48 * progressPercentage) / 100 - 16.595}px`, 
-            top: '25.76px'
-          }}
-        />
+        >
+          <circle cx="16.7614" cy="17.5001" r="14.6122" stroke="black" strokeWidth="3.96262" />
+          <rect x="14.5332" y="9.32715" width="3.96262" height="9.41121" fill="black" />
+          <rect x="22.458" y="16.7571" width="3.96262" height="7.92523" transform="rotate(90 22.458 16.7571)" fill="black" />
+        </svg>
       </div>
       
       <div className="flex items-baseline">
