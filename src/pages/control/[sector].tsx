@@ -3,7 +3,7 @@ import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import Error from 'next/error';
 
-const ControllerWithoutSSR = dynamic(() => import("@/games/pub-coastal-game/Controller"), { ssr: false });
+const SectorControl = dynamic(() => import("@/components/coastal-protection/SectorControl"), { ssr: false });
 
 export async function getStaticPaths() {
   return {
@@ -40,7 +40,7 @@ export default function SectorPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <ControllerWithoutSSR sector={sector as string} />
+      <SectorControl sector={sector as string} />
     </>
   );
 }
