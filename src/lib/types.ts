@@ -85,4 +85,4 @@ export type NormalizedActivities = {
   values: { [value: string]: ActivityLogType[] };
 };
 
-export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum } };
+export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum | null } };
