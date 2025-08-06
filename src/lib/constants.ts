@@ -543,7 +543,7 @@ export enum FlashReportDataEnum {
 export enum FlashReportDataKeyEnum {
   ZERO_POINT_THREE = 0.3,
   ZERO_POINT_SEVEN = 0.7,
-  ONE = 1,
+  ONE_POINT_ONE_FIVE = 1.15,
 }
 
 export enum RandomizeEffectsEnum {
@@ -698,7 +698,7 @@ export const flashReportDataMapping = {
   },
   // ROUND 2
   [FlashReportDataKeyEnum.ZERO_POINT_SEVEN]: null,
-  [FlashReportDataKeyEnum.ONE]: null
+  [FlashReportDataKeyEnum.ONE_POINT_ONE_FIVE]: null
 };
 
 export const subSectors = [
@@ -769,6 +769,7 @@ export const subSectors = [
 
 
 export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
+  // Sector 1A
   // None
   "1_1A_None-0.3-1": { score: -30, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
   "1_1A_None-0.3-0.5": { score: -20, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
@@ -955,9 +956,30 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3B_2 },
 };
 
-export const roundTwoAndThreeScenarioConfiguration: ScenarioConfigurationType = {
-  "1_1A_None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
-  "1_1A_None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
+  "1_1A_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+  "1_1A_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 2 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -25, cutscene: CutScenesEnum.R1_1A_0, coin: 2 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-0.7-2`]: { score: -140, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 4 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-0.7-2`]: { score: -25, cutscene: CutScenesEnum.R1_1A_0, coin: 4 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 5 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 5 },
 
   // Seawall 0.5 No uprades
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
@@ -1026,8 +1048,29 @@ export const roundTwoAndThreeScenarioConfiguration: ScenarioConfigurationType = 
 
 
   // SECTOR 1B
-  "1_1B_None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_1B_0, coin: 0 },
-  "1_1B_None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_1B_0, coin: 0 },
+  "1_1B_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+  "1_1B_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 2 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -25, cutscene: CutScenesEnum.R1_1B_0, coin: 2 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-0.7-2`]: { score: -140, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 4 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-0.7-2`]: { score: -25, cutscene: CutScenesEnum.R1_1B_0, coin: 4 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 5 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 5 },
 
   // Seawall 0.5 No uprades
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
@@ -1094,27 +1137,928 @@ export const roundTwoAndThreeScenarioConfiguration: ScenarioConfigurationType = 
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-0.7-2`]: { score: -140, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
 
 
-  "2_2A_None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
-  "2_2A_None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+  // SECTOR 2A
+  "2_2A_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  "2_2A_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
 
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-0.7-1`]: { score: -70, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
-  [`1_1A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-None-0.7-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-0.7-2`]: { score: -150, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
 
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-1`]: { score: -20, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-2`]: { score: -100, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
 
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-0.7-1`]: { score: 0, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-0.7-2`]: { score: 0, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
 
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_2A_0, coin: 5 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_2A_0, coin: 5 },
 
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
-  [`1_1A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, coin: 5, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_2A_0, coin: 1 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_2A_0, coin: 1 },
+  
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 2 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_2A_0, coin: 2 },
 
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+  
+  // Seawall 0.5 No uprades
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: -100, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-None-0.7-2`]: { score: -100, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -20, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -100, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: -35, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -35, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-None-0.7-1`]: { score: -70, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-None-0.7-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Sector 2B
+  "2_2B_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  "2_2B_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-0.7-2`]: { score: -150, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 5 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 5 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_2B_0, coin: 1 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_2B_0, coin: 1 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: -100, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-None-0.7-2`]: { score: -100, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -20, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -100, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: -35, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -35, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-None-0.7-1`]: { score: -70, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-None-0.7-2`]: { score: -140, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  // Sector 3A
+  "3_3A_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_3A_0, coin: 0 },
+  "3_3A_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_3A_0, coin: 0 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-0.7-2`]: { score: -150, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-None-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) upgrades
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (2m) upgrades
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (0.5m) upgrades
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-None-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (1.15m) upgrades
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (2m) upgrades
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+
+  // Sector 3B
+  "3_3B_None-None-0.7-1": { score: -70, cutscene: CutScenesEnum.R1_3B_0, coin: 0 },
+  "3_3B_None-None-0.7-2": { score: -150, cutscene: CutScenesEnum.R1_3B_0, coin: 0 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-0.7-2`]: { score: -150, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+
+  // Artificial Reef Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_DEMOLISH_ARTIFICIAL_REEF}-0.7-1`]: { score: -10, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-None-0.7-1`]: { score: -70, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-None-0.7-2`]: { score: -150, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  // Hybrid Measure (0.5m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-None-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: -80, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: -15, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (2m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (0.5m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-None-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-None-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: -20, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -100, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (1.15m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: -35, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (2m) Upgrades
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-None-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
 };
+
+export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
+  // SECTOR 1A
+  "1_1A_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+  "1_1A_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 2 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R1_1A_0, coin: 2 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R1_1A_0, coin: 1 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R1_1A_0, coin: 3 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 4 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R1_1A_0, coin: 4 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 5 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R1_1A_0, coin: 5 },
+
+  // Seawall 0.5 No upgrades
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 0.5 -> 1.15
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 0.5 -> 2
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 0.5 -> Build promenade
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -75, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -160, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 1.15 No upgrades
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -85, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 1.15 -> 2
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 1.15 -> Build promenade
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -95, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 2 No upgrades
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall 2 -> Build promenade
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (0.5m) -> None
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (1.15m) -> None
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-1.15-2`]: { score: -85, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (2m) -> None
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (0.5m) -> Build Sea Wall (1.15m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: -35, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (0.5m) -> Build Sea Wall (2m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (1.15m) -> Build Sea Wall (1.15m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (1.15m) -> Build Sea Wall (2m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (2m) -> Build Sea Wall (1.15m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Land Reclamation (2m) -> Build Sea Wall (2m)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> None
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: -115, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-None-1.15-2`]: { score: -200, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Build mangrove board walk
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-1`]: { score: -115, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-2`]: { score: -200, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Remove
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-Remove-1.15-1`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-Remove-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  // SECTOR 1B
+  "1_1B_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+  "1_1B_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R1_1A_0, coin: 0 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: -10, cutscene: CutScenesEnum.R1_1B_0, coin: 2 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R1_1B_0, coin: 2 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-1`]: { score: -10, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-2`]: { score: -10, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R1_1B_0, coin: 1 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R1_1B_0, coin: 3 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 4 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R1_1B_0, coin: 4 },
+
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 5 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R1_1B_0, coin: 5 },
+
+  // Seawall 0.5 No upgrades
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 0.5 -> 1.15
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 0.5 -> 2
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-1`]: { score: -10, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-2`]: { score: -10, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 0.5 -> Build bike path
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: -75, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -160, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 1.15 No upgrades
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 1.15 -> 2
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-1.15-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 1.15 -> Build bike path
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 2 No upgrades
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Seawall 2 -> Build bike path
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (0.5m) -> None
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (1.15m) -> None
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-None-1.15-2`]: { score: -85, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (2m) -> None
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (0.5m) -> Build Sea Wall (1.15m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: -35, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (0.5m) -> Build Sea Wall (2m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (1.15m) -> Build Sea Wall (1.15m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (1.15m) -> Build Sea Wall (2m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (2m) -> Build Sea Wall (1.15m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Land Reclamation (2m) -> Build Sea Wall (2m)
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Mangroves -> None
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: -115, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-1.15-2`]: { score: -200, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Mangroves -> Build mangrove board walk
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-1`]: { score: -115, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-2`]: { score: -200, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+
+  // Mangroves -> Remove
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-Remove-1.15-1`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-Remove-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+
+
+
+  // SECTOR 2A
+  "2_2A_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  "2_2A_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_2A_0, coin: 0 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 5 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 5 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_2A_0, coin: 1 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_2A_0, coin: 1 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 2 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_2A_0, coin: 2 },
+
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+  [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_0, coin: 3 },
+
+  // Coastal Barrier (0.5m) -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Coastal Barrier (0.5m) -> Demolish
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-Demolish-1.15-1`]: { score: -30, coin: 6, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Coastal Barrier (2m) -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_2A_0 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_2A_0 },
+
+  // Coastal Barrier (2m) -> Demolish
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER}-Demolish-1.15-1`]: { score: -50, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Raise to 1.15m
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Raise to 2m
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Build promenade
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -65, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -150, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -85, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> Raise to 2m
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> Build promenade
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (2m) -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (2m) -> Build promenade
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> None
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: -115, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-None-1.15-2`]: { score: -200, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Build mangrove board walk
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-1`]: { score: -115, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-2`]: { score: -200, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Remove
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-Remove-1.15-1`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES}-Remove-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+
+  // SECTOR 2B
+  "2_2B_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  "2_2B_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_2B_0, coin: 0 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 5 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 5 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_2B_0, coin: 1 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_2B_0, coin: 1 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+  [`2_2B_None-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 3 },
+
+  // Coastal Barrier (0.5m) -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Coastal Barrier (0.5m) -> Demolish
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER}-Demolish-1.15-1`]: { score: -30, coin: 6, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Coastal Barrier (2m) -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_2B_0 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_2B_0 },
+
+  // Coastal Barrier (2m) -> Demolish
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER}-Demolish-1.15-2`]: { score: -50, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Raise to 1.15m
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Raise to 2m
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (0.5m) -> Build promenade
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -65, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -150, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -85, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> Raise to 2m
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (1.15m) -> Build promenade
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -85, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (2m) -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Seawall (2m) -> Build promenade
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> None
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: -115, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-None-1.15-2`]: { score: -200, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Build mangrove board walk
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-1`]: { score: -115, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK}-1.15-2`]: { score: -200, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+
+  // Mangroves -> Remove
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-Remove-1.15-1`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES}-Remove-1.15-2`]: { score: -10, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  
+  
+  // SECTOR 3A
+  "3_3A_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R1_3A_0, coin: 0 },
+  "3_3A_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R1_3A_0, coin: 0 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 3 },
+
+  // Artificial Reef -> Demolish
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-Demolish-1.15-1`]: { score: -10, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Artificial Reef -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Artificial Reef -> Build Rocky Revetment Behind Reef (1.15m)
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Artificial Reef -> Build Rocky Revetment Behind Reef (2m)
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_2B_0, coin: 2 },
+
+  // Hybrid Measure (0.5m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-None-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-None-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Hybrid Measure (0.5m) -> Raise Revetment to 1.15m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (0.5m) -> Raise Revetment to 2m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  // Hybrid Measure (0.5m) -> Add a bike path
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-1.15-1`]: { score: 20, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Hybrid Measure (1.15m) -> Raise Revetment to 2m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) -> Add a bike path
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Hybrid Measure (2m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-None-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Hybrid Measure (2m) -> Add a bike path
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (0.5m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Seawall (0.5m) -> Raise to 1.15m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (0.5m) -> Raise to 2m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 2 },
+
+  // Seawall (0.5m) -> Build a promenade
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (1.15m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Seawall (1.15m) -> Raise to 2m
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (1.15m) -> Build a promenade
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+  // Seawall (2m) -> None
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 0 },
+
+  // Seawall (2m) -> Build a promenade
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
+
+  // SECTOR 3B
+  "3_3B_None-None-1.15-1": { score: -115, cutscene: CutScenesEnum.R1_3B_0, coin: 0 },
+  "3_3B_None-None-1.15-2": { score: -200, cutscene: CutScenesEnum.R1_3B_0, coin: 0 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 3 },
+
+  // Artificial Reef -> Demolish
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-Demolish-1.15-1`]: { score: -10, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Artificial Reef -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-None-1.15-1`]: { score: -115, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-None-1.15-2`]: { score: -200, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Artificial Reef -> Build Rocky Revetment Behind Reef (1.15m)
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Artificial Reef -> Build Rocky Revetment Behind Reef (2m)
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  // Hybrid Measure (0.5m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-None-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-None-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Hybrid Measure (0.5m) -> Raise Revetment to 1.15m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (0.5m) -> Raise Revetment to 2m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  // Hybrid Measure (0.5m) -> Add a bike path
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: -45, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -130, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Hybrid Measure (1.15m) -> Raise Revetment to 2m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (1.15m) -> Add a bike path
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Hybrid Measure (2m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-None-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Hybrid Measure (2m) -> Add a bike path
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-${ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (0.5m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-None-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-None-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Seawall (0.5m) -> Raise to 1.15m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (0.5m) -> Raise to 2m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 2 },
+
+  // Seawall (0.5m) -> Build a promenade
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: -65, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -150, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (1.15m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-None-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Seawall (1.15m) -> Raise to 2m
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (1.15m) -> Build a promenade
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: -85, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall (2m) -> None
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-None-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 0 },
+
+  // Seawall (2m) -> Build a promenade
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+}
 
 export const sceneSectorConfigurations: ScenarioConfigurationType = {
   ...roundOneScenarioConfiguration,
-  ...roundTwoAndThreeScenarioConfiguration
+  ...roundTwoScenarioConfiguration,
+  ...roundThreeScenarioConfiguration
 }
