@@ -6,6 +6,15 @@ export const ROOM_NAME = "rooms-v2";
 export const GAME_ROUND_TIMER = 30;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
+export const OVERALL_SCORE_POINTS = 10000;
+export const TOTAL_COINS_PER_ROUND = 10;
+
+// export const ROOM_NAME = "rooms-v3";
+// export const GAME_ROUND_TIMER = 5;
+// export const GAME_STARST_IN_COUNTDOWN = 1;
+// export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 1;
+// export const OVERALL_SCORE_POINTS = 2000;
+// export const TOTAL_COINS_PER_ROUND = 10;
 
 export const userIdToSector: Record<string, number> = {
   user_sector_1: 1,
@@ -322,6 +331,158 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
   },
+
+
+  // new need to update
+  [ActivityTypeEnum.R2_1A_BUILD_PROMENADE_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1A_BUILD_MANGROVE_BOARD_WALK]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1A_DEMOLISH_MANGROOVE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2A_BUILD_PROMENADE_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2A_BUILD_MANGROVE_BOARD_WALK]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2A_DEMOLISH_MANGROOVE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1B_BUILD_PROMENADE_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1B_BUILD_MANGROVE_BOARD_WALK]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1B_DEMOLISH_MANGROOVE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2B_BUILD_MANGROVE_BOARD_WALK]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_2B_DEMOLISH_MANGROOVE]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_1A_BUILD_1_15_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+
+  [ActivityTypeEnum.R2_1A_BUILD_2_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+
+  [ActivityTypeEnum.R2_3A_BUILD_1_15_ROCKY_REVETMENT_BEHIND_REEF]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+
+  [ActivityTypeEnum.R2_3A_BUILD_2_ROCKY_REVETMENT_BEHIND_REEF]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+
+  [ActivityTypeEnum.R2_3A_RAISE_1_15_REVETMENT]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+
+  [ActivityTypeEnum.R2_3A_RAISE_2_REVETMENT]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
+  [ActivityTypeEnum.R2_3A_BUILD_PROMENADE_ALONG_THE_SEAWALL]: {
+    state: [],
+    buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
+    events: [SplineEventName.MOUSEUP],
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
+  },
 };
 
 export const SectorsButtonConfig: SectorsButtonConfigType = {
@@ -546,6 +707,12 @@ export enum FlashReportDataKeyEnum {
   ONE_POINT_ONE_FIVE = 1.15,
 }
 
+export enum MeanSeaLevelRiseEnum {
+  ZERO_POINT_THREE = 0.3,
+  ZERO_POINT_SEVEN = 0.7,
+  ONE_POINT_ONE_FIVE = 1.15,
+}
+
 export enum RandomizeEffectsEnum {
   ZERO_POINT_FIVE = 0.5,
   ONE = 1,
@@ -559,17 +726,7 @@ export type GameResultFlashType = {
   meanSeaLevel: number;
 };
 
-
-// format {meanSeaLevel_randomizeEffect_activities}
-export type FlashReportDataMappingType = {
-  [key in FlashReportDataKeyEnum]?: {
-    [key in RandomizeEffectsEnum]?: {
-      [key in ActivityTypeEnum]?: {
-        [key in UserSectorEnum]?: FlashReportDataEnum[] | null
-      } | null
-    } | null
-  } | null
-};
+export const meanSeaLevels = [MeanSeaLevelRiseEnum.ZERO_POINT_THREE, MeanSeaLevelRiseEnum.ZERO_POINT_SEVEN, MeanSeaLevelRiseEnum.ONE_POINT_ONE_FIVE]
 
 export const flashReportData = {
   [FlashReportDataEnum.R1_1A_0]: {
@@ -676,30 +833,6 @@ export const CUTSCENE_SECTOR_ONE_1_2A = [
     ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION
   }`,
 ];
-
-export const flashReportDataMapping = {
-  // ROUND 1
-  [FlashReportDataKeyEnum.ZERO_POINT_THREE]: {
-    [RandomizeEffectsEnum.ONE]: {
-      [UserSectorEnum.USER_SECTOR_ONE]: [FlashReportDataEnum.R1_1A_0, FlashReportDataEnum.R1_1B_0],
-      [UserSectorEnum.USER_SECTOR_TWO]: [FlashReportDataEnum.R1_2A_0, FlashReportDataEnum.R1_2B_0],
-      [UserSectorEnum.USER_SECTOR_THREE]: [FlashReportDataEnum.R1_3A_0, FlashReportDataEnum.R1_3B_0],
-    },
-    [RandomizeEffectsEnum.ZERO_POINT_FIVE]: {
-      [UserSectorEnum.USER_SECTOR_ONE]: [FlashReportDataEnum.R1_1A_1, FlashReportDataEnum.R1_1A_1],
-      [UserSectorEnum.USER_SECTOR_TWO]: [FlashReportDataEnum.R1_2A_1, FlashReportDataEnum.R1_2A_1],
-      [UserSectorEnum.USER_SECTOR_THREE]: [FlashReportDataEnum.R1_3A_1, FlashReportDataEnum.R1_3A_1],
-    },
-    [RandomizeEffectsEnum.TWO]: {
-      [UserSectorEnum.USER_SECTOR_ONE]: FlashReportDataEnum.R1_1A_2,
-      [UserSectorEnum.USER_SECTOR_TWO]: FlashReportDataEnum.R1_2A_2,
-      [UserSectorEnum.USER_SECTOR_THREE]: FlashReportDataEnum.R1_3A_2,
-    }
-  },
-  // ROUND 2
-  [FlashReportDataKeyEnum.ZERO_POINT_SEVEN]: null,
-  [FlashReportDataKeyEnum.ONE_POINT_ONE_FIVE]: null
-};
 
 export const subSectors = [
   { sector: 1, subSector: "1A", activities: [
