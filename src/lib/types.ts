@@ -32,7 +32,7 @@ export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' |
 export type SectorsButtonConfigType = {
   [userSector in UserSectorEnum]: {
     [sector in SectorEnum]: {
-      [group in ButtonGroupKey]: SplineTriggerConfigItem[];
+      [group in ButtonGroupKey]?: SplineTriggerConfigItem[];
     }
   }
 };

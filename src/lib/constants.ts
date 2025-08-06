@@ -1,5 +1,5 @@
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, SplineEventName, UserSectorEnum } from "./enums";
-import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggersConfigType } from "./types";
+import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
 export const ROOM_NAME = "rooms-v2";
@@ -490,96 +490,96 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
     [SectorEnum.SECTOR_A]: {
       mangroves: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       reclamation: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION],
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION],
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     },
     [SectorEnum.SECTOR_B]: {
       mangroves: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       reclamation: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     }
   },
   [UserSectorEnum.USER_SECTOR_TWO]: {
     [SectorEnum.SECTOR_A]: {
       mangroves: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       stormsurgebarrier: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER],
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER],
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     },
     [SectorEnum.SECTOR_B]: {
       mangroves: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       stormsurgebarrier: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER],
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER],
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     }
   },
   [UserSectorEnum.USER_SECTOR_THREE]: {
     [SectorEnum.SECTOR_A]: {
       artificialReef: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL],// ...seawall buttons here if any
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       hybrid: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE],
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE],
         SplineTriggersConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE],
-      ]
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     },
     [SectorEnum.SECTOR_B]: {
       artificialReef: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       seawall: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL],
-      ],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
       hybrid: [
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE],
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE],
         SplineTriggersConfig[ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE],
-      ]
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     }
   }
 };

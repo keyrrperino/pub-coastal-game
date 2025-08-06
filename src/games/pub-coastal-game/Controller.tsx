@@ -232,7 +232,9 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed
         "
         onClick={() => {
-          onButtonClick(SplineTriggersConfig[ActivityTypeEnum.START_GAME])
+          if (SplineTriggersConfig[ActivityTypeEnum.START_GAME]) {
+            onButtonClick(SplineTriggersConfig[ActivityTypeEnum.START_GAME])
+          }
         }}
       >
         Start Game
