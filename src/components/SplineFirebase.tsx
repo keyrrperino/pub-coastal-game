@@ -4,7 +4,7 @@ import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig } from "@/lib/constants";
-import { ActivityTypeEnum, CutScenesEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
+import { GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
@@ -16,6 +16,7 @@ import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
 import { useHideAllTriggers } from "./hooks/useHideAllSplineTriggers";
 import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
+import { usePreparingProgress } from "./hooks/usePreparingProgress";
 
 interface SplineFirebaseProps {
 }
@@ -82,12 +83,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       setShowRoundEndModal(false);
 
       if (gameRoomServiceRef.current) {
-        // gameRoomServiceRef.current.updateLobbyState({
-        //   ...lobbyState, ...{
-        //     [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-        //   [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-        //   [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
-        // }});
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
+        }});
       }
       return;
     }
@@ -114,11 +115,19 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
 
   const {progress, isStarting} = useMainProgress(
-    30, // countdown seconds
+    GAME_ROUND_TIMER, // countdown seconds
     lobbyState.gameLobbyStatus,
     triggersLoading,
     lobbyState.countdownStartTime,
     3 // <-- 3 seconds delay before countdown starts
+  );
+
+  const {progress: progressStartsInCountdown, countdownProgressTimer} = usePreparingProgress(
+    GAME_STARST_IN_COUNTDOWN, // countdown seconds
+    lobbyState.gameLobbyStatus,
+    triggersLoading,
+    lobbyState.countdownPreparationStartTime,
+    2 // <-- 2 seconds delay before countdown starts
   );
 
   const { cutSceneStatus, currentCutScene, isSequenceActive } = 
@@ -212,6 +221,23 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       />
   )
 
+  const renderStartsInCountdownProgressBar = (
+    (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.PREPARING) && 
+      <ProgressBar
+        progress={progressStartsInCountdown}
+        key="startsInCountdown"
+        round={lobbyState.round}
+        containerClassName="fixed z-10 bottom-[15vh] left-[30vw]"
+        countdownProgressTimer={countdownProgressTimer}
+        hasTextCountdown
+        style={{
+          bottom: `${15}vh`,
+          transition: 'bottom 0.6s cubic-bezier(0.4,0,0.2,1)',
+          // ...other styles
+        }}
+      />
+  )
+
   const resetGame = async () => {
     await gameRoomServiceRef.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
     await gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue);
@@ -235,6 +261,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
       {renderScore}
       {renderProgressBar}
+      {renderStartsInCountdownProgressBar}
 
       {showRoundEndModal && 
         <AnimatedModal isOpen={true}>

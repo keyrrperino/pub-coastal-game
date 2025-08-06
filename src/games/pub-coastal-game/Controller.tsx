@@ -105,6 +105,10 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown
       await gameRoomService.current.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
+      gameRoomService.current
+        ?.updateLobbyStateKeyValue(
+          LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME, 
+          Date.now());
     }
   }
 
