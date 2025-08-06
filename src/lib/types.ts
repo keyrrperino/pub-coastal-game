@@ -18,10 +18,9 @@ export type SplineTriggerConfigItem = {
   subTriggers?: ActivityTypeEnum[]
 };
 
-export type SplineTriggersConfigType = {
-  [key in ActivityTypeEnum]: 
-    SplineTriggerConfigItem;
-};
+export type SplineTriggersConfigType = Partial<{
+  [key in ActivityTypeEnum]: SplineTriggerConfigItem;
+}>;
 
 export enum SectorEnum {
   SECTOR_A = "Sector A",
@@ -33,7 +32,7 @@ export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' |
 export type SectorsButtonConfigType = {
   [userSector in UserSectorEnum]: {
     [sector in SectorEnum]: {
-      [group in ButtonGroupKey]?: SplineTriggerConfigItem[];
+      [group in ButtonGroupKey]: SplineTriggerConfigItem[];
     }
   }
 };
@@ -86,3 +85,16 @@ export type NormalizedActivities = {
 };
 
 export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum | null } };
+
+
+export type PlayerBreakdown = {
+  actionsScore: number;
+  coinsSpent: number;
+  scenarios: { key: string; config: any }[];
+};
+
+export type RoundBreakdown = {
+  totalPoints: number;
+  playerBreakdown: Record<string, PlayerBreakdown>; // e.g., "P1", "P2", "P3"
+  roundPoints: number;
+};

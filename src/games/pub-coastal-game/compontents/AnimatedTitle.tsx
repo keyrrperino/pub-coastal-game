@@ -31,7 +31,7 @@ export default function AnimatedTitle({ children }: {children: React.ReactNode;}
   return (
     <div
       ref={ref}
-      className="text-[3vw] font-bold text-center text-white"
+      className="text-[3vw] font-bold text-center text-white flex flex-col items-center"
     >
       {children}
     </div>
