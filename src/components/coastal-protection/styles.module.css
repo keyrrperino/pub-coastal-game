@@ -1,0 +1,35 @@
+.coastalProtectionCard {
+  background: rgba(255, 255, 255, 0.3);
+  border: 2.17px solid rgba(255,255,255,0.6);
+  box-shadow: 0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(17.39px);
+  border-radius: 26.08px;
+  padding: 20px 30px;
+
+  min-height: 194px;
+}
+
+.demolishButton {
+  background: #FF4949;
+  border: 8px solid #00eaff;
+  box-shadow: 0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15);
+}
+
+.coinText {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-shadow: 0px 0.1px 0.1px rgba(193, 129, 0, 1);
+}
+
+.coinTextLarge {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-shadow: 0px 0.22px 0.22px rgba(193, 129, 0, 1);
+}
+
+.novecentoBold {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+}
