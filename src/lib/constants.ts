@@ -157,6 +157,32 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     buttonValue: "R1 1A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL
   },
+  // R1 1A / UPGRADE LAND RECLAMATION TO SEAWALL
+  [ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_1_15]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 1.15M",
+    activityType: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_1_15
+  },
+  [ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_2]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 2M",
+    activityType: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_2
+  },
+  // R1 1B / UPGRADE LAND RECLAMATION TO SEAWALL
+  [ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 1.15M",
+    activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15
+  },
+  [ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 2M",
+    activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2
+  },
   // R1 2B / BUILD PLANT MANGROVES
   [ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES]: {
     state: [],

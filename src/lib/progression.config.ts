@@ -77,6 +77,7 @@ const zone1Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    replaces: 'BUILD_SEAWALL_1_15',
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -130,6 +131,7 @@ const zone2Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    replaces: 'BUILD_SEAWALL_1_15',
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -185,6 +187,7 @@ const zone3Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    replaces: 'BUILD_SEAWALL_1_15',
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -223,8 +226,8 @@ const zone1A_enums = {
   BUILD_SEAWALL_2: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL,
   BUILD_PATH_FROM_SEAWALL: ActivityTypeEnum.R1_1A_BUILD_PATH,
   BUILD_LAND_RECLAMATION_0_5: ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION,
-  UPGRADE_LR_TO_SEAWALL_1_15: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL,
-  UPGRADE_LR_TO_SEAWALL_2: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL,
+  UPGRADE_LR_TO_SEAWALL_1_15: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_1_15,
+  UPGRADE_LR_TO_SEAWALL_2: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_2,
 };
 const zone1B_enums = { // Same structure, different enums
   PLANT_MANGROVE: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES,
@@ -234,8 +237,8 @@ const zone1B_enums = { // Same structure, different enums
   BUILD_SEAWALL_2: ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL,
   BUILD_PATH_FROM_SEAWALL: ActivityTypeEnum.R1_1B_BUILD_PATH,
   BUILD_LAND_RECLAMATION_0_5: ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION,
-  UPGRADE_LR_TO_SEAWALL_1_15: ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL,
-  UPGRADE_LR_TO_SEAWALL_2: ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL,
+  UPGRADE_LR_TO_SEAWALL_1_15: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15,
+  UPGRADE_LR_TO_SEAWALL_2: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2,
 };
 
 const zone2A_enums = {
