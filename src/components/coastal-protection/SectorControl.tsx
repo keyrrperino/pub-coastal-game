@@ -92,26 +92,26 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     }
   }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
 
-  const handleDemolishClick = useCallback((actionToDestroy: ActivityTypeEnum) => {
+  const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
     // Update local activity log immediately to prevent UI flicker
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
       userId: `Player ${sector.slice(-1)}`,
       userName: `Player ${sector.slice(-1)}`,
       action: ActivityTypeEnum.DEMOLISH,
-      value: sector, // Store the sector being demolished
+      value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
       round: currentRound,
       timestamp: Date.now()
     };
     setActivityLog(prev => [...prev, demolishActivity]);
     
     // Log demolish action to Firebase
-    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sector, currentRound);
+    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound);
     
     // Demolish costs 1 coin
     setTotalCoins(prev => prev - 1);
     
-    console.log(`Demolish action triggered for: ${actionToDestroy}`);
+    console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
   }, [gameRoomService, currentRound, sector]);
 
   const handleTimeUp = useCallback(() => {
@@ -199,10 +199,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const demolishOption = {
       coinCount: 1,
       onClick: canDemolish ? () => {
-        // For now, demolish the first completed action (could be enhanced to show a selection)
-        if (completedActions.length > 0) {
-          handleDemolishClick(completedActions[0].config.id);
-        }
+        // Demolish all actions for this specific sector
+        handleDemolishClick(sectorId, completedActions[0].config.id);
       } : undefined,
       disabled: !canDemolish,
     };
