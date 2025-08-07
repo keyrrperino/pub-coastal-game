@@ -64,12 +64,6 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
       </button>
       
       <CoinIndicator count={coinCount} direction="row" />
-      
-      {isSelected && (
-        <div className={`${styles.novecentoBold} text-[12px] font-bold text-yellow-400 uppercase`}>
-          SELECTED
-        </div>
-      )}
     </div>
   );
 };
