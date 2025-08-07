@@ -3,7 +3,7 @@ import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
+import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
 import { GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
@@ -47,7 +47,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [showRoundEndModal, setShowRoundEndModal] = useState(false);
   const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState(false); // NEW
   const [showGameOverModal, setShowGameOverModal] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown]= useState(5);
   const [coinsLeft, setCoinsLeft] = useState(10); // 1. Add new state
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   useEffect(() => {
     if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
       setShowScoreBreakdownModal(true); // Show breakdown first
-      setCountdown(5); // reset countdown for breakdown
+      setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for breakdown
     }
   }, [cutSceneStatus]);
 
@@ -127,7 +127,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       // Only show "prepare for round" modal if not round 3
       if ((lobbyState.round ?? 1) < 3) {
         setShowRoundEndModal(true);
-        setCountdown(5); // reset countdown for next modal
+        setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for next modal
       } else {
         setShowGameOverModal(true);
       }
