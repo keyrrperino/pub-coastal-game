@@ -151,7 +151,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
           userId: 'player1',
           userName: 'Player 1',
           action: ActivityTypeEnum.DEMOLISH,
-          value: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: '1A', // Sector stored in value
           timestamp: 2000,
           round: 2
         }
@@ -192,7 +192,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
           userId: 'player1',
           userName: 'Player 1',
           action: ActivityTypeEnum.DEMOLISH,
-          value: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: '1A', // Sector stored in value
           timestamp: 2000,
           round: 2
         },

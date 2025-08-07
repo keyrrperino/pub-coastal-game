@@ -147,7 +147,7 @@ describe('Progression Utils', () => {
       expect(result.has(ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES)).toBe(true);
     });
 
-    it('should handle demolish actions', () => {
+    it('should handle sector-specific demolish actions', () => {
       const activityLog: ActivityLogType[] = [
         {
           id: '1',
@@ -163,13 +163,85 @@ describe('Progression Utils', () => {
           userId: 'player1',
           userName: 'Player 1',
           action: ActivityTypeEnum.DEMOLISH,
-          value: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: '1A', // Sector stored in value
           timestamp: 2000,
           round: 2
         }
       ];
       const result = calculateActiveActions(activityLog);
       expect(result.has(ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES)).toBe(false);
+    });
+
+    it('should demolish entire sector CPM regardless of which part was targeted', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: 'R1_1A_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        },
+        {
+          id: '2',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK,
+          value: 'R1_1A_BUILD_BOARDWALK',
+          timestamp: 1500,
+          round: 2
+        },
+        {
+          id: '3',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.DEMOLISH,
+          value: '1A', // Sector stored in value
+          timestamp: 2000,
+          round: 2
+        }
+      ];
+      const result = calculateActiveActions(activityLog);
+      // Both mangrove and boardwalk should be gone (entire 1A CPM demolished)
+      expect(result.has(ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES)).toBe(false);
+      expect(result.has(ActivityTypeEnum.R1_1A_BUILD_BOARDWALK)).toBe(false);
+    });
+
+    it('should only demolish the specified sector, not other sectors', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: 'R1_1A_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        },
+        {
+          id: '2',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES,
+          value: 'R1_1B_BUILD_PLANT_MANGROVES',
+          timestamp: 1100,
+          round: 1
+        },
+        {
+          id: '3',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.DEMOLISH,
+          value: '1A', // Only demolish sector 1A
+          timestamp: 2000,
+          round: 2
+        }
+      ];
+      const result = calculateActiveActions(activityLog);
+      // 1A should be demolished, 1B should remain
+      expect(result.has(ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES)).toBe(false);
+      expect(result.has(ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES)).toBe(true);
     });
 
     it('should handle replacement actions', () => {

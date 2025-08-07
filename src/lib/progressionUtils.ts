@@ -89,11 +89,25 @@ export function calculateActiveActions(activityLog: ActivityLogType[]): Set<Acti
   
   for (const log of sortedLog) {
     if (log.action === ActivityTypeEnum.DEMOLISH) {
-      // For demolish actions, the 'value' contains the ID of the demolished item
-      const demolishedActionId = log.value as ActivityTypeEnum;
-      currentlyActive.delete(demolishedActionId);
+      // Demolish removes the entire active CPM for the specified sector
+      // The sector is stored in log.value (e.g., '1A', '2B')
+      const demolishSector = log.value;
+      const actionsToRemove: ActivityTypeEnum[] = [];
+      
+      // Find all actions for this sector and remove them
+      for (const activeAction of currentlyActive) {
+        const actionConfig = progressionConfig[activeAction];
+        
+        // Check if this action belongs to the target sector
+        if (actionConfig && actionConfig.sector === demolishSector) {
+          actionsToRemove.push(activeAction);
+        }
+      }
+      
+      // Remove all actions from the sector's active CPM
+      actionsToRemove.forEach(action => currentlyActive.delete(action));
     } else {
-      // Add the built action
+      // Add the built action (skip demolish actions without sector)
       currentlyActive.add(log.action);
       
       // Handle replacements - if this action replaces another, remove the replaced one

@@ -99,14 +99,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       userId: `Player ${sector.slice(-1)}`,
       userName: `Player ${sector.slice(-1)}`,
       action: ActivityTypeEnum.DEMOLISH,
-      value: actionToDestroy,
+      value: sector, // Store the sector being demolished
       round: currentRound,
       timestamp: Date.now()
     };
     setActivityLog(prev => [...prev, demolishActivity]);
     
     // Log demolish action to Firebase
-    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, actionToDestroy, currentRound);
+    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sector, currentRound);
     
     // Demolish costs 1 coin
     setTotalCoins(prev => prev - 1);
