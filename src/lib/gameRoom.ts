@@ -22,6 +22,7 @@ export class GameRoomService {
   private presenceCallback: ((users: UserPresenceType[]) => void) | null = null;
   private gobalStateCallback: ((lobbyState: LobbyStateType) => void) | null = null;
   private waterLevelCallback: ((waterLevel: number) => void) | null = null;
+  private roundCallback: ((round: number) => void) | null = null;
 
   constructor(customUserName?: string, roomId?: string) {
     this.userName = customUserName || this.generateUserName();
@@ -75,6 +76,7 @@ export class GameRoomService {
     this.listenToActivity();
     this.listenToPresence();
     this.listenToWaterLevel();
+    this.listenToRound();
     
     return true;
   }
@@ -181,6 +183,21 @@ export class GameRoomService {
     });
   }
 
+  private listenToRound() {
+    if (!this.roomId || !this.roundCallback) return;
+
+    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/round`);
+    onValue(roundRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const round = snapshot.val();
+        this.roundCallback!(round);
+      } else {
+        // No round data exists yet, default to round 1
+        this.roundCallback!(1);
+      }
+    });
+  }
+
   async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number): Promise<void> {
     if (!this.roomId) return;
 
@@ -229,6 +246,13 @@ export class GameRoomService {
     await set(lobbyStateRef, value); // This sets the value at the specific key
   }
 
+  async updateRound(round: number): Promise<void> {
+    if (!this.roomId) return;
+
+    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/round`);
+    await set(roundRef, round);
+  }
+
   onActivityChange(callback: (activities: ActivityLogType[]) => void) {
     this.activityCallback = callback;
     if (this.roomId) {
@@ -254,6 +278,13 @@ export class GameRoomService {
     this.waterLevelCallback = callback;
     if (this.roomId) {
       this.listenToWaterLevel();
+    }
+  }
+
+  onRoundChange(callback: (round: number) => void) {
+    this.roundCallback = callback;
+    if (this.roomId) {
+      this.listenToRound();
     }
   }
 

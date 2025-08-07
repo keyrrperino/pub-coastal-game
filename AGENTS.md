@@ -20,4 +20,4 @@
 
 Keep this file up to date if project conventions change.
 
-Important: Do not run the server. The user will run it separately manually. If needed, can build the app to see if it builds and no syntax errors.
+Important: Do not run the server. The user will run it separately manually. If needed AND asked by user, you can build the app to see if it builds and no syntax errors.
