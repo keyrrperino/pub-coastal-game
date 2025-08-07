@@ -191,31 +191,36 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   }, [gameRoomService]);
 
   // Helper function to create measure data - show all CPMs available for current round
-  const createMeasureData = (measureType: string, sectorId: string, availableActions: ActionConfig[], activeActions: ActionConfig[]) => {
-    // Get all actions for this measure type in this sector that are available in the current round
-    const allRoundActions = Object.values(progressionConfig).filter(action => 
+  const createMeasureData = (measureType: string, sectorId: string, availableActions: ActionConfig[], activeActions: ActionConfig[], displayableActions: ActionConfig[]) => {
+    // Get ALL possible actions for this measure type in this sector (from progression config)
+    const allPossibleActions = Object.values(progressionConfig).filter(action => 
       action.measureType === measureType && 
       action.sector === sectorId &&
       action.unlocksInRound <= currentRound
     );
 
     // If no actions exist for this measure type in current round, don't show the card
-    if (allRoundActions.length === 0) return null;
+    if (allPossibleActions.length === 0) {
+      return null;
+    }
 
     return {
       type: measureType as any,
       title: getMeasureTypeTitle(measureType),
       subtitle: getMeasureTypeSubtitle(measureType),
-      options: allRoundActions.map(action => {
+      options: allPossibleActions.map(action => {
         const isSelected = activeActions.some(activeAction => activeAction.id === action.id);
         const isAvailable = availableActions.some(availableAction => availableAction.id === action.id);
+        const isDisplayable = displayableActions.some(displayableAction => displayableAction.id === action.id);
+        
+        const disabled = !isDisplayable && !isSelected;
         
         return {
           title: action.displayName,
           coinCount: action.cost,
           onClick: isAvailable ? () => handleMeasureClick(action.id, action.cost) : undefined,
           isSelected,
-          disabled: !isAvailable && !isSelected, // Disable if neither available nor selected
+          disabled,
         };
       }),
     };
@@ -223,7 +228,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Helper function to render sector section
   const renderSectorSection = (sectorId: string, title: string) => {
-    const { activeActions, availableActions } = getActionsForSector(sectorId);
+    const { activeActions, availableActions, displayableActions } = getActionsForSector(sectorId);
     const groupedAvailable = groupActionsByMeasureType(availableActions);
     const groupedActive = groupActionsByMeasureType(activeActions);
 
@@ -235,12 +240,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     );
 
     // Create measures array for ALL measure types (show everything, disable what's not available)
+    const groupedDisplayable = groupActionsByMeasureType(displayableActions);
     const measures = Array.from(allPossibleMeasureTypes)
       .map(measureType => createMeasureData(
         measureType, 
         sectorId,
         groupedAvailable[measureType] || [], 
-        groupedActive[measureType] || []
+        groupedActive[measureType] || [],
+        groupedDisplayable[measureType] || []
       ))
       .filter(Boolean);
 

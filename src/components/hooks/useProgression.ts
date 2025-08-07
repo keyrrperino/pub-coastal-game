@@ -3,6 +3,53 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { progressionConfig, ActionConfig } from '@/lib/progression.config';
 
+// Helper function to calculate what actions should be displayed in the UI
+function calculateDisplayableActions(
+  sector: string,
+  activeActions: ActionConfig[],
+  availableActions: ActionConfig[],
+  currentRound: number
+): ActionConfig[] {
+  // Round 1: Show only foundational actions (no prerequisites)
+  if (currentRound === 1) {
+    return availableActions.filter(action => 
+      !action.prerequisites || action.prerequisites.length === 0
+    );
+  }
+
+  // Round 2+: Different logic based on whether this sector has built something
+  if (activeActions.length === 0) {
+    // This sector hasn't built anything yet - show foundational actions
+    return availableActions.filter(action => 
+      !action.prerequisites || action.prerequisites.length === 0
+    );
+  }
+
+  // This sector has built something - show only the direct upgrades/extensions
+  const displayable: ActionConfig[] = [];
+  
+  for (const activeAction of activeActions) {
+    // Find all available actions that have this active action as a prerequisite
+    const nextSteps = availableActions.filter(availableAction => {
+      if (!availableAction.prerequisites) return false;
+      
+      // Check if any OR group contains this active action
+      return availableAction.prerequisites.some(orGroup =>
+        orGroup.includes(activeAction.id)
+      );
+    });
+    
+    displayable.push(...nextSteps);
+  }
+
+  // Remove duplicates
+  const uniqueDisplayable = displayable.filter((action, index, self) =>
+    index === self.findIndex(a => a.id === action.id)
+  );
+
+  return uniqueDisplayable;
+}
+
 // Helper function to determine if an action should be available in a specific round
 function isActionAvailableForRound(
   action: ActionConfig, 
@@ -51,6 +98,7 @@ export interface UseProgressionResult {
   getActionsForSector: (sector: string) => {
     activeActions: ActionConfig[];
     availableActions: ActionConfig[];
+    displayableActions: ActionConfig[];
   };
 }
 
@@ -124,12 +172,18 @@ export function useProgression(
       const sectorAvailableActions = availableActions
         .filter(action => action.sector === sector);
 
+      // 4. Calculate displayable actions - only show logical next steps
+      const sectorDisplayableActions = calculateDisplayableActions(sector, sectorActiveActions, sectorAvailableActions, currentRound);
+
+
+
       return {
         activeActions: sectorActiveActions,
         availableActions: sectorAvailableActions,
+        displayableActions: sectorDisplayableActions,
       };
     };
-  }, [activeActions, availableActions]);
+  }, [activeActions, availableActions, currentRound]);
 
   // 4. Return the results
   return { 
