@@ -6,9 +6,9 @@ import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
-import { useProgression, useProgressionLegacy } from '@/components/hooks/useProgression';
-import { ActionConfig, progressionConfig } from '@/lib/progression.config';
-import { ActionStatus, ActionState, ProgressionState } from '@/lib/types';
+import { useProgression } from '@/components/hooks/useProgression';
+
+import { ActionStatus, ActionState } from '@/lib/types';
 
 interface SectorControlProps {
   sector: string;
@@ -33,49 +33,7 @@ const getSectorTitles = (sector: string) => {
   return sectorTitles[sector] || { sectorA: 'Sector A', sectorB: 'Sector B' };
 };
 
-// Helper function to group actions by measure type
-const groupActionsByMeasureType = (actions: ActionConfig[]) => {
-  const groups: Record<string, ActionConfig[]> = {};
-  
-  actions.forEach(action => {
-    const key = action.measureType;
-    if (!groups[key]) {
-      groups[key] = [];
-    }
-    groups[key].push(action);
-  });
 
-  // Sort actions within each group by cost
-  Object.keys(groups).forEach(key => {
-    groups[key].sort((a, b) => a.cost - b.cost);
-  });
-
-  return groups;
-};
-
-// Helper function to get display title for measure types
-const getMeasureTypeTitle = (measureType: string): string => {
-  const titles: Record<string, string> = {
-    'mangroves': 'MANGROVES',
-    'land-reclamation': 'LAND RECLAMATION',
-    'seawall': 'SEAWALL',
-    'storm-surge-barrier': 'STORM SURGE BARRIER',
-    'artificial-reef': 'ARTIFICIAL REEF',
-    'hybrid-measure': 'HYBRID MEASURE',
-  };
-  return titles[measureType] || measureType.toUpperCase();
-};
-
-// Helper function to get subtitle for measure types
-const getMeasureTypeSubtitle = (measureType: string): string | undefined => {
-  const subtitles: Record<string, string> = {
-    'land-reclamation': 'Seawall upgrade',
-    'storm-surge-barrier': 'Premium protection',
-    'artificial-reef': 'Eco-friendly solution',
-    'hybrid-measure': 'Combined approach',
-  };
-  return subtitles[measureType];
-};
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
@@ -90,8 +48,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     console.log('SectorControl currentRound state:', currentRound);
   }, [currentRound]);
 
-  // Use the legacy progression system for now - we'll update the render functions to use the new system
-  const { getActionsForSector } = useProgressionLegacy(activityLog, currentRound);
+
 
   // Handle round changes - reset coins only
   useEffect(() => {
@@ -191,44 +148,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     };
   }, [gameRoomService]);
 
-  // Helper function to create measure data - show all CPMs available for current round
-  const createMeasureData = (measureType: string, sectorId: string, availableActions: ActionConfig[], activeActions: ActionConfig[], displayableActions: ActionConfig[]) => {
-    // Get ALL possible actions for this measure type in this sector (from progression config)
-    const allPossibleActions = Object.values(progressionConfig).filter(action => 
-      action.measureType === measureType && 
-      action.sector === sectorId &&
-      action.unlocksInRound <= currentRound
-    );
 
-    // If no actions exist for this measure type in current round, don't show the card
-    if (allPossibleActions.length === 0) {
-      return null;
-    }
 
-    return {
-      type: measureType as any,
-      title: getMeasureTypeTitle(measureType),
-      subtitle: getMeasureTypeSubtitle(measureType),
-      options: allPossibleActions.map(action => {
-        const isSelected = activeActions.some(activeAction => activeAction.id === action.id);
-        const isAvailable = availableActions.some(availableAction => availableAction.id === action.id);
-        const isDisplayable = displayableActions.some(displayableAction => displayableAction.id === action.id);
-        
-        const disabled = !isDisplayable && !isSelected;
-        
-        return {
-          title: action.displayName,
-          coinCount: action.cost,
-          onClick: isAvailable ? () => handleMeasureClick(action.id, action.cost) : undefined,
-          isSelected,
-          disabled,
-        };
-      }),
-    };
-  };
-
-  // Helper function to render sector section using new ProgressionState system
-  const renderSectorSectionNew = (sectorId: string, title: string) => {
+  // Helper function to render sector section using ProgressionState system
+  const renderSectorSection = (sectorId: string, title: string) => {
     const progressionState = useProgression(activityLog, currentRound, sectorId);
     
     // Map measure types to their display names and progression state properties
@@ -294,53 +217,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     );
   };
 
-  // Helper function to render sector section (legacy version)
-  const renderSectorSection = (sectorId: string, title: string) => {
-    const { activeActions, availableActions, displayableActions } = getActionsForSector(sectorId);
-    const groupedAvailable = groupActionsByMeasureType(availableActions);
-    const groupedActive = groupActionsByMeasureType(activeActions);
 
-    // Get ALL possible measure types for this sector (from progression config)
-    const allPossibleMeasureTypes = new Set(
-      Object.values(progressionConfig)
-        .filter(action => action.sector === sectorId && action.unlocksInRound <= currentRound)
-        .map(action => action.measureType)
-    );
-
-    // Create measures array for ALL measure types (show everything, disable what's not available)
-    const groupedDisplayable = groupActionsByMeasureType(displayableActions);
-    const measures = Array.from(allPossibleMeasureTypes)
-      .map(measureType => createMeasureData(
-        measureType, 
-        sectorId,
-        groupedAvailable[measureType] || [], 
-        groupedActive[measureType] || [],
-        groupedDisplayable[measureType] || []
-      ))
-      .filter(Boolean);
-
-    // Determine if there are any active actions that can be demolished
-    const canDemolish = activeActions.length > 0;
-    const demolishOption = {
-      coinCount: 1,
-      onClick: canDemolish ? () => {
-        // For now, demolish the first active action (could be enhanced to show a selection)
-        if (activeActions.length > 0) {
-          handleDemolishClick(activeActions[0].id);
-        }
-      } : undefined,
-      disabled: !canDemolish,
-    };
-
-    return (
-      <SectorSection
-        key={sectorId}
-        title={title}
-        measures={measures as any}
-        demolishOption={demolishOption}
-      />
-    );
-  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -407,8 +284,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
           {/* Sector sections - now stacked vertically */}
           <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-            {renderSectorSectionNew(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
-            {renderSectorSectionNew(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
+            {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
+            {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
           </div>
         </div>
       </div>
