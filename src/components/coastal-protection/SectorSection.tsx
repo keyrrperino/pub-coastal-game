@@ -13,6 +13,8 @@ interface SectorSectionProps {
       title: string;
       coinCount: number;
       onClick?: () => void;
+      isSelected?: boolean;
+      disabled?: boolean;
     }>;
   }>;
   demolishOption?: {

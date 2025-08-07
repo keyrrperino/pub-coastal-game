@@ -7,7 +7,7 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
-import { ActionConfig } from '@/lib/progression.config';
+import { ActionConfig, progressionConfig } from '@/lib/progression.config';
 
 interface SectorControlProps {
   sector: string;
@@ -94,7 +94,19 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       // Trigger Spline action
       triggerSingleBuild(activityType as any);
       
-      // Log activity to game room using public method
+      // Update local activity log immediately to prevent UI flicker
+      const newActivity: ActivityLogType = {
+        id: `temp-${Date.now()}`,
+        userId: `Player ${sector.slice(-1)}`,
+        userName: `Player ${sector.slice(-1)}`,
+        action: activityType,
+        value: `${activityType}`,
+        round: currentRound,
+        timestamp: Date.now()
+      };
+      setActivityLog(prev => [...prev, newActivity]);
+      
+      // Log activity to game room using public method (this will sync with Firebase)
       gameRoomService.addElement(activityType, `${activityType}`, currentRound);
       
       // Update coins
@@ -144,19 +156,34 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     };
   }, [gameRoomService]);
 
-  // Helper function to create measure data from actions
-  const createMeasureData = (measureType: string, actions: ActionConfig[]) => {
-    if (actions.length === 0) return null;
+  // Helper function to create measure data - show all CPMs available for current round
+  const createMeasureData = (measureType: string, sectorId: string, availableActions: ActionConfig[], activeActions: ActionConfig[]) => {
+    // Get all actions for this measure type in this sector that are available in the current round
+    const allRoundActions = Object.values(progressionConfig).filter(action => 
+      action.measureType === measureType && 
+      action.sector === sectorId &&
+      action.unlocksInRound <= currentRound
+    );
+
+    // If no actions exist for this measure type in current round, don't show the card
+    if (allRoundActions.length === 0) return null;
 
     return {
       type: measureType as any,
       title: getMeasureTypeTitle(measureType),
       subtitle: getMeasureTypeSubtitle(measureType),
-      options: actions.map(action => ({
-        title: action.displayName,
-        coinCount: action.cost,
-        onClick: () => handleMeasureClick(action.id, action.cost),
-      })),
+      options: allRoundActions.map(action => {
+        const isSelected = activeActions.some(activeAction => activeAction.id === action.id);
+        const isAvailable = availableActions.some(availableAction => availableAction.id === action.id);
+        
+        return {
+          title: action.displayName,
+          coinCount: action.cost,
+          onClick: isAvailable ? () => handleMeasureClick(action.id, action.cost) : undefined,
+          isSelected,
+          disabled: !isAvailable && !isSelected, // Disable if neither available nor selected
+        };
+      }),
     };
   };
 
@@ -166,9 +193,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const groupedAvailable = groupActionsByMeasureType(availableActions);
     const groupedActive = groupActionsByMeasureType(activeActions);
 
-    // Create measures array from available actions
-    const measures = Object.entries(groupedAvailable)
-      .map(([measureType, actions]) => createMeasureData(measureType, actions))
+    // Get ALL possible measure types for this sector (from progression config)
+    const allPossibleMeasureTypes = new Set(
+      Object.values(progressionConfig)
+        .filter(action => action.sector === sectorId && action.unlocksInRound <= currentRound)
+        .map(action => action.measureType)
+    );
+
+    // Create measures array for ALL measure types (show everything, disable what's not available)
+    const measures = Array.from(allPossibleMeasureTypes)
+      .map(measureType => createMeasureData(
+        measureType, 
+        sectorId,
+        groupedAvailable[measureType] || [], 
+        groupedActive[measureType] || []
+      ))
       .filter(Boolean);
 
     // Determine if there are any active actions that can be demolished

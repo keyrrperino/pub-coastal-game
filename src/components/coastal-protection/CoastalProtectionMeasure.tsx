@@ -10,6 +10,8 @@ interface CoastalProtectionMeasureProps {
     title: string;
     coinCount: number;
     onClick?: () => void;
+    isSelected?: boolean;
+    disabled?: boolean;
   }>;
   isActive?: boolean;
 }
@@ -98,6 +100,8 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
             title={option.title}
             coinCount={option.coinCount}
             onClick={option.onClick}
+            isSelected={option.isSelected}
+            disabled={option.disabled}
           />
         ))}
       </div>
