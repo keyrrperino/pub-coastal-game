@@ -19,37 +19,29 @@ export function useProgression(
   
   // 1. Memoize the active actions to prevent re-renders
   const activeActions = useMemo(() => {
-    const completed = new Set<ActivityTypeEnum>();
-    const demolished = new Set<ActivityTypeEnum>();
+    const currentlyActive = new Set<ActivityTypeEnum>();
 
-    // Identify what was built and what was demolished
-    for (const log of activityLog) {
+    // Process activity log chronologically to handle build -> demolish -> build sequences
+    const sortedLog = [...activityLog].sort((a, b) => a.timestamp - b.timestamp);
+    
+    for (const log of sortedLog) {
       if (log.action === ActivityTypeEnum.DEMOLISH) {
         // For demolish actions, the 'value' contains the ID of the demolished item
         const demolishedActionId = log.value as ActivityTypeEnum;
-        demolished.add(demolishedActionId);
+        currentlyActive.delete(demolishedActionId);
       } else {
-        completed.add(log.action);
-      }
-    }
-
-    // Remove demolished and replaced actions
-    const finalActive = new Set(completed);
-    
-    // Remove demolished actions
-    for (const demolishedId of demolished) {
-      finalActive.delete(demolishedId);
-    }
-    
-    // Remove replaced actions
-    for (const actionId of completed) {
-      const config = progressionConfig[actionId];
-      if (config?.replaces && finalActive.has(actionId)) {
-        finalActive.delete(config.replaces);
+        // Add the built action
+        currentlyActive.add(log.action);
+        
+        // Handle replacements - if this action replaces another, remove the replaced one
+        const config = progressionConfig[log.action];
+        if (config?.replaces) {
+          currentlyActive.delete(config.replaces);
+        }
       }
     }
     
-    return finalActive;
+    return currentlyActive;
   }, [activityLog]);
 
   // 2. Determine available actions

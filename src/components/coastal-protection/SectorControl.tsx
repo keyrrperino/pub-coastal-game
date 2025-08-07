@@ -119,14 +119,26 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
 
   const handleDemolishClick = useCallback((actionToDestroy: ActivityTypeEnum) => {
-    // Log demolish action
+    // Update local activity log immediately to prevent UI flicker
+    const demolishActivity: ActivityLogType = {
+      id: `temp-demolish-${Date.now()}`,
+      userId: `Player ${sector.slice(-1)}`,
+      userName: `Player ${sector.slice(-1)}`,
+      action: ActivityTypeEnum.DEMOLISH,
+      value: actionToDestroy,
+      round: currentRound,
+      timestamp: Date.now()
+    };
+    setActivityLog(prev => [...prev, demolishActivity]);
+    
+    // Log demolish action to Firebase
     gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, actionToDestroy, currentRound);
     
-    // Refund 1 coin for demolish
-    setTotalCoins(prev => prev + 1);
+    // Demolish costs 1 coin
+    setTotalCoins(prev => prev - 1);
     
     console.log(`Demolish action triggered for: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound]);
+  }, [gameRoomService, currentRound, sector]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
