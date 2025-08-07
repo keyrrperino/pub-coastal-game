@@ -1,262 +1,93 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum } from '@/lib/enums';
+import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
+import { useProgression } from '@/components/hooks/useProgression';
+import { ActionConfig } from '@/lib/progression.config';
 
 interface SectorControlProps {
   sector: string;
 }
 
-interface MeasureOption {
-  title: string;
-  coinCount: number;
-  activityType: ActivityTypeEnum;
-}
-
-interface MeasureData {
-  type: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure';
-  title: string;
-  subtitle?: string;
-  options: MeasureOption[];
-}
-
-interface SectorData {
-  title: string;
-  measures: MeasureData[];
-  demolishOption: {
-    coinCount: number;
+// Helper function to get sector titles
+const getSectorTitles = (sector: string) => {
+  const sectorTitles: Record<string, { sectorA: string; sectorB: string }> = {
+    'sector-1': {
+      sectorA: 'Sector 1A: Industrial',
+      sectorB: 'Sector 1B: Residential',
+    },
+    'sector-2': {
+      sectorA: 'Sector 2A: CBD',
+      sectorB: 'Sector 2B: Jurong',
+    },
+    'sector-3': {
+      sectorA: 'Sector 3A: Woodlands',
+      sectorB: 'Sector 3B: Punggol',
+    },
   };
-}
+  return sectorTitles[sector] || { sectorA: 'Sector A', sectorB: 'Sector B' };
+};
 
-const SECTOR_CONFIGURATIONS: Record<string, { sectorA: SectorData; sectorB: SectorData }> = {
-  'sector-1': {
-    sectorA: {
-      title: 'Sector 1A: Industrial',
-      measures: [
-        {
-          type: 'mangroves',
-          title: 'MANGROVES',
-          options: [
-            { title: 'Build Board Walk', coinCount: 1, activityType: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES },
-          ],
-        },
-        {
-          type: 'land-reclamation',
-          title: 'LAND RECLAMATION',
-          subtitle: 'Seawall upgrade',
-          options: [
-            { title: 'Build 0.5m', coinCount: 1, activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION },
-            { title: 'Build 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION },
-            { title: 'Build 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Path', coinCount: 1, activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-    sectorB: {
-      title: 'Sector 1B: Residential',
-      measures: [
-        {
-          type: 'mangroves',
-          title: 'MANGROVES',
-          options: [
-            { title: 'Build Board Walk', coinCount: 1, activityType: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES },
-          ],
-        },
-        {
-          type: 'land-reclamation',
-          title: 'LAND RECLAMATION',
-          subtitle: 'Seawall upgrade',
-          options: [
-            { title: 'Build 0.5m', coinCount: 1, activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION },
-            { title: 'Build 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION },
-            { title: 'Build 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Bike Path', coinCount: 1, activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-  },
-  'sector-2': {
-    sectorA: {
-      title: 'Sector 2A: CBD',
-      measures: [
-        {
-          type: 'mangroves',
-          title: 'MANGROVES',
-          options: [
-            { title: 'Build Board Walk', coinCount: 1, activityType: ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES },
-          ],
-        },
-        {
-          type: 'storm-surge-barrier',
-          title: 'STORM SURGE BARRIER',
-          subtitle: 'Premium protection',
-          options: [
-            { title: 'Build 0.5m', coinCount: 2, activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER },
-            { title: 'Build 1.15m', coinCount: 3, activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER },
-            { title: 'Build 2m', coinCount: 4, activityType: ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Path', coinCount: 1, activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-    sectorB: {
-      title: 'Sector 2B: Jurong',
-      measures: [
-        {
-          type: 'mangroves',
-          title: 'MANGROVES',
-          options: [
-            { title: 'Build Board Walk', coinCount: 1, activityType: ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES },
-          ],
-        },
-        {
-          type: 'storm-surge-barrier',
-          title: 'STORM SURGE BARRIER',
-          subtitle: 'Premium protection',
-          options: [
-            { title: 'Build 0.5m', coinCount: 2, activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER },
-            { title: 'Build 1.15m', coinCount: 3, activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER },
-            { title: 'Build 2m', coinCount: 4, activityType: ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Path', coinCount: 1, activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-  },
-  'sector-3': {
-    sectorA: {
-      title: 'Sector 3A: Woodlands',
-      measures: [
-        {
-          type: 'artificial-reef',
-          title: 'ARTIFICIAL REEF',
-          subtitle: 'Eco-friendly solution',
-          options: [
-            { title: 'Build Reef', coinCount: 2, activityType: ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF },
-          ],
-        },
-        {
-          type: 'hybrid-measure',
-          title: 'HYBRID MEASURE',
-          subtitle: 'Combined approach',
-          options: [
-            { title: 'Build 0.5m', coinCount: 2, activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE },
-            { title: 'Build 1.15m', coinCount: 3, activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE },
-            { title: 'Build 2m', coinCount: 4, activityType: ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Path', coinCount: 1, activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-    sectorB: {
-      title: 'Sector 3B: Punggol',
-      measures: [
-        {
-          type: 'artificial-reef',
-          title: 'ARTIFICIAL REEF',
-          subtitle: 'Eco-friendly solution',
-          options: [
-            { title: 'Build Reef', coinCount: 2, activityType: ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF },
-          ],
-        },
-        {
-          type: 'hybrid-measure',
-          title: 'HYBRID MEASURE',
-          subtitle: 'Combined approach',
-          options: [
-            { title: 'Build 0.5m', coinCount: 2, activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE },
-            { title: 'Build 1.15m', coinCount: 3, activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE },
-            { title: 'Build 2m', coinCount: 4, activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE },
-          ],
-        },
-        {
-          type: 'seawall',
-          title: 'SEAWALL',
-          options: [
-            { title: 'Build Path', coinCount: 1, activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL },
-            { title: 'Raise to 1.15m', coinCount: 2, activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL },
-            { title: 'Raise to 2m', coinCount: 3, activityType: ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL },
-          ],
-        },
-      ],
-      demolishOption: {
-        coinCount: 1,
-      },
-    },
-  },
+// Helper function to group actions by measure type
+const groupActionsByMeasureType = (actions: ActionConfig[]) => {
+  const groups: Record<string, ActionConfig[]> = {};
+  
+  actions.forEach(action => {
+    const key = action.measureType;
+    if (!groups[key]) {
+      groups[key] = [];
+    }
+    groups[key].push(action);
+  });
+
+  // Sort actions within each group by cost
+  Object.keys(groups).forEach(key => {
+    groups[key].sort((a, b) => a.cost - b.cost);
+  });
+
+  return groups;
+};
+
+// Helper function to get display title for measure types
+const getMeasureTypeTitle = (measureType: string): string => {
+  const titles: Record<string, string> = {
+    'mangroves': 'MANGROVES',
+    'land-reclamation': 'LAND RECLAMATION',
+    'seawall': 'SEAWALL',
+    'storm-surge-barrier': 'STORM SURGE BARRIER',
+    'artificial-reef': 'ARTIFICIAL REEF',
+    'hybrid-measure': 'HYBRID MEASURE',
+  };
+  return titles[measureType] || measureType.toUpperCase();
+};
+
+// Helper function to get subtitle for measure types
+const getMeasureTypeSubtitle = (measureType: string): string | undefined => {
+  const subtitles: Record<string, string> = {
+    'land-reclamation': 'Seawall upgrade',
+    'storm-surge-barrier': 'Premium protection',
+    'artificial-reef': 'Eco-friendly solution',
+    'hybrid-measure': 'Combined approach',
+  };
+  return subtitles[measureType];
 };
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = React.useState(() => new GameRoomService(`Player ${sector.slice(-1)}`));
-  const [totalCoins, setTotalCoins] = React.useState(10);
+  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`));
+  const [totalCoins, setTotalCoins] = useState(10);
+  const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
+  const [currentRound, setCurrentRound] = useState(1);
 
-  const config = SECTOR_CONFIGURATIONS[sector];
-  if (!config) {
-    throw new Error(`Invalid sector: ${sector}`);
-  }
-
-  const { sectorA, sectorB } = config;
+  // Use the progression system
+  const { getActionsForSector } = useProgression(activityLog, currentRound);
+  
+  // Get sector titles
+  const sectorTitles = getSectorTitles(sector);
 
   const handleMeasureClick = useCallback((activityType: ActivityTypeEnum, coinCost: number) => {
     if (totalCoins >= coinCost) {
@@ -264,7 +95,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       triggerSingleBuild(activityType as any);
       
       // Log activity to game room using public method
-      gameRoomService.addElement(activityType, `${activityType}`, 1);
+      gameRoomService.addElement(activityType, `${activityType}`, currentRound);
       
       // Update coins
       setTotalCoins(prev => prev - coinCost);
@@ -273,25 +104,34 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     } else {
       console.log('Insufficient coins');
     }
-  }, [totalCoins, triggerSingleBuild, gameRoomService]);
+  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
 
-  const handleDemolishClick = useCallback((sectorTitle: string) => {
+  const handleDemolishClick = useCallback((actionToDestroy: ActivityTypeEnum) => {
+    // Log demolish action
+    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, actionToDestroy, currentRound);
+    
     // Refund 1 coin for demolish
     setTotalCoins(prev => prev + 1);
-    console.log(`Demolish clicked for: ${sectorTitle}`);
-  }, []);
+    
+    console.log(`Demolish action triggered for: ${actionToDestroy}`);
+  }, [gameRoomService, currentRound]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
     // Handle round end logic here
   }, []);
 
-  // Initialize game room connection
+  // Initialize game room connection and listen to activity changes
   useEffect(() => {
     const initializeGameRoom = async () => {
       try {
         await gameRoomService.createRoom(true);
         await gameRoomService.joinRoom('default');
+        
+        // Listen to activity changes
+        gameRoomService.onActivityChange((activities) => {
+          setActivityLog(activities);
+        });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
       }
@@ -300,9 +140,59 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     initializeGameRoom();
 
     return () => {
-      // Cleanup if needed
+      gameRoomService.disconnect();
     };
   }, [gameRoomService]);
+
+  // Helper function to create measure data from actions
+  const createMeasureData = (measureType: string, actions: ActionConfig[]) => {
+    if (actions.length === 0) return null;
+
+    return {
+      type: measureType as any,
+      title: getMeasureTypeTitle(measureType),
+      subtitle: getMeasureTypeSubtitle(measureType),
+      options: actions.map(action => ({
+        title: action.displayName,
+        coinCount: action.cost,
+        onClick: () => handleMeasureClick(action.id, action.cost),
+      })),
+    };
+  };
+
+  // Helper function to render sector section
+  const renderSectorSection = (sectorId: string, title: string) => {
+    const { activeActions, availableActions } = getActionsForSector(sectorId);
+    const groupedAvailable = groupActionsByMeasureType(availableActions);
+    const groupedActive = groupActionsByMeasureType(activeActions);
+
+    // Create measures array from available actions
+    const measures = Object.entries(groupedAvailable)
+      .map(([measureType, actions]) => createMeasureData(measureType, actions))
+      .filter(Boolean);
+
+    // Determine if there are any active actions that can be demolished
+    const canDemolish = activeActions.length > 0;
+    const demolishOption = {
+      coinCount: 1,
+      onClick: canDemolish ? () => {
+        // For now, demolish the first active action (could be enhanced to show a selection)
+        if (activeActions.length > 0) {
+          handleDemolishClick(activeActions[0].id);
+        }
+      } : undefined,
+      disabled: !canDemolish,
+    };
+
+    return (
+      <SectorSection
+        key={sectorId}
+        title={title}
+        measures={measures as any}
+        demolishOption={demolishOption}
+      />
+    );
+  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -328,7 +218,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
           {/* Top bar: Budget left, Timer right, Hint centered below */}
           <div className="w-full flex flex-row items-start justify-between">
-{/* Budget display left */}
+            {/* Budget display left */}
             <div className="flex-1 flex items-start justify-start">
               <BudgetDisplay totalCoins={totalCoins} />
             </div>
@@ -340,102 +230,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
           {/* Sector sections - now stacked vertically */}
           <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-            <SectorSection
-              title={sectorA.title}
-              measures={[
-                ...sectorA.measures
-                  .filter(m => m.type === 'mangroves' || m.type === 'artificial-reef')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-                ...sectorA.measures
-                  .filter(m => m.type === 'seawall')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-                ...sectorA.measures
-                  .filter(m => m.type === 'land-reclamation' || m.type === 'storm-surge-barrier' || m.type === 'hybrid-measure')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-              ]}
-              demolishOption={{
-                ...sectorA.demolishOption,
-                onClick: () => handleDemolishClick(sectorA.title),
-              }}
-            />
-            <SectorSection
-              title={sectorB.title}
-              measures={[
-                ...sectorB.measures
-                  .filter(m => m.type === 'mangroves' || m.type === 'artificial-reef')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-                ...sectorB.measures
-                  .filter(m => m.type === 'seawall')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-                ...sectorB.measures
-                  .filter(m => m.type === 'land-reclamation' || m.type === 'storm-surge-barrier' || m.type === 'hybrid-measure')
-                  .map(measure => ({
-                    ...measure,
-                    options: measure.options
-                      .slice()
-                      .sort((a, b) => a.coinCount - b.coinCount)
-                      .map(option => ({
-                        title: option.title,
-                        coinCount: option.coinCount,
-                        onClick: () => handleMeasureClick(option.activityType, option.coinCount),
-                      })),
-                  })),
-              ]}
-              demolishOption={{
-                ...sectorB.demolishOption,
-                onClick: () => handleDemolishClick(sectorB.title),
-              }}
-            />
+            {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
+            {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
           </div>
         </div>
       </div>

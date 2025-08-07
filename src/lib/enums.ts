@@ -189,6 +189,24 @@ export enum ActivityTypeEnum {
   R1_3B_BUILD_1_15_HYBRID_MEASURE = "r1 3b hb 1.15",
   R1_3B_BUILD_2_HYBRID_MEASURE = "r1 3b hb 2",
 
+  // Revetment enums for Zone 3A
+  R1_3A_BUILD_1_15_REVETMENT = "r1 3a rv 1.15",
+  R1_3A_BUILD_2_REVETMENT = "r1 3a rv 2",
+
+  // Revetment enums for Zone 3B
+  R1_3B_BUILD_1_15_REVETMENT = "r1 3b rv 1.15",
+  R1_3B_BUILD_2_REVETMENT = "r1 3b rv 2",
+
+  // Boardwalk enums for Zone 2A and 2B
+  R1_2A_BUILD_BOARDWALK = "r1 2a boardwalk",
+  R1_2B_BUILD_BOARDWALK = "r1 2b boardwalk",
+
+  // Path enums for Zones 2A, 2B, 3A, 3B
+  R1_2A_BUILD_PATH = "r1 2a path",
+  R1_2B_BUILD_PATH = "r1 2b path",
+  R1_3A_BUILD_PATH = "r1 3a path",
+  R1_3B_BUILD_PATH = "r1 3b path",
+
   // System actions
   DEMOLISH = "demolish",
 }

@@ -347,6 +347,70 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
   },
+  // Revetment enums for Zone 3A
+  [ActivityTypeEnum.R1_3A_BUILD_1_15_REVETMENT]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3A / BUILD / 1.15M REVETMENT",
+    activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_REVETMENT
+  },
+  [ActivityTypeEnum.R1_3A_BUILD_2_REVETMENT]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3A / BUILD / 2M REVETMENT",
+    activityType: ActivityTypeEnum.R1_3A_BUILD_2_REVETMENT
+  },
+  // Revetment enums for Zone 3B
+  [ActivityTypeEnum.R1_3B_BUILD_1_15_REVETMENT]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3B / BUILD / 1.15M REVETMENT",
+    activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_REVETMENT
+  },
+  [ActivityTypeEnum.R1_3B_BUILD_2_REVETMENT]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3B / BUILD / 2M REVETMENT",
+    activityType: ActivityTypeEnum.R1_3B_BUILD_2_REVETMENT
+  },
+  // Boardwalk enums for Zone 2A and 2B
+  [ActivityTypeEnum.R1_2A_BUILD_BOARDWALK]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 2A / BUILD BOARDWALK",
+    activityType: ActivityTypeEnum.R1_2A_BUILD_BOARDWALK
+  },
+  [ActivityTypeEnum.R1_2B_BUILD_BOARDWALK]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 2B / BUILD BOARDWALK",
+    activityType: ActivityTypeEnum.R1_2B_BUILD_BOARDWALK
+  },
+  // Path enums for Zones 2A, 2B, 3A, 3B
+  [ActivityTypeEnum.R1_2A_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 2A / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_2A_BUILD_PATH
+  },
+  [ActivityTypeEnum.R1_2B_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 2B / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_2B_BUILD_PATH
+  },
+  [ActivityTypeEnum.R1_3A_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3A / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_3A_BUILD_PATH
+  },
+  [ActivityTypeEnum.R1_3B_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 3B / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_3B_BUILD_PATH
+  },
   [ActivityTypeEnum.DEMOLISH]: {
     state: [],
     buttonValue: "DEMOLISH",
