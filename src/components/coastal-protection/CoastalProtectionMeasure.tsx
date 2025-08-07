@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 interface CoastalProtectionMeasureProps {
   title: string;
   subtitle?: string;
-  icon: 'land-reclamation' | 'seawall' | 'mangroves';
+  icon: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure';
   options: Array<{
     title: string;
     coinCount: number;
@@ -29,6 +29,12 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         return '/assets/seawall-icon-41fadd.png';
       case 'mangroves':
         return '/assets/mangroves-icon-3a15a8.png';
+      case 'storm-surge-barrier':
+        return '/assets/seawall-icon-41fadd.png'; // Using seawall icon as fallback
+      case 'artificial-reef':
+        return '/assets/mangroves-icon-3a15a8.png'; // Using mangroves icon as fallback
+      case 'hybrid-measure':
+        return '/assets/land-reclamation-icon-6b707d.png'; // Using land reclamation icon as fallback
       default:
         return '';
     }
@@ -42,6 +48,12 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         return '#8CFFEC'; // Using same color as land reclamation based on Figma
       case 'mangroves':
         return '#BFFFBE';
+      case 'storm-surge-barrier':
+        return '#FFD700'; // Gold color for premium protection
+      case 'artificial-reef':
+        return '#87CEEB'; // Sky blue for eco-friendly solution
+      case 'hybrid-measure':
+        return '#DDA0DD'; // Plum color for combined approach
       default:
         return '#FFFFFF';
     }

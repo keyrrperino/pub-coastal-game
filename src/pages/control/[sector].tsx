@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import Error from 'next/error';
+import { GameProvider } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 
 const SectorControl = dynamic(() => import("@/components/coastal-protection/SectorControl"), { ssr: false });
 
@@ -40,7 +41,9 @@ export default function SectorPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <SectorControl sector={sector as string} />
+      <GameProvider>
+        <SectorControl sector={sector as string} />
+      </GameProvider>
     </>
   );
 }

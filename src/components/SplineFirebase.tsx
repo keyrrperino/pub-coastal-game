@@ -71,7 +71,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     setTotalScore(score);
 
     const activitiesWithValueCount = (activities ?? []).filter(a => a.value && a.value.trim() !== "").length;
-  const totalCoins = 20;
+  const totalCoins = 10;
   setCoinsLeft(Math.max(totalCoins - activitiesWithValueCount, 0));
   }, [activities]);
 

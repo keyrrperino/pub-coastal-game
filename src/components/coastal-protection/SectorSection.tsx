@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 interface SectorSectionProps {
   title: string;
   measures: Array<{
-    type: 'land-reclamation' | 'seawall' | 'mangroves';
+    type: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure';
     title: string;
     subtitle?: string;
     options: Array<{
@@ -37,7 +37,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
           <div className="flex flex-col items-center gap-[11px] min-w-[135px]">
             <button
               onClick={demolishOption.onClick}
-              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-[8px] border-cyan-300`}
+              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-[8px] border-cyan-300 pulseAnimation`}
             >
               <div className={`${styles.novecentoBold} text-[20.3px] font-bold leading-[16.24px] text-white uppercase`}>
                 DEMOLISH
