@@ -60,7 +60,7 @@ const zone1Template: Record<string, TemplateAction> = {
   },
   BUILD_PATH_FROM_SEAWALL: {
     displayName: 'Build Path', cost: 1, unlocksInRound: 3,
-    prerequisites: [['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },
   // --- LAND RECLAMATION PATH ---
@@ -113,7 +113,7 @@ const zone2Template: Record<string, TemplateAction> = {
   },
   BUILD_PATH_FROM_SEAWALL: {
     displayName: 'Build Path', cost: 1, unlocksInRound: 3,
-    prerequisites: [['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },
   // --- COASTAL BARRIER (STORM SURGE) PATH ---
@@ -168,7 +168,7 @@ const zone3Template: Record<string, TemplateAction> = {
   },
   BUILD_PATH_FROM_SEAWALL: {
     displayName: 'Build Path', cost: 1, unlocksInRound: 3,
-    prerequisites: [['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },
   // --- HYBRID MEASURE PATH ---
