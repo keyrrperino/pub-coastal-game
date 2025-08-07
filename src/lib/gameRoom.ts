@@ -186,13 +186,17 @@ export class GameRoomService {
   private listenToRound() {
     if (!this.roomId || !this.roundCallback) return;
 
-    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/round`);
+    console.log('Setting up round listener for room:', this.roomId);
+    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/round`);
     onValue(roundRef, (snapshot) => {
+      console.log('Round snapshot received:', snapshot.exists(), snapshot.val());
       if (snapshot.exists()) {
         const round = snapshot.val();
+        console.log('Calling round callback with:', round);
         this.roundCallback!(round);
       } else {
         // No round data exists yet, default to round 1
+        console.log('No round data exists, defaulting to round 1');
         this.roundCallback!(1);
       }
     });
@@ -249,7 +253,7 @@ export class GameRoomService {
   async updateRound(round: number): Promise<void> {
     if (!this.roomId) return;
 
-    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/round`);
+    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/round`);
     await set(roundRef, round);
   }
 

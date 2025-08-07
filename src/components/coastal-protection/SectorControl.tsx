@@ -82,9 +82,25 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [totalCoins, setTotalCoins] = useState(10);
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [currentRound, setCurrentRound] = useState(1);
+  const [previousRound, setPreviousRound] = useState(1);
+
+  // Debug logging for round state
+  useEffect(() => {
+    console.log('SectorControl currentRound state:', currentRound);
+  }, [currentRound]);
 
   // Use the progression system
   const { getActionsForSector } = useProgression(activityLog, currentRound);
+
+  // Handle round changes - reset coins only
+  useEffect(() => {
+    if (currentRound !== previousRound && previousRound !== 1) {
+      console.log(`Round changed from ${previousRound} to ${currentRound}`);
+      // Reset coins to starting amount for new round
+      setTotalCoins(10);
+    }
+    setPreviousRound(currentRound);
+  }, [currentRound, previousRound]);
   
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
@@ -155,6 +171,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         // Listen to activity changes
         gameRoomService.onActivityChange((activities) => {
           setActivityLog(activities);
+        });
+
+        // Listen to round changes
+        gameRoomService.onRoundChange((round) => {
+          console.log('Firebase round changed to:', round);
+          setCurrentRound(round);
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
@@ -267,15 +289,23 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left, Timer right, Hint centered below */}
+          {/* Top bar: Budget left, Round center, Timer right */}
           <div className="w-full flex flex-row items-start justify-between">
             {/* Budget display left */}
             <div className="flex-1 flex items-start justify-start">
               <BudgetDisplay totalCoins={totalCoins} />
             </div>
+            {/* Round display center */}
+            <div className="flex-1 flex items-start justify-center">
+              <div className="bg-white rounded-[16px] px-6 py-3">
+                <div className="text-[24px] font-bold text-black text-center">
+                  ROUND {currentRound}
+                </div>
+              </div>
+            </div>
             {/* Timer right */}
             <div className="flex-1 flex items-start justify-end">
-              <Timer initialSeconds={30} onTimeUp={handleTimeUp} />
+              <Timer key={currentRound} initialSeconds={30} onTimeUp={handleTimeUp} />
             </div>
           </div>
 

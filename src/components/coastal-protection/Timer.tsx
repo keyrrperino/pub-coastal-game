@@ -10,6 +10,11 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
   const [seconds, setSeconds] = useState(initialSeconds);
 
+  // Reset timer when initialSeconds changes
+  useEffect(() => {
+    setSeconds(initialSeconds);
+  }, [initialSeconds]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setSeconds(prev => {
@@ -23,7 +28,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [onTimeUp]);
+  }, [onTimeUp, initialSeconds]);
 
   const progressPercentage = (seconds / initialSeconds) * 100;
 
