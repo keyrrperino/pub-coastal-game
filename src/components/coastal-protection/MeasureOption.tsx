@@ -33,11 +33,11 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
           };
         case ActionStatus.REPLACED:
           return {
-            background: 'radial-gradient(circle at 10.5% 16.4%, #D4AF37 0%, #B8860B 100%)',
-            boxShadow: '0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15)',
+            background: 'radial-gradient(circle at 10.5% 16.4%, #DAA520 0%, #CD853F 100%)',
+            boxShadow: '0px 5.91px 29.56px 0px rgba(218, 165, 32, 0.3)',
             borderRadius: '63.28px',
-            border: '2px solid #B8860B',
-            opacity: 0.7
+            border: '2px solid #CD853F',
+            opacity: 0.8
           };
         case ActionStatus.SELECTABLE:
           return {
@@ -93,7 +93,7 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
         case ActionStatus.COMPLETED:
           return '#000000';
         case ActionStatus.REPLACED:
-          return '#8B4513';
+          return '#654321';
         case ActionStatus.SELECTABLE:
           return '#202020';
         case ActionStatus.LOCKED_CONFLICT:
