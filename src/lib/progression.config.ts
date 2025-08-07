@@ -4,13 +4,34 @@ import { ActivityTypeEnum } from './enums';
  * Defines the structure for any player action.
  */
 export interface ActionConfig {
+  /** A unique identifier corresponding to an ActivityTypeEnum. */
   id: ActivityTypeEnum;
+
+  /** The human-readable name for the UI. */
   displayName: string;
+
+  /** The resource cost of the action (e.g., number of coins). */
   cost: number;
+
+  /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
+
+  /**
+   * Defines prerequisites using OR/AND logic.
+   * Format: `[[A, B], [C]]` means "(A AND B) OR C".
+   * An empty array `[]` or omitting the property means no prerequisites.
+   */
   prerequisites?: ActivityTypeEnum[][];
+
+  /**
+   * The ID of the action that this one replaces upon being built.
+   * The logic engine will treat the replaced action as no longer active.
+   */
   replaces?: ActivityTypeEnum;
+
+  /** An array of action IDs that are mutually exclusive with this one. */
   conflicts?: ActivityTypeEnum[];
+
   sector: string;
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
 }
