@@ -80,7 +80,7 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },
@@ -133,7 +133,7 @@ const zone2Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },
@@ -188,7 +188,7 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     measureType: 'seawall',
   },

@@ -301,6 +301,27 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                 <div className="text-[24px] font-bold text-black text-center">
                   ROUND {currentRound}
                 </div>
+                {/* Temporary test buttons for round transitions */}
+                <div className="flex gap-1 mt-2 justify-center">
+                  <button 
+                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 1)}
+                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                  >
+                    R1
+                  </button>
+                  <button 
+                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 2)}
+                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+                  >
+                    R2
+                  </button>
+                  <button 
+                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 3)}
+                    className="bg-green-500 text-white px-2 py-1 rounded text-xs"
+                  >
+                    R3
+                  </button>
+                </div>
               </div>
             </div>
             {/* Timer right */}
