@@ -178,7 +178,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           {/* Frame Overlay */}
           <div className="fixed inset-0 z-20 flex items-center justify-center h-[100vh]">
             <img
-              src={`/games/pub-coastal-spline/flash-reports/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1`}
+              src={`/games/pub-coastal-spline/flash-reports/images/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1`}
               className="pointer-events-none"
               // style={{ objectFit: "" }}
               alt="Frame Overlay"
