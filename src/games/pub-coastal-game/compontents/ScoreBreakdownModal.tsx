@@ -96,15 +96,18 @@ export default function ScoreBreakdownModal({
                 </div>
                 <div className="flex justify-between items-center text-white font-bold text-lg">
                   <span>{label} MONEY SPENT</span>
-                  <span>
+                  <div className="flex">
                     {Array.from({
                       length: breakdown.playerBreakdown[playerKey].coinsSpent,
                     }).map((_, i) => (
-                      <span key={i} className="inline-block text-yellow-300 text-xl">
-                        $
-                      </span>
+                      <img
+                        key={'bcoin-' + i}
+                        src="/games/pub-coastal-spline/images/coin.svg"
+                        alt="coin"
+                        className="w-[0.8vw] h-[0.8vw]"
+                      />
                     ))}
-                  </span>
+                  </div>
                 </div>
               </div>
             ))}

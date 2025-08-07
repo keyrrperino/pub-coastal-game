@@ -8,13 +8,15 @@ export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 10000;
 export const TOTAL_COINS_PER_ROUND = 10;
+export const MODAL_CLOSE_COUNTDOWN_VALUE = 5;
 
 // export const ROOM_NAME = "rooms-v3";
-// export const GAME_ROUND_TIMER = 5;
+// export const GAME_ROUND_TIMER = 10;
 // export const GAME_STARST_IN_COUNTDOWN = 1;
 // export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 1;
 // export const OVERALL_SCORE_POINTS = 2000;
 // export const TOTAL_COINS_PER_ROUND = 10;
+// export const MODAL_CLOSE_COUNTDOWN_VALUE = 10000;
 
 export const userIdToSector: Record<string, number> = {
   user_sector_1: 1,
