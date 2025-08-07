@@ -6,7 +6,8 @@ import {
   getActiveCPMPath,
   calculateActiveActions,
   getActionsForMeasureType,
-  getSectorActions
+  getSectorActions,
+  isActionReplaced
 } from '../progressionUtils';
 import { progressionConfig } from '../progression.config';
 
@@ -50,6 +51,120 @@ describe('Progression Utils', () => {
       ];
       const result = prerequisitesAreMet(prerequisites, activeActions);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getActiveCPMPath - Replacement Bug Fix', () => {
+    it('should detect seawall path when 1.15m replaces 0.5m', () => {
+      // Simulate the bug scenario: 0.5m built, then 1.15m replaces it
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
+        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' }
+      ];
+      
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Should detect seawall path even though base 0.5m was replaced
+      expect(activeCPMPath).toBe('seawall');
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL)).toBe(true);
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL)).toBe(false); // Replaced
+    });
+
+    it('should show correct seawall options after 1.15m upgrade', () => {
+      // Simulate the bug scenario
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
+        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' }
+      ];
+      
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Get seawall actions for Round 2
+      const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
+      
+      // Should show all seawall actions, not just 0.5m
+      expect(seawallActions.length).toBeGreaterThan(1);
+      
+      // Find the 0.5m action - should be REPLACED (it was replaced by 1.15m!)
+      const action05 = seawallActions.find(a => a.config.displayName === '0.5m');
+      expect(action05?.status).toBe(ActionStatus.REPLACED);
+      
+      // Find the 1.15m action - should be COMPLETED
+      const action115 = seawallActions.find(a => a.config.displayName === '1.15m');
+      expect(action115?.status).toBe(ActionStatus.COMPLETED);
+      
+      // Find the 2m action - should be SELECTABLE (has 1.15m prerequisite)
+      const action2m = seawallActions.find(a => a.config.displayName === '2m');
+      expect(action2m?.status).toBe(ActionStatus.SELECTABLE);
+    });
+
+    it('should show correct seawall options after 2m upgrade', () => {
+      // Test the full upgrade chain: 0.5m → 1.15m → 2m
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
+        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' },
+        { id: '3', action: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL, timestamp: 3000, value: '', userId: 'test', userName: 'Test User' }
+      ];
+      
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Get seawall actions for Round 2
+      const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
+      
+      // Debug: Verify the replacement chain works correctly
+      // Active actions after 2m upgrade should only contain the 2m seawall
+      // 0.5m and 1.15m should both show as REPLACED due to transitive replacement logic
+      
+      // Find the 0.5m action - should be REPLACED (it was replaced by 1.15m!)
+      const action05 = seawallActions.find(a => a.config.displayName === '0.5m');
+      expect(action05?.status).toBe(ActionStatus.REPLACED);
+      
+      // Find the 1.15m action - should be REPLACED (it was replaced by 2m!)
+      const action115 = seawallActions.find(a => a.config.displayName === '1.15m');
+      expect(action115?.status).toBe(ActionStatus.REPLACED);
+      
+      // Find the 2m action - should be COMPLETED
+      const action2m = seawallActions.find(a => a.config.displayName === '2m');
+      expect(action2m?.status).toBe(ActionStatus.COMPLETED);
+    });
+  });
+
+  describe('isActionReplaced', () => {
+    it('should return true when action is replaced by an active action', () => {
+      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+      const result = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, activeActions);
+      expect(result).toBe(true);
+    });
+
+    it('should return false when action is not replaced', () => {
+      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]);
+      const result = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, activeActions);
+      expect(result).toBe(false);
+    });
+
+    it('should return false when no actions are active', () => {
+      const activeActions = new Set<ActivityTypeEnum>();
+      const result = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, activeActions);
+      expect(result).toBe(false);
+    });
+
+    it('should handle transitive replacements (0.5m → 1.15m → 2m)', () => {
+      // When 2m is active, both 1.15m and 0.5m should be considered replaced
+      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL]);
+      
+      // Direct replacement: 2m replaces 1.15m
+      const result115 = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, activeActions);
+      expect(result115).toBe(true);
+      
+      // Transitive replacement: 2m replaces 1.15m, and 1.15m replaces 0.5m
+      const result05 = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, activeActions);
+      expect(result05).toBe(true);
     });
   });
 
@@ -97,9 +212,17 @@ describe('Progression Utils', () => {
     });
 
     it('should return SELECTABLE when all conditions are met', () => {
-      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]);
-      const result = getActionState(mockAction, activeActions, 'mangroves', 2);
+      const activeActions = new Set<ActivityTypeEnum>();
+      const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES];
+      const result = getActionState(config, activeActions, null, 1);
       expect(result.status).toBe(ActionStatus.SELECTABLE);
+    });
+
+    it('should return REPLACED when action was replaced by an active action', () => {
+      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+      const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL];
+      const result = getActionState(config, activeActions, 'seawall', 2);
+      expect(result.status).toBe(ActionStatus.REPLACED);
     });
   });
 

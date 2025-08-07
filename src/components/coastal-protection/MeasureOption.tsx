@@ -31,6 +31,14 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
             borderRadius: '63.28px',
             border: '3px solid #FFD700'
           };
+        case ActionStatus.REPLACED:
+          return {
+            background: 'radial-gradient(circle at 10.5% 16.4%, #D4AF37 0%, #B8860B 100%)',
+            boxShadow: '0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15)',
+            borderRadius: '63.28px',
+            border: '2px solid #B8860B',
+            opacity: 0.7
+          };
         case ActionStatus.SELECTABLE:
           return {
             background: 'radial-gradient(circle at 10.5% 16.4%, #B6FFF3 0%, #14F4CF 100%)',
@@ -84,6 +92,8 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
       switch (status) {
         case ActionStatus.COMPLETED:
           return '#000000';
+        case ActionStatus.REPLACED:
+          return '#8B4513';
         case ActionStatus.SELECTABLE:
           return '#202020';
         case ActionStatus.LOCKED_CONFLICT:
@@ -101,7 +111,7 @@ const MeasureOption: React.FC<MeasureOptionProps> = ({
 
   const isButtonDisabled = () => {
     if (status) {
-      return status === ActionStatus.LOCKED_CONFLICT || status === ActionStatus.LOCKED_PREREQUISITE;
+      return status === ActionStatus.LOCKED_CONFLICT || status === ActionStatus.LOCKED_PREREQUISITE || status === ActionStatus.REPLACED;
     }
     return disabled;
   };

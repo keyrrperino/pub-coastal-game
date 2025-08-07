@@ -21,6 +21,36 @@ export function prerequisitesAreMet(
 }
 
 /**
+ * Helper function to check if an action was replaced by an active action (including transitive replacements)
+ */
+export function isActionReplaced(
+  actionId: ActivityTypeEnum,
+  activeActions: Set<ActivityTypeEnum>
+): boolean {
+  // Check if any active action has this actionId as its 'replaces' value (direct replacement)
+  for (const activeActionId of activeActions) {
+    const activeActionConfig = progressionConfig[activeActionId];
+    if (activeActionConfig?.replaces === actionId) {
+      return true;
+    }
+  }
+  
+  // Check for transitive replacements: if any active action replaced something that replaced this action
+  for (const activeActionId of activeActions) {
+    const activeActionConfig = progressionConfig[activeActionId];
+    if (activeActionConfig?.replaces) {
+      // Check if the action that was replaced by this active action also replaced our target action
+      const intermediateReplacedConfig = progressionConfig[activeActionConfig.replaces];
+      if (intermediateReplacedConfig?.replaces === actionId) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+/**
  * Helper function to determine the status of any given action
  */
 export function getActionState(
@@ -35,7 +65,11 @@ export function getActionState(
   if (activeActions.has(actionConfig.id)) {
     status = ActionStatus.COMPLETED;
   }
-  // Check 2: Is there a conflicting CPM path active?
+  // Check 2: Was this action replaced by an active action?
+  else if (isActionReplaced(actionConfig.id, activeActions)) {
+    status = ActionStatus.REPLACED;
+  }
+  // Check 3: Is there a conflicting CPM path active?
   // This applies only to base-level actions (Round 1 unlocks).
   else if (
     activeCPMPath && 
@@ -44,14 +78,14 @@ export function getActionState(
   ) {
     status = ActionStatus.LOCKED_CONFLICT;
   }
-  // Check 3: Are prerequisites met?
+  // Check 4: Are prerequisites met?
   else if (
     actionConfig.prerequisites && 
     !prerequisitesAreMet(actionConfig.prerequisites, activeActions)
   ) {
     status = ActionStatus.LOCKED_PREREQUISITE;
   }
-  // Check 4: Is the round high enough?
+  // Check 5: Is the round high enough?
   else if (actionConfig.unlocksInRound > currentRound) {
     status = ActionStatus.LOCKED_PREREQUISITE;
   }
@@ -70,12 +104,13 @@ export function getActiveCPMPath(
   sectorActions: ActionConfig[],
   activeActions: Set<ActivityTypeEnum>
 ): string | null {
-  // Find any base-level action (Round 1) that's currently active
-  const activeBaseAction = sectorActions.find(action => 
-    action.unlocksInRound === 1 && activeActions.has(action.id)
+  // Find any active action to determine the measure type path
+  // This handles cases where base actions are replaced by upgrades
+  const activeAction = sectorActions.find(action => 
+    activeActions.has(action.id)
   );
   
-  return activeBaseAction ? activeBaseAction.measureType : null;
+  return activeAction ? activeAction.measureType : null;
 }
 
 /**

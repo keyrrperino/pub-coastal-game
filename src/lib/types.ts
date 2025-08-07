@@ -93,6 +93,7 @@ export type ScenarioConfigurationType = { [key: string]: { score: number; coin?:
 export enum ActionStatus {
   SELECTABLE = 'SELECTABLE', // The button is active and can be clicked.
   COMPLETED = 'COMPLETED',   // This specific action has been built.
+  REPLACED = 'REPLACED',     // This action was built but then replaced by an upgrade.
   LOCKED_CONFLICT = 'LOCKED_CONFLICT', // Cannot be built; a conflicting CPM path is active.
   LOCKED_PREREQUISITE = 'LOCKED_PREREQUISITE', // Cannot be built; requirements are not met (e.g., wrong round or missing base structure).
 }

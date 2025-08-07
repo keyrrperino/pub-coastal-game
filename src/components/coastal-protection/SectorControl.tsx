@@ -176,12 +176,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           const isSelected = actionState.status === ActionStatus.COMPLETED;
           const isAvailable = actionState.status === ActionStatus.SELECTABLE;
           const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
-                          actionState.status === ActionStatus.LOCKED_PREREQUISITE;
+                          actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                          actionState.status === ActionStatus.REPLACED;
           
           return {
             title: actionState.config.displayName,
             coinCount: actionState.config.cost,
-            onClick: isAvailable ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
+            onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
             isSelected,
             disabled,
             status: actionState.status, // Pass the status for potential UI enhancements
