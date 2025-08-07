@@ -85,3 +85,65 @@ export type NormalizedActivities = {
 };
 
 export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum } };
+
+// =========================================================================
+//  DYNAMIC UI PROGRESSION SYSTEM TYPES
+// =========================================================================
+
+export enum ActionStatus {
+  SELECTABLE = 'SELECTABLE', // The button is active and can be clicked.
+  COMPLETED = 'COMPLETED',   // This specific action has been built.
+  LOCKED_CONFLICT = 'LOCKED_CONFLICT', // Cannot be built; a conflicting CPM path is active.
+  LOCKED_PREREQUISITE = 'LOCKED_PREREQUISITE', // Cannot be built; requirements are not met (e.g., wrong round or missing base structure).
+}
+
+export interface ActionState {
+  config: ActionConfig; // ActionConfig from progression.config.ts
+  status: ActionStatus;
+}
+
+// Forward declaration - ActionConfig will be imported from progression.config.ts
+export interface ActionConfig {
+  /** A unique identifier corresponding to an ActivityTypeEnum. */
+  id: ActivityTypeEnum;
+
+  /** The human-readable name for the UI. */
+  displayName: string;
+
+  /** The resource cost of the action (e.g., number of coins). */
+  cost: number;
+
+  /** The minimum game round in which this action becomes available. */
+  unlocksInRound: number;
+
+  /**
+   * Defines prerequisites using OR/AND logic.
+   * Format: `[[A, B], [C]]` means "(A AND B) OR C".
+   * An empty array `[]` or omitting the property means no prerequisites.
+   */
+  prerequisites?: ActivityTypeEnum[][];
+
+  /**
+   * The ID of the action that this one replaces upon being built.
+   * The logic engine will treat the replaced action as no longer active.
+   */
+  replaces?: ActivityTypeEnum;
+
+  /** An array of action IDs that are mutually exclusive with this one. */
+  conflicts?: ActivityTypeEnum[];
+
+  sector: string;
+  measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
+}
+
+// The final object returned by the useProgression hook
+export interface ProgressionState {
+  activeCPM: 'mangroves' | 'seawall' | 'land-reclamation' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment' | null; // The currently built CPM path
+  mangroves: ActionState[];
+  seawall: ActionState[];
+  landReclamation: ActionState[];
+  stormSurgeBarrier: ActionState[];
+  artificialReef: ActionState[];
+  hybridMeasure: ActionState[];
+  revetment: ActionState[];
+}

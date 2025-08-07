@@ -6,8 +6,9 @@ import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
-import { useProgression } from '@/components/hooks/useProgression';
+import { useProgression, useProgressionLegacy } from '@/components/hooks/useProgression';
 import { ActionConfig, progressionConfig } from '@/lib/progression.config';
+import { ActionStatus, ActionState, ProgressionState } from '@/lib/types';
 
 interface SectorControlProps {
   sector: string;
@@ -89,8 +90,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     console.log('SectorControl currentRound state:', currentRound);
   }, [currentRound]);
 
-  // Use the progression system
-  const { getActionsForSector } = useProgression(activityLog, currentRound);
+  // Use the legacy progression system for now - we'll update the render functions to use the new system
+  const { getActionsForSector } = useProgressionLegacy(activityLog, currentRound);
 
   // Handle round changes - reset coins only
   useEffect(() => {
@@ -226,7 +227,74 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     };
   };
 
-  // Helper function to render sector section
+  // Helper function to render sector section using new ProgressionState system
+  const renderSectorSectionNew = (sectorId: string, title: string) => {
+    const progressionState = useProgression(activityLog, currentRound, sectorId);
+    
+    // Map measure types to their display names and progression state properties
+    const measureTypeConfig = [
+      { key: 'mangroves', title: 'MANGROVES', actions: progressionState.mangroves },
+      { key: 'seawall', title: 'SEAWALL', actions: progressionState.seawall },
+      { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: 'Seawall upgrade', actions: progressionState.landReclamation },
+      { key: 'storm-surge-barrier', title: 'STORM SURGE BARRIER', subtitle: 'Premium protection', actions: progressionState.stormSurgeBarrier },
+      { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: 'Eco-friendly solution', actions: progressionState.artificialReef },
+      { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: 'Combined approach', actions: progressionState.hybridMeasure },
+      { key: 'revetment', title: 'REVETMENT', actions: progressionState.revetment },
+    ];
+
+    // Create measures array - only include measure types that have actions
+    const measures = measureTypeConfig
+      .filter(config => config.actions.length > 0)
+      .map(config => ({
+        type: config.key as any,
+        title: config.title,
+        subtitle: config.subtitle,
+        options: config.actions.map(actionState => {
+          const isSelected = actionState.status === ActionStatus.COMPLETED;
+          const isAvailable = actionState.status === ActionStatus.SELECTABLE;
+          const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                          actionState.status === ActionStatus.LOCKED_PREREQUISITE;
+          
+          return {
+            title: actionState.config.displayName,
+            coinCount: actionState.config.cost,
+            onClick: isAvailable ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
+            isSelected,
+            disabled,
+            status: actionState.status, // Pass the status for potential UI enhancements
+          };
+        }),
+      }));
+
+    // Determine if there are any completed actions that can be demolished
+    const completedActions = Object.values(progressionState)
+      .filter((value): value is ActionState[] => Array.isArray(value))
+      .flat()
+      .filter(actionState => actionState.status === ActionStatus.COMPLETED);
+    
+    const canDemolish = completedActions.length > 0;
+    const demolishOption = {
+      coinCount: 1,
+      onClick: canDemolish ? () => {
+        // For now, demolish the first completed action (could be enhanced to show a selection)
+        if (completedActions.length > 0) {
+          handleDemolishClick(completedActions[0].config.id);
+        }
+      } : undefined,
+      disabled: !canDemolish,
+    };
+
+    return (
+      <SectorSection
+        key={sectorId}
+        title={title}
+        measures={measures as any}
+        demolishOption={demolishOption}
+      />
+    );
+  };
+
+  // Helper function to render sector section (legacy version)
   const renderSectorSection = (sectorId: string, title: string) => {
     const { activeActions, availableActions, displayableActions } = getActionsForSector(sectorId);
     const groupedAvailable = groupActionsByMeasureType(availableActions);
@@ -339,8 +407,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
           {/* Sector sections - now stacked vertically */}
           <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-            {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
-            {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
+            {renderSectorSectionNew(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
+            {renderSectorSectionNew(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
           </div>
         </div>
       </div>
