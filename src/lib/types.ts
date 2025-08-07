@@ -125,10 +125,10 @@ export interface ActionConfig {
   prerequisites?: ActivityTypeEnum[][];
 
   /**
-   * The ID of the action that this one replaces upon being built.
-   * The logic engine will treat the replaced action as no longer active.
+   * The IDs of the actions that this one replaces upon being built.
+   * The logic engine will treat the replaced actions as no longer active.
    */
-  replaces?: ActivityTypeEnum;
+  replaces?: ActivityTypeEnum[];
 
   /** An array of action IDs that are mutually exclusive with this one. */
   conflicts?: ActivityTypeEnum[];

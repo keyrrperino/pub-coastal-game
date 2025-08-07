@@ -162,9 +162,41 @@ describe('Progression Utils', () => {
       const result115 = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, activeActions);
       expect(result115).toBe(true);
       
-      // Transitive replacement: 2m replaces 1.15m, and 1.15m replaces 0.5m
+      // Direct replacement: 2m replaces 0.5m (new array-based replacement)
       const result05 = isActionReplaced(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, activeActions);
       expect(result05).toBe(true);
+    });
+
+    it('should handle direct jump from 0.5m to 2m', () => {
+      // Test the specific scenario: 0.5m built, then jump directly to 2m
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
+        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' }
+      ];
+      
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Get seawall actions for Round 2
+      const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
+      
+      // Find the 0.5m action - should be REPLACED (2m replaces both 0.5m and 1.15m)
+      const action05 = seawallActions.find(a => a.config.displayName === '0.5m');
+      expect(action05?.status).toBe(ActionStatus.REPLACED);
+      
+      // Find the 1.15m action - should be REPLACED (2m replaces both 0.5m and 1.15m)
+      const action115 = seawallActions.find(a => a.config.displayName === '1.15m');
+      expect(action115?.status).toBe(ActionStatus.REPLACED);
+      
+      // Find the 2m action - should be COMPLETED
+      const action2m = seawallActions.find(a => a.config.displayName === '2m');
+      expect(action2m?.status).toBe(ActionStatus.COMPLETED);
+      
+      // Only 2m should be active
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL)).toBe(true);
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL)).toBe(false);
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL)).toBe(false);
     });
   });
 

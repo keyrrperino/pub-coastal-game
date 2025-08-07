@@ -13,7 +13,7 @@ interface TemplateAction {
   cost: number;
   unlocksInRound: number;
   prerequisites?: string[][];
-  replaces?: string;
+  replaces?: string[];
   conflicts?: string[];
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
 }
@@ -39,13 +39,13 @@ const zone1Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_1_15: {
     displayName: '1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5']],
-    replaces: 'BUILD_SEAWALL_0_5',
+    replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
-    replaces: 'BUILD_SEAWALL_1_15',
+    replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -93,13 +93,13 @@ const zone2Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_1_15: {
     displayName: '1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5']],
-    replaces: 'BUILD_SEAWALL_0_5',
+    replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
-    replaces: 'BUILD_SEAWALL_1_15',
+    replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -116,7 +116,7 @@ const zone2Template: Record<string, TemplateAction> = {
   BUILD_COASTAL_BARRIER_2: {
     displayName: '2m', cost: 4, unlocksInRound: 2,
     prerequisites: [['BUILD_COASTAL_BARRIER_0_5']],
-    replaces: 'BUILD_COASTAL_BARRIER_0_5',
+    replaces: ['BUILD_COASTAL_BARRIER_0_5'],
     measureType: 'storm-surge-barrier',
   },
 };
@@ -137,7 +137,7 @@ const zone3Template: Record<string, TemplateAction> = {
   BUILD_REVETMENT_2: {
     displayName: '2m', cost: 4, unlocksInRound: 3,
     prerequisites: [['BUILD_REVETMENT_1_15']],
-    replaces: 'BUILD_REVETMENT_1_15',
+    replaces: ['BUILD_REVETMENT_1_15'],
     measureType: 'revetment',
   },
   // --- SEAWALL PATH ---
@@ -149,13 +149,13 @@ const zone3Template: Record<string, TemplateAction> = {
   BUILD_SEAWALL_1_15: {
     displayName: '1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5']],
-    replaces: 'BUILD_SEAWALL_0_5',
+    replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
     displayName: '2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
-    replaces: 'BUILD_SEAWALL_1_15',
+    replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
@@ -172,7 +172,7 @@ const zone3Template: Record<string, TemplateAction> = {
   BUILD_HYBRID_MEASURE_1_15: {
     displayName: '1.15m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
-    replaces: 'BUILD_HYBRID_MEASURE_0_5',
+    replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
@@ -275,7 +275,8 @@ function createZoneActions(template: Record<string, TemplateAction>, enumMap: Re
       prerequisites: templateAction.prerequisites?.map(orGroup =>
         orGroup.map(id => enumMap[id]).filter(Boolean)
       ).filter(group => group.length > 0),
-      replaces: templateAction.replaces ? enumMap[templateAction.replaces] : undefined,
+      replaces: templateAction.replaces ? 
+        templateAction.replaces.map(r => enumMap[r]).filter(Boolean) : undefined,
       conflicts: templateAction.conflicts?.map(id => enumMap[id]).filter(Boolean),
     };
 

@@ -27,10 +27,10 @@ export function isActionReplaced(
   actionId: ActivityTypeEnum,
   activeActions: Set<ActivityTypeEnum>
 ): boolean {
-  // Check if any active action has this actionId as its 'replaces' value (direct replacement)
+  // Check if any active action has this actionId in its 'replaces' array (direct replacement)
   for (const activeActionId of activeActions) {
     const activeActionConfig = progressionConfig[activeActionId];
-    if (activeActionConfig?.replaces === actionId) {
+    if (activeActionConfig?.replaces?.includes(actionId)) {
       return true;
     }
   }
@@ -39,10 +39,12 @@ export function isActionReplaced(
   for (const activeActionId of activeActions) {
     const activeActionConfig = progressionConfig[activeActionId];
     if (activeActionConfig?.replaces) {
-      // Check if the action that was replaced by this active action also replaced our target action
-      const intermediateReplacedConfig = progressionConfig[activeActionConfig.replaces];
-      if (intermediateReplacedConfig?.replaces === actionId) {
-        return true;
+      // Check each replaced action to see if it also replaced our target action
+      for (const replacedAction of activeActionConfig.replaces) {
+        const intermediateReplacedConfig = progressionConfig[replacedAction];
+        if (intermediateReplacedConfig?.replaces?.includes(actionId)) {
+          return true;
+        }
       }
     }
   }
@@ -145,10 +147,10 @@ export function calculateActiveActions(activityLog: ActivityLogType[]): Set<Acti
       // Add the built action (skip demolish actions without sector)
       currentlyActive.add(log.action);
       
-      // Handle replacements - if this action replaces another, remove the replaced one
+      // Handle replacements - if this action replaces others, remove the replaced ones
       const config = progressionConfig[log.action];
       if (config?.replaces) {
-        currentlyActive.delete(config.replaces);
+        config.replaces.forEach(replacedAction => currentlyActive.delete(replacedAction));
       }
     }
   }
