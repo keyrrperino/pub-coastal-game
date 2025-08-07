@@ -28,7 +28,7 @@ export enum SectorEnum {
   SECTOR_B = "Sector B"
 };
 
-export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' | 'seawall' | 'hybrid' | 'artificialReef';
+export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' | 'seawall' | 'hybrid' | 'artificialReef' | 'boardwalk' | 'path';
 
 export type SectorsButtonConfigType = {
   [userSector in UserSectorEnum]: {

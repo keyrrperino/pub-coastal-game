@@ -64,6 +64,11 @@ export enum CutScenesEnum {
 
 
 export enum ActivityTypeEnum {
+  // Upgrades for Sector 1 (Boardwalk, Path)
+  R1_1A_BUILD_BOARDWALK = "r1 1a boardwalk",
+  R1_1A_BUILD_PATH = "r1 1a path",
+  R1_1B_BUILD_BOARDWALK = "r1 1b boardwalk",
+  R1_1B_BUILD_PATH = "r1 1b path",
   START_GAME = "play btn",
 
   DISPLAY_INSTRUCTION = "countdown",
@@ -183,6 +188,9 @@ export enum ActivityTypeEnum {
   R1_3B_BUILD_0_5_HYBRID_MEASURE = "r1 3b hb 0.5",
   R1_3B_BUILD_1_15_HYBRID_MEASURE = "r1 3b hb 1.15",
   R1_3B_BUILD_2_HYBRID_MEASURE = "r1 3b hb 2",
+
+  // System actions
+  DEMOLISH = "demolish",
 }
 
 export enum GameEnum {
