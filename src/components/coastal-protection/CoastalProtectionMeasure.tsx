@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 interface CoastalProtectionMeasureProps {
   title: string;
   subtitle?: string;
-  icon: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure';
+  icon: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
   options: Array<{
     title: string;
     coinCount: number;
@@ -14,6 +14,7 @@ interface CoastalProtectionMeasureProps {
     disabled?: boolean;
   }>;
   isActive?: boolean;
+  isFullyUpgraded?: boolean;
 }
 
 const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
@@ -21,7 +22,8 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
   subtitle,
   icon,
   options,
-  isActive = true
+  isActive = true,
+  isFullyUpgraded = false
 }) => {
   const getIconSrc = () => {
     switch (icon) {
@@ -37,6 +39,8 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         return '/assets/mangroves-icon-3a15a8.png'; // Using mangroves icon as fallback
       case 'hybrid-measure':
         return '/assets/land-reclamation-icon-6b707d.png'; // Using land reclamation icon as fallback
+      case 'revetment':
+        return '/assets/seawall-icon-41fadd.png'; // Using seawall icon as fallback
       default:
         return '';
     }
@@ -56,6 +60,8 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         return '#87CEEB'; // Sky blue for eco-friendly solution
       case 'hybrid-measure':
         return '#DDA0DD'; // Plum color for combined approach
+      case 'revetment':
+        return '#B0C4DE'; // Light steel blue for revetment
       default:
         return '#FFFFFF';
     }
@@ -94,16 +100,27 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-center gap-[16.05px] w-full mt-2">
-        {options.map((option, index) => (
-          <MeasureOption
-            key={index}
-            title={option.title}
-            coinCount={option.coinCount}
-            onClick={option.onClick}
-            isSelected={option.isSelected}
-            disabled={option.disabled}
-          />
-        ))}
+        {isFullyUpgraded && options.length === 0 ? (
+          <div className="flex flex-col items-center gap-[6px]" style={{gap: '6px'}}>
+            <div className="flex flex-col justify-center items-center w-[76px] h-[76px]">
+              <div className={`${styles.novecentoBold} text-[14px] font-bold leading-[14px] text-white uppercase text-center`}>
+                FULLY<br/>UPGRADED
+              </div>
+            </div>
+            <div style={{height: '20px'}}></div> {/* Match CoinIndicator height */}
+          </div>
+        ) : (
+          options.map((option, index) => (
+            <MeasureOption
+              key={index}
+              title={option.title}
+              coinCount={option.coinCount}
+              onClick={option.onClick}
+              isSelected={option.isSelected}
+              disabled={option.disabled}
+            />
+          ))
+        )}
       </div>
     </div>
   );

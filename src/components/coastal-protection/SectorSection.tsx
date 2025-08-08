@@ -6,9 +6,10 @@ import styles from './styles.module.css';
 interface SectorSectionProps {
   title: string;
   measures: Array<{
-    type: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure';
+    type: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
     title: string;
     subtitle?: string;
+    isFullyUpgraded?: boolean;
     options: Array<{
       title: string;
       coinCount: number;
@@ -60,6 +61,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
               icon={measure.type}
               options={measure.options}
               isActive={true} // All measures should be available
+              isFullyUpgraded={measure.isFullyUpgraded}
             />
           ))}
         </div>

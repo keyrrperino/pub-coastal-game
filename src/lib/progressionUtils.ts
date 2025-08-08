@@ -260,3 +260,73 @@ export function hasAnyConstructionInSector(
   
   return false;
 }
+
+/**
+ * Non-hook version of progression state calculation for testing
+ * This replicates the logic from useProgression hook without React dependencies
+ */
+export function calculateProgressionState(
+  activityLog: ActivityLogType[], 
+  currentRound: number,
+  sector: string
+) {
+  // 1. Calculate active actions from activity log
+  const activeActions = calculateActiveActions(activityLog);
+
+  // 2. Get all actions for this sector
+  const sectorActions = getSectorActions(sector);
+
+  // 3. Determine the active CPM path
+  const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+
+  // 4. Build the ProgressionState object
+  const measureTypes = [
+    'mangroves',
+    'seawall', 
+    'land-reclamation',
+    'storm-surge-barrier',
+    'artificial-reef',
+    'hybrid-measure',
+    'revetment'
+  ];
+
+  const state = {
+    activeCPM: activeCPMPath as any,
+    mangroves: [] as any[],
+    seawall: [] as any[],
+    landReclamation: [] as any[],
+    stormSurgeBarrier: [] as any[],
+    artificialReef: [] as any[],
+    hybridMeasure: [] as any[],
+    revetment: [] as any[]
+  };
+
+  // Map measure types to state property names
+  const measureTypeToProperty: Record<string, keyof typeof state> = {
+    'mangroves': 'mangroves',
+    'seawall': 'seawall',
+    'land-reclamation': 'landReclamation',
+    'storm-surge-barrier': 'stormSurgeBarrier',
+    'artificial-reef': 'artificialReef',
+    'hybrid-measure': 'hybridMeasure',
+    'revetment': 'revetment'
+  };
+
+  // Populate each measure type
+  for (const measureType of measureTypes) {
+    const propertyName = measureTypeToProperty[measureType];
+    if (propertyName && propertyName !== 'activeCPM') {
+      state[propertyName] = getActionsForMeasureType(
+        measureType,
+        sectorActions,
+        activeActions,
+        activeCPMPath,
+        currentRound,
+        activityLog,
+        sector
+      );
+    }
+  }
+
+  return state;
+}

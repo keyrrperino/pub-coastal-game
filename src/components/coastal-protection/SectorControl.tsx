@@ -166,30 +166,42 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       { key: 'revetment', title: 'REVETMENT', actions: progressionState.revetment },
     ];
 
-    // Create measures array - only include measure types that have actions
+    // Create measures array - include all measure types, show "Fully Upgraded" for empty ones
     const measures = measureTypeConfig
-      .filter(config => config.actions.length > 0)
-      .map(config => ({
-        type: config.key as any,
-        title: config.title,
-        subtitle: config.subtitle,
-        options: config.actions.map(actionState => {
-          const isSelected = actionState.status === ActionStatus.COMPLETED;
-          const isAvailable = actionState.status === ActionStatus.SELECTABLE;
-          const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
-                          actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
-                          actionState.status === ActionStatus.REPLACED;
-          
-          return {
-            title: actionState.config.displayName,
-            coinCount: actionState.config.cost,
-            onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
-            isSelected,
-            disabled,
-            status: actionState.status, // Pass the status for potential UI enhancements
-          };
-        }),
-      }));
+      .map(config => {
+        // Check if this is an active CPM path with no available actions
+        const isFullyUpgraded = config.actions.length === 0 && progressionState.activeCPM === config.key;
+        
+        // If no actions and not active CPM path, don't show the card
+        if (config.actions.length === 0 && !isFullyUpgraded) {
+          return null;
+        }
+        
+        // Normal case: show available actions or fully upgraded state
+        return {
+          type: config.key as any,
+          title: config.title,
+          subtitle: config.subtitle,
+          isFullyUpgraded,
+          options: config.actions.map(actionState => {
+            const isSelected = actionState.status === ActionStatus.COMPLETED;
+            const isAvailable = actionState.status === ActionStatus.SELECTABLE;
+            const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                            actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                            actionState.status === ActionStatus.REPLACED;
+            
+            return {
+              title: actionState.config.displayName,
+              coinCount: actionState.config.cost,
+              onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
+              isSelected,
+              disabled,
+              status: actionState.status, // Pass the status for potential UI enhancements
+            };
+          }),
+        };
+      })
+      .filter(Boolean); // Remove null entries
 
     // Determine if there are any constructions in this sector across the entire game session
     const canDemolish = hasAnyConstructionInSector(sectorId, activityLog);
