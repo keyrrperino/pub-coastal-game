@@ -293,28 +293,50 @@ export function hasAnySelectableActionsInMeasureType(
   currentRound: number
 ): boolean {
   const measureActions = sectorActions.filter(action => action.measureType === measureType);
-  
-  // Check all actions in this measure type, regardless of buttonGroup
+
+  // Determine which buttonGroups the player has already committed to within this measure type
+  // If any action in a buttonGroup is active (or has been replaced by an active action),
+  // then other options in that same group should NOT be considered for "future availability"
+  // when evaluating Fully Upgraded.
+  const committedGroups = new Set<number>();
   for (const action of measureActions) {
+    if (activeActions.has(action.id) || isActionReplaced(action.id, activeActions)) {
+      committedGroups.add(action.buttonGroup);
+    }
+  }
+  
+  // Check all actions in this measure type
+  for (const action of measureActions) {
+    // Skip actions from buttonGroups that the player has already committed to,
+    // unless this specific action is the one they committed to (completed/replaced).
+    // This treats unselected options from earlier rounds as "not part of evaluation".
+    if (
+      committedGroups.has(action.buttonGroup) &&
+      !activeActions.has(action.id) &&
+      !isActionReplaced(action.id, activeActions)
+    ) {
+      continue;
+    }
+
     const actionState = getActionState(action, activeActions, activeCPMPath, currentRound);
-    
+
     // Consider an action available if it's selectable now OR will become selectable in future rounds
     if (actionState.status === ActionStatus.SELECTABLE) {
       return true;
     }
-    
+
     // Also check if it's locked only due to round requirement (will be available in future)
     if (actionState.status === ActionStatus.LOCKED_PREREQUISITE && action.unlocksInRound > currentRound) {
       // Check if prerequisites would be met (ignoring round requirement)
-      const wouldPrerequisitesBeMet = !action.prerequisites || 
+      const wouldPrerequisitesBeMet = !action.prerequisites ||
         prerequisitesAreMet(action.prerequisites, activeActions);
-      
+
       if (wouldPrerequisitesBeMet) {
         return true;
       }
     }
   }
-  
+
   return false;
 }
 
