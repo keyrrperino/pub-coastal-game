@@ -20,12 +20,12 @@ const InsufficientBudgetModal: React.FC<InsufficientBudgetModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className={`fixed inset-0 z-50 flex items-center justify-center ${styles.modalBackdrop}`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }}
       onClick={handleBackdropClick}
     >
       <div 
-        className="relative flex flex-col items-center gap-[20px] py-[20px] px-[30px] rounded-[26.08px] backdrop-blur-[17.39px]"
+        className={`relative flex flex-col items-center gap-[20px] py-[20px] px-[30px] rounded-[26.08px] backdrop-blur-[17.39px] ${styles.modalContent}`}
         style={{
           background: 'rgba(255, 123, 152, 0.3)',
           width: '812px',

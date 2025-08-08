@@ -235,3 +235,41 @@
   font-family: 'Novecento Bold', sans-serif;
   font-weight: 700;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes errorPopupSlam {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-5deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(2deg);
+  }
+  70% {
+    transform: scale(0.95) rotate(-1deg);
+  }
+  85% {
+    transform: scale(1.02) rotate(0.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.modalBackdrop {
+  animation: fadeIn 0.15s ease-out;
+}
+
+.modalContent {
+  animation: errorPopupSlam 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
