@@ -6,18 +6,22 @@ import styles from './styles.module.css';
 interface SectorSectionProps {
   title: string;
   measures: Array<{
-    type: 'land-reclamation' | 'seawall' | 'mangroves';
+    type: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
     title: string;
     subtitle?: string;
+    isFullyUpgraded?: boolean;
     options: Array<{
       title: string;
       coinCount: number;
       onClick?: () => void;
+      isSelected?: boolean;
+      disabled?: boolean;
     }>;
   }>;
   demolishOption?: {
     coinCount: number;
     onClick?: () => void;
+    disabled?: boolean;
   };
 }
 
@@ -36,8 +40,9 @@ const SectorSection: React.FC<SectorSectionProps> = ({
         {demolishOption && (
           <div className="flex flex-col items-center gap-[11px] min-w-[135px]">
             <button
-              onClick={demolishOption.onClick}
-              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-[8px] border-cyan-300`}
+              onClick={demolishOption.disabled ? undefined : demolishOption.onClick}
+              disabled={demolishOption.disabled}
+              className={`${styles.demolishButton} flex flex-col justify-center items-center w-[135px] h-[135px] rounded-full border-[8px] border-cyan-300 ${demolishOption.disabled ? 'opacity-50 cursor-not-allowed' : 'pulseAnimation'}`}
             >
               <div className={`${styles.novecentoBold} text-[20.3px] font-bold leading-[16.24px] text-white uppercase`}>
                 DEMOLISH
@@ -55,7 +60,8 @@ const SectorSection: React.FC<SectorSectionProps> = ({
               subtitle={measure.subtitle}
               icon={measure.type}
               options={measure.options}
-              isActive={index === 0} // Only the first measure is active for now
+              isActive={true} // All measures should be available
+              isFullyUpgraded={measure.isFullyUpgraded}
             />
           ))}
         </div>

@@ -25,6 +25,31 @@ export const userIdToSector: Record<string, number> = {
 };
 
 export const SplineTriggersConfig: SplineTriggersConfigType = {
+  // --- Upgrades for Sector 1 (Boardwalk, Path) ---
+  [ActivityTypeEnum.R1_1A_BUILD_BOARDWALK]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / BUILD BOARDWALK",
+    activityType: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK
+  },
+  [ActivityTypeEnum.R1_1A_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_1A_BUILD_PATH
+  },
+  [ActivityTypeEnum.R1_1B_BUILD_BOARDWALK]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / BUILD BOARDWALK",
+    activityType: ActivityTypeEnum.R1_1B_BUILD_BOARDWALK
+  },
+  [ActivityTypeEnum.R1_1B_BUILD_PATH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / BUILD PATH",
+    activityType: ActivityTypeEnum.R1_1B_BUILD_PATH
+  },
   [ActivityTypeEnum.START_GAME]: {
     state: ['State', 'hidden'],
     events: [
@@ -142,6 +167,32 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 2M SEA WALL",
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL
+  },
+  // R1 1A / UPGRADE LAND RECLAMATION TO SEAWALL
+  [ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_1_15]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 1.15M",
+    activityType: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_1_15
+  },
+  [ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_2]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 2M",
+    activityType: ActivityTypeEnum.R1_1A_UPGRADE_LR_TO_SEAWALL_2
+  },
+  // R1 1B / UPGRADE LAND RECLAMATION TO SEAWALL
+  [ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 1.15M",
+    activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15
+  },
+  [ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 2M",
+    activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2
   },
   // R1 2B / BUILD PLANT MANGROVES
   [ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES]: {
@@ -486,7 +537,6 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
   },
 };
-
 export const SectorsButtonConfig: SectorsButtonConfigType = {
   [UserSectorEnum.USER_SECTOR_ONE]: {
     [SectorEnum.SECTOR_A]: {
@@ -503,6 +553,12 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL],
       ].filter(Boolean) as SplineTriggerConfigItem[],
+      boardwalk: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_BOARDWALK],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
+      path: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1A_BUILD_PATH],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
     },
     [SectorEnum.SECTOR_B]: {
       mangroves: [
@@ -517,6 +573,12 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL],
         SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
+      boardwalk: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_BOARDWALK],
+      ].filter(Boolean) as SplineTriggerConfigItem[],
+      path: [
+        SplineTriggersConfig[ActivityTypeEnum.R1_1B_BUILD_PATH],
       ].filter(Boolean) as SplineTriggerConfigItem[],
     }
   },
@@ -586,8 +648,7 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
   }
 };
 
-export const lobbyStateDefaultValue = {
-  roundTimer: GAME_ROUND_TIMER,
+export const lobbyStateDefaultValue = {  roundTimer: GAME_ROUND_TIMER,
   waterLevel: 0,
   gameStartsInCountdown: GAME_STARST_IN_COUNTDOWN,
   gameLobbyStatus: GameLobbyStatus.INITIALIZING,
@@ -840,6 +901,8 @@ export const subSectors = [
   { sector: 1, subSector: "1A", activities: [
     "None",
     ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+    ActivityTypeEnum.R1_1A_BUILD_BOARDWALK,
+    ActivityTypeEnum.R1_1A_BUILD_PATH,
     ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION,
     ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION,
     ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION,
@@ -850,6 +913,8 @@ export const subSectors = [
   { sector: 1, subSector: "1B", activities: [
     "None",
     ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES,
+    ActivityTypeEnum.R1_1B_BUILD_BOARDWALK,
+    ActivityTypeEnum.R1_1B_BUILD_PATH,
     ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION,
     ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION,
     ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION,
@@ -1043,18 +1108,18 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 3 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 3 },
 
-    // Seawall 0.5
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
-    // Seawall 1.15
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
-    // Seawall 2
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
-    [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  // Seawall 0.5
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-2`]: { score: -10, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  // Seawall 1.15
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  // Seawall 2
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
 
   // --- SECTOR 3B (Player 3) ---
   "3_3B_None-0.3-1": { score: -30, coin: 0, cutscene: CutScenesEnum.R1_3B_0 },
@@ -2190,7 +2255,18 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Seawall (2m) -> Build a promenade
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R2_2B_BUILD_PROMENADE_ALONG_THE_SEAWALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
+
+  // Seawall 2m and Path upgrades for Sector 1A and 1B (Round 3)
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R1_1A_BUILD_PATH}-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1A_BUILD_PATH}-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R1_1A_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_PATH}-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_PATH}-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R1_1B_3 },
 }
+
 
 export const sceneSectorConfigurations: ScenarioConfigurationType = {
   ...roundOneScenarioConfiguration,
