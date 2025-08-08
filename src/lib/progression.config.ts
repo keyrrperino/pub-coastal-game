@@ -12,73 +12,74 @@ interface TemplateAction {
   displayName: string;
   cost: number;
   unlocksInRound: number;
-  buttonGroup: number;
   prerequisites?: string[][];
   replaces?: string[];
   conflicts?: string[];
+  blocksActions?: string[];
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
 }
 
 const zone1Template: Record<string, TemplateAction> = {
   // --- MANGROVE PATH ---
   PLANT_MANGROVE: {
-    displayName: 'Plant', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: 'Plant', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_SEAWALL_0_5', 'BUILD_LAND_RECLAMATION_0_5'],
     measureType: 'mangroves',
   },
   BUILD_BOARDWALK: {
-    displayName: 'Build Board Walk', cost: 1, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Build Board Walk', cost: 1, unlocksInRound: 2,
     prerequisites: [['PLANT_MANGROVE']],
     measureType: 'mangroves',
   },
-  // --- SEAWALL PATH ---
+  // --- SEAWALL PATH (NEW: All heights available in R1, but with upgrade chain) ---
   BUILD_SEAWALL_0_5: {
-    displayName: '0.5m', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5']],
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    displayName: '2m', cost: 3, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
   },
   // --- LAND RECLAMATION PATH ---
   BUILD_LAND_RECLAMATION_0_5: {
-    displayName: '0.5m', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'land-reclamation',
   },
   BUILD_LAND_RECLAMATION_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_LAND_RECLAMATION_0_5'],
     measureType: 'land-reclamation',
   },
   BUILD_LAND_RECLAMATION_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_1_15: {
-    displayName: 'Seawall 1.15m', cost: 2, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Seawall 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_2: {
-    displayName: 'Seawall 2m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Seawall 2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     replaces: ['UPGRADE_LR_TO_SEAWALL_1_15'],
     measureType: 'land-reclamation',
@@ -89,46 +90,47 @@ const zone1Template: Record<string, TemplateAction> = {
 const zone2Template: Record<string, TemplateAction> = {
   // --- MANGROVE PATH ---
   PLANT_MANGROVE: {
-    displayName: 'Plant', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: 'Plant', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_SEAWALL_0_5', 'BUILD_COASTAL_BARRIER_0_5'],
     measureType: 'mangroves',
   },
   BUILD_BOARDWALK: {
-    displayName: 'Build Board Walk', cost: 1, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Build Board Walk', cost: 1, unlocksInRound: 2,
     prerequisites: [['PLANT_MANGROVE']],
     measureType: 'mangroves',
   },
-  // --- SEAWALL PATH ---
+  // --- SEAWALL PATH (NEW: All heights available in R1, but with upgrade chain) ---
   BUILD_SEAWALL_0_5: {
-    displayName: '0.5m', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5']],
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    displayName: '2m', cost: 3, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
   },
   // --- COASTAL BARRIER (STORM SURGE) PATH ---
   BUILD_COASTAL_BARRIER_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 2, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
   BUILD_COASTAL_BARRIER_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2, buttonGroup: 2,
+    displayName: '2m', cost: 4, unlocksInRound: 2,
     prerequisites: [['BUILD_COASTAL_BARRIER_0_5']],
     replaces: ['BUILD_COASTAL_BARRIER_0_5'],
     measureType: 'storm-surge-barrier',
@@ -139,58 +141,59 @@ const zone2Template: Record<string, TemplateAction> = {
 const zone3Template: Record<string, TemplateAction> = {
   // --- ARTIFICIAL REEF PATH ---
   BUILD_ARTIFICIAL_REEF: {
-    displayName: 'Build', cost: 2, unlocksInRound: 1, buttonGroup: 1,
+    displayName: 'Build', cost: 2, unlocksInRound: 1,
     conflicts: ['BUILD_SEAWALL_0_5', 'BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
+    displayName: '1.15m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     measureType: 'revetment',
   },
   BUILD_REVETMENT_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 3, buttonGroup: 3,
+    displayName: '2m', cost: 4, unlocksInRound: 3,
     prerequisites: [['BUILD_REVETMENT_1_15']],
     replaces: ['BUILD_REVETMENT_1_15'],
     measureType: 'revetment',
   },
-  // --- SEAWALL PATH ---
+  // --- SEAWALL PATH (NEW: All heights available in R1, but with upgrade chain) ---
   BUILD_SEAWALL_0_5: {
-    displayName: '0.5m', cost: 1, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5']],
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
-    prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15']],
+    displayName: '2m', cost: 3, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2, buttonGroup: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
+    blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
   },
   // --- HYBRID MEASURE PATH ---
   BUILD_HYBRID_MEASURE_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1, buttonGroup: 1,
+    displayName: '0.5m', cost: 2, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 2, buttonGroup: 2,
+    displayName: '1.15m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
     replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2, buttonGroup: 2,
+    displayName: '2m', cost: 4, unlocksInRound: 2,
     prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
     measureType: 'hybrid-measure',
   },
@@ -296,6 +299,7 @@ function createZoneActions(template: Record<string, TemplateAction>, enumMap: Re
       replaces: templateAction.replaces ? 
         templateAction.replaces.map(r => enumMap[r]).filter(Boolean) : undefined,
       conflicts: templateAction.conflicts?.map(id => enumMap[id]).filter(Boolean),
+      blocksActions: templateAction.blocksActions?.map(id => enumMap[id]).filter(Boolean),
     };
 
     finalConfig[finalId as string] = newAction;

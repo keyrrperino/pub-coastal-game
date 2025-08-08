@@ -130,9 +130,6 @@ export interface ActionConfig {
   /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
 
-  /** The button group this action belongs to (1 = first group, 2 = second group, etc.) */
-  buttonGroup: number;
-
   /**
    * Defines prerequisites using OR/AND logic.
    * Format: `[[A, B], [C]]` means "(A AND B) OR C".
@@ -148,6 +145,12 @@ export interface ActionConfig {
 
   /** An array of action IDs that are mutually exclusive with this one. */
   conflicts?: ActivityTypeEnum[];
+
+  /** 
+   * Actions that become unavailable when this action is built.
+   * Used for cases like Build Path blocking seawall upgrades.
+   */
+  blocksActions?: ActivityTypeEnum[];
 
   sector: string;
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
