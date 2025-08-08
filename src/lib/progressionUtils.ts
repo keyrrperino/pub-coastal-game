@@ -359,6 +359,57 @@ export function getCPMCompletionRound(
 }
 
 /**
+ * Calculate which buttons should be visible for a round (called once at round start)
+ * This determines the static set of buttons that will remain visible throughout the round
+ */
+export function calculateRoundStartButtonSet(
+  activityLog: ActivityLogType[],
+  currentRound: number,
+  sector: string,
+  measureType: string
+): { config: ActionConfig; status: ActionStatus }[] {
+  // Calculate progression state at round start
+  const activeActions = calculateActiveActions(activityLog);
+  const sectorActions = getSectorActions(sector);
+  const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+  
+  // Get all actions for this measure type
+  const allActionsForMeasure = getActionsForMeasureType(
+    measureType,
+    sectorActions,
+    activeActions,
+    activeCPMPath,
+    currentRound,
+    activityLog,
+    sector
+  );
+  
+  // Filter actions based on round start rules
+  return allActionsForMeasure.filter(actionState => {
+    // Rule 1: Hide actions completed in previous rounds
+    if (actionState.status === ActionStatus.COMPLETED) {
+      const completedLog = activityLog.find(log => 
+        log.action === actionState.config.id && log.round !== undefined
+      );
+      const completedInRound = completedLog?.round || currentRound;
+      // Hide if completed in a previous round
+      return completedInRound >= currentRound;
+    }
+    
+    // Rule 2: In active CPM paths, hide non-selectable actions
+    if (activeCPMPath === measureType) {
+      const isNonSelectable = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                            actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                            actionState.status === ActionStatus.REPLACED;
+      return !isNonSelectable; // Hide non-selectable actions in active CPM
+    }
+    
+    // Rule 3: In non-active CPM paths, show all actions (they'll be properly disabled)
+    return true;
+  });
+}
+
+/**
  * Non-hook version of progression state calculation for testing
  * This replicates the logic from useProgression hook without React dependencies
  */
