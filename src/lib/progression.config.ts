@@ -9,13 +9,31 @@ export type { ActionConfig } from './types';
 // =========================================================================
 
 interface TemplateAction {
+  /** The human-readable name for the UI. */
   displayName: string;
+  /** The resource cost of the action (e.g., number of coins). */
   cost: number;
+  /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
+  /**
+   * Defines prerequisites using OR/AND logic.
+   * Format: `[['A', 'B'], ['C']]` means "(A AND B) OR C".
+   * Uses template keys that will be mapped to ActivityTypeEnum values.
+   */
   prerequisites?: string[][];
+  /**
+   * The template keys of actions that this one replaces upon being built.
+   * The logic engine will treat the replaced actions as no longer active.
+   */
   replaces?: string[];
+  /** Template keys of actions that are mutually exclusive with this one. */
   conflicts?: string[];
+  /** 
+   * Template keys of actions that become unavailable when this action is built.
+   * Used for cases like Build Path blocking seawall upgrades.
+   */
   blocksActions?: string[];
+  /** The type of coastal protection measure this action represents. */
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
 }
 
@@ -74,14 +92,16 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_1_15: {
-    displayName: 'Seawall 1.15m', cost: 2, unlocksInRound: 2,
+    displayName: 'Sea Wall 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_2: {
-    displayName: 'Seawall 2m', cost: 3, unlocksInRound: 2,
+    displayName: 'Sea Wall 2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     replaces: ['UPGRADE_LR_TO_SEAWALL_1_15'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
 };
