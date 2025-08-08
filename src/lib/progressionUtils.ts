@@ -266,6 +266,43 @@ export function hasAnyConstructionInSector(
 }
 
 /**
+ * Check if a measure type has any selectable actions across ALL buttonGroups (now or in future)
+ * This is used to determine if a CPM path is truly "Fully Upgraded" or if there are future actions available
+ */
+export function hasAnySelectableActionsInMeasureType(
+  measureType: string,
+  sectorActions: ActionConfig[],
+  activeActions: Set<ActivityTypeEnum>,
+  activeCPMPath: string | null,
+  currentRound: number
+): boolean {
+  const measureActions = sectorActions.filter(action => action.measureType === measureType);
+  
+  // Check all actions in this measure type, regardless of buttonGroup
+  for (const action of measureActions) {
+    const actionState = getActionState(action, activeActions, activeCPMPath, currentRound);
+    
+    // Consider an action available if it's selectable now OR will become selectable in future rounds
+    if (actionState.status === ActionStatus.SELECTABLE) {
+      return true;
+    }
+    
+    // Also check if it's locked only due to round requirement (will be available in future)
+    if (actionState.status === ActionStatus.LOCKED_PREREQUISITE && action.unlocksInRound > currentRound) {
+      // Check if prerequisites would be met (ignoring round requirement)
+      const wouldPrerequisitesBeMet = !action.prerequisites || 
+        prerequisitesAreMet(action.prerequisites, activeActions);
+      
+      if (wouldPrerequisitesBeMet) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+/**
  * Non-hook version of progression state calculation for testing
  * This replicates the logic from useProgression hook without React dependencies
  */

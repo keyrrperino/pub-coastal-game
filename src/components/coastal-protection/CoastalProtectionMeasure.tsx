@@ -100,7 +100,7 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-center gap-[16.05px] w-full mt-2">
-        {isFullyUpgraded && options.length === 0 ? (
+        {isFullyUpgraded ? (
           <div className="flex flex-col items-center gap-[6px]" style={{gap: '6px'}}>
             <div className="flex flex-col justify-center items-center w-[76px] h-[76px]">
               <div className={`${styles.novecentoBold} text-[14px] font-bold leading-[14px] text-white uppercase text-center`}>

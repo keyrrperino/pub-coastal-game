@@ -346,5 +346,132 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       // Should not show "Fully Upgraded" since BUILD_BOARDWALK is available
       expect(progressionState.activeCPM).toBe('mangroves');
     });
+
+    it('should show fully upgraded when mangrove path is completed (Plant + Boardwalk)', () => {
+      // Scenario: R1 Plant Mangrove, R2 Build Boardwalk, R3 should show "Fully Upgraded"
+      const activityLog: ActivityLogType[] = [
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        },
+        { 
+          id: '2', 
+          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          timestamp: 2000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        }
+      ];
+
+      // Test R3 (after completing both mangrove actions)
+      const progressionState = calculateProgressionState(activityLog, 3, '1A');
+      
+      // Should have mangrove actions but none should be selectable
+      expect(progressionState.mangroves.length).toBeGreaterThan(0);
+      const hasSelectableActions = progressionState.mangroves.some(action => action.status === ActionStatus.SELECTABLE);
+      expect(hasSelectableActions).toBe(false);
+      
+      // Should show as active CPM (for "Fully Upgraded" display)
+      expect(progressionState.activeCPM).toBe('mangroves');
+      
+      // Simulate UI logic: should detect as "Fully Upgraded"
+      const hasSelectableMangroveActions = progressionState.mangroves.some(action => action.status === 'SELECTABLE');
+      const isFullyUpgraded = !hasSelectableMangroveActions && progressionState.activeCPM === 'mangroves';
+      expect(isFullyUpgraded).toBe(true);
+    });
+
+    it('should NOT show fully upgraded immediately after planting mangroves in R1', () => {
+      // Scenario: R1 Plant Mangrove - should NOT show "Fully Upgraded" because BUILD_BOARDWALK is still available
+      const activityLog: ActivityLogType[] = [
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        }
+      ];
+
+      // Test R1 (same round as planting)
+      const progressionState = calculateProgressionState(activityLog, 1, '1A');
+      
+      // Should have mangrove actions (PLANT_MANGROVE as completed)
+      expect(progressionState.mangroves.length).toBeGreaterThan(0);
+      
+      // Should be active CPM
+      expect(progressionState.activeCPM).toBe('mangroves');
+      
+      // Simulate the new comprehensive UI logic using hasAnySelectableActionsInMeasureType
+      const { hasAnySelectableActionsInMeasureType, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
+        'mangroves', 
+        sectorActions, 
+        activeActions, 
+        activeCPMPath, 
+        1
+      );
+      const isFullyUpgraded = !hasAnySelectableInMeasureType && progressionState.activeCPM === 'mangroves';
+      
+      // Should NOT be fully upgraded because BUILD_BOARDWALK will be available in R2
+      expect(isFullyUpgraded).toBe(false);
+    });
+
+    it('should show fully upgraded when mangrove path is completed using comprehensive check', () => {
+      // Scenario: R1 Plant Mangrove, R2 Build Boardwalk, R3 should show "Fully Upgraded"
+      const activityLog: ActivityLogType[] = [
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        },
+        { 
+          id: '2', 
+          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          timestamp: 2000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        }
+      ];
+
+      // Test R3 (after completing both mangrove actions)
+      const progressionState = calculateProgressionState(activityLog, 3, '1A');
+      
+      // Simulate the comprehensive UI logic
+      const { hasAnySelectableActionsInMeasureType, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
+        'mangroves', 
+        sectorActions, 
+        activeActions, 
+        activeCPMPath, 
+        3
+      );
+      const isFullyUpgraded = !hasAnySelectableInMeasureType && progressionState.activeCPM === 'mangroves';
+      
+      // Should be fully upgraded because no more actions are available (now or in future)
+      expect(isFullyUpgraded).toBe(true);
+    });
   });
 });

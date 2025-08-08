@@ -7,7 +7,7 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
-import { hasAnyConstructionInSector } from '@/lib/progressionUtils';
+import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getSectorActions, calculateActiveActions, getActiveCPMPath } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -155,6 +155,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const renderSectorSection = (sectorId: string, title: string) => {
     const progressionState = useProgression(activityLog, currentRound, sectorId);
     
+    // Get additional data needed for comprehensive "Fully Upgraded" check
+    const activeActions = calculateActiveActions(activityLog);
+    const sectorActions = getSectorActions(sectorId);
+    const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+    
     // Map measure types to their display names and progression state properties
     const measureTypeConfig = [
       { key: 'mangroves', title: 'MANGROVES', actions: progressionState.mangroves },
@@ -169,8 +174,15 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Create measures array - include all measure types, show "Fully Upgraded" for empty ones
     const measures = measureTypeConfig
       .map(config => {
-        // Check if this is an active CPM path with no available actions
-        const isFullyUpgraded = config.actions.length === 0 && progressionState.activeCPM === config.key;
+        // Check if this is an active CPM path with NO selectable actions across ALL buttonGroups
+        const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
+          config.key, 
+          sectorActions, 
+          activeActions, 
+          activeCPMPath, 
+          currentRound
+        );
+        const isFullyUpgraded = !hasAnySelectableInMeasureType && progressionState.activeCPM === config.key;
         
         // If no actions and not active CPM path, don't show the card
         if (config.actions.length === 0 && !isFullyUpgraded) {
