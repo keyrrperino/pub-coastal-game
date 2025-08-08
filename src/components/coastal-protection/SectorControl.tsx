@@ -211,7 +211,28 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                 // Hide only if completed in a previous round
                 return completedInRound >= currentRound;
               }
-              return true; // Show all non-completed actions
+              
+              // Hide non-selectable actions in the active CPM path, but only in subsequent rounds
+              if (progressionState.activeCPM === config.key) {
+                const isNonSelectable = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                                      actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                                      actionState.status === ActionStatus.REPLACED;
+                if (isNonSelectable) {
+                  // Check if any action in this CPM was taken in a previous round
+                  const cpmActionTakenInPreviousRound = activityLog.some(log => {
+                    return config.actions.some(action => 
+                      action.config.id === log.action && 
+                      log.round !== undefined && 
+                      log.round < currentRound
+                    );
+                  });
+                  
+                  // Only hide if an action was taken in a previous round
+                  return !cpmActionTakenInPreviousRound;
+                }
+              }
+              
+              return true; // Show all other actions
             })
             .map(actionState => {
               const isSelected = actionState.status === ActionStatus.COMPLETED;
