@@ -422,7 +422,13 @@ export function calculateRoundStartButtonSet(
       return !isNonSelectable; // Hide non-selectable actions in active CPM
     }
     
-    // Rule 3: In non-active CPM paths, show all actions (they'll be properly disabled)
+    // Rule 3: Hide buttons with unmet prerequisites (regardless of unlock round)
+    // This prevents showing unclickable buttons across all rounds
+    if (actionState.status === ActionStatus.LOCKED_PREREQUISITE) {
+      return false; // Hide buttons that can't be clicked due to unmet prerequisites
+    }
+    
+    // Rule 4: In non-active CPM paths, show remaining actions (they'll be properly disabled)
     return true;
   });
 }
