@@ -92,13 +92,13 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_1_15: {
-    displayName: 'Sea Wall 1.15m', cost: 2, unlocksInRound: 2,
+    displayName: 'Sea Wall 1.15m', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_2: {
-    displayName: 'Sea Wall 2m', cost: 3, unlocksInRound: 2,
+    displayName: 'Sea Wall 2m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     replaces: ['UPGRADE_LR_TO_SEAWALL_1_15'],
     blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
@@ -145,12 +145,12 @@ const zone2Template: Record<string, TemplateAction> = {
   },
   // --- COASTAL BARRIERS PATH ---
   BUILD_COASTAL_BARRIER_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
   BUILD_COASTAL_BARRIER_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
@@ -160,17 +160,17 @@ const zone2Template: Record<string, TemplateAction> = {
 const zone3Template: Record<string, TemplateAction> = {
   // --- ARTIFICIAL REEF PATH ---
   BUILD_ARTIFICIAL_REEF: {
-    displayName: 'Build', cost: 2, unlocksInRound: 1,
+    displayName: 'Build', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_SEAWALL_0_5', 'BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_1_15: {
-    displayName: 'Sloping Revet 1.15m', cost: 3, unlocksInRound: 2,
+    displayName: 'Sloping Revet 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_2: {
-    displayName: 'Sloping Revet 2m', cost: 4, unlocksInRound: 2,
+    displayName: 'Sloping Revet 2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     replaces: ['BUILD_REVETMENT_1_15'],
     measureType: 'artificial-reef',
@@ -201,18 +201,18 @@ const zone3Template: Record<string, TemplateAction> = {
   },
   // --- HYBRID MEASURE PATH ---
   BUILD_HYBRID_MEASURE_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 1,
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15'],
     measureType: 'hybrid-measure',
