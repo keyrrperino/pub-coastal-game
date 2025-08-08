@@ -23,3 +23,4 @@ Keep this file up to date if project conventions change.
 Important: 
 - Do not run the server. The user will run it separately manually. Do not build the app unless the user asks you to.
 - Do not create tests for React components or anything React. Our Jest tests only tests for utils and helper functions.
+- Let's not preserve legacy code.

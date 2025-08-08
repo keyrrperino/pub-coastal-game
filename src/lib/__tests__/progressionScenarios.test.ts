@@ -381,9 +381,27 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       // Should show as active CPM (for "Fully Upgraded" display)
       expect(progressionState.activeCPM).toBe('mangroves');
       
-      // Simulate UI logic: should detect as "Fully Upgraded" (using old simple logic for this test)
-      const hasSelectableMangroveActions = progressionState.mangroves.some(action => action.status === 'SELECTABLE');
-      const isFullyUpgraded = !hasSelectableMangroveActions && progressionState.activeCPM === 'mangroves';
+      // Simulate the new comprehensive UI logic
+      const { hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
+        'mangroves', 
+        sectorActions, 
+        activeActions, 
+        activeCPMPath, 
+        3
+      );
+      const completionRound = getCPMCompletionRound('mangroves', '1A', activityLog);
+      const isFullyUpgraded = !hasAnySelectableInMeasureType && 
+                             progressionState.activeCPM === 'mangroves' &&
+                             completionRound !== null && 
+                             3 > completionRound;
+      
+      // Should be fully upgraded because completed in R2 and we're now in R3
+      expect(completionRound).toBe(2);
       expect(isFullyUpgraded).toBe(true);
     });
 
