@@ -1,6 +1,6 @@
 .coastalProtectionCard {
   background: rgba(255, 255, 255, 0.3);
-  border: 2.17px solid rgba(255,255,255,0.6);
+  border: 2.17px solid #91E2FF;
   box-shadow: 0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(17.39px);
   border-radius: 26.08px;
@@ -14,7 +14,7 @@
 .coastalProtectionCard:hover {
   transform: translateY(-2px);
   box-shadow: 0px 8px 32px 0px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255,255,255,0.8);
+  border-color: #FFFFFF;
 }
 
 .coastalProtectionCard::before {
