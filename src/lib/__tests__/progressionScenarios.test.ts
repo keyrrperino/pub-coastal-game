@@ -29,10 +29,10 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(seawallActions.length).toBe(1);
       expect(seawallActions[0].status).toBe(ActionStatus.SELECTABLE);
       
-      // Check land reclamation base action
+      // Check land reclamation base actions (should show all R1 options: 0.5m, 1.15m, 2m)
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 1);
-      expect(landRecActions.length).toBe(1);
-      expect(landRecActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(landRecActions.length).toBe(3);
+      expect(landRecActions.every(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
     });
 
     it('Round 1: After Plant Mangrove - other base CPMs should be LOCKED_CONFLICT', () => {
@@ -173,8 +173,8 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(seawallActions[0].status).toBe(ActionStatus.SELECTABLE);
       
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 2);
-      expect(landRecActions.length).toBe(1);
-      expect(landRecActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(landRecActions.length).toBe(3);
+      expect(landRecActions.every(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
     });
 
     it('Round 2: After Demolish -> Build Seawall - mangrove should be LOCKED_CONFLICT', () => {

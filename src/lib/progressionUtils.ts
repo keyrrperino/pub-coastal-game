@@ -204,10 +204,12 @@ export function getActionsForMeasureType(
     );
   }
   
-  // If NO path is active, show all base actions (buttonGroup 1)
+  // If NO path is active, show all actions for buttonGroup 1 (R1 actions)
   if (!activeCPMPath) {
-    const baseAction = measureActions.find(action => action.buttonGroup === 1);
-    return baseAction ? [getActionState(baseAction, activeActions, activeCPMPath, currentRound)] : [];
+    const baseActions = measureActions.filter(action => action.buttonGroup === 1);
+    return baseActions.map(action => 
+      getActionState(action, activeActions, activeCPMPath, currentRound)
+    );
   }
   
   return [];
