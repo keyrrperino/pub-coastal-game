@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { LobbyStateType } from "@/lib/types";
 import { GameRoomService } from "@/lib/gameRoom";
+import { GAME_STARST_IN_COUNTDOWN } from "@/lib/constants";
 
 type UseLobbyPreparationProps = {
   lobbyState: LobbyStateType;
@@ -25,7 +26,7 @@ export function useLobbyPreparation({ lobbyState, gameRoomServiceRef }: UseLobby
           ?.updateLobbyStateKeyValue(
             LobbyStateEnum.COUNTDOWN_START_TIME, 
             Date.now());
-      }, 5000);
+      }, GAME_STARST_IN_COUNTDOWN * 1000);
 
       return () => clearTimeout(timer);
     }

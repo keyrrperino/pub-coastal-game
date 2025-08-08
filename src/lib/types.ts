@@ -18,10 +18,9 @@ export type SplineTriggerConfigItem = {
   subTriggers?: ActivityTypeEnum[]
 };
 
-export type SplineTriggersConfigType = {
-  [key in ActivityTypeEnum]: 
-    SplineTriggerConfigItem;
-};
+export type SplineTriggersConfigType = Partial<{
+  [key in ActivityTypeEnum]: SplineTriggerConfigItem;
+}>;
 
 export enum SectorEnum {
   SECTOR_A = "Sector A",
@@ -74,6 +73,7 @@ export type LobbyStateType = {
   [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: number;
   [LobbyStateEnum.COUNTDOWN_START_TIME]: number;
   [LobbyStateEnum.ROUND]: number;
+  [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: number
 }
 
 
@@ -84,7 +84,20 @@ export type NormalizedActivities = {
   values: { [value: string]: ActivityLogType[] };
 };
 
-export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum } };
+export type ScenarioConfigurationType = { [key: string]: { score: number; coin?: number; cutscene?: CutScenesEnum | null } };
+
+
+export type PlayerBreakdown = {
+  actionsScore: number;
+  coinsSpent: number;
+  scenarios: { key: string; config: any }[];
+};
+
+export type RoundBreakdown = {
+  totalPoints: number;
+  playerBreakdown: Record<string, PlayerBreakdown>; // e.g., "P1", "P2", "P3"
+  roundPoints: number;
+};
 
 // =========================================================================
 //  DYNAMIC UI PROGRESSION SYSTEM TYPES

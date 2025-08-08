@@ -40,16 +40,22 @@ export function useSplineTriggers({
 
       let executed = 0;
 
+      console.log(totalSteps);
+
       for (const act of activities) {
         const config = SplineTriggersConfig[act.action as ActivityTypeEnum];
         if (!config) continue;
         const obj = splineAppRef.current.findObjectByName?.(act.action.replace(/_/g, " ")); // Adjust name if needed
 
         for (let i = 0; i < Math.max(config.state.length, config.events.length); i++) {
-          if (!obj) continue;
-          if (config.state[i]) obj.state = config.state[i];
-          if (config.events[i]) obj.emitEvent?.(config.events[i] as SplineEventName);
-          obj.visible = false;
+          try {
+            if (!obj) continue;
+            if (config.state[i]) obj.state = config.state[i];
+            if (config.events[i]) obj.emitEvent?.(config.events[i] as SplineEventName);
+            obj.visible = false;
+          } catch(ex) {
+            console.log("SOMETHING WENT WRONG WITH TRIGGER: ", act, config.state[i], config.state[i]);
+          }
           executed++;
           setTriggerProgress(Math.round((executed / totalSteps) * 100));
           // Wait a bit between triggers for realism/animation

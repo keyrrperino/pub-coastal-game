@@ -1,15 +1,19 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, UserSectorEnum } from "./enums";
-import { ActivityLogType, NormalizedActivities } from "./types";
-import { sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
+import { ActivityLogType, NormalizedActivities, PlayerBreakdown, RoundBreakdown, ScenarioConfigurationType } from "./types";
+import { meanSeaLevels, sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function getRandomEffectValue(): number {
-  const values = [0.5, 1, 2];
+  const values = [
+    // 0.5,
+    1,
+    2
+  ];
   const randomIndex = Math.floor(Math.random() * values.length);
   return values[randomIndex];
 }
@@ -164,7 +168,7 @@ export function calculateOverallScorePerRound(
  */
 export function calculateOverallScore(
   activities: ActivityLogType[],
-  randomizeEffect: number
+  randomizeEffect: number,
 ): number {
   // All minSeaLevel values for all rounds
   const minSeaLevels = [0.3, 0.7, 1];
@@ -204,6 +208,56 @@ export function calculateOverallScore(
   // Start from 10,000 and add the (negative) totalScore
   return 10000 + totalScore;
 }
+
+
+/**
+ * Calculates the overall score for the round based on activities and configuration.
+ * @param activities Array of ActivityLogType from Firebase.
+ * @param minSeaLevel The mean sea level for the round (e.g., 0.3).
+ * @param randomizeEffect The randomize effect for the round (e.g., 1, 0.5, 2).
+ * @returns The total score for all sub-sectors.
+ */
+export function calculateRoundScore(
+  activities: ActivityLogType[],
+  randomizeEffect: number,
+  round: number
+): number {
+  // All minSeaLevel values for all rounds
+  const minSeaLevel = meanSeaLevels[round - 1]
+  let totalScore = 0;
+
+  subSectors.forEach(({ sector, subSector }) => {
+    // Find the latest activity for this sector/subSector and minSeaLevel
+    const activity = activities
+      .filter((a) => {
+        const actSector = userIdToSector[a.userId];
+        const actSubSector = extractSubSector(a.value);
+        return a.value && a.value.trim() !== "" && actSector === sector && actSubSector === subSector;
+      })
+      .slice(-1)[0];
+
+    let key: string;
+    if (activity) {
+      const activityType: string = activity.action || "None";
+      if (activityType !== "None") {
+        key = `${sector}_${subSector.trim()}_${activityType}-${minSeaLevel}-${randomizeEffect}`;
+      } else {
+        key = `${sector}_${subSector.trim()}_None-${minSeaLevel}-${randomizeEffect}`;
+      }
+    } else {
+      key = `${sector}_${subSector.trim()}_None-${minSeaLevel}-${randomizeEffect}`;
+    }
+
+    const config = sceneSectorConfigurations[key];
+
+    if (config) {
+      totalScore += config.score;
+    }
+  });
+
+  // Start from 10,000 and add the (negative) totalScore
+  return 10000 + totalScore;
+}
 // ... existing code ...
 
 export function getMeanSeaLevelForRound(round: number): number {
@@ -211,4 +265,383 @@ export function getMeanSeaLevelForRound(round: number): number {
   if (round === 2) return 0.7;
   if (round === 3) return 1;
   return 0.3; // default/fallback
+}
+
+
+/**
+ * Calculates the overall score for all rounds up to maxRound based on the scenario configuration,
+ * and returns the matched scenario keys/configs as well as the total score.
+ * 
+ * @param activities Array of ActivityLogType from Firebase.
+ * @param sessionRandomizeEffect The randomizeEffect value for the current game session.
+ * @param maxRound The highest round to include in the calculation (0 = round 1 ongoing, 1 = round 1 finished, etc.)
+ * @returns { data: { key, config }[], totalScore }
+ */
+export function calculateOverallScoreFromScenarioConfigControlled(
+  activities: ActivityLogType[],
+  sessionRandomizeEffect: string | number,
+  maxRound: number // 0, 1, 2, 3
+): { data: { key: string; config: any, }[]; totalScore: number, dataStr: string[] } {
+  let totalScore = 0;
+
+  const meanSeaLevelToRound: Record<string, number> = {
+    "0.3": 1,
+    "0.7": 2,
+    "1.15": 3,
+  };
+
+  const matchedScenarios = new Set<string>();
+  const matchedData: { key: string; config: any }[] = [];
+  const matchedDataString: string[] = [];
+
+  // Filter scenarioConfig entries by randomizeEffect first for optimization
+  const filteredEntries = Object.entries(sceneSectorConfigurations).filter(([key]) => {
+    const rest = key.split('_')[2];
+    const restParts = rest.split('-');
+    const randomizeEffect = restParts[restParts.length - 1];
+    return randomizeEffect === String(sessionRandomizeEffect);
+  });
+
+  filteredEntries.forEach(([key, config]) => {
+    const [sector, subSector, rest] = key.split('_');
+    const restParts = rest.split('-');
+
+    let actions: string[] = [];
+    let meanSeaLevel: string;
+
+    if (restParts.length === 4) {
+      actions = [restParts[0], restParts[1]];
+      meanSeaLevel = restParts[2];
+    } else if (restParts.length === 3) {
+      actions = [restParts[0]];
+      meanSeaLevel = restParts[1];
+    } else {
+      return;
+    }
+
+    const currentRound = meanSeaLevelToRound[meanSeaLevel];
+    const prevRound = currentRound - 1;
+    const scenarioId = `${sector}_${subSector}_${currentRound}`;
+    if (matchedScenarios.has(scenarioId)) return;
+
+    // Only include scenarios for rounds <= maxRound
+    if (currentRound > maxRound) return;
+
+    // If round is ongoing (maxRound === 0), exclude all "None" scenarios for round 1
+    if (
+      maxRound === 0 &&
+      currentRound === 1 &&
+      (
+        (actions.length === 1 && actions[0] === "None") ||
+        (actions.length === 2 && (actions[0] === "None" || actions[1] === "None"))
+      )
+    ) {
+      return;
+    }
+
+    const sectorActivities = activities.filter(a =>
+      a.value.includes(sector) && a.value.includes(subSector)
+    );
+
+    let matched = false;
+
+    if (actions.length === 2) {
+      if (currentRound > 1) {
+        if (actions[0] === "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = !prevActivity && !currActivity;
+        } else if (actions[0] === "None" && actions[1] !== "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => a.action === actions[1] && (a.round ?? 0) === currentRound);
+          matched = !prevActivity && currActivity;
+        } else if (actions[0] !== "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = prevActivity && !currActivity;
+        } else if (actions[0] !== "None" && actions[1] !== "None") {
+          const action1Activity = sectorActivities
+            .filter(a => a.action === actions[0] && (a.round ?? 0) === prevRound)
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          const action2Activity = sectorActivities
+            .filter(a => a.action === actions[1] && (a.round ?? 0) === currentRound && (!action1Activity || a.timestamp > action1Activity.timestamp))
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          matched = !!action1Activity && !!action2Activity;
+        }
+      }
+    } else if (actions.length === 1) {
+      if (actions[0] === "None") {
+        const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+        matched = !currActivity;
+      } else {
+        matched = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === currentRound);
+      }
+    }
+
+    if (matched) {
+      totalScore += config.score;
+      matchedScenarios.add(scenarioId);
+      matchedData.push({ key, config });
+      matchedDataString.push(`${key} == score: ${config.score}, coin: ${config.coin}`);
+    }
+  });
+
+  console.log("matchedData: ", matchedData);
+
+  return { data: matchedData, dataStr: matchedDataString, totalScore };
+}
+
+
+/**
+**
+ * Calculates the total coins per round (1, 2, 3) based on the scenario configuration,
+ * using robust sector/user matching logic.
+ * 
+ * @param activities Array of ActivityLogType from Firebase.
+ * @param sessionRandomizeEffect The randomizeEffect value for the current game session.
+ * @returns { [round: number]: { totalCoin: number, data: { key, config }[] } }
+ */
+export function calculateTotalCoinsPerRound(
+  activities: ActivityLogType[],
+  sessionRandomizeEffect: string | number
+): Record<number, { totalCoin: number; data: { key: string; config: any }[] }> {
+  // Map meanSeaLevel values to round numbers for easy lookup
+  const meanSeaLevelToRound: Record<string, number> = {
+    "0.3": 1,
+    "0.7": 2,
+    "1.15": 3,
+  };
+
+  // Prepare result object for rounds 1, 2, 3
+  const result: Record<number, { totalCoin: number; data: { key: string; config: any }[] }> = {
+    1: { totalCoin: 0, data: [] },
+    2: { totalCoin: 0, data: [] },
+    3: { totalCoin: 0, data: [] },
+  };
+
+  // To avoid double-counting, keep track of which scenario for each sector/subsector/round has already been matched
+  const matchedScenarios = new Set<string>();
+
+  // Filter scenarioConfig entries by randomizeEffect first for optimization
+  const filteredEntries = Object.entries(sceneSectorConfigurations).filter(([key]) => {
+    const rest = key.split('_')[2];
+    const restParts = rest.split('-');
+    const randomizeEffect = restParts[restParts.length - 1];
+    return randomizeEffect === String(sessionRandomizeEffect);
+  });
+
+  filteredEntries.forEach(([key, config]) => {
+    // Parse scenario key: e.g., "2_2B_r1 2b sw 0.5-0.3-2"
+    const [sectorNum, sectorCode, rest] = key.split('_');
+    const restParts = rest.split('-');
+
+    let actions: string[] = [];
+    let meanSeaLevel: string;
+
+    if (restParts.length === 4) {
+      actions = [restParts[0], restParts[1]];
+      meanSeaLevel = restParts[2];
+    } else if (restParts.length === 3) {
+      actions = [restParts[0]];
+      meanSeaLevel = restParts[1];
+    } else {
+      return;
+    }
+
+    const currentRound = meanSeaLevelToRound[meanSeaLevel];
+    const prevRound = currentRound - 1;
+    const scenarioId = `${sectorNum}_${sectorCode}_${currentRound}`;
+    if (matchedScenarios.has(scenarioId)) return;
+
+    // Only process rounds 1, 2, 3
+    if (![1, 2, 3].includes(currentRound)) return;
+
+    // Robust sector/user matching
+    const sectorActivities = activities.filter(a =>
+      (a.userName === `sector-${sectorNum}` || a.userId === `user_sector_${sectorNum}`) &&
+      a.value.includes(sectorCode)
+    );
+
+    let matched = false;
+
+    if (actions.length === 2) {
+      if (currentRound > 1) {
+        if (actions[0] === "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = !prevActivity && !currActivity;
+        } else if (actions[0] === "None" && actions[1] !== "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => a.action === actions[1] && (a.round ?? 0) === currentRound);
+          matched = !prevActivity && currActivity;
+        } else if (actions[0] !== "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = prevActivity && !currActivity;
+        } else if (actions[0] !== "None" && actions[1] !== "None") {
+          const action1Activity = sectorActivities
+            .filter(a => a.action === actions[0] && (a.round ?? 0) === prevRound)
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          const action2Activity = sectorActivities
+            .filter(a => a.action === actions[1] && (a.round ?? 0) === currentRound && (!action1Activity || a.timestamp > action1Activity.timestamp))
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          matched = !!action1Activity && !!action2Activity;
+        }
+      }
+    } else if (actions.length === 1) {
+      if (actions[0] === "None") {
+        const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+        matched = !currActivity;
+      } else {
+        matched = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === currentRound);
+      }
+    }
+
+    if (matched) {
+      matchedScenarios.add(scenarioId);
+      if (typeof config.coin === "number") {
+        result[currentRound].totalCoin += config.coin;
+      }
+      result[currentRound].data.push({ key, config });
+    }
+  });
+
+  console.log(result)
+
+  return result;
+}
+
+/**
+ * Returns a breakdown of score and coins per player for a given round.
+ * @param activities Array of ActivityLogType from Firebase.
+ * @param sessionRandomizeEffect The randomizeEffect value for the current game session.
+ * @param roundNumber The round to calculate (1, 2, or 3)
+ * @param baseScore The starting score for the round (e.g., 10000)
+ * @returns RoundBreakdown
+ */
+export function getRoundBreakdownByPlayer(
+  activities: ActivityLogType[],
+  sessionRandomizeEffect: string | number,
+  roundNumber: number,
+  baseScore: number = 10000
+): RoundBreakdown {
+  // Map meanSeaLevel values to round numbers for easy lookup
+  const meanSeaLevelToRound: Record<string, number> = {
+    "0.3": 1,
+    "0.7": 2,
+    "1.15": 3,
+  };
+
+  // Map sectorNum to player label
+  const playerMap: Record<string, string> = {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+  };
+
+  // Prepare breakdown object
+  const playerBreakdown: Record<string, PlayerBreakdown> = {
+    P1: { actionsScore: 0, coinsSpent: 0, scenarios: [] },
+    P2: { actionsScore: 0, coinsSpent: 0, scenarios: [] },
+    P3: { actionsScore: 0, coinsSpent: 0, scenarios: [] },
+  };
+
+  // To avoid double-counting, keep track of which scenario for each sector/subsector/round has already been matched
+  const matchedScenarios = new Set<string>();
+
+  // Filter scenarioConfig entries by randomizeEffect and round
+  const filteredEntries = Object.entries(sceneSectorConfigurations).filter(([key]) => {
+    const [sectorNum, sectorCode, rest] = key.split('_');
+    const restParts = rest.split('-');
+    const meanSeaLevel = restParts.length === 4 ? restParts[2] : restParts[1];
+    const randomizeEffect = restParts[restParts.length - 1];
+    const round = meanSeaLevelToRound[meanSeaLevel];
+    return (
+      randomizeEffect === String(sessionRandomizeEffect) &&
+      round === roundNumber
+    );
+  });
+
+  filteredEntries.forEach(([key, config]) => {
+    const [sectorNum, sectorCode, rest] = key.split('_');
+    const restParts = rest.split('-');
+
+    let actions: string[] = [];
+    let meanSeaLevel: string;
+
+    if (restParts.length === 4) {
+      actions = [restParts[0], restParts[1]];
+      meanSeaLevel = restParts[2];
+    } else if (restParts.length === 3) {
+      actions = [restParts[0]];
+      meanSeaLevel = restParts[1];
+    } else {
+      return;
+    }
+
+    const currentRound = meanSeaLevelToRound[meanSeaLevel];
+    const prevRound = currentRound - 1;
+    const scenarioId = `${sectorNum}_${sectorCode}_${currentRound}`;
+    if (matchedScenarios.has(scenarioId)) return;
+
+    // Robust sector/user matching
+    const sectorActivities = activities.filter(a =>
+      (a.userName === `sector-${sectorNum}` || a.userId === `user_sector_${sectorNum}`) &&
+      a.value.includes(sectorCode)
+    );
+
+    let matched = false;
+
+    if (actions.length === 2) {
+      if (currentRound > 1) {
+        if (actions[0] === "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = !prevActivity && !currActivity;
+        } else if (actions[0] === "None" && actions[1] !== "None") {
+          const prevActivity = sectorActivities.some(a => (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => a.action === actions[1] && (a.round ?? 0) === currentRound);
+          matched = !prevActivity && currActivity;
+        } else if (actions[0] !== "None" && actions[1] === "None") {
+          const prevActivity = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === prevRound);
+          const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+          matched = prevActivity && !currActivity;
+        } else if (actions[0] !== "None" && actions[1] !== "None") {
+          const action1Activity = sectorActivities
+            .filter(a => a.action === actions[0] && (a.round ?? 0) === prevRound)
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          const action2Activity = sectorActivities
+            .filter(a => a.action === actions[1] && (a.round ?? 0) === currentRound && (!action1Activity || a.timestamp > action1Activity.timestamp))
+            .sort((a, b) => b.timestamp - a.timestamp)[0];
+          matched = !!action1Activity && !!action2Activity;
+        }
+      }
+    } else if (actions.length === 1) {
+      if (actions[0] === "None") {
+        const currActivity = sectorActivities.some(a => (a.round ?? 0) === currentRound);
+        matched = !currActivity;
+      } else {
+        matched = sectorActivities.some(a => a.action === actions[0] && (a.round ?? 0) === currentRound);
+      }
+    }
+
+    if (matched) {
+      matchedScenarios.add(scenarioId);
+      const player = playerMap[sectorNum];
+      if (player) {
+        playerBreakdown[player].actionsScore += typeof config.score === "number" ? config.score : 0;
+        playerBreakdown[player].coinsSpent += typeof config.coin === "number" ? config.coin : 0;
+        playerBreakdown[player].scenarios.push({ key, config });
+      }
+    }
+  });
+
+  // Calculate total round points
+  const roundPoints = baseScore + Object.values(playerBreakdown).reduce((sum, p) => sum + p.actionsScore, 0);
+
+  return {
+    totalPoints: baseScore,
+    playerBreakdown,
+    roundPoints,
+  };
 }

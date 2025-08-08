@@ -3,19 +3,21 @@ import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig } from "@/lib/constants";
-import { ActivityTypeEnum, CutScenesEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
+import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
+import { GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
-import { calculateOverallScore, getMeanSeaLevelForRound, getRandomEffectValue, isGameOnGoing } from "@/lib/utils";
+import { calculateOverallScore, calculateOverallScoreFromScenarioConfigControlled, calculateTotalCoinsPerRound, getMeanSeaLevelForRound, getRandomEffectValue, getRoundBreakdownByPlayer, isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
 import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
 import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
 import { useHideAllTriggers } from "./hooks/useHideAllSplineTriggers";
 import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
+import { usePreparingProgress } from "./hooks/usePreparingProgress";
+import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
 
 interface SplineFirebaseProps {
 }
@@ -24,39 +26,29 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const {
     canvasRef,
     splineAppRef,
-    canvasCutScenesRefs,
-    splineAppCutScenesRefs,
     gameRoomServiceRef,
     isLoaded, setIsLoaded,
-    activities, setActivities,
-    newActivities, setNewActivities,
-    waterLevel, setWaterLevel,
-    lobbyState, setLobbyState,
+    activities,
+    newActivities,
+    lobbyState,
     triggersLoading, setTriggersLoading,
     triggerProgress, setTriggerProgress,
-    cutScenesStatus, setCutScenesStatus
   } = useInitialize();
   const [totalScore, setTotalScore] = useState<number>(10000);
   useHideAllTriggers(isLoaded, splineAppRef, lobbyState);
   useLobbyPreparation({ lobbyState, gameRoomServiceRef });
+
   useSplineLoader(
     canvasRef,
     splineAppRef,
     setIsLoaded
   );
 
-  const {
-    setLoadCutScenes,
-    loadCutScenes
-  } = useCutSceneSplineLoader(
-    canvasCutScenesRefs,
-    splineAppCutScenesRefs
-  );
-
   const [showRoundEndModal, setShowRoundEndModal] = useState(false);
+  const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState(false); // NEW
   const [showGameOverModal, setShowGameOverModal] = useState(false);
-  const [countdown, setCountdown] = useState(5);
-  const [coinsLeft, setCoinsLeft] = useState(20); // 1. Add new state
+  const [countdown, setCountdown]= useState(5);
+  const [coinsLeft, setCoinsLeft] = useState(10); // 1. Add new state
 
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
@@ -67,33 +59,21 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [lobbyState.gameLobbyStatus]);
 
   useEffect(() => {
-    const score = calculateOverallScore(activities ?? [], lobbyState.randomizeEffect);
+    const round = !showGameOverModal ? (lobbyState.round ?? 1) : 4;
+    const { totalScore } = calculateOverallScoreFromScenarioConfigControlled(activities ?? [], lobbyState.randomizeEffect, round);
+
+    const score = OVERALL_SCORE_POINTS + totalScore;
     setTotalScore(score);
 
-    const activitiesWithValueCount = (activities ?? []).filter(a => a.value && a.value.trim() !== "").length;
-  const totalCoins = 10;
-  setCoinsLeft(Math.max(totalCoins - activitiesWithValueCount, 0));
-  }, [activities]);
+    const coinsData = calculateTotalCoinsPerRound(activities ?? [], lobbyState.randomizeEffect);
 
-  useEffect(() => {
-    if (!showRoundEndModal) return;
-    if (countdown === 0) {
+    setCoinsLeft(TOTAL_COINS_PER_ROUND - coinsData[lobbyState.round ?? 1].totalCoin);
 
-      setShowRoundEndModal(false);
+    const data = getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, 1);
 
-      if (gameRoomServiceRef.current) {
-        // gameRoomServiceRef.current.updateLobbyState({
-        //   ...lobbyState, ...{
-        //     [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-        //   [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-        //   [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
-        // }});
-      }
-      return;
-    }
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [showRoundEndModal, countdown, gameRoomServiceRef]);
+    console.log("breakdown score: ", data)
+
+  }, [activities, lobbyState.gameLobbyStatus, lobbyState.round]);
 
   useEffect(() => {
     if (triggerProgress >= 100) {
@@ -114,26 +94,69 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
 
   const {progress, isStarting} = useMainProgress(
-    30, // countdown seconds
+    GAME_ROUND_TIMER, // countdown seconds
     lobbyState.gameLobbyStatus,
     triggersLoading,
     lobbyState.countdownStartTime,
     3 // <-- 3 seconds delay before countdown starts
   );
 
-  const { cutSceneStatus, currentCutScene, isSequenceActive } = 
+  const {progress: progressStartsInCountdown, countdownProgressTimer} = usePreparingProgress(
+    GAME_STARST_IN_COUNTDOWN, // countdown seconds
+    lobbyState.gameLobbyStatus,
+    triggersLoading,
+    lobbyState.countdownPreparationStartTime,
+    2 // <-- 2 seconds delay before countdown starts
+  );
+
+  const { cutSceneStatus, currentCutScene } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
 
   useEffect(() => {
-    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 2) {
-      setShowRoundEndModal(true);
-      setCountdown(5); // reset countdown
-    }
-
-    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round > 2) {
-      setShowGameOverModal(true);
+    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
+      setShowScoreBreakdownModal(true); // Show breakdown first
+      setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for breakdown
     }
   }, [cutSceneStatus]);
+
+  // Handle the modal transitions
+  useEffect(() => {
+    if (!showScoreBreakdownModal) return;
+    if (countdown === 0) {
+      setShowScoreBreakdownModal(false);
+      // Only show "prepare for round" modal if not round 3
+      if ((lobbyState.round ?? 1) < 3) {
+        setShowRoundEndModal(true);
+        setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for next modal
+      } else {
+        setShowGameOverModal(true);
+      }
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [showScoreBreakdownModal, countdown]);
+
+  useEffect(() => {
+    if (!showRoundEndModal) return;
+    if (countdown === 0) {
+      setShowRoundEndModal(false);
+      // Proceed to next round
+      if (gameRoomServiceRef.current) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+            [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+            [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
+          }
+        });
+      }
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [showRoundEndModal, countdown, gameRoomServiceRef]);
+
   // Main Progress logic
 
   const renderCutScenes = (
@@ -155,7 +178,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           {/* Frame Overlay */}
           <div className="fixed inset-0 z-20 flex items-center justify-center h-[100vh]">
             <img
-              src={`/games/pub-coastal-spline/flash-reports/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1`}
+              src={`/games/pub-coastal-spline/flash-reports/images/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1`}
               className="pointer-events-none"
               // style={{ objectFit: "" }}
               alt="Frame Overlay"
@@ -212,6 +235,23 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       />
   )
 
+  const renderStartsInCountdownProgressBar = (
+    (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.PREPARING) && 
+      <ProgressBar
+        progress={progressStartsInCountdown}
+        key="startsInCountdown"
+        round={lobbyState.round}
+        containerClassName="fixed z-10 bottom-[15vh] left-[30vw]"
+        countdownProgressTimer={countdownProgressTimer}
+        hasTextCountdown={false}
+        style={{
+          bottom: `${15}vh`,
+          transition: 'bottom 0.6s cubic-bezier(0.4,0,0.2,1)',
+          // ...other styles
+        }}
+      />
+  )
+
   const resetGame = async () => {
     await gameRoomServiceRef.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
     await gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue);
@@ -235,7 +275,18 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
       {renderScore}
       {renderProgressBar}
+      {renderStartsInCountdownProgressBar}
 
+      {/* Score Breakdown Modal */}
+      {showScoreBreakdownModal && (
+        <ScoreBreakdownModal
+          isOpen={true}
+          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, lobbyState.round ?? 1)}
+          roundNumber={(lobbyState.round ?? 1) as 1|2|3}
+        />
+      )}
+
+      {/* Prepare for Round Modal */}
       {showRoundEndModal && 
         <AnimatedModal isOpen={true}>
           <AnimatedTitle>
@@ -244,6 +295,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           </AnimatedTitle>
         </AnimatedModal>
       }
+      
 
       {showGameOverModal && 
         <AnimatedModal isOpen={true}>

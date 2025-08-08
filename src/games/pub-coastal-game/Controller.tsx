@@ -105,6 +105,10 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown
       await gameRoomService.current.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
+      gameRoomService.current
+        ?.updateLobbyStateKeyValue(
+          LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME, 
+          Date.now());
     }
   }
 
@@ -228,7 +232,9 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed
         "
         onClick={() => {
-          onButtonClick(SplineTriggersConfig[ActivityTypeEnum.START_GAME])
+          if (SplineTriggersConfig[ActivityTypeEnum.START_GAME]) {
+            onButtonClick(SplineTriggersConfig[ActivityTypeEnum.START_GAME])
+          }
         }}
       >
         Start Game
