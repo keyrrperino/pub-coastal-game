@@ -2,6 +2,7 @@ import { ActivityTypeEnum } from '../enums';
 import { ActionStatus, ActivityLogType } from '../types';
 import {
   calculateActiveActions,
+  calculateProgressionState,
   getActiveCPMPath,
   getActionsForMeasureType,
   getSectorActions
@@ -316,6 +317,34 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
         // It's also acceptable if it's not shown at all in Round 1
         expect(mangroveActions.length).toBe(1);
       }
+    });
+  });
+
+  describe('Mangrove Skip Round Scenario', () => {
+    it('should show BUILD_BOARDWALK in R3 after planting mangroves in R1 and skipping R2', () => {
+      // Scenario: R1 Plant Mangrove, R2 Skip, R3 should show BUILD_BOARDWALK
+      const activityLog: ActivityLogType[] = [
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        }
+      ];
+
+      // Test R3 (after skipping R2)
+      const progressionState = calculateProgressionState(activityLog, 3, '1A');
+      
+      // Should have mangrove actions available (BUILD_BOARDWALK)
+      expect(progressionState.mangroves).toHaveLength(1);
+      expect(progressionState.mangroves[0].config.displayName).toBe('Build Board Walk');
+      expect(progressionState.mangroves[0].status).toBe(ActionStatus.SELECTABLE);
+      
+      // Should not show "Fully Upgraded" since BUILD_BOARDWALK is available
+      expect(progressionState.activeCPM).toBe('mangroves');
     });
   });
 });

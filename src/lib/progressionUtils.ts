@@ -192,7 +192,11 @@ export function getActionsForMeasureType(
     if (cpmStartRound === null) return []; // CPM not started yet
     
     // Calculate which buttonGroup to show: currentRound - cpmStartRound + 1
-    const targetButtonGroup = currentRound - cpmStartRound + 1;
+    const calculatedButtonGroup = currentRound - cpmStartRound + 1;
+    
+    // Cap the buttonGroup to the maximum available for this measure type
+    const maxButtonGroup = Math.max(...measureActions.map(action => action.buttonGroup));
+    const targetButtonGroup = Math.min(calculatedButtonGroup, maxButtonGroup);
     
     const currentGroupActions = measureActions.filter(action => action.buttonGroup === targetButtonGroup);
     return currentGroupActions.map(action => 
