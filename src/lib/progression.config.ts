@@ -9,13 +9,31 @@ export type { ActionConfig } from './types';
 // =========================================================================
 
 interface TemplateAction {
+  /** The human-readable name for the UI. */
   displayName: string;
+  /** The resource cost of the action (e.g., number of coins). */
   cost: number;
+  /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
+  /**
+   * Defines prerequisites using OR/AND logic.
+   * Format: `[['A', 'B'], ['C']]` means "(A AND B) OR C".
+   * Uses template keys that will be mapped to ActivityTypeEnum values.
+   */
   prerequisites?: string[][];
+  /**
+   * The template keys of actions that this one replaces upon being built.
+   * The logic engine will treat the replaced actions as no longer active.
+   */
   replaces?: string[];
+  /** Template keys of actions that are mutually exclusive with this one. */
   conflicts?: string[];
+  /** 
+   * Template keys of actions that become unavailable when this action is built.
+   * Used for cases like Build Path blocking seawall upgrades.
+   */
   blocksActions?: string[];
+  /** The type of coastal protection measure this action represents. */
   measureType: 'mangroves' | 'land-reclamation' | 'seawall' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
 }
 
@@ -74,14 +92,16 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_1_15: {
-    displayName: 'Seawall 1.15m', cost: 2, unlocksInRound: 2,
+    displayName: 'Sea Wall 1.15m', cost: 1, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_2: {
-    displayName: 'Seawall 2m', cost: 3, unlocksInRound: 2,
+    displayName: 'Sea Wall 2m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
     replaces: ['UPGRADE_LR_TO_SEAWALL_1_15'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
 };
@@ -123,16 +143,15 @@ const zone2Template: Record<string, TemplateAction> = {
     blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
   },
-  // --- COASTAL BARRIER (STORM SURGE) PATH ---
+  // --- COASTAL BARRIERS PATH ---
   BUILD_COASTAL_BARRIER_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
   BUILD_COASTAL_BARRIER_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2,
-    prerequisites: [['BUILD_COASTAL_BARRIER_0_5']],
-    replaces: ['BUILD_COASTAL_BARRIER_0_5'],
+    displayName: '2m', cost: 3, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
 };
@@ -141,20 +160,20 @@ const zone2Template: Record<string, TemplateAction> = {
 const zone3Template: Record<string, TemplateAction> = {
   // --- ARTIFICIAL REEF PATH ---
   BUILD_ARTIFICIAL_REEF: {
-    displayName: 'Build', cost: 2, unlocksInRound: 1,
+    displayName: 'Build', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_SEAWALL_0_5', 'BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 2,
+    displayName: 'Sloping Revet 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
-    measureType: 'revetment',
+    measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 3,
-    prerequisites: [['BUILD_REVETMENT_1_15']],
+    displayName: 'Sloping Revet 2m', cost: 3, unlocksInRound: 2,
+    prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     replaces: ['BUILD_REVETMENT_1_15'],
-    measureType: 'revetment',
+    measureType: 'artificial-reef',
   },
   // --- SEAWALL PATH (NEW: All heights available in R1, but with upgrade chain) ---
   BUILD_SEAWALL_0_5: {
@@ -182,19 +201,26 @@ const zone3Template: Record<string, TemplateAction> = {
   },
   // --- HYBRID MEASURE PATH ---
   BUILD_HYBRID_MEASURE_0_5: {
-    displayName: '0.5m', cost: 2, unlocksInRound: 1,
+    displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 2,
-    prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
+    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2,
-    prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
+    displayName: '2m', cost: 3, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
+    replaces: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15'],
+    measureType: 'hybrid-measure',
+  },
+  BUILD_PATH_FROM_HYBRID: {
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    prerequisites: [['BUILD_HYBRID_MEASURE_0_5'], ['BUILD_HYBRID_MEASURE_1_15'], ['BUILD_HYBRID_MEASURE_2']],
+    blocksActions: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15', 'BUILD_HYBRID_MEASURE_2'],
     measureType: 'hybrid-measure',
   },
 };
@@ -262,6 +288,7 @@ const zone3A_enums = {
   BUILD_HYBRID_MEASURE_0_5: ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_1_15: ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_2: ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE,
+  BUILD_PATH_FROM_HYBRID: ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL,
 };
 const zone3B_enums = {
   BUILD_ARTIFICIAL_REEF: ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF,
@@ -274,6 +301,7 @@ const zone3B_enums = {
   BUILD_HYBRID_MEASURE_0_5: ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_1_15: ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_2: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE,
+  BUILD_PATH_FROM_HYBRID: ActivityTypeEnum.R2_3B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL,
 };
 
 // =========================================================================

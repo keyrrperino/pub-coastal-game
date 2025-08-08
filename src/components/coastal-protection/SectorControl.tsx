@@ -233,16 +233,32 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const sectorButtonSets = roundStartButtonSets[sectorId] || {};
     console.log(`Sector ${sectorId} button sets:`, sectorButtonSets);
     
-    // Map measure types to their display names and button sets
-    const measureTypeConfig = [
-      { key: 'mangroves', title: 'MANGROVES', roundStartActions: sectorButtonSets.mangroves || [], currentActions: progressionState.mangroves },
-      { key: 'seawall', title: 'SEAWALL', roundStartActions: sectorButtonSets.seawall || [], currentActions: progressionState.seawall },
-      { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: 'Seawall upgrade', roundStartActions: sectorButtonSets.landReclamation || [], currentActions: progressionState.landReclamation },
-      { key: 'storm-surge-barrier', title: 'STORM SURGE BARRIER', subtitle: 'Premium protection', roundStartActions: sectorButtonSets.stormSurgeBarrier || [], currentActions: progressionState.stormSurgeBarrier },
-      { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: 'Eco-friendly solution', roundStartActions: sectorButtonSets.artificialReef || [], currentActions: progressionState.artificialReef },
-      { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: 'Combined approach', roundStartActions: sectorButtonSets.hybridMeasure || [], currentActions: progressionState.hybridMeasure },
-      { key: 'revetment', title: 'REVETMENT', roundStartActions: sectorButtonSets.revetment || [], currentActions: progressionState.revetment },
-    ];
+    // Map measure types to their display names and button sets - sector-specific order
+    const getMeasureTypeConfig = (sectorId: string) => {
+      const baseConfig = {
+        mangroves: { key: 'mangroves', title: 'MANGROVES', subtitle: '', roundStartActions: sectorButtonSets.mangroves || [], currentActions: progressionState.mangroves },
+        seawall: { key: 'seawall', title: 'SEAWALL', subtitle: '', roundStartActions: sectorButtonSets.seawall || [], currentActions: progressionState.seawall },
+        landReclamation: { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: '', roundStartActions: sectorButtonSets.landReclamation || [], currentActions: progressionState.landReclamation },
+        coastalBarriers: { key: 'storm-surge-barrier', title: 'COASTAL BARRIERS', subtitle: '', roundStartActions: sectorButtonSets.stormSurgeBarrier || [], currentActions: progressionState.stormSurgeBarrier },
+        artificialReef: { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: '', roundStartActions: sectorButtonSets.artificialReef || [], currentActions: progressionState.artificialReef },
+        revetment: { key: 'revetment', title: 'SEAWALL', subtitle: '', roundStartActions: sectorButtonSets.revetment || [], currentActions: progressionState.revetment },
+        hybridMeasure: { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: '', roundStartActions: sectorButtonSets.hybridMeasure || [], currentActions: progressionState.hybridMeasure },
+      };
+
+      // Sector-specific ordering
+      if (sectorId === '1A' || sectorId === '1B') {
+        return [baseConfig.mangroves, baseConfig.seawall, baseConfig.landReclamation];
+      } else if (sectorId === '2A' || sectorId === '2B') {
+        return [baseConfig.mangroves, baseConfig.seawall, baseConfig.coastalBarriers];
+      } else if (sectorId === '3A' || sectorId === '3B') {
+        return [baseConfig.artificialReef, baseConfig.seawall, baseConfig.hybridMeasure];
+      }
+      
+      // Fallback to all measures
+      return Object.values(baseConfig);
+    };
+
+    const measureTypeConfig = getMeasureTypeConfig(sectorId);
 
     // Create measures array - include all measure types, show "Fully Upgraded" for empty ones
     const measures = measureTypeConfig
@@ -326,7 +342,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: 'url(/assets/background-image.png)',
+          backgroundImage: 'url(/assets/controller-background.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'blur(100px)',
@@ -336,7 +352,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Dark overlay */}
       <div
         className="absolute inset-0 w-full h-full"
-        style={{ backgroundColor: 'rgba(51, 92, 143, 0.6)' }}
+        style={{ 
+          backgroundColor: sector === 'sector-2' ? 'rgba(95, 143, 51, 0.6)' : 
+                          sector === 'sector-3' ? 'rgba(143, 51, 102, 0.6)' : 
+                          'rgba(51, 92, 143, 0.6)' // sector-1 default
+        }}
       />
 
       {/* Main content */}
