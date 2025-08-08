@@ -25,31 +25,36 @@ const InsufficientBudgetModal: React.FC<InsufficientBudgetModalProps> = ({
       onClick={handleBackdropClick}
     >
       <div 
-        className="relative rounded-[26.08px] backdrop-blur-[17.39px]"
+        className="relative flex flex-col items-center gap-[20px] py-[20px] px-[30px] rounded-[26.08px] backdrop-blur-[17.39px]"
         style={{
-          background: 'linear-gradient(145deg, #91E2FF 0%, #FFFFFF 100%)',
-          padding: '2.17px',
+          background: 'rgba(255, 123, 152, 0.3)',
           width: '812px',
           maxWidth: '90vw',
           boxShadow: '0px 5.91px 29.56px 0px rgba(0, 0, 0, 0.15)'
         }}
       >
+        {/* Gradient border using pseudo-element */}
         <div 
-          className="flex flex-col items-center gap-[20px] py-[20px] px-[30px] rounded-[23.91px]"
+          className="absolute inset-0 rounded-[26.08px] pointer-events-none"
           style={{
-            background: 'rgba(255, 123, 152, 0.3)'
+            background: 'linear-gradient(145deg, #91E2FF 0%, #FFFFFF 100%)',
+            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'subtract',
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'subtract',
+            padding: '2.17px'
+          }}
+        />
+        
+        <div 
+          className={`${styles.novecentoBold} text-center text-white font-bold leading-[1.2em] relative z-10`}
+          style={{
+            fontSize: '36.8px',
+            width: '590px',
+            maxWidth: '100%'
           }}
         >
-          <div 
-            className={`${styles.novecentoBold} text-center text-white font-bold leading-[1.2em]`}
-            style={{
-              fontSize: '36.8px',
-              width: '590px',
-              maxWidth: '100%'
-            }}
-          >
-            Oh no! You don't have enough budget for this!
-          </div>
+          Oh no! You don't have enough budget for this!
         </div>
       </div>
     </div>
