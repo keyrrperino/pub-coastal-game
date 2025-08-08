@@ -148,7 +148,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       round: currentRound,
       timestamp: Date.now()
     };
-    setActivityLog(prev => [...prev, demolishActivity]);
+    
+    // Update activity log with demolish action
+    const newActivityLog = [...activityLog, demolishActivity];
+    setActivityLog(newActivityLog);
+    
+    // Recalculate button sets immediately after demolish to reflect the new state
+    // This "resets" the buttons to what they should look like at round start with the new activity log
+    console.log('Recalculating button sets after demolish');
+    const updatedButtonSets = calculateButtonSetsForRound(newActivityLog, currentRound);
+    setRoundStartButtonSets(updatedButtonSets);
+    setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase
     gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound);
@@ -157,7 +167,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setTotalCoins(prev => prev - 1);
     
     console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound, sector]);
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');

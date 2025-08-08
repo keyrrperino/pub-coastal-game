@@ -90,8 +90,26 @@ export function isBlockedByOneActionPerRound(
     return loggedActionConfig && loggedActionConfig.sector === actionConfig.sector;
   });
   
-  // If an action was already taken this round in this sector and this action isn't already active, block it
-  return actionsThisRoundInSector.length > 0 && !activeActions.has(actionConfig.id);
+  // Check if this sector was demolished this round (after any construction actions)
+  const demolishActionsThisRoundInSector = activityLog.filter(log => {
+    return log.round === currentRound && 
+           log.action === ActivityTypeEnum.DEMOLISH && 
+           log.value === actionConfig.sector;
+  });
+  
+  // If the sector was demolished this round, find the latest demolish timestamp
+  let latestDemolishTime = 0;
+  if (demolishActionsThisRoundInSector.length > 0) {
+    latestDemolishTime = Math.max(...demolishActionsThisRoundInSector.map(log => log.timestamp));
+  }
+  
+  // Filter construction actions to only those that happened AFTER the latest demolish
+  const actionsAfterLatestDemolish = actionsThisRoundInSector.filter(log => {
+    return latestDemolishTime === 0 || log.timestamp > latestDemolishTime;
+  });
+  
+  // If an action was taken this round in this sector (after any demolish) and this action isn't already active, block it
+  return actionsAfterLatestDemolish.length > 0 && !activeActions.has(actionConfig.id);
 }
 
 /**
