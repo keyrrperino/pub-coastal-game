@@ -166,30 +166,70 @@ export function getActionsForMeasureType(
   sectorActions: ActionConfig[],
   activeActions: Set<ActivityTypeEnum>,
   activeCPMPath: string | null,
-  currentRound: number
+  currentRound: number,
+  activityLog: ActivityLogType[] = [],
+  sector: string = ''
 ): { config: ActionConfig; status: ActionStatus }[] {
   const measureActions = sectorActions.filter(action => action.measureType === measureType);
   
-  // If an active path exists and it's NOT this one, only include the base (Round 1) action
+  // If an active path exists and it's NOT this one, only include the base (buttonGroup 1) action
   if (activeCPMPath && activeCPMPath !== measureType) {
-    const baseAction = measureActions.find(action => action.unlocksInRound === 1);
+    const baseAction = measureActions.find(action => action.buttonGroup === 1);
     return baseAction ? [getActionState(baseAction, activeActions, activeCPMPath, currentRound)] : [];
   }
   
-  // If this IS the active path, include all actions in the path
+  // If this IS the active path, show the appropriate buttonGroup for the current round
   if (activeCPMPath === measureType) {
-    return measureActions.map(action => 
+    // If activityLog or sector not provided, fall back to old unlocksInRound logic
+    if (!activityLog.length || !sector) {
+      const currentRoundActions = measureActions.filter(action => action.unlocksInRound <= currentRound);
+      return currentRoundActions.map(action => 
+        getActionState(action, activeActions, activeCPMPath, currentRound)
+      );
+    }
+    
+    const cpmStartRound = getCPMStartRound(measureType, sector, activityLog);
+    if (cpmStartRound === null) return []; // CPM not started yet
+    
+    // Calculate which buttonGroup to show: currentRound - cpmStartRound + 1
+    const targetButtonGroup = currentRound - cpmStartRound + 1;
+    
+    const currentGroupActions = measureActions.filter(action => action.buttonGroup === targetButtonGroup);
+    return currentGroupActions.map(action => 
       getActionState(action, activeActions, activeCPMPath, currentRound)
     );
   }
   
-  // If NO path is active, show all base actions
+  // If NO path is active, show all base actions (buttonGroup 1)
   if (!activeCPMPath) {
-    const baseAction = measureActions.find(action => action.unlocksInRound === 1);
+    const baseAction = measureActions.find(action => action.buttonGroup === 1);
     return baseAction ? [getActionState(baseAction, activeActions, activeCPMPath, currentRound)] : [];
   }
   
   return [];
+}
+
+/**
+ * Helper function to determine when a CPM path was first started
+ */
+export function getCPMStartRound(
+  measureType: string,
+  sector: string,
+  activityLog: ActivityLogType[]
+): number | null {
+  // Find the first action in this sector that belongs to this measure type
+  const sortedLog = [...activityLog].sort((a, b) => a.timestamp - b.timestamp);
+  
+  for (const log of sortedLog) {
+    if (log.action === ActivityTypeEnum.DEMOLISH) continue; // Skip demolish actions
+    
+    const actionConfig = progressionConfig[log.action];
+    if (actionConfig && actionConfig.sector === sector && actionConfig.measureType === measureType) {
+      return log.round || 1; // Return the round when this CPM was first started
+    }
+  }
+  
+  return null; // CPM path not started yet
 }
 
 /**

@@ -450,6 +450,88 @@ describe('Progression Utils', () => {
       expect(result.length).toBe(1);
       expect(result[0].status).toBe(ActionStatus.LOCKED_CONFLICT);
     });
+
+    it('should show only current round actions for active CPM path', () => {
+      // Test Round 1: Should only show base action
+      const activeActionsR1 = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActionsR1);
+      
+      const seawallActionsR1 = getActionsForMeasureType('seawall', sectorActions, activeActionsR1, activeCPMPath, 1);
+      
+      // Round 1: Should only show 0.5m seawall (unlocksInRound: 1)
+      expect(seawallActionsR1).toHaveLength(1);
+      expect(seawallActionsR1[0].config.displayName).toBe('0.5m');
+      
+      // Test Round 2: Should show Round 1 + Round 2 actions
+      const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActionsR1, activeCPMPath, 2);
+      
+      // Round 2: Should show 0.5m, 1.15m, 2m, Build Path (all unlocksInRound <= 2)
+      expect(seawallActionsR2.length).toBeGreaterThan(1);
+      const actionNames = seawallActionsR2.map(a => a.config.displayName);
+      expect(actionNames).toContain('0.5m');
+      expect(actionNames).toContain('1.15m');
+      expect(actionNames).toContain('2m');
+      expect(actionNames).toContain('Build Path');
+    });
+
+    it('should show buttonGroup-based actions when activityLog and sector are provided', () => {
+      // Test the new buttonGroup functionality
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 }
+      ];
+      
+      const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Round 1: Should show buttonGroup 1 (0.5m seawall)
+      const seawallActionsR1 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1, activityLog, '1A');
+      expect(seawallActionsR1).toHaveLength(1);
+      expect(seawallActionsR1[0].config.displayName).toBe('0.5m');
+      expect(seawallActionsR1[0].config.buttonGroup).toBe(1);
+      
+      // Round 2: Should show buttonGroup 2 (1.15m, 2m, Build Path)
+      const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2, activityLog, '1A');
+      expect(seawallActionsR2.length).toBeGreaterThan(1);
+      
+      // All actions in Round 2 should be buttonGroup 2
+      seawallActionsR2.forEach(action => {
+        expect(action.config.buttonGroup).toBe(2);
+      });
+      
+      const actionNames = seawallActionsR2.map(a => a.config.displayName);
+      expect(actionNames).toContain('1.15m');
+      expect(actionNames).toContain('2m');
+      expect(actionNames).toContain('Build Path');
+    });
+
+    it('should handle CPM started in later round (demolish then rebuild scenario)', () => {
+      // Test scenario: R1 Mangroves, R2 Demolish + Seawall 0.5m, R3 should show next group
+      const activityLog: ActivityLogType[] = [
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 },
+        { id: '2', action: ActivityTypeEnum.DEMOLISH, timestamp: 2000, value: '1A', userId: 'test', userName: 'Test User', round: 2 },
+        { id: '3', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 2100, value: '', userId: 'test', userName: 'Test User', round: 2 }
+      ];
+      
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      // Round 2: Seawall started in R2, should show buttonGroup 1 (0.5m)
+      const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2, activityLog, '1A');
+      expect(seawallActionsR2).toHaveLength(1);
+      expect(seawallActionsR2[0].config.displayName).toBe('0.5m');
+      expect(seawallActionsR2[0].config.buttonGroup).toBe(1);
+      
+      // Round 3: Should show buttonGroup 2 (next group after seawall started in R2)
+      const seawallActionsR3 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 3, activityLog, '1A');
+      expect(seawallActionsR3.length).toBeGreaterThan(1);
+      
+      // All actions in Round 3 should be buttonGroup 2
+      seawallActionsR3.forEach(action => {
+        expect(action.config.buttonGroup).toBe(2);
+      });
+    });
   });
 
   describe('getSectorActions', () => {

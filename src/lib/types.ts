@@ -117,6 +117,9 @@ export interface ActionConfig {
   /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
 
+  /** The button group this action belongs to (1 = first group, 2 = second group, etc.) */
+  buttonGroup: number;
+
   /**
    * Defines prerequisites using OR/AND logic.
    * Format: `[[A, B], [C]]` means "(A AND B) OR C".

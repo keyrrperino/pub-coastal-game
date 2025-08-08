@@ -74,13 +74,15 @@ export function useProgression(
           sectorActions,
           activeActions,
           activeCPMPath,
-          currentRound
+          currentRound,
+          activityLog,
+          sector
         );
       }
     }
 
     return state;
-  }, [sectorActions, activeActions, activeCPMPath, currentRound]);
+  }, [sectorActions, activeActions, activeCPMPath, currentRound, activityLog, sector]);
 
   return progressionState;
 }
