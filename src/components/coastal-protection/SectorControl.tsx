@@ -326,7 +326,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: 'url(/assets/background-image.png)',
+          backgroundImage: 'url(/assets/controller-background.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'blur(100px)',
@@ -336,7 +336,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Dark overlay */}
       <div
         className="absolute inset-0 w-full h-full"
-        style={{ backgroundColor: 'rgba(51, 92, 143, 0.6)' }}
+        style={{ 
+          backgroundColor: sector === 'sector-2' ? 'rgba(95, 143, 51, 0.6)' : 
+                          sector === 'sector-3' ? 'rgba(143, 51, 102, 0.6)' : 
+                          'rgba(51, 92, 143, 0.6)' // sector-1 default
+        }}
       />
 
       {/* Main content */}
