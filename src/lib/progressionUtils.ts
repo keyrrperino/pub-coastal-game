@@ -303,6 +303,58 @@ export function hasAnySelectableActionsInMeasureType(
 }
 
 /**
+ * Find the round when a CPM path was completed (last action taken)
+ * Returns null if the path is not completed
+ */
+export function getCPMCompletionRound(
+  measureType: string,
+  sector: string,
+  activityLog: ActivityLogType[]
+): number | null {
+  // Get all actions for this measure type in this sector
+  const measureActions = Object.values(progressionConfig).filter(
+    action => action.measureType === measureType && action.sector === sector
+  );
+  
+  if (measureActions.length === 0) return null;
+  
+  // Find the latest round where an action from this measure type was taken
+  let latestRound: number | null = null;
+  
+  for (const log of activityLog) {
+    if (log.action === ActivityTypeEnum.DEMOLISH) continue; // Skip demolish actions
+    
+    const actionConfig = progressionConfig[log.action];
+    if (actionConfig && actionConfig.sector === sector && actionConfig.measureType === measureType) {
+      const actionRound = log.round || 1;
+      if (latestRound === null || actionRound > latestRound) {
+        latestRound = actionRound;
+      }
+    }
+  }
+  
+  // Check if the path is actually completed (no more selectable actions)
+  if (latestRound !== null) {
+    const activeActions = calculateActiveActions(activityLog);
+    const sectorActions = getSectorActions(sector);
+    const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+    
+    const hasSelectableActions = hasAnySelectableActionsInMeasureType(
+      measureType,
+      sectorActions,
+      activeActions,
+      activeCPMPath,
+      latestRound
+    );
+    
+    // Only return completion round if there are no more selectable actions
+    return hasSelectableActions ? null : latestRound;
+  }
+  
+  return null;
+}
+
+/**
  * Non-hook version of progression state calculation for testing
  * This replicates the logic from useProgression hook without React dependencies
  */

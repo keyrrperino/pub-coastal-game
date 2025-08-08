@@ -7,7 +7,7 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
-import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getSectorActions, calculateActiveActions, getActiveCPMPath } from '@/lib/progressionUtils';
+import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -174,7 +174,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Create measures array - include all measure types, show "Fully Upgraded" for empty ones
     const measures = measureTypeConfig
       .map(config => {
-        // Check if this is an active CPM path with NO selectable actions across ALL buttonGroups
+        // Check if this is an active CPM path that was completed in a PREVIOUS round
         const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
           config.key, 
           sectorActions, 
@@ -182,7 +182,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           activeCPMPath, 
           currentRound
         );
-        const isFullyUpgraded = !hasAnySelectableInMeasureType && progressionState.activeCPM === config.key;
+        const completionRound = getCPMCompletionRound(config.key, sectorId, activityLog);
+        const isFullyUpgraded = !hasAnySelectableInMeasureType && 
+                               progressionState.activeCPM === config.key &&
+                               completionRound !== null && 
+                               currentRound > completionRound;
         
         // If no actions and not active CPM path, don't show the card
         if (config.actions.length === 0 && !isFullyUpgraded) {

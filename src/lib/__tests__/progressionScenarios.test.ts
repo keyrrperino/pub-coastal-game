@@ -381,7 +381,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       // Should show as active CPM (for "Fully Upgraded" display)
       expect(progressionState.activeCPM).toBe('mangroves');
       
-      // Simulate UI logic: should detect as "Fully Upgraded"
+      // Simulate UI logic: should detect as "Fully Upgraded" (using old simple logic for this test)
       const hasSelectableMangroveActions = progressionState.mangroves.some(action => action.status === 'SELECTABLE');
       const isFullyUpgraded = !hasSelectableMangroveActions && progressionState.activeCPM === 'mangroves';
       expect(isFullyUpgraded).toBe(true);
@@ -455,8 +455,8 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       // Test R3 (after completing both mangrove actions)
       const progressionState = calculateProgressionState(activityLog, 3, '1A');
       
-      // Simulate the comprehensive UI logic
-      const { hasAnySelectableActionsInMeasureType, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
+      // Simulate the new UI logic with completion round check
+      const { hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
       const activeActions = calculateActiveActions(activityLog);
       const sectorActions = getSectorActions('1A');
       const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
@@ -468,10 +468,65 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
         activeCPMPath, 
         3
       );
-      const isFullyUpgraded = !hasAnySelectableInMeasureType && progressionState.activeCPM === 'mangroves';
+      const completionRound = getCPMCompletionRound('mangroves', '1A', activityLog);
+      const isFullyUpgraded = !hasAnySelectableInMeasureType && 
+                             progressionState.activeCPM === 'mangroves' &&
+                             completionRound !== null && 
+                             3 > completionRound;
       
-      // Should be fully upgraded because no more actions are available (now or in future)
+      // Should be fully upgraded because completed in R2 and we're now in R3
+      expect(completionRound).toBe(2);
       expect(isFullyUpgraded).toBe(true);
+    });
+
+    it('should NOT show fully upgraded in the same round as completion', () => {
+      // Scenario: R1 Plant Mangrove, R2 Build Boardwalk - should NOT show "Fully Upgraded" in R2
+      const activityLog: ActivityLogType[] = [
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        },
+        { 
+          id: '2', 
+          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          timestamp: 2000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        }
+      ];
+
+      // Test R2 (same round as completion)
+      const progressionState = calculateProgressionState(activityLog, 2, '1A');
+      
+      // Simulate the new UI logic with completion round check
+      const { hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath } = require('../progressionUtils');
+      const activeActions = calculateActiveActions(activityLog);
+      const sectorActions = getSectorActions('1A');
+      const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+      
+      const hasAnySelectableInMeasureType = hasAnySelectableActionsInMeasureType(
+        'mangroves', 
+        sectorActions, 
+        activeActions, 
+        activeCPMPath, 
+        2
+      );
+      const completionRound = getCPMCompletionRound('mangroves', '1A', activityLog);
+      const isFullyUpgraded = !hasAnySelectableInMeasureType && 
+                             progressionState.activeCPM === 'mangroves' &&
+                             completionRound !== null && 
+                             2 > completionRound;
+      
+      // Should NOT be fully upgraded because we're in the same round as completion (R2)
+      expect(completionRound).toBe(2);
+      expect(isFullyUpgraded).toBe(false);
     });
   });
 });
