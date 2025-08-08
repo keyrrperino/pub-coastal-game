@@ -214,26 +214,40 @@ export function getActionsForMeasureType(
 }
 
 /**
- * Helper function to determine when a CPM path was first started
+ * Helper function to determine when the CURRENT CPM path was started
+ * This considers demolish actions and treats rebuilds as fresh starts
  */
 export function getCPMStartRound(
   measureType: string,
   sector: string,
   activityLog: ActivityLogType[]
 ): number | null {
-  // Find the first action in this sector that belongs to this measure type
+  // Sort by timestamp to process events in chronological order
   const sortedLog = [...activityLog].sort((a, b) => a.timestamp - b.timestamp);
   
+  let lastDemolishRound: number | null = null;
+  let firstBuildRound: number | null = null;
+  
   for (const log of sortedLog) {
-    if (log.action === ActivityTypeEnum.DEMOLISH) continue; // Skip demolish actions
-    
-    const actionConfig = progressionConfig[log.action];
-    if (actionConfig && actionConfig.sector === sector && actionConfig.measureType === measureType) {
-      return log.round || 1; // Return the round when this CPM was first started
+    if (log.action === ActivityTypeEnum.DEMOLISH && log.value === sector) {
+      // Found a demolish action for this sector
+      lastDemolishRound = log.round || 1;
+      // Reset the first build round since we demolished
+      firstBuildRound = null;
+    } else {
+      // Check if this is a build action for our measure type in this sector
+      const actionConfig = progressionConfig[log.action];
+      if (actionConfig && actionConfig.sector === sector && actionConfig.measureType === measureType) {
+        if (firstBuildRound === null) {
+          firstBuildRound = log.round || 1;
+        }
+      }
     }
   }
   
-  return null; // CPM path not started yet
+  // Return the round when the current path was started
+  // (first build after last demolish, or first build if no demolish)
+  return firstBuildRound;
 }
 
 /**

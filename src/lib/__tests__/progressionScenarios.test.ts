@@ -547,4 +547,95 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(isFullyUpgraded).toBe(false);
     });
   });
+
+  describe('Demolish and Rebuild Consistency', () => {
+    it('should show consistent buttonGroups after demolish+rebuild in same round', () => {
+      // Scenario: R1 different CPMs in 1A and 1B, R2 demolish both and rebuild seawalls
+      const activityLog: ActivityLogType[] = [
+        // R1: Plant Mangrove in 1A, Seawall 0.5 in 1B
+        { 
+          id: '1', 
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, 
+          timestamp: 1000, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        },
+        { 
+          id: '2', 
+          action: ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL, 
+          timestamp: 1001, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 1 
+        },
+        // R2: Demolish both
+        { 
+          id: '3', 
+          action: ActivityTypeEnum.DEMOLISH, 
+          timestamp: 2000, 
+          value: '1A', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        },
+        { 
+          id: '4', 
+          action: ActivityTypeEnum.DEMOLISH, 
+          timestamp: 2001, 
+          value: '1B', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        },
+        // R2: Rebuild seawalls in both
+        { 
+          id: '5', 
+          action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, 
+          timestamp: 2002, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        },
+        { 
+          id: '6', 
+          action: ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL, 
+          timestamp: 2003, 
+          value: '', 
+          userId: 'test', 
+          userName: 'Test User', 
+          round: 2 
+        }
+      ];
+
+      // Test both sectors in R2 - they should behave identically
+      const progressionState1A = calculateProgressionState(activityLog, 2, '1A');
+      const progressionState1B = calculateProgressionState(activityLog, 2, '1B');
+      
+      // Both should have seawall as active CPM
+      expect(progressionState1A.activeCPM).toBe('seawall');
+      expect(progressionState1B.activeCPM).toBe('seawall');
+      
+      // Both should show the same buttonGroup (buttonGroup 1: just the 0.5m seawall)
+      expect(progressionState1A.seawall).toHaveLength(1);
+      expect(progressionState1B.seawall).toHaveLength(1);
+      
+      // Both should show the 0.5m seawall as completed
+      expect(progressionState1A.seawall[0].config.displayName).toBe('0.5m');
+      expect(progressionState1A.seawall[0].status).toBe(ActionStatus.COMPLETED);
+      expect(progressionState1B.seawall[0].config.displayName).toBe('0.5m');
+      expect(progressionState1B.seawall[0].status).toBe(ActionStatus.COMPLETED);
+      
+      // Verify CPM start rounds are consistent (both should be R2)
+      const { getCPMStartRound } = require('../progressionUtils');
+      const startRound1A = getCPMStartRound('seawall', '1A', activityLog);
+      const startRound1B = getCPMStartRound('seawall', '1B', activityLog);
+      
+      expect(startRound1A).toBe(2);
+      expect(startRound1B).toBe(2);
+    });
+  });
 });
