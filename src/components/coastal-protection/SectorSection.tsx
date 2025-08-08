@@ -10,6 +10,7 @@ interface SectorSectionProps {
     title: string;
     subtitle?: string;
     hasNoMoreAvailableUpgrades?: boolean;
+    isActive?: boolean;
     options: Array<{
       title: string;
       coinCount: number;
@@ -60,7 +61,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
               subtitle={measure.subtitle}
               icon={measure.type}
               options={measure.options}
-              isActive={true} // All measures should be available
+              isActive={measure.isActive ?? true}
               hasNoMoreAvailableUpgrades={measure.hasNoMoreAvailableUpgrades}
             />
           ))}

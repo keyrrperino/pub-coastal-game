@@ -298,6 +298,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           title: config.title,
           subtitle: config.subtitle,
           hasNoMoreAvailableUpgrades,
+          isActive: !activeCPMPath || activeCPMPath === config.key, // Active if no CPM is built or this is the active CPM
           options: config.roundStartActions
             .map((roundStartActionState: any) => {
               // Find the current state of this action for proper button states
