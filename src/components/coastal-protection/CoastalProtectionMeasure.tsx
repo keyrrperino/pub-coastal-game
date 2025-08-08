@@ -71,7 +71,7 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
     <div
       className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-[20px] py-[20px] px-[30px] w-auto min-h-[194px]`}
       style={{
-        opacity: isActive ? 1 : 0.3,
+        opacity: isActive ? 1 : 0.4,
         pointerEvents: isActive ? 'auto' : 'none',
         filter: isActive ? 'none' : 'grayscale(0.7)',
         transition: 'opacity 0.3s, filter 0.3s'
