@@ -7,7 +7,8 @@ import {
   calculateActiveActions,
   getActionsForMeasureType,
   getSectorActions,
-  isActionReplaced
+  isActionReplaced,
+  hasAnyConstructionInSector
 } from '../progressionUtils';
 import { progressionConfig } from '../progression.config';
 
@@ -206,6 +207,7 @@ describe('Progression Utils', () => {
       displayName: 'Build Boardwalk',
       cost: 1,
       unlocksInRound: 2,
+      buttonGroup: 2,
       sector: '1A',
       measureType: 'mangroves' as const,
       prerequisites: [[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]]
@@ -223,6 +225,7 @@ describe('Progression Utils', () => {
         displayName: 'Build Seawall 0.5m',
         cost: 1,
         unlocksInRound: 1,
+        buttonGroup: 1,
         sector: '1A',
         measureType: 'seawall' as const
       };
@@ -548,6 +551,130 @@ describe('Progression Utils', () => {
       expect(sector1B.length).toBeGreaterThan(0);
       expect(sector1A[0].sector).toBe('1A');
       expect(sector1B[0].sector).toBe('1B');
+    });
+  });
+
+  describe('hasAnyConstructionInSector', () => {
+    it('should return false when no constructions exist in sector', () => {
+      const activityLog: ActivityLogType[] = [];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(false);
+    });
+
+    it('should return true when construction exists in sector', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: 'R1_1A_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        }
+      ];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(true);
+    });
+
+    it('should return false when construction exists in different sector', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES,
+          value: 'R1_1B_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        }
+      ];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(false);
+    });
+
+    it('should return false when construction was demolished', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: 'R1_1A_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        },
+        {
+          id: '2',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.DEMOLISH,
+          value: '1A',
+          timestamp: 2000,
+          round: 2
+        }
+      ];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(false);
+    });
+
+    it('should return true when construction was rebuilt after demolish', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES,
+          value: 'R1_1A_BUILD_PLANT_MANGROVES',
+          timestamp: 1000,
+          round: 1
+        },
+        {
+          id: '2',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.DEMOLISH,
+          value: '1A',
+          timestamp: 2000,
+          round: 2
+        },
+        {
+          id: '3',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL,
+          value: 'R1_1A_BUILD_0_5_SEAWALL',
+          timestamp: 3000,
+          round: 2
+        }
+      ];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(true);
+    });
+
+    it('should handle replaced actions correctly', () => {
+      const activityLog: ActivityLogType[] = [
+        {
+          id: '1',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL,
+          value: 'R1_1A_BUILD_0_5_SEAWALL',
+          timestamp: 1000,
+          round: 1
+        },
+        {
+          id: '2',
+          userId: 'player1',
+          userName: 'Player 1',
+          action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL,
+          value: 'R1_1A_BUILD_1_15_SEA_WALL',
+          timestamp: 2000,
+          round: 2
+        }
+      ];
+      const result = hasAnyConstructionInSector('1A', activityLog);
+      expect(result).toBe(true); // Should still return true because 1.15m seawall is active
     });
   });
 });

@@ -238,3 +238,25 @@ export function getCPMStartRound(
 export function getSectorActions(sector: string): ActionConfig[] {
   return Object.values(progressionConfig).filter(action => action.sector === sector);
 }
+
+/**
+ * Check if there are any constructions in a sector across the entire game session
+ * This is used for demolish button availability - demolish should be available if there's
+ * ANY construction in the sector, regardless of round
+ */
+export function hasAnyConstructionInSector(
+  sector: string,
+  activityLog: ActivityLogType[]
+): boolean {
+  const activeActions = calculateActiveActions(activityLog);
+  
+  // Check if any active action belongs to this sector
+  for (const activeAction of activeActions) {
+    const actionConfig = progressionConfig[activeAction];
+    if (actionConfig && actionConfig.sector === sector) {
+      return true;
+    }
+  }
+  
+  return false;
+}

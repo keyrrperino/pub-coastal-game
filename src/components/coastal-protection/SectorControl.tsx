@@ -7,6 +7,7 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
+import { hasAnyConstructionInSector } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -190,18 +191,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         }),
       }));
 
-    // Determine if there are any completed actions that can be demolished
-    const completedActions = Object.values(progressionState)
-      .filter((value): value is ActionState[] => Array.isArray(value))
-      .flat()
-      .filter(actionState => actionState.status === ActionStatus.COMPLETED);
-    
-    const canDemolish = completedActions.length > 0;
+    // Determine if there are any constructions in this sector across the entire game session
+    const canDemolish = hasAnyConstructionInSector(sectorId, activityLog);
     const demolishOption = {
       coinCount: 1,
       onClick: canDemolish ? () => {
         // Demolish all actions for this specific sector
-        handleDemolishClick(sectorId, completedActions[0].config.id);
+        // We don't need to pass a specific action ID since demolish removes all actions in the sector
+        handleDemolishClick(sectorId, ActivityTypeEnum.DEMOLISH);
       } : undefined,
       disabled: !canDemolish,
     };
