@@ -31,6 +31,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
   }, [onTimeUp, initialSeconds]);
 
   const progressPercentage = (seconds / initialSeconds) * 100;
+  const isAlmostUp = seconds <= 10 && seconds > 0;
 
   return (
     <div className="flex flex-row items-center gap-8 w-full">
@@ -68,9 +69,9 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
         </div>
       </div>
       {/* Timer value */}
-      <div className="flex items-baseline ml-4">
+      <div className={`flex items-baseline ml-4 ${isAlmostUp ? styles.timerWiggle : ''}`}>
         <div
-          className={`${styles.novecentoBold} text-[120px] font-bold leading-[1] text-white uppercase w-[150px] text-right`}
+          className={`${styles.novecentoBold} text-[120px] font-bold leading-[1] text-white uppercase w-[150px] text-center`}
         >
           {seconds}
         </div>

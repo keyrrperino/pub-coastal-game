@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
+import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
@@ -48,6 +49,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [previousRound, setPreviousRound] = useState(1);
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
+  const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
 
   // Debug logging for round state
   useEffect(() => {
@@ -133,9 +135,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       console.log(`Action triggered: ${activityType}, Cost: ${coinCost} coins`);
     } else {
-      console.log('Insufficient coins');
+      console.log('Insufficient coins - showing modal');
+      setShowInsufficientBudgetModal(true);
     }
-  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
+  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound, sector]);
 
   const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
     // Update local activity log immediately to prevent UI flicker
@@ -410,6 +413,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           </div>
         </div>
       </div>
+
+      {/* Insufficient Budget Modal */}
+      <InsufficientBudgetModal 
+        isOpen={showInsufficientBudgetModal}
+        onClose={() => setShowInsufficientBudgetModal(false)}
+      />
     </div>
   );
 };
