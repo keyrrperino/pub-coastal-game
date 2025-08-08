@@ -206,14 +206,21 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_1_15: {
-    displayName: '1.15m', cost: 3, unlocksInRound: 2,
-    prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
+    displayName: '1.15m', cost: 3, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2,
-    prerequisites: [['BUILD_HYBRID_MEASURE_0_5']],
+    displayName: '2m', cost: 4, unlocksInRound: 1,
+    conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
+    replaces: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15'],
+    measureType: 'hybrid-measure',
+  },
+  BUILD_PATH_FROM_HYBRID: {
+    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    prerequisites: [['BUILD_HYBRID_MEASURE_0_5'], ['BUILD_HYBRID_MEASURE_1_15'], ['BUILD_HYBRID_MEASURE_2']],
+    blocksActions: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15', 'BUILD_HYBRID_MEASURE_2'],
     measureType: 'hybrid-measure',
   },
 };
@@ -281,6 +288,7 @@ const zone3A_enums = {
   BUILD_HYBRID_MEASURE_0_5: ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_1_15: ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_2: ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE,
+  BUILD_PATH_FROM_HYBRID: ActivityTypeEnum.R2_3A_BUILD_BIKE_PATH_ALONG_THE_SEAWALL,
 };
 const zone3B_enums = {
   BUILD_ARTIFICIAL_REEF: ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF,
@@ -293,6 +301,7 @@ const zone3B_enums = {
   BUILD_HYBRID_MEASURE_0_5: ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_1_15: ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE,
   BUILD_HYBRID_MEASURE_2: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE,
+  BUILD_PATH_FROM_HYBRID: ActivityTypeEnum.R2_3B_BUILD_BIKE_PATH_ALONG_THE_SEAWALL,
 };
 
 // =========================================================================
