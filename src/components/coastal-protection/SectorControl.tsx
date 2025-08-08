@@ -141,6 +141,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound, sector]);
 
   const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
+    // Check if player has enough coins for demolish (costs 1 coin)
+    if (totalCoins < 1) {
+      console.log('Insufficient coins for demolish - showing modal');
+      setShowInsufficientBudgetModal(true);
+      return;
+    }
+
     // Update local activity log immediately to prevent UI flicker
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
@@ -184,7 +191,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setTotalCoins(prev => prev - 1);
     
     console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, totalCoins]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
