@@ -199,22 +199,36 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           title: config.title,
           subtitle: config.subtitle,
           isFullyUpgraded,
-          options: config.actions.map(actionState => {
-            const isSelected = actionState.status === ActionStatus.COMPLETED;
-            const isAvailable = actionState.status === ActionStatus.SELECTABLE;
-            const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
-                            actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
-                            actionState.status === ActionStatus.REPLACED;
-            
-            return {
-              title: actionState.config.displayName,
-              coinCount: actionState.config.cost,
-              onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
-              isSelected,
-              disabled,
-              status: actionState.status, // Pass the status for potential UI enhancements
-            };
-          }),
+          options: config.actions
+            .filter(actionState => {
+              // Hide completed actions only if they were completed in a PREVIOUS round
+              if (actionState.status === ActionStatus.COMPLETED) {
+                // Find when this action was completed
+                const completedLog = activityLog.find(log => 
+                  log.action === actionState.config.id && log.round !== undefined
+                );
+                const completedInRound = completedLog?.round || currentRound;
+                // Hide only if completed in a previous round
+                return completedInRound >= currentRound;
+              }
+              return true; // Show all non-completed actions
+            })
+            .map(actionState => {
+              const isSelected = actionState.status === ActionStatus.COMPLETED;
+              const isAvailable = actionState.status === ActionStatus.SELECTABLE;
+              const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                              actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                              actionState.status === ActionStatus.REPLACED;
+              
+              return {
+                title: actionState.config.displayName,
+                coinCount: actionState.config.cost,
+                onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
+                isSelected,
+                disabled,
+                status: actionState.status, // Pass the status for potential UI enhancements
+              };
+            }),
         };
       })
       .filter(Boolean); // Remove null entries
