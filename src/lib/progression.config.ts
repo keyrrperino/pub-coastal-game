@@ -143,16 +143,15 @@ const zone2Template: Record<string, TemplateAction> = {
     blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
   },
-  // --- COASTAL BARRIER (STORM SURGE) PATH ---
+  // --- COASTAL BARRIERS PATH ---
   BUILD_COASTAL_BARRIER_0_5: {
     displayName: '0.5m', cost: 2, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
   BUILD_COASTAL_BARRIER_2: {
-    displayName: '2m', cost: 4, unlocksInRound: 2,
-    prerequisites: [['BUILD_COASTAL_BARRIER_0_5']],
-    replaces: ['BUILD_COASTAL_BARRIER_0_5'],
+    displayName: '2m', cost: 4, unlocksInRound: 1,
+    conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
     measureType: 'storm-surge-barrier',
   },
 };

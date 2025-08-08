@@ -238,7 +238,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       { key: 'mangroves', title: 'MANGROVES', roundStartActions: sectorButtonSets.mangroves || [], currentActions: progressionState.mangroves },
       { key: 'seawall', title: 'SEAWALL', roundStartActions: sectorButtonSets.seawall || [], currentActions: progressionState.seawall },
       { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: '', roundStartActions: sectorButtonSets.landReclamation || [], currentActions: progressionState.landReclamation },
-      { key: 'storm-surge-barrier', title: 'STORM SURGE BARRIER', subtitle: 'Premium protection', roundStartActions: sectorButtonSets.stormSurgeBarrier || [], currentActions: progressionState.stormSurgeBarrier },
+      { key: 'storm-surge-barrier', title: 'COASTAL BARRIERS', subtitle: '', roundStartActions: sectorButtonSets.stormSurgeBarrier || [], currentActions: progressionState.stormSurgeBarrier },
       { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: 'Eco-friendly solution', roundStartActions: sectorButtonSets.artificialReef || [], currentActions: progressionState.artificialReef },
       { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: 'Combined approach', roundStartActions: sectorButtonSets.hybridMeasure || [], currentActions: progressionState.hybridMeasure },
       { key: 'revetment', title: 'REVETMENT', roundStartActions: sectorButtonSets.revetment || [], currentActions: progressionState.revetment },
