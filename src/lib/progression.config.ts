@@ -152,6 +152,7 @@ const zone2Template: Record<string, TemplateAction> = {
   BUILD_COASTAL_BARRIER_2: {
     displayName: '2m', cost: 3, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
+    replaces: ['BUILD_COASTAL_BARRIER_0_5'],
     measureType: 'storm-surge-barrier',
   },
 };
