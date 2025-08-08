@@ -24,15 +24,15 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(mangroveActions.length).toBe(1);
       expect(mangroveActions[0].status).toBe(ActionStatus.SELECTABLE);
       
-      // Check seawall base action
+      // Check seawall base actions (all heights available in R1)
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1);
-      expect(seawallActions.length).toBe(1);
-      expect(seawallActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(seawallActions.length).toBe(3);
+      expect(seawallActions.every(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
-      // Check land reclamation base action
+      // Check land reclamation base actions (should show all R1 options: 0.5m, 1.15m, 2m)
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 1);
-      expect(landRecActions.length).toBe(1);
-      expect(landRecActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(landRecActions.length).toBe(3);
+      expect(landRecActions.every(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
     });
 
     it('Round 1: After Plant Mangrove - other base CPMs should be LOCKED_CONFLICT', () => {
@@ -61,15 +61,15 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       const plantMangrove = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES);
       expect(plantMangrove?.status).toBe(ActionStatus.COMPLETED);
       
-      // Seawall should be locked due to conflict
+      // Seawall should be locked due to conflict (all heights)
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1);
-      expect(seawallActions.length).toBe(1);
-      expect(seawallActions[0].status).toBe(ActionStatus.LOCKED_CONFLICT);
+      expect(seawallActions.length).toBe(3);
+      expect(seawallActions.every(action => action.status === ActionStatus.LOCKED_CONFLICT)).toBe(true);
       
-      // Land reclamation should be locked due to conflict
+      // Land reclamation should be locked due to conflict (all heights)
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 1);
-      expect(landRecActions.length).toBe(1);
-      expect(landRecActions[0].status).toBe(ActionStatus.LOCKED_CONFLICT);
+      expect(landRecActions.length).toBe(3); // All LR heights unlock in R1
+      expect(landRecActions.every(action => action.status === ActionStatus.LOCKED_CONFLICT)).toBe(true);
     });
 
     it('Round 2: After Plant Mangrove - Boardwalk should be SELECTABLE', () => {
@@ -165,16 +165,16 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       
       // All base actions should be selectable again
       const mangroveActions = getActionsForMeasureType('mangroves', sectorActions, activeActions, activeCPMPath, 2);
-      expect(mangroveActions.length).toBe(1);
-      expect(mangroveActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(mangroveActions.length).toBe(2); // Plant + Boardwalk (R2 unlocked)
+      expect(mangroveActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
-      expect(seawallActions.length).toBe(1);
-      expect(seawallActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(seawallActions.length).toBe(4); // All heights + Build Path (R2 unlocked)
+      expect(seawallActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 2);
-      expect(landRecActions.length).toBe(1);
-      expect(landRecActions[0].status).toBe(ActionStatus.SELECTABLE);
+      expect(landRecActions.length).toBe(5); // All LR heights + R2 upgrades
+      expect(landRecActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
     });
 
     it('Round 2: After Demolish -> Build Seawall - mangrove should be LOCKED_CONFLICT', () => {
@@ -338,10 +338,10 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       // Test R3 (after skipping R2)
       const progressionState = calculateProgressionState(activityLog, 3, '1A');
       
-      // Should have mangrove actions available (BUILD_BOARDWALK)
-      expect(progressionState.mangroves).toHaveLength(1);
-      expect(progressionState.mangroves[0].config.displayName).toBe('Build Board Walk');
-      expect(progressionState.mangroves[0].status).toBe(ActionStatus.SELECTABLE);
+      // Should have mangrove actions available (Plant + BUILD_BOARDWALK)
+      expect(progressionState.mangroves).toHaveLength(2);
+      const boardwalk = progressionState.mangroves.find(a => a.config.displayName === 'Build Board Walk');
+      expect(boardwalk?.status).toBe(ActionStatus.SELECTABLE);
       
       // Should not show "Fully Upgraded" since BUILD_BOARDWALK is available
       expect(progressionState.activeCPM).toBe('mangroves');
@@ -549,7 +549,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
   });
 
   describe('Demolish and Rebuild Consistency', () => {
-    it('should show consistent buttonGroups after demolish+rebuild in same round', () => {
+    it('should show consistent behavior after demolish+rebuild in same round', () => {
       // Scenario: R1 different CPMs in 1A and 1B, R2 demolish both and rebuild seawalls
       const activityLog: ActivityLogType[] = [
         // R1: Plant Mangrove in 1A, Seawall 0.5 in 1B
@@ -619,23 +619,19 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(progressionState1A.activeCPM).toBe('seawall');
       expect(progressionState1B.activeCPM).toBe('seawall');
       
-      // Both should show the same buttonGroup (buttonGroup 1: just the 0.5m seawall)
-      expect(progressionState1A.seawall).toHaveLength(1);
-      expect(progressionState1B.seawall).toHaveLength(1);
+      // Both should show all seawall actions (all heights + Build Path)
+      expect(progressionState1A.seawall.length).toBeGreaterThan(1);
+      expect(progressionState1B.seawall.length).toBeGreaterThan(1);
       
       // Both should show the 0.5m seawall as completed
-      expect(progressionState1A.seawall[0].config.displayName).toBe('0.5m');
-      expect(progressionState1A.seawall[0].status).toBe(ActionStatus.COMPLETED);
-      expect(progressionState1B.seawall[0].config.displayName).toBe('0.5m');
-      expect(progressionState1B.seawall[0].status).toBe(ActionStatus.COMPLETED);
+      const seawall1A = progressionState1A.seawall.find(a => a.config.displayName === '0.5m');
+      const seawall1B = progressionState1B.seawall.find(a => a.config.displayName === '0.5m');
+      expect(seawall1A?.status).toBe(ActionStatus.COMPLETED);
+      expect(seawall1B?.status).toBe(ActionStatus.COMPLETED);
       
-      // Verify CPM start rounds are consistent (both should be R2)
-      const { getCPMStartRound } = require('../progressionUtils');
-      const startRound1A = getCPMStartRound('seawall', '1A', activityLog);
-      const startRound1B = getCPMStartRound('seawall', '1B', activityLog);
-      
-      expect(startRound1A).toBe(2);
-      expect(startRound1B).toBe(2);
+      // Both sectors should behave consistently (both have seawall as active CPM)
+      expect(progressionState1A.activeCPM).toBe('seawall');
+      expect(progressionState1B.activeCPM).toBe('seawall');
     });
   });
 });

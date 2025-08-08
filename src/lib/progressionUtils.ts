@@ -53,13 +53,74 @@ export function isActionReplaced(
 }
 
 /**
+ * Helper function to check if an action is blocked by existing actions
+ */
+export function isActionBlocked(
+  actionId: ActivityTypeEnum,
+  activeActions: Set<ActivityTypeEnum>
+): boolean {
+  // Check if any active action blocks this action
+  for (const activeActionId of activeActions) {
+    const activeActionConfig = progressionConfig[activeActionId];
+    if (activeActionConfig?.blocksActions?.includes(actionId)) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+/**
+ * Helper function to check one-action-per-round constraint (per sector)
+ */
+export function isBlockedByOneActionPerRound(
+  actionConfig: ActionConfig,
+  activeActions: Set<ActivityTypeEnum>,
+  currentRound: number,
+  activityLog: ActivityLogType[]
+): boolean {
+  // Check if any construction action was already taken this round IN THE SAME SECTOR
+  const actionsThisRoundInSector = activityLog.filter(log => {
+    if (log.round !== currentRound || log.action === ActivityTypeEnum.DEMOLISH) {
+      return false;
+    }
+    
+    // Get the sector of the logged action
+    const loggedActionConfig = progressionConfig[log.action];
+    return loggedActionConfig && loggedActionConfig.sector === actionConfig.sector;
+  });
+  
+  // Check if this sector was demolished this round (after any construction actions)
+  const demolishActionsThisRoundInSector = activityLog.filter(log => {
+    return log.round === currentRound && 
+           log.action === ActivityTypeEnum.DEMOLISH && 
+           log.value === actionConfig.sector;
+  });
+  
+  // If the sector was demolished this round, find the latest demolish timestamp
+  let latestDemolishTime = 0;
+  if (demolishActionsThisRoundInSector.length > 0) {
+    latestDemolishTime = Math.max(...demolishActionsThisRoundInSector.map(log => log.timestamp));
+  }
+  
+  // Filter construction actions to only those that happened AFTER the latest demolish
+  const actionsAfterLatestDemolish = actionsThisRoundInSector.filter(log => {
+    return latestDemolishTime === 0 || log.timestamp > latestDemolishTime;
+  });
+  
+  // If an action was taken this round in this sector (after any demolish) and this action isn't already active, block it
+  return actionsAfterLatestDemolish.length > 0 && !activeActions.has(actionConfig.id);
+}
+
+/**
  * Helper function to determine the status of any given action
  */
 export function getActionState(
   actionConfig: ActionConfig,
   activeActions: Set<ActivityTypeEnum>,
   activeCPMPath: string | null,
-  currentRound: number
+  currentRound: number,
+  activityLog?: ActivityLogType[]
 ): { config: ActionConfig; status: ActionStatus } {
   let status: ActionStatus;
 
@@ -71,7 +132,15 @@ export function getActionState(
   else if (isActionReplaced(actionConfig.id, activeActions)) {
     status = ActionStatus.REPLACED;
   }
-  // Check 3: Is there a conflicting CPM path active?
+  // Check 3: Is this action blocked by an existing action?
+  else if (isActionBlocked(actionConfig.id, activeActions)) {
+    status = ActionStatus.LOCKED_CONFLICT;
+  }
+  // Check 4: One action per round constraint
+  else if (activityLog && isBlockedByOneActionPerRound(actionConfig, activeActions, currentRound, activityLog)) {
+    status = ActionStatus.LOCKED_CONFLICT;
+  }
+  // Check 5: Is there a conflicting CPM path active?
   // This applies only to base-level actions (Round 1 unlocks).
   else if (
     activeCPMPath && 
@@ -80,14 +149,14 @@ export function getActionState(
   ) {
     status = ActionStatus.LOCKED_CONFLICT;
   }
-  // Check 4: Are prerequisites met?
+  // Check 6: Are prerequisites met?
   else if (
     actionConfig.prerequisites && 
     !prerequisitesAreMet(actionConfig.prerequisites, activeActions)
   ) {
     status = ActionStatus.LOCKED_PREREQUISITE;
   }
-  // Check 5: Is the round high enough?
+  // Check 7: Is the round high enough?
   else if (actionConfig.unlocksInRound > currentRound) {
     status = ActionStatus.LOCKED_PREREQUISITE;
   }
@@ -172,83 +241,22 @@ export function getActionsForMeasureType(
 ): { config: ActionConfig; status: ActionStatus }[] {
   const measureActions = sectorActions.filter(action => action.measureType === measureType);
   
-  // If an active path exists and it's NOT this one, only include the base (buttonGroup 1) action
+  // If an active path exists and it's NOT this one, only show base actions (R1 unlocks)
   if (activeCPMPath && activeCPMPath !== measureType) {
-    const baseAction = measureActions.find(action => action.buttonGroup === 1);
-    return baseAction ? [getActionState(baseAction, activeActions, activeCPMPath, currentRound)] : [];
-  }
-  
-  // If this IS the active path, show the appropriate buttonGroup for the current round
-  if (activeCPMPath === measureType) {
-    // If activityLog or sector not provided, fall back to old unlocksInRound logic
-    if (!activityLog.length || !sector) {
-      const currentRoundActions = measureActions.filter(action => action.unlocksInRound <= currentRound);
-      return currentRoundActions.map(action => 
-        getActionState(action, activeActions, activeCPMPath, currentRound)
-      );
-    }
-    
-    const cpmStartRound = getCPMStartRound(measureType, sector, activityLog);
-    if (cpmStartRound === null) return []; // CPM not started yet
-    
-    // Calculate which buttonGroup to show: currentRound - cpmStartRound + 1
-    const calculatedButtonGroup = currentRound - cpmStartRound + 1;
-    
-    // Cap the buttonGroup to the maximum available for this measure type
-    const maxButtonGroup = Math.max(...measureActions.map(action => action.buttonGroup));
-    const targetButtonGroup = Math.min(calculatedButtonGroup, maxButtonGroup);
-    
-    const currentGroupActions = measureActions.filter(action => action.buttonGroup === targetButtonGroup);
-    return currentGroupActions.map(action => 
-      getActionState(action, activeActions, activeCPMPath, currentRound)
+    const baseActions = measureActions.filter(action => action.unlocksInRound === 1);
+    return baseActions.map(action => 
+      getActionState(action, activeActions, activeCPMPath, currentRound, activityLog)
     );
   }
   
-  // If NO path is active, show all base actions (buttonGroup 1)
-  if (!activeCPMPath) {
-    const baseAction = measureActions.find(action => action.buttonGroup === 1);
-    return baseAction ? [getActionState(baseAction, activeActions, activeCPMPath, currentRound)] : [];
-  }
-  
-  return [];
+  // If this IS the active path OR no path is active, show all unlocked actions
+  const unlockedActions = measureActions.filter(action => action.unlocksInRound <= currentRound);
+  return unlockedActions.map(action => 
+    getActionState(action, activeActions, activeCPMPath, currentRound, activityLog)
+  );
 }
 
-/**
- * Helper function to determine when the CURRENT CPM path was started
- * This considers demolish actions and treats rebuilds as fresh starts
- */
-export function getCPMStartRound(
-  measureType: string,
-  sector: string,
-  activityLog: ActivityLogType[]
-): number | null {
-  // Sort by timestamp to process events in chronological order
-  const sortedLog = [...activityLog].sort((a, b) => a.timestamp - b.timestamp);
-  
-  let lastDemolishRound: number | null = null;
-  let firstBuildRound: number | null = null;
-  
-  for (const log of sortedLog) {
-    if (log.action === ActivityTypeEnum.DEMOLISH && log.value === sector) {
-      // Found a demolish action for this sector
-      lastDemolishRound = log.round || 1;
-      // Reset the first build round since we demolished
-      firstBuildRound = null;
-    } else {
-      // Check if this is a build action for our measure type in this sector
-      const actionConfig = progressionConfig[log.action];
-      if (actionConfig && actionConfig.sector === sector && actionConfig.measureType === measureType) {
-        if (firstBuildRound === null) {
-          firstBuildRound = log.round || 1;
-        }
-      }
-    }
-  }
-  
-  // Return the round when the current path was started
-  // (first build after last demolish, or first build if no demolish)
-  return firstBuildRound;
-}
+
 
 /**
  * Get all actions for a specific sector
@@ -280,8 +288,8 @@ export function hasAnyConstructionInSector(
 }
 
 /**
- * Check if a measure type has any selectable actions across ALL buttonGroups (now or in future)
- * This is used to determine if a CPM path is truly "Fully Upgraded" or if there are future actions available
+ * Check if a measure type has any selectable actions (now or in future)
+ * This is used to determine if a CPM path is truly "No More Available Upgrades"
  */
 export function hasAnySelectableActionsInMeasureType(
   measureType: string,
@@ -292,27 +300,27 @@ export function hasAnySelectableActionsInMeasureType(
 ): boolean {
   const measureActions = sectorActions.filter(action => action.measureType === measureType);
   
-  // Check all actions in this measure type, regardless of buttonGroup
+  // Check all actions in this measure type
   for (const action of measureActions) {
     const actionState = getActionState(action, activeActions, activeCPMPath, currentRound);
-    
+
     // Consider an action available if it's selectable now OR will become selectable in future rounds
     if (actionState.status === ActionStatus.SELECTABLE) {
       return true;
     }
-    
+
     // Also check if it's locked only due to round requirement (will be available in future)
     if (actionState.status === ActionStatus.LOCKED_PREREQUISITE && action.unlocksInRound > currentRound) {
       // Check if prerequisites would be met (ignoring round requirement)
-      const wouldPrerequisitesBeMet = !action.prerequisites || 
+      const wouldPrerequisitesBeMet = !action.prerequisites ||
         prerequisitesAreMet(action.prerequisites, activeActions);
-      
+
       if (wouldPrerequisitesBeMet) {
         return true;
       }
     }
   }
-  
+
   return false;
 }
 
@@ -366,6 +374,63 @@ export function getCPMCompletionRound(
   }
   
   return null;
+}
+
+/**
+ * Calculate which buttons should be visible for a round (called once at round start)
+ * This determines the static set of buttons that will remain visible throughout the round
+ */
+export function calculateRoundStartButtonSet(
+  activityLog: ActivityLogType[],
+  currentRound: number,
+  sector: string,
+  measureType: string
+): { config: ActionConfig; status: ActionStatus }[] {
+  // Calculate progression state at round start
+  const activeActions = calculateActiveActions(activityLog);
+  const sectorActions = getSectorActions(sector);
+  const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+  
+  // Get all actions for this measure type
+  const allActionsForMeasure = getActionsForMeasureType(
+    measureType,
+    sectorActions,
+    activeActions,
+    activeCPMPath,
+    currentRound,
+    activityLog,
+    sector
+  );
+  
+  // Filter actions based on round start rules
+  return allActionsForMeasure.filter(actionState => {
+    // Rule 1: Hide actions completed in previous rounds
+    if (actionState.status === ActionStatus.COMPLETED) {
+      const completedLog = activityLog.find(log => 
+        log.action === actionState.config.id && log.round !== undefined
+      );
+      const completedInRound = completedLog?.round || currentRound;
+      // Hide if completed in a previous round
+      return completedInRound >= currentRound;
+    }
+    
+    // Rule 2: In active CPM paths, hide non-selectable actions
+    if (activeCPMPath === measureType) {
+      const isNonSelectable = actionState.status === ActionStatus.LOCKED_CONFLICT || 
+                            actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                            actionState.status === ActionStatus.REPLACED;
+      return !isNonSelectable; // Hide non-selectable actions in active CPM
+    }
+    
+    // Rule 3: Hide buttons with unmet prerequisites (regardless of unlock round)
+    // This prevents showing unclickable buttons across all rounds
+    if (actionState.status === ActionStatus.LOCKED_PREREQUISITE) {
+      return false; // Hide buttons that can't be clicked due to unmet prerequisites
+    }
+    
+    // Rule 4: In non-active CPM paths, show remaining actions (they'll be properly disabled)
+    return true;
+  });
 }
 
 /**

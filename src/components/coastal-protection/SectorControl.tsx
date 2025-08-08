@@ -7,7 +7,7 @@ import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
-import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath } from '@/lib/progressionUtils';
+import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -34,6 +34,9 @@ const getSectorTitles = (sector: string) => {
   return sectorTitles[sector] || { sectorA: 'Sector A', sectorB: 'Sector B' };
 };
 
+// Type for storing round-start button sets
+type RoundStartButtonSets = Record<string, Record<string, { config: any; status: ActionStatus }[]>>;
+
 
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
@@ -43,6 +46,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [currentRound, setCurrentRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
+  const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
+  const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
 
   // Debug logging for round state
   useEffect(() => {
@@ -51,15 +56,54 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
 
 
-  // Handle round changes - reset coins only
+  // Calculate button sets for round start (handles both round changes and initial load)
+  const calculateButtonSetsForRound = useCallback((roundStartLog: ActivityLogType[], round: number) => {
+    console.log(`Calculating button sets for round ${round}`);
+    const buttonSets: RoundStartButtonSets = {};
+    ['1A', '1B', '2A', '2B', '3A', '3B'].forEach(sectorId => {
+      buttonSets[sectorId] = {
+        mangroves: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(roundStartLog, round, sectorId, 'revetment'),
+      };
+    });
+    return buttonSets;
+  }, []);
+
+  // Handle round changes - reset coins and capture round start state
   useEffect(() => {
-    if (currentRound !== previousRound && previousRound !== 1) {
+    if (currentRound !== previousRound) {
       console.log(`Round changed from ${previousRound} to ${currentRound}`);
-      // Reset coins to starting amount for new round
-      setTotalCoins(10);
+      // Capture the activity log state at the start of this round
+      const roundStartLog = [...activityLog];
+      setRoundStartActivityLog(roundStartLog);
+      
+      // Calculate button sets for this round
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      setRoundStartButtonSets(buttonSets);
+      
+      if (previousRound !== 1) {
+        // Reset coins to starting amount for new round
+        setTotalCoins(10);
+      }
     }
     setPreviousRound(currentRound);
-  }, [currentRound, previousRound]);
+  }, [currentRound, previousRound, activityLog, calculateButtonSetsForRound]);
+
+  // Initialize button sets on first load (R1)
+  useEffect(() => {
+    if (Object.keys(roundStartButtonSets).length === 0) {
+      console.log('Initializing button sets for R1');
+      const roundStartLog = [...activityLog];
+      setRoundStartActivityLog(roundStartLog);
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      setRoundStartButtonSets(buttonSets);
+    }
+  }, [activityLog, currentRound, roundStartButtonSets, calculateButtonSetsForRound]);
   
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
@@ -104,7 +148,31 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       round: currentRound,
       timestamp: Date.now()
     };
-    setActivityLog(prev => [...prev, demolishActivity]);
+    
+    // Update activity log with demolish action
+    const newActivityLog = [...activityLog, demolishActivity];
+    setActivityLog(newActivityLog);
+    
+    // Recalculate button sets ONLY for the demolished sector to reflect the new state
+    // Other sectors should keep their frozen button sets from round start
+    console.log(`Recalculating button sets after demolish for sector ${sectorId} only`);
+    setRoundStartButtonSets(prevButtonSets => {
+      const updatedButtonSets = { ...prevButtonSets };
+      
+      // Only recalculate for the demolished sector
+      updatedButtonSets[sectorId] = {
+        mangroves: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'revetment'),
+      };
+      
+      return updatedButtonSets;
+    });
+    setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase
     gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound);
@@ -113,7 +181,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setTotalCoins(prev => prev - 1);
     
     console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound, sector]);
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
@@ -153,22 +221,27 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Helper function to render sector section using ProgressionState system
   const renderSectorSection = (sectorId: string, title: string) => {
+    // Use current state for button states (active/disabled/selected)
     const progressionState = useProgression(activityLog, currentRound, sectorId);
     
-    // Get additional data needed for comprehensive "Fully Upgraded" check
+    // Get additional data needed for comprehensive "No More Available Upgrades" check
     const activeActions = calculateActiveActions(activityLog);
     const sectorActions = getSectorActions(sectorId);
     const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
     
-    // Map measure types to their display names and progression state properties
+    // Get pre-calculated button sets for this sector (calculated once at round start)
+    const sectorButtonSets = roundStartButtonSets[sectorId] || {};
+    console.log(`Sector ${sectorId} button sets:`, sectorButtonSets);
+    
+    // Map measure types to their display names and button sets
     const measureTypeConfig = [
-      { key: 'mangroves', title: 'MANGROVES', actions: progressionState.mangroves },
-      { key: 'seawall', title: 'SEAWALL', actions: progressionState.seawall },
-      { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: 'Seawall upgrade', actions: progressionState.landReclamation },
-      { key: 'storm-surge-barrier', title: 'STORM SURGE BARRIER', subtitle: 'Premium protection', actions: progressionState.stormSurgeBarrier },
-      { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: 'Eco-friendly solution', actions: progressionState.artificialReef },
-      { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: 'Combined approach', actions: progressionState.hybridMeasure },
-      { key: 'revetment', title: 'REVETMENT', actions: progressionState.revetment },
+      { key: 'mangroves', title: 'MANGROVES', roundStartActions: sectorButtonSets.mangroves || [], currentActions: progressionState.mangroves },
+      { key: 'seawall', title: 'SEAWALL', roundStartActions: sectorButtonSets.seawall || [], currentActions: progressionState.seawall },
+      { key: 'land-reclamation', title: 'LAND RECLAMATION', subtitle: 'Seawall upgrade', roundStartActions: sectorButtonSets.landReclamation || [], currentActions: progressionState.landReclamation },
+      { key: 'storm-surge-barrier', title: 'STORM SURGE BARRIER', subtitle: 'Premium protection', roundStartActions: sectorButtonSets.stormSurgeBarrier || [], currentActions: progressionState.stormSurgeBarrier },
+      { key: 'artificial-reef', title: 'ARTIFICIAL REEF', subtitle: 'Eco-friendly solution', roundStartActions: sectorButtonSets.artificialReef || [], currentActions: progressionState.artificialReef },
+      { key: 'hybrid-measure', title: 'HYBRID MEASURE', subtitle: 'Combined approach', roundStartActions: sectorButtonSets.hybridMeasure || [], currentActions: progressionState.hybridMeasure },
+      { key: 'revetment', title: 'REVETMENT', roundStartActions: sectorButtonSets.revetment || [], currentActions: progressionState.revetment },
     ];
 
     // Create measures array - include all measure types, show "Fully Upgraded" for empty ones
@@ -183,38 +256,42 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           currentRound
         );
         const completionRound = getCPMCompletionRound(config.key, sectorId, activityLog);
-        const isFullyUpgraded = !hasAnySelectableInMeasureType && 
-                               progressionState.activeCPM === config.key &&
+        const hasNoMoreAvailableUpgrades = !hasAnySelectableInMeasureType && 
+                               activeCPMPath === config.key &&
                                completionRound !== null && 
                                currentRound > completionRound;
         
         // If no actions and not active CPM path, don't show the card
-        if (config.actions.length === 0 && !isFullyUpgraded) {
+        if (config.roundStartActions.length === 0 && !hasNoMoreAvailableUpgrades) {
           return null;
         }
         
-        // Normal case: show available actions or fully upgraded state
+        // Normal case: show available actions or no more available upgrades state
         return {
           type: config.key as any,
           title: config.title,
           subtitle: config.subtitle,
-          isFullyUpgraded,
-          options: config.actions.map(actionState => {
-            const isSelected = actionState.status === ActionStatus.COMPLETED;
-            const isAvailable = actionState.status === ActionStatus.SELECTABLE;
-            const disabled = actionState.status === ActionStatus.LOCKED_CONFLICT || 
-                            actionState.status === ActionStatus.LOCKED_PREREQUISITE ||
-                            actionState.status === ActionStatus.REPLACED;
-            
-            return {
-              title: actionState.config.displayName,
-              coinCount: actionState.config.cost,
-              onClick: isAvailable && !disabled ? () => handleMeasureClick(actionState.config.id, actionState.config.cost) : undefined,
-              isSelected,
-              disabled,
-              status: actionState.status, // Pass the status for potential UI enhancements
-            };
-          }),
+          hasNoMoreAvailableUpgrades,
+          options: config.roundStartActions
+            .map((roundStartActionState: any) => {
+              // Find the current state of this action for proper button states
+              const currentActionState = config.currentActions.find((a: any) => a.config.id === roundStartActionState.config.id) || roundStartActionState;
+              
+              const isSelected = currentActionState.status === ActionStatus.COMPLETED;
+              const isAvailable = currentActionState.status === ActionStatus.SELECTABLE;
+              const disabled = currentActionState.status === ActionStatus.LOCKED_CONFLICT || 
+                              currentActionState.status === ActionStatus.LOCKED_PREREQUISITE ||
+                              currentActionState.status === ActionStatus.REPLACED;
+              
+              return {
+                title: currentActionState.config.displayName,
+                coinCount: currentActionState.config.cost,
+                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost) : undefined,
+                isSelected,
+                disabled,
+                status: currentActionState.status, // Pass the status for potential UI enhancements
+              };
+            }),
         };
       })
       .filter(Boolean); // Remove null entries

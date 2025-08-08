@@ -55,29 +55,27 @@ describe('Progression Utils', () => {
     });
   });
 
-  describe('getActiveCPMPath - Replacement Bug Fix', () => {
-    it('should detect seawall path when 1.15m replaces 0.5m', () => {
-      // Simulate the bug scenario: 0.5m built, then 1.15m replaces it
+  describe('New Seawall Behavior - All Heights Available in R1', () => {
+    it('should detect seawall path when 1.15m is selected in R1', () => {
+      // New behavior: Player selects 1.15m directly in R1 (no replacement)
       const activityLog: ActivityLogType[] = [
-        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
-        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' }
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 }
       ];
       
       const activeActions = calculateActiveActions(activityLog);
       const sectorActions = getSectorActions('1A');
       const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
       
-      // Should detect seawall path even though base 0.5m was replaced
+      // Should detect seawall path
       expect(activeCPMPath).toBe('seawall');
       expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL)).toBe(true);
-      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL)).toBe(false); // Replaced
+      expect(activeActions.has(ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL)).toBe(false); // Not selected
     });
 
-    it('should show correct seawall options after 1.15m upgrade', () => {
-      // Simulate the bug scenario
+    it('should show correct seawall options after 1.15m selection in R1', () => {
+      // New behavior: 1.15m selected directly in R1
       const activityLog: ActivityLogType[] = [
-        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User' },
-        { id: '2', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 2000, value: '', userId: 'test', userName: 'Test User' }
+        { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 }
       ];
       
       const activeActions = calculateActiveActions(activityLog);
@@ -87,10 +85,10 @@ describe('Progression Utils', () => {
       // Get seawall actions for Round 2
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
       
-      // Should show all seawall actions, not just 0.5m
+      // Should show all seawall actions
       expect(seawallActions.length).toBeGreaterThan(1);
       
-      // Find the 0.5m action - should be REPLACED (it was replaced by 1.15m!)
+      // Find the 0.5m action - should be REPLACED (1.15m replaces 0.5m)
       const action05 = seawallActions.find(a => a.config.displayName === '0.5m');
       expect(action05?.status).toBe(ActionStatus.REPLACED);
       
@@ -98,9 +96,13 @@ describe('Progression Utils', () => {
       const action115 = seawallActions.find(a => a.config.displayName === '1.15m');
       expect(action115?.status).toBe(ActionStatus.COMPLETED);
       
-      // Find the 2m action - should be SELECTABLE (has 1.15m prerequisite)
+      // Find the 2m action - should be SELECTABLE
       const action2m = seawallActions.find(a => a.config.displayName === '2m');
       expect(action2m?.status).toBe(ActionStatus.SELECTABLE);
+      
+      // Find Build Path - should be SELECTABLE (prerequisite met)
+      const buildPath = seawallActions.find(a => a.config.displayName === 'Build Path');
+      expect(buildPath?.status).toBe(ActionStatus.SELECTABLE);
     });
 
     it('should show correct seawall options after 2m upgrade', () => {
@@ -207,7 +209,6 @@ describe('Progression Utils', () => {
       displayName: 'Build Boardwalk',
       cost: 1,
       unlocksInRound: 2,
-      buttonGroup: 2,
       sector: '1A',
       measureType: 'mangroves' as const,
       prerequisites: [[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]]
@@ -225,7 +226,6 @@ describe('Progression Utils', () => {
         displayName: 'Build Seawall 0.5m',
         cost: 1,
         unlocksInRound: 1,
-        buttonGroup: 1,
         sector: '1A',
         measureType: 'seawall' as const
       };
@@ -447,29 +447,32 @@ describe('Progression Utils', () => {
       expect(result.length).toBe(mangroveActions.length);
     });
 
-    it('should show only base action as LOCKED_CONFLICT when different CPM path is active', () => {
+    it('should show all base actions as LOCKED_CONFLICT when different CPM path is active', () => {
       const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]);
       const result = getActionsForMeasureType('seawall', sectorActions, activeActions, 'mangroves', 1);
-      expect(result.length).toBe(1);
-      expect(result[0].status).toBe(ActionStatus.LOCKED_CONFLICT);
+      expect(result.length).toBe(3); // All seawall heights unlock in R1
+      expect(result.every(action => action.status === ActionStatus.LOCKED_CONFLICT)).toBe(true);
     });
 
-    it('should show only current round actions for active CPM path', () => {
-      // Test Round 1: Should only show base action
+    it('should show all unlocked actions for active CPM path', () => {
+      // Test Round 1: Should show all R1 seawall actions
       const activeActionsR1 = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
       const activeCPMPath = getActiveCPMPath(sectorActions, activeActionsR1);
       
       const seawallActionsR1 = getActionsForMeasureType('seawall', sectorActions, activeActionsR1, activeCPMPath, 1);
       
-      // Round 1: Should only show 0.5m seawall (unlocksInRound: 1)
-      expect(seawallActionsR1).toHaveLength(1);
-      expect(seawallActionsR1[0].config.displayName).toBe('0.5m');
+      // Round 1: Should show all seawall heights (all unlock in R1)
+      expect(seawallActionsR1).toHaveLength(3);
+      const r1ActionNames = seawallActionsR1.map(a => a.config.displayName);
+      expect(r1ActionNames).toContain('0.5m');
+      expect(r1ActionNames).toContain('1.15m');
+      expect(r1ActionNames).toContain('2m');
       
-      // Test Round 2: Should show Round 1 + Round 2 actions
+      // Test Round 2: Should show all unlocked actions (R1 + R2)
       const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActionsR1, activeCPMPath, 2);
       
-      // Round 2: Should show 0.5m, 1.15m, 2m, Build Path (all unlocksInRound <= 2)
-      expect(seawallActionsR2.length).toBeGreaterThan(1);
+      // Round 2: Should show all seawall actions + Build Path
+      expect(seawallActionsR2.length).toBeGreaterThan(3);
       const actionNames = seawallActionsR2.map(a => a.config.displayName);
       expect(actionNames).toContain('0.5m');
       expect(actionNames).toContain('1.15m');
@@ -477,8 +480,8 @@ describe('Progression Utils', () => {
       expect(actionNames).toContain('Build Path');
     });
 
-    it('should show buttonGroup-based actions when activityLog and sector are provided', () => {
-      // Test the new buttonGroup functionality
+    it('should show all unlocked actions for active CPM path', () => {
+      // Test the new simplified logic
       const activityLog: ActivityLogType[] = [
         { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 }
       ];
@@ -487,29 +490,24 @@ describe('Progression Utils', () => {
       const sectorActions = getSectorActions('1A');
       const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
       
-      // Round 1: Should show buttonGroup 1 (0.5m seawall)
+      // Round 1: Should show all R1 seawall actions (0.5m, 1.15m, 2m)
       const seawallActionsR1 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1, activityLog, '1A');
-      expect(seawallActionsR1).toHaveLength(1);
+      expect(seawallActionsR1.length).toBe(3); // All R1 seawall heights
       expect(seawallActionsR1[0].config.displayName).toBe('0.5m');
-      expect(seawallActionsR1[0].config.buttonGroup).toBe(1);
       
-      // Round 2: Should show buttonGroup 2 (1.15m, 2m, Build Path)
+      // Round 2: Should show all unlocked actions (R1 + R2)
       const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2, activityLog, '1A');
-      expect(seawallActionsR2.length).toBeGreaterThan(1);
-      
-      // All actions in Round 2 should be buttonGroup 2
-      seawallActionsR2.forEach(action => {
-        expect(action.config.buttonGroup).toBe(2);
-      });
+      expect(seawallActionsR2.length).toBeGreaterThan(3); // R1 actions + Build Path
       
       const actionNames = seawallActionsR2.map(a => a.config.displayName);
+      expect(actionNames).toContain('0.5m');
       expect(actionNames).toContain('1.15m');
       expect(actionNames).toContain('2m');
       expect(actionNames).toContain('Build Path');
     });
 
     it('should handle CPM started in later round (demolish then rebuild scenario)', () => {
-      // Test scenario: R1 Mangroves, R2 Demolish + Seawall 0.5m, R3 should show next group
+      // Test scenario: R1 Mangroves, R2 Demolish + Seawall 0.5m, R3 should show all unlocked actions
       const activityLog: ActivityLogType[] = [
         { id: '1', action: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES, timestamp: 1000, value: '', userId: 'test', userName: 'Test User', round: 1 },
         { id: '2', action: ActivityTypeEnum.DEMOLISH, timestamp: 2000, value: '1A', userId: 'test', userName: 'Test User', round: 2 },
@@ -520,20 +518,21 @@ describe('Progression Utils', () => {
       const sectorActions = getSectorActions('1A');
       const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
       
-      // Round 2: Seawall started in R2, should show buttonGroup 1 (0.5m)
+      // Round 2: Should show all R1 and R2 unlocked actions
       const seawallActionsR2 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2, activityLog, '1A');
-      expect(seawallActionsR2).toHaveLength(1);
+      expect(seawallActionsR2.length).toBeGreaterThan(1); // Multiple seawall options
       expect(seawallActionsR2[0].config.displayName).toBe('0.5m');
-      expect(seawallActionsR2[0].config.buttonGroup).toBe(1);
       
-      // Round 3: Should show buttonGroup 2 (next group after seawall started in R2)
+      // Round 3: Should show all unlocked actions (R1, R2, R3)
       const seawallActionsR3 = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 3, activityLog, '1A');
       expect(seawallActionsR3.length).toBeGreaterThan(1);
       
-      // All actions in Round 3 should be buttonGroup 2
-      seawallActionsR3.forEach(action => {
-        expect(action.config.buttonGroup).toBe(2);
-      });
+      // Should include all seawall heights and Build Path
+      const actionNames = seawallActionsR3.map(a => a.config.displayName);
+      expect(actionNames).toContain('0.5m');
+      expect(actionNames).toContain('1.15m');
+      expect(actionNames).toContain('2m');
+      expect(actionNames).toContain('Build Path');
     });
   });
 

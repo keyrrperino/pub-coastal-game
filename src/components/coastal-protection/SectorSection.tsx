@@ -9,7 +9,7 @@ interface SectorSectionProps {
     type: 'land-reclamation' | 'seawall' | 'mangroves' | 'storm-surge-barrier' | 'artificial-reef' | 'hybrid-measure' | 'revetment';
     title: string;
     subtitle?: string;
-    isFullyUpgraded?: boolean;
+    hasNoMoreAvailableUpgrades?: boolean;
     options: Array<{
       title: string;
       coinCount: number;
@@ -61,7 +61,7 @@ const SectorSection: React.FC<SectorSectionProps> = ({
               icon={measure.type}
               options={measure.options}
               isActive={true} // All measures should be available
-              isFullyUpgraded={measure.isFullyUpgraded}
+              hasNoMoreAvailableUpgrades={measure.hasNoMoreAvailableUpgrades}
             />
           ))}
         </div>
