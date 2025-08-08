@@ -153,11 +153,25 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const newActivityLog = [...activityLog, demolishActivity];
     setActivityLog(newActivityLog);
     
-    // Recalculate button sets immediately after demolish to reflect the new state
-    // This "resets" the buttons to what they should look like at round start with the new activity log
-    console.log('Recalculating button sets after demolish');
-    const updatedButtonSets = calculateButtonSetsForRound(newActivityLog, currentRound);
-    setRoundStartButtonSets(updatedButtonSets);
+    // Recalculate button sets ONLY for the demolished sector to reflect the new state
+    // Other sectors should keep their frozen button sets from round start
+    console.log(`Recalculating button sets after demolish for sector ${sectorId} only`);
+    setRoundStartButtonSets(prevButtonSets => {
+      const updatedButtonSets = { ...prevButtonSets };
+      
+      // Only recalculate for the demolished sector
+      updatedButtonSets[sectorId] = {
+        mangroves: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'revetment'),
+      };
+      
+      return updatedButtonSets;
+    });
     setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase
