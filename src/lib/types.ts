@@ -53,6 +53,7 @@ export type ActivityLogType = {
   value: string;
   timestamp: number;
   round?: number;
+  isCpm?: boolean;
 }
 
 export type UserPresenceType = {

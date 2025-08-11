@@ -100,15 +100,18 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   const onButtonClick = async (btn: SplineTriggerConfigItem) => {
     if (!gameRoomService.current) return;
     
-    await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1);
+    
 
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown
+      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, false);
       await gameRoomService.current.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
       gameRoomService.current
         ?.updateLobbyStateKeyValue(
           LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME, 
           Date.now());
+    } else {
+      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, true);
     }
   }
 
@@ -202,7 +205,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     });
   };
 
-  const renderScene = isGameStarted ? (
+  const renderScene = !isGameStarted ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       {renderUserSectors()}
     </div>
