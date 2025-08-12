@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { PostRoundModal, PostRoundPerformance } from './PostRoundModal';
+import PostRoundModal, { PostRoundPerformance } from './PostRoundModal';
 
 interface CoastalGameModalProps {
   isOpen: boolean;

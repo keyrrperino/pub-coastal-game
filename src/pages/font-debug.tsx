@@ -7,10 +7,9 @@ const FontDebug: React.FC = () => {
     // Check if font is loaded
     if ('fonts' in document) {
       document.fonts.ready.then(() => {
-        document.fonts.check('1em Novecento Bold').then((isLoaded) => {
-          setFontLoaded(isLoaded);
-          console.log('Novecento Bold loaded:', isLoaded);
-        });
+        const isLoaded = document.fonts.check('1em Novecento Bold');
+        setFontLoaded(isLoaded);
+        console.log('Novecento Bold loaded:', isLoaded);
       });
     }
   }, []);
