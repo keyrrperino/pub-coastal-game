@@ -4,11 +4,13 @@ import styles from './PlayerTeamNameScreen.module.css';
 interface PlayerTeamNameScreenProps {
   playerNumber: number;
   onSubmit?: (teamName: string) => void;
+  onChange?: (teamName: string) => void;
 }
 
 const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({ 
   playerNumber,
-  onSubmit 
+  onSubmit,
+  onChange 
 }) => {
   const [letters, setLetters] = useState(['', '', '']);
   const [currentFocus, setCurrentFocus] = useState(0);
@@ -90,6 +92,14 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
       inputRefs.current[currentFocus]?.focus();
     }
   }, [currentFocus]);
+
+  // Call onChange whenever letters change
+  useEffect(() => {
+    if (onChange) {
+      const teamName = letters.join('').toUpperCase();
+      onChange(teamName);
+    }
+  }, [letters, onChange]);
 
   return (
     <div className={styles.container}>
