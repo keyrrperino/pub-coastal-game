@@ -48,7 +48,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState(false); // NEW
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [countdown, setCountdown]= useState(5);
-  const [coinsLeft, setCoinsLeft] = useState(10); // 1. Add new state
+  const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
 
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
@@ -59,25 +59,135 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [lobbyState.gameLobbyStatus]);
 
   useEffect(() => {
-    // const round = !showGameOverModal ? (lobbyState.round ?? 1) : 4;
-    // const { totalScore } = calculateOverallScoreFromScenarioConfigControlled(activities ?? [], lobbyState.randomizeEffect, round);
+    const sector1R1 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[1],
+      1 as RoundType,
+      UserSectorEnum.USER_SECTOR_ONE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector2R1 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[1],
+      1 as RoundType,
+      UserSectorEnum.USER_SECTOR_TWO,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector3R1 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[1],
+      1 as RoundType,
+      UserSectorEnum.USER_SECTOR_THREE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
 
-    // const score = OVERALL_SCORE_POINTS + totalScore;
-    // setTotalScore(score);
+    const sector1R2 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[2],
+      2 as RoundType,
+      UserSectorEnum.USER_SECTOR_ONE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector2R2 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[2],
+      2 as RoundType,
+      UserSectorEnum.USER_SECTOR_TWO,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector3R2 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[2],
+      2 as RoundType,
+      UserSectorEnum.USER_SECTOR_THREE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
 
-    // const coinsData = calculateTotalCoinsPerRound(activities ?? [], lobbyState.randomizeEffect);
+    const sector1R3 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[3],
+      3 as RoundType,
+      UserSectorEnum.USER_SECTOR_ONE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector2R3 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[3],
+      3 as RoundType,
+      UserSectorEnum.USER_SECTOR_TWO,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
+    const sector3R3 = getSectorRoundScore(
+      activities ?? [],
+      lobbyState.randomizeEffect[3],
+      3 as RoundType,
+      UserSectorEnum.USER_SECTOR_THREE,
+      lobbyState.round ?? 1,
+      lobbyState.gameLobbyStatus
+    );
 
-    // setCoinsLeft(TOTAL_COINS_PER_ROUND - coinsData[lobbyState.round ?? 1].totalCoin);
+    console.log({
+      round1: {
+        ...sector1R1,
+        ...sector2R1,
+        ...sector3R1,
+      },
+      round2: {
+        ...sector1R2,
+        ...sector2R2,
+        ...sector3R2,
+      },
+      round3: {
+        ...sector1R3,
+        ...sector2R3,
+        ...sector3R3,
+      }
+    });
 
-    // const data = getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, 1);
+    const overAllScore = OVERALL_SCORE_POINTS - (
+      (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+      (sector2R1.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+      (sector3R1.user_sector_3?.totalScoreToDeductInRound ?? 0) +
+      (sector1R2.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+      (sector2R2.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+      (sector3R2.user_sector_3?.totalScoreToDeductInRound ?? 0) +
+      (sector1R3.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+      (sector2R3.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+      (sector3R3.user_sector_3?.totalScoreToDeductInRound ?? 0)
+    );
 
+    setTotalScore(
+      overAllScore
+    );
 
-    const sector1 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_ONE);
-    const sector2 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_TWO);
-    const sector3 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_THREE);
+    const coinsR1 = (
+      (sector1R1.user_sector_1?.totalCoinsToDeduct ?? 0) +
+      (sector2R1.user_sector_2?.totalCoinsToDeduct ?? 0) +
+      (sector3R1.user_sector_3?.totalCoinsToDeduct ?? 0)
+    );
+    
+    const coinsR2 = (
+      (sector1R2.user_sector_1?.totalCoinsToDeduct ?? 0) +
+      (sector2R2.user_sector_2?.totalCoinsToDeduct ?? 0) +
+      (sector3R2.user_sector_3?.totalCoinsToDeduct ?? 0)
+    );
+    
+    const coinsR3 = (
+      (sector1R3.user_sector_1?.totalCoinsToDeduct ?? 0) +
+      (sector2R3.user_sector_2?.totalCoinsToDeduct ?? 0) +
+      (sector3R3.user_sector_3?.totalCoinsToDeduct ?? 0)
+    );
 
-    console.log(sector1, sector2, sector3);
-
+    const currentRoundCoins = lobbyState.round === 1 ? coinsR1 : lobbyState.round === 2 ? coinsR2 : coinsR3;
+    setCoinsLeft(TOTAL_COINS_PER_ROUND - currentRoundCoins);
 
   }, [activities, lobbyState.gameLobbyStatus, lobbyState.round]);
 
@@ -224,7 +334,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             Overall Score:
           </h1>
           <h2 className="text-right">
-            {totalScore}/10000 PTS
+            {totalScore} PTS
           </h2>
         </div>
       </div>
