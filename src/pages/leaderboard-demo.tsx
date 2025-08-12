@@ -31,8 +31,6 @@ export default function LeaderboardDemo() {
       <LeaderboardOverlay
         isOpen={true}
         onClose={handleClose}
-        leaderboardData={sampleLeaderboardData}
-        topWinner={sampleTopWinner}
       />
     );
   }
