@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
+import { useCallback, useEffect, useState } from 'react';
+import { GameLobbyStatus } from '@/lib/enums';
 import { LobbyStateType } from '@/lib/types';
-import { serverTimestamp } from 'firebase/database';
 import { lobbyStateDefaultValue } from '@/lib/constants';
+import { getPhaseDuration } from './phaseUtils';
 
 interface GameFlowControllerReturn {
   currentPhase: GameLobbyStatus;
@@ -14,41 +14,17 @@ interface GameFlowControllerReturn {
   startActualGameFlow: () => void;
 }
 
-const PHASE_DURATIONS: Record<GameLobbyStatus, number> = {
-  [GameLobbyStatus.INTRODUCTION]: 15,
-  [GameLobbyStatus.TUTORIAL]: 15,
-  [GameLobbyStatus.ROUND_STORYLINE]: 15,
-  [GameLobbyStatus.ROUND_INSTRUCTIONS]: 15,
-  [GameLobbyStatus.ROUND_GAMEPLAY]: 30,
-  [GameLobbyStatus.ROUND_CUTSCENES]: 30,
-  [GameLobbyStatus.ROUND_SCORE_BREAKDOWN]: 5,
-  [GameLobbyStatus.ENDING]: 15,
-  [GameLobbyStatus.LEADERBOARD_DISPLAY]: 5,
-  [GameLobbyStatus.TEAM_NAME_INPUT]: 0, // Manual transition
-  [GameLobbyStatus.INITIALIZING]: 0,
-  [GameLobbyStatus.PREPARING]: 0,
-  [GameLobbyStatus.STARTED]: 0,
-  [GameLobbyStatus.ENDED]: 0,
-  [GameLobbyStatus.RESTARTING]: 0,
-  [GameLobbyStatus.ROUND_ONE_GAME_ENDED]: 0,
-  [GameLobbyStatus.ROUND_TWO_GAME_ENDED]: 0,
-  [GameLobbyStatus.ROUND_THREE_THREE_GAME_ENDED]: 0,
-};
-
 const GAME_FLOW_SEQUENCE: GameLobbyStatus[] = [
   GameLobbyStatus.INTRODUCTION,
   GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
   GameLobbyStatus.ROUND_GAMEPLAY,
   GameLobbyStatus.ROUND_CUTSCENES,
   GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
   GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
   GameLobbyStatus.ROUND_GAMEPLAY,
   GameLobbyStatus.ROUND_CUTSCENES,
   GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
   GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
   GameLobbyStatus.ROUND_GAMEPLAY,
   GameLobbyStatus.ROUND_CUTSCENES,
   GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
@@ -72,11 +48,6 @@ export function useGameFlowController(
   const [currentRound, setCurrentRound] = useState<number>(1);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [flowIndex, setFlowIndex] = useState<number>(0);
-
-  const getPhaseDuration = useCallback((phase: GameLobbyStatus): number => {
-    return PHASE_DURATIONS[phase] || 0;
-  }, []);
-
 
 
   const startGameFlow = useCallback(() => {

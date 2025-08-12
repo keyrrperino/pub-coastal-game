@@ -19,20 +19,20 @@ interface PerformanceConfig {
 
 const performanceConfigs: Record<PostRoundPerformance, PerformanceConfig> = {
   good: {
-    title: "You did GREAT Last round!",
-    message: "Your sectors ARE well-protected and citizens are very happy",
+    title: "LITTLE TO NO FLOODING",
+    message: "Excellent work! You've successfully protected our coasts from the impacts of rising sea levels. Continue your efforts and implement further adaptive measures.",
     bgColor: "rgba(123, 255, 215, 0.5)",
     borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)"
   },
   okay: {
-    title: "You did ok Last round",
-    message: "Your sectors are DOING OKAY. Life goes on as normal for your citizens.",
+    title: "medium flooding",
+    message: "Occasional flooding has been detected in your sector. It's recommended to build higher in response to sea lever rise. Keep up the good work!",
     bgColor: "rgba(251, 255, 176, 0.5)",
     borderGradient: "linear-gradient(135deg, #F7FF69 0%, #FFFFFF 100%)"
   },
   bad: {
-    title: "You did BAD Last round",
-    message: "Some areas in your sectors are flooded. Life just got harder for your citizens.",
+    title: "heavy flooding",
+    message: "alert! Heavy flooding detected in your sector. Immediate changes are required to ensure adequate protection against rising sea levels.",
     bgColor: "rgba(255, 176, 176, 0.5)",
     borderGradient: "linear-gradient(135deg, #FF7CE3 0%, #FFFFFF 100%)"
   }
