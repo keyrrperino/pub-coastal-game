@@ -6,28 +6,40 @@ import { GAME_ROUND_TIMER, lobbyStateDefaultValue } from '@/lib/constants';
 
 const gameRoomService = new GameRoomService();
 
-const PHASE_SEQUENCE = [
+// Single round cycle that repeats based on current round
+const ROUND_PHASES = [
+  GameLobbyStatus.ROUND_STORYLINE,
+  GameLobbyStatus.ROUND_INSTRUCTIONS,
+  GameLobbyStatus.ROUND_GAMEPLAY,
+  GameLobbyStatus.ROUND_CUTSCENES,
+  GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+];
+
+const PRE_GAME_PHASES = [
   GameLobbyStatus.INTRODUCTION,
   GameLobbyStatus.TUTORIAL,
-  GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
-  GameLobbyStatus.ROUND_GAMEPLAY,
-  GameLobbyStatus.ROUND_CUTSCENES,
-  GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
-  GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
-  GameLobbyStatus.ROUND_GAMEPLAY,
-  GameLobbyStatus.ROUND_CUTSCENES,
-  GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
-  GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
-  GameLobbyStatus.ROUND_GAMEPLAY,
-  GameLobbyStatus.ROUND_CUTSCENES,
-  GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+];
+
+const POST_GAME_PHASES = [
   GameLobbyStatus.ENDING,
   GameLobbyStatus.TEAM_NAME_INPUT,
   GameLobbyStatus.LEADERBOARD_DISPLAY,
 ];
+
+// Build complete phase sequence
+const PHASE_SEQUENCE = [
+  ...PRE_GAME_PHASES,
+  ...ROUND_PHASES, // Round 1
+  ...ROUND_PHASES, // Round 2  
+  ...ROUND_PHASES, // Round 3
+  ...POST_GAME_PHASES,
+];
+
+// Simple round management: use Firebase as source of truth
+const shouldIncrementRound = (newPhase: GameLobbyStatus, currentPhase: GameLobbyStatus): boolean => {
+  // Increment round when entering ROUND_STORYLINE from a non-storyline phase
+  return newPhase === GameLobbyStatus.ROUND_STORYLINE && currentPhase !== GameLobbyStatus.ROUND_STORYLINE;
+};
 
 export default function AdminPhaseControl() {
   const [currentPhase, setCurrentPhase] = useState<GameLobbyStatus>(GameLobbyStatus.INTRODUCTION);
@@ -41,24 +53,26 @@ export default function AdminPhaseControl() {
       try {
         await gameRoomService.joinRoom('default');
         setIsConnected(true);
+        
+
 
         // Listen to phase changes
         gameRoomService.onLobbyStateChange((lobbyState) => {
+          console.log('🔥 Firebase lobbyState changed:', lobbyState);
+          
           if (lobbyState.gameLobbyStatus) {
             setCurrentPhase(lobbyState.gameLobbyStatus);
             
-            // Calculate current phase index and round
+            // Set current phase index
             const phaseIndex = PHASE_SEQUENCE.indexOf(lobbyState.gameLobbyStatus);
             if (phaseIndex !== -1) {
               setCurrentPhaseIndex(phaseIndex);
-              // Calculate round number based on phase sequence
-              const roundNumber = Math.floor(phaseIndex / 6) + 1;
-              setCurrentRound(Math.min(roundNumber, 3)); // Cap at round 3
             }
           }
           
           // Also get round from Firebase if available
-          if (lobbyState.round) {
+          if (lobbyState.round !== undefined) {
+            console.log(`🔥 Firebase round value: ${lobbyState.round}`);
             setCurrentRound(lobbyState.round);
           }
         });
@@ -75,36 +89,48 @@ export default function AdminPhaseControl() {
   }, []);
 
   const updatePhase = async (newPhase: GameLobbyStatus) => {
-    if (!isConnected) return;
+    console.log(`🚀 updatePhase called with: ${newPhase} (current: ${currentPhase})`);
+    
+    if (!isConnected) {
+      console.log('❌ Not connected, aborting updatePhase');
+      return;
+    }
 
     const phaseDuration = getPhaseDuration(newPhase);
-    const phaseIndex = PHASE_SEQUENCE.indexOf(newPhase);
-    const roundNumber = Math.floor(phaseIndex / 6) + 1;
     
     try {
-      // Always update the phase first
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, newPhase);
+      console.log('🔥 Starting Firebase updates...');
       
-      // Update round number when entering ROUND_STORYLINE (start of new round)
-      if (newPhase === GameLobbyStatus.ROUND_STORYLINE && phaseIndex !== -1) {
-        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, Math.min(roundNumber, 3));
-        console.log(`Round updated to: ${Math.min(roundNumber, 3)} (entering storyline phase)`);
+      // Always update the phase first
+      console.log(`🔥 Updating phase to: ${newPhase}`);
+      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, newPhase);
+      console.log('✅ Phase updated successfully');
+      
+      // Increment round if entering ROUND_STORYLINE from different phase
+      if (shouldIncrementRound(newPhase, currentPhase)) {
+        const newRound = Math.min(currentRound + 1, 3); // Cap at round 3
+        console.log(`🎯 Incrementing round: ${currentRound} → ${newRound}`);
+        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, newRound);
+        console.log(`✅ Round incremented to: ${newRound}`);
       }
       
       // Reset timer when entering ROUND_GAMEPLAY phase
       if (newPhase === GameLobbyStatus.ROUND_GAMEPLAY) {
+        console.log('⏰ Updating timer for gameplay phase');
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, GAME_ROUND_TIMER);
-        console.log(`Timer reset for gameplay phase: ${GAME_ROUND_TIMER}s`);
+        console.log(`✅ Timer reset for gameplay phase: ${GAME_ROUND_TIMER}s`);
       } else {
+        console.log('⏰ Updating timer for regular phase');
         // For other phases, just update duration and start time normally
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, phaseDuration);
+        console.log(`✅ Timer updated with duration: ${phaseDuration}s`);
       }
       
-      console.log(`Phase updated to: ${newPhase} (Round ${currentRound})`);
+      console.log(`🎉 All updates complete. Phase: ${newPhase}, Round: ${currentRound}`);
     } catch (error) {
-      console.error('Failed to update phase:', error);
+      console.error('💥 Failed to update phase:', error);
     }
   };
 
@@ -155,11 +181,17 @@ export default function AdminPhaseControl() {
 
   const getPhaseRoundInfo = (phaseIndex: number) => {
     const phase = PHASE_SEQUENCE[phaseIndex];
-    const roundNumber = Math.floor(phaseIndex / 6) + 1;
+    
+    // Determine round based on position in sequence
+    let round = currentRound;
+    if (phaseIndex >= 2 && phaseIndex <= 6) round = 1; // First round cycle
+    else if (phaseIndex >= 7 && phaseIndex <= 11) round = 2; // Second round cycle  
+    else if (phaseIndex >= 12 && phaseIndex <= 16) round = 3; // Third round cycle
+    
     return {
       phase,
-      round: Math.min(roundNumber, 3),
-      isRoundPhase: roundNumber <= 3
+      round,
+      isRoundPhase: phase.startsWith('ROUND_') // Any phase that starts with ROUND_
     };
   };
 
@@ -251,6 +283,8 @@ export default function AdminPhaseControl() {
           >
             Set Selected Phase
           </button>
+          
+
         </div>
         
         <div className="text-sm text-gray-600 mt-2">
@@ -281,8 +315,8 @@ export default function AdminPhaseControl() {
             {PHASE_SEQUENCE.map((phase, index) => {
               // Only highlight if both phase and index match current state
               const isCurrentPhase = index === currentPhaseIndex;
-              // Calculate what round this phase belongs to
-              const phaseRound = Math.floor(index / 6) + 1;
+              // Show correct round for each phase based on position
+              const phaseRound = getPhaseRoundInfo(index).round;
               
               return (
                 <div 
@@ -294,9 +328,9 @@ export default function AdminPhaseControl() {
                   <div className="font-medium">
                     {index + 1}. {phase}
                   </div>
-                  {phaseRound <= 3 && (
+                  {PHASE_SEQUENCE[index].startsWith('ROUND_') && (
                     <div className="text-xs text-gray-500">
-                      Round {Math.min(phaseRound, 3)}
+                      Round {phaseRound}
                     </div>
                   )}
                 </div>
