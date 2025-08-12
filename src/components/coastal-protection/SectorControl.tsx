@@ -820,6 +820,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       <TeamNameInputModal 
         isOpen={showTeamNameInput}
+        onChange={async (teamName) => {
+          // Update lobby state as user types (only if team name is not empty)
+          if (teamName.trim()) {
+            try {
+              await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.TEAM_NAME, teamName);
+              console.log('Team name updated in lobby state while typing:', teamName);
+            } catch (error) {
+              console.error('Failed to update team name while typing:', error);
+            }
+          }
+        }}
         onSubmit={async (teamName) => {
           try {
             // Save team name to lobby state first
@@ -841,6 +852,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
               );
               console.log('Team score saved via standalone function:', teamName, 'Score:', finalScore);
             }
+            
+            // Transition to LEADERBOARD_DISPLAY after team name input
+            await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.LEADERBOARD_DISPLAY);
+            console.log('Transitioning to LEADERBOARD_DISPLAY phase');
+            
             setShowTeamNameInput(false);
           } catch (error) {
             console.error('Failed to save team score:', error);
