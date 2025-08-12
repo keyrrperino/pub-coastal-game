@@ -255,7 +255,7 @@ export class GameRoomService {
       isCpm,
       isDemolished: activityType === ActivityTypeEnum.DEMOLISH,
       round: round ?? 1,
-      subSector: subSector ?? undefined,
+      subSector: subSector ?? "",
       timestamp: Date.now()
     };
 
