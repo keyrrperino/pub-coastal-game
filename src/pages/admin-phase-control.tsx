@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
 import { GameRoomService } from '@/lib/gameRoom';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';

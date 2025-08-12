@@ -4,9 +4,10 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
-import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
+import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
+import { SplineTriggerConfigItem } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
@@ -22,6 +23,8 @@ import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundIn
 import ScoreBreakdownModal from '@/games/pub-coastal-game/compontents/ScoreBreakdownModal';
 import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
+import StartScreen from '@/components/StartScreen';
+import LeaderboardOverlay from '@/components/LeaderboardOverlay';
 
 interface SectorControlProps {
   sector: string;
@@ -106,6 +109,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [showTeamNameInput, setShowTeamNameInput] = useState(false);
   const [showScoreBreakdown, setShowScoreBreakdown] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   // Debug logging for round state
   useEffect(() => {
@@ -404,26 +408,23 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, lobbyState]);
 
-  const handlePlayerReady = useCallback(async () => {
-    console.log('Player marking as ready...');
-    // Set this player as ready
-    await gameRoomService.setPlayerReady(true);
+  const handleStartGame = useCallback(async () => {
+    console.log('Starting game...');
+    // Anyone can start the game - trigger the Spline action first
+    const btn = SplineTriggersConfig[ActivityTypeEnum.START_GAME] as SplineTriggerConfigItem;
+    await gameRoomService.addElement(btn.activityType!, btn.buttonValue ?? '', 0, 0, false, SubSectorEnum.ONE_A);
     
-    // Don't change the game status here - let the useGameFlowController handle it
-    // when all players are ready (it monitors readyPlayers and auto-starts when count >= 3)
+    // Then update the lobby status to start the game flow
+    gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
   }, [gameRoomService]);
 
-  // Monitor player readiness and transition to PREPARING when all players are ready
-  useEffect(() => {
-    if (lobbyState && lobbyState.gameLobbyStatus === GameLobbyStatus.INITIALIZING) {
-      const readyCount = Object.values(lobbyState.readyPlayers || {}).filter(ready => ready).length;
-      
-      if (readyCount >= 3) { // All 3 players are ready
-        console.log('All players are ready! Moving to PREPARING...');
-        gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
-      }
-    }
-  }, [lobbyState?.readyPlayers, lobbyState?.gameLobbyStatus, gameRoomService]);
+  const handleShowLeaderboard = useCallback(() => {
+    setIsLeaderboardOpen(true);
+  }, []);
+
+  const handleCloseLeaderboard = useCallback(() => {
+    setIsLeaderboardOpen(false);
+  }, []);
 
   const handleTimeUp = useCallback(() => {
     console.log('Round gameplay time is up! Waiting for admin to move to next phase...');
@@ -651,34 +652,46 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             </div>
           </div>
 
-          {/* Player Status Area - shown when not in gameplay */}
+          {/* Start Screen - shown when not in gameplay */}
           {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && (
-            <div className="w-full flex items-center justify-center mt-8">
-              <div className="bg-white rounded-[16px] px-8 py-6">
-                <div className="text-center">
-                  <div className="text-[24px] font-bold text-black text-center mb-4">
-                    {currentPhase.replace(/_/g, ' ')}
-                  </div>
-                  {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
-                    <button
-                      onClick={handlePlayerReady}
-                      className="bg-blue-500 text-white px-6 py-3 rounded text-lg hover:bg-blue-600 transition"
-                    >
-                      Ready
-                    </button>
-                  ) : currentPhase === GameLobbyStatus.PREPARING ? (
+            <>
+              {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+                <div className="absolute inset-0 z-20">
+                  {/* Complete StartPage template repurposed for game start */}
+                  <StartScreen
+                    onStartGame={handleStartGame}
+                    onShowLeaderboard={handleShowLeaderboard}
+                  />
+                  <LeaderboardOverlay
+                    isOpen={isLeaderboardOpen}
+                    onClose={handleCloseLeaderboard}
+                  />
+                </div>
+              ) : currentPhase === GameLobbyStatus.PREPARING ? (
+                <div className="w-full flex items-center justify-center mt-8">
+                  <div className="bg-white rounded-[16px] px-8 py-6">
                     <div className="text-center">
-                      <div className="text-lg text-black mb-2">
-                        Waiting for all players...
+                      <div className="text-[24px] font-bold text-black text-center mb-4">
+                        Game Starting...
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Ready: {Object.values(lobbyState?.readyPlayers || {}).filter(ready => ready).length}/3
+                      <div className="text-lg text-black mb-2">
+                        Please wait while the game loads
                       </div>
                     </div>
-                  ) : null}
+                  </div>
                 </div>
-              </div>
-            </div>
+              ) : (
+                <div className="w-full flex items-center justify-center mt-8">
+                  <div className="bg-white rounded-[16px] px-8 py-6">
+                    <div className="text-center">
+                      <div className="text-[24px] font-bold text-black text-center mb-4">
+                        {currentPhase.replace(/_/g, ' ')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Sector sections - only show during gameplay */}
