@@ -4,11 +4,13 @@ import Image from 'next/image';
 interface StartScreenProps {
   onStartGame: () => void;
   onShowLeaderboard: () => void;
+  playerNumber: number;
 }
 
 export default function StartScreen({
   onStartGame,
   onShowLeaderboard,
+  playerNumber,
 }: StartScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -38,7 +40,7 @@ export default function StartScreen({
           {/* Player Indicator */}
           <div className="px-3 py-2.5 bg-white/10 backdrop-blur-sm rounded-lg">
             <span className="text-white text-3xl font-bold">
-              ˗ˏˋ PLAYER 1 ˎˊ˗
+              ˗ˏˋ PLAYER {playerNumber} ˎˊ˗
             </span>
           </div>
           

@@ -31,6 +31,12 @@ interface SectorControlProps {
   sector: string;
 }
 
+// Helper function to get player number from sector
+const getPlayerNumber = (sector: string): number => {
+  const match = sector.match(/sector-(\d+)/);
+  return match ? parseInt(match[1], 10) : 1;
+};
+
 // Helper function to get sector titles
 const getSectorTitles = (sector: string) => {
   const sectorTitles: Record<string, { sectorA: string; sectorB: string }> = {
@@ -665,6 +671,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                   <StartScreen
                     onStartGame={handleStartGame}
                     onShowLeaderboard={handleShowLeaderboard}
+                    playerNumber={getPlayerNumber(sector)}
                   />
                   <LeaderboardOverlay
                     isOpen={isLeaderboardOpen}
