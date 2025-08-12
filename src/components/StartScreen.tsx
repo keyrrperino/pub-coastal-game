@@ -5,12 +5,14 @@ interface StartScreenProps {
   onStartGame: () => void;
   onShowLeaderboard: () => void;
   playerNumber: number;
+  isLeaderboardOpen: boolean;
 }
 
 export default function StartScreen({
   onStartGame,
   onShowLeaderboard,
   playerNumber,
+  isLeaderboardOpen,
 }: StartScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -57,7 +59,7 @@ export default function StartScreen({
               onClick={onShowLeaderboard}
               className="w-full py-9 px-11 bg-white text-[#005DFF] text-3xl font-bold rounded-full hover:bg-gray-100 transition-colors duration-200"
             >
-              SHOW LEADERBOARD
+              {isLeaderboardOpen ? 'HIDE LEADERBOARD' : 'SHOW LEADERBOARD'}
             </button>
           </div>
         </div>
