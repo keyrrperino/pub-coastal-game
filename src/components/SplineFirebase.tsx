@@ -26,6 +26,12 @@ import TutorialScreen3 from "./TutorialScreen3";
 import TutorialScreen2 from "./TutorialScreen2";
 import TutorialScreen1 from "./TutorialScreen1";
 import { useLobbyInstruction } from "./hooks/useLobbyInstruction";
+import Round1Screen from "./Round1Screen";
+import { useLobbyStoryline } from "./hooks/useLobbyStoryline";
+import Round2Screen from "./Round2Screen";
+import Round3Screen from "./Round3Screen";
+import { useTimer } from "./hooks/useTimer";
+import { PHASE_DURATIONS } from "./hooks/phaseUtils";
 
 interface SplineFirebaseProps {
 }
@@ -91,61 +97,49 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   });
 
   const {progress, isStarting} = useMainProgress(
-    GAME_ROUND_TIMER, // countdown seconds
+    lobbyState.phaseDuration,
     lobbyState.gameLobbyStatus,
     triggersLoading,
-    lobbyState.countdownStartTime,
-    3 // <-- 3 seconds delay before countdown starts
+    lobbyState.phaseStartTime,
+    1 // <-- 3 seconds delay before countdown starts
   );
 
   const {currentTutorial, timeRemaining} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
+  const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
 
   const { cutSceneStatus, currentCutScene } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
 
   useEffect(() => {
     if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
-      setShowScoreBreakdownModal(true); // Show breakdown first
-      setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for breakdown
+      if (gameRoomServiceRef.current) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_SCORE_BREAKDOWN,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+        }});
+      }
     }
   }, [cutSceneStatus]);
 
-  // Handle the modal transitions
-  useEffect(() => {
-    if (!showScoreBreakdownModal) return;
-    if (countdown === 0) {
-      setShowScoreBreakdownModal(false);
-      // Only show "prepare for round" modal if not round 3
-      if ((lobbyState.round ?? 1) < 3) {
-        setShowRoundEndModal(true);
-        setCountdown(MODAL_CLOSE_COUNTDOWN_VALUE); // reset countdown for next modal
-      } else {
-        setShowGameOverModal(true);
-      }
-      return;
-    }
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [showScoreBreakdownModal, countdown]);
+  const isScoreBreakdownTimesUp = () => {
+    // if (gameRoomServiceRef.current) {
+    //   gameRoomServiceRef.current.updateLobbyState({
+    //     ...lobbyState, ...{
+    //     [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.round,
+    //     [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+    //     [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+    //   }});
+    // }
+  };
 
-  useEffect(() => {
-    if (!showRoundEndModal) return;
-    if (countdown === 0) {
-      setShowRoundEndModal(false);
-      // Proceed to next round
-      if (gameRoomServiceRef.current) {
-        gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState,
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY,
-          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-          [LobbyStateEnum.ROUND]: ((lobbyState.round ?? 1) + 1) as RoundType
-        });
-      }
-      return;
-    }
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [showRoundEndModal, countdown, gameRoomServiceRef]);
+  useTimer({
+    duration: lobbyState.phaseDuration,
+    onTimeUp: isScoreBreakdownTimesUp,
+    startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+    syncWithTimestamp: lobbyState.phaseStartTime,
+  });
 
   // Main Progress logic
 
@@ -237,6 +231,18 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     </div>
   )
 
+  const renderStoryLine = (
+    (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_STORYLINE) && 
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      {lobbyState.round === 1 && <Round1Screen timeRemaining={timeRemainingStoryLine} />}
+      {lobbyState.round === 2 && <Round2Screen timeRemaining={timeRemainingStoryLine} />}
+      {lobbyState.round === 3 && <Round3Screen timeRemaining={timeRemainingStoryLine} />}
+    </div>
+  )
+
   const resetGame = async () => {
     await gameRoomServiceRef.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
     await gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue);
@@ -261,6 +267,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {renderScore}
       {renderProgressBar}
       {renderInstroductions}
+      {renderStoryLine}
 
       {/* Score Breakdown Modal */}
       {showScoreBreakdownModal && (

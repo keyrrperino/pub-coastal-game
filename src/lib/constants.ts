@@ -2,14 +2,14 @@ import { ActivityDemolishTypeSector1AEnum, ActivityDemolishTypeSector1BEnum, Act
 import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType, SubSectorType, RoundType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
-export const ROOM_NAME = "rooms-v2";
+export const ROOM_NAME = "rooms-v7";
 export const GAME_ROUND_TIMER = 30;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
 export const TOTAL_COINS_PER_ROUND = 10;
 export const MODAL_CLOSE_COUNTDOWN_VALUE = 5;
-export const CUT_SCENE_TIMER_MILLISECOND = 5000; // 5 seconds
+export const CUT_SCENE_TIMER_MILLISECONDS = 5000; // 5 seconds
 
 // export const ROOM_NAME = "rooms-v4";
 // export const GAME_ROUND_TIMER = 1;
@@ -18,7 +18,7 @@ export const CUT_SCENE_TIMER_MILLISECOND = 5000; // 5 seconds
 // export const OVERALL_SCORE_POINTS = 2500;
 // export const TOTAL_COINS_PER_ROUND = 10;
 // export const MODAL_CLOSE_COUNTDOWN_VALUE = 1;
-export const CUT_SCENE_TIMER_MILLISECONDS = 500;
+// export const CUT_SCENE_TIMER_MILLISECONDS = 500;
 
 export const userIdToSector: Record<string, number> = {
   user_sector_1: 1,
