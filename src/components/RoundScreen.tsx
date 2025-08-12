@@ -30,18 +30,18 @@ export default function RoundScreen({
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/80" />
 
-            {/* Content Container */}
+      {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center max-h-screen h-full pt-16 pb-16">
         {/* Round Title and Year */}
         <div className="flex flex-col items-center gap-2 mb-6">
           <h1 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)]">
-             Round {roundNumber}
+            Round {roundNumber}
           </h1>
           <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_2px_2px_rgba(148,107,199,1)]">
             Year {yearRange}
           </h2>
         </div>
-        
+
         {/* Description Card */}
         <div className="flex-1 flex items-center justify-center px-8">
           <div className="max-w-6xl w-full">
@@ -55,14 +55,69 @@ export default function RoundScreen({
 
         {/* Continue Button */}
         <div className="mt-6">
-          <button
-            onClick={onContinue}
-            className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)] hover:opacity-80 transition-opacity duration-200 cursor-pointer"
-          >
-            3, 2, 1, GO!
-          </button>
+          <h2 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)] relative h-20">
+            <span
+              className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+              style={{
+                animation:
+                  'countdownShow 1s ease-in-out 0s forwards, countdownHide 1s ease-in-out 1s forwards',
+              }}
+            >
+              3
+            </span>
+            <span
+              className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+              style={{
+                animation:
+                  'countdownShow 1s ease-in-out 2s forwards, countdownHide 1s ease-in-out 3s forwards',
+              }}
+            >
+              2
+            </span>
+            <span
+              className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+              style={{
+                animation:
+                  'countdownShow 1s ease-in-out 4s forwards, countdownHide 1s ease-in-out 5s forwards',
+              }}
+            >
+              1
+            </span>
+            <span
+              className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+              style={{
+                animation: 'countdownShow 1s ease-in-out 6s forwards',
+              }}
+            >
+              GO!
+            </span>
+          </h2>
+
+          <style jsx>{`
+            @keyframes countdownShow {
+              from {
+                opacity: 0;
+                transform: scale(0.8);
+              }
+              to {
+                opacity: 1;
+                transform: scale(1);
+              }
+            }
+
+            @keyframes countdownHide {
+              from {
+                opacity: 1;
+                transform: scale(1);
+              }
+              to {
+                opacity: 0;
+                transform: scale(0.8);
+              }
+            }
+          `}</style>
         </div>
       </div>
     </div>
   );
-} 
+}
