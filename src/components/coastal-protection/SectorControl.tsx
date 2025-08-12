@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
@@ -24,6 +25,7 @@ import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundIn
 import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 import StartScreen from '@/components/StartScreen';
+import LeaderboardDisplayScreen from '@/components/LeaderboardDisplayScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
 import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
@@ -722,10 +724,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
               );
             }
 
+            // LEADERBOARD_DISPLAY phase: Show main menu screen
+            if (currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+              return (
+                <div className="absolute inset-0 z-20">
+                  <LeaderboardDisplayScreen
+                    onBackToMainMenu={handleStartGame}
+                    playerNumber={getPlayerNumber(sector)}
+                  />
+                </div>
+              );
+            }
+
             // Start/Lobby phases: Show StartScreen
             if (!currentPhase || 
-                currentPhase === GameLobbyStatus.INITIALIZING || 
-                currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+                currentPhase === GameLobbyStatus.INITIALIZING) {
               return (
                 <div className="absolute inset-0 z-20">
                   <StartScreen

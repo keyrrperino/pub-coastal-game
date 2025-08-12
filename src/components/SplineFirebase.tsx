@@ -65,11 +65,11 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
 
   useEffect(() => {
-    if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
-      gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue).then(() => {
-        window.location.reload();
-      });
-    }
+    (async () => { 
+      if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
+        await resetGame();
+      }
+    })();
   }, [lobbyState.gameLobbyStatus]);
 
   useSectorScores({
