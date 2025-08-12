@@ -133,7 +133,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowScoreBreakdown(false);
         break;
       
-      case GameLobbyStatus.ROUND_INSTRUCTIONS:
+      case GameLobbyStatus.ROUND_STORYLINE:
         setShowIntroduction(false);
         setShowRoundInstructions(true);
         setShowEnding(false);
@@ -704,7 +704,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
         round={currentRound as 1 | 2 | 3}
-        duration={getPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+        duration={getPhaseDuration(GameLobbyStatus.ROUND_STORYLINE)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
       />
