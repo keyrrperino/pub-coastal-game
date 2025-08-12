@@ -75,6 +75,8 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
     }
   }, [currentFocus]);
 
+  const newTeamName = teamName ?? '';
+
   return (
     <div className={styles.container}>
       {/* Background Image */}
@@ -147,10 +149,10 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
                     onFocus={() => setCurrentFocus(index)}
                   >
                     <div className={styles.letterDisplay}>
-                      {teamName[index] || ''}
+                      {newTeamName[index] || ''}
                     </div>
                     <div className={`${styles.dashUnderneath} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
-                      {teamName[index] ? '' : '-'}
+                      {newTeamName[index] ? '' : '-'}
                     </div>
                   </div>
                 ))}

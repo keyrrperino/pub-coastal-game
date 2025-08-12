@@ -32,12 +32,17 @@ export function useCutSceneSequence(
       const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect[lobbyState?.round ?? 1], activities);
       setCutScenes(dynamicCutScenes);
 
-      // gameRoomServiceRef.current
-      //   ?.updateLobbyStateKeyValue(
-      //     LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_CUTSCENES);
       setCurrentCutSceneIndex(0);
     }
   }, [progress]);
+
+  useEffect(() => {
+    if (cutSceneStatus === CutScenesStatusEnum.STARTED) {
+      gameRoomServiceRef.current
+        ?.updateLobbyStateKeyValue(
+          LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_CUTSCENES);
+    }
+  }, [cutSceneStatus]);
 
   // Load the current cutscene
   useEffect(() => {
