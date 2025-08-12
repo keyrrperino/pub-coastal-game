@@ -8,8 +8,8 @@ export const PHASE_DURATIONS: Record<GameLobbyStatus, number> = {
   [GameLobbyStatus.ROUND_CUTSCENES]: 30,
   [GameLobbyStatus.ROUND_SCORE_BREAKDOWN]: 5,
   [GameLobbyStatus.ENDING]: 15,
-  [GameLobbyStatus.LEADERBOARD_DISPLAY]: 5,
   [GameLobbyStatus.TEAM_NAME_INPUT]: 0, // Manual transition
+  [GameLobbyStatus.LEADERBOARD_DISPLAY]: 5,
   [GameLobbyStatus.INITIALIZING]: 0,
   [GameLobbyStatus.PREPARING]: 0,
   [GameLobbyStatus.RESTARTING]: 0,

@@ -29,7 +29,7 @@ export function useLobbyStoryline(
   } = useTimer({
     duration: lobbyState.phaseDuration,
     onTimeUp,
-    startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.INTRODUCTION,
+    startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_STORYLINE,
     syncWithTimestamp: lobbyState.phaseStartTime,
   });
 

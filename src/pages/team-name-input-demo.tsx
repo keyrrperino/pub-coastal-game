@@ -19,11 +19,7 @@ export default function TeamNameInputDemo() {
     };
 
     return (
-      <TeamNameInputScreen
-        endingScenario={currentScenario}
-        finalScore={scores[currentScenario]}
-        onSubmit={handleSubmit}
-      />
+      null
     );
   }
 

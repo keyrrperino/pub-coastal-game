@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Application, SplineEventName } from "@splinetool/runtime";
-import { GameRoomService } from "@/lib/gameRoom";
+import { GameRoomService, getGlobalLeaderboard, ProcessedLeaderboardData } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
@@ -18,7 +18,7 @@ import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
 import { usePreparingProgress } from "./hooks/usePreparingProgress";
 import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
-import { useSectorScores } from "./hooks/useSectorScores";
+import { SectorPerformance, useSectorScores } from "./hooks/useSectorScores";
 import Tutorial1Page from "@/pages/tutorial/1";
 import Tutorial2Page from "@/pages/tutorial/2";
 import Tutorial3Page from "@/pages/tutorial/3";
@@ -32,6 +32,9 @@ import Round2Screen from "./Round2Screen";
 import Round3Screen from "./Round3Screen";
 import { useTimer } from "./hooks/useTimer";
 import { PHASE_DURATIONS } from "./hooks/phaseUtils";
+import EndingScreen from "./EndingScreen";
+import TeamNameInputScreen from "./TeamNameInputScreen";
+import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
 import LeaderboardOverlay from "./LeaderboardOverlay";
 
 interface SplineFirebaseProps {
@@ -134,24 +137,117 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [cutSceneStatus]);
 
   const isScoreBreakdownTimesUp = () => {
-    // if (gameRoomServiceRef.current) {
-    //   gameRoomServiceRef.current.updateLobbyState({
-    //     ...lobbyState, ...{
-    //     [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.round,
-    //     [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-    //     [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
-    //   }});
-    // }
+    if (gameRoomServiceRef.current) {
+      if (lobbyState.round === 3) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ENDING,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ENDING,
+        }});
+      } else {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_STORYLINE,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: (lobbyState.round + 1) as RoundType,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_STORYLINE,
+        }});
+      }
+    }
   };
 
-  useTimer({
+  const {timeRemaining: timeRemainingScoreBreakdown } = useTimer({
     duration: lobbyState.phaseDuration,
     onTimeUp: isScoreBreakdownTimesUp,
     startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
     syncWithTimestamp: lobbyState.phaseStartTime,
   });
 
+  useEffect(() => {
+    if (timeRemainingScoreBreakdown <= 0 && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
+      isScoreBreakdownTimesUp();
+    }
+  }, [timeRemainingScoreBreakdown]);
+
+
+  
+  const isScoreEndingModalTimesUp = () => {
+    if (gameRoomServiceRef.current) {
+      if (lobbyState.gameLobbyStatus === GameLobbyStatus.ENDING) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.TEAM_NAME_INPUT,
+          [LobbyStateEnum.PHASE_START_TIME]: 0,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.TEAM_NAME_INPUT,
+        }});
+      }
+    }
+  };
+
+  useTimer({
+    duration: lobbyState.phaseDuration,
+    onTimeUp: isScoreEndingModalTimesUp,
+    startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ENDING,
+    syncWithTimestamp: lobbyState.phaseStartTime,
+  });
+
+  useEffect(() => {
+    if (timeRemainingScoreBreakdown <= 0 && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
+      isScoreBreakdownTimesUp();
+    }
+  }, [timeRemainingScoreBreakdown]);
+
+  const [leaderboardData, setLeaderboardData] = useState<ProcessedLeaderboardData>({
+    topWinner: null,
+    top5: [],
+    currentTeamEntry: null
+  });
+
+  useEffect(() => {
+    if (lobbyState.gameLobbyStatus === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+      const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
+      getGlobalLeaderboard(currentTeamNameScore).then(data => {
+        setLeaderboardData(data);
+      });
+    }
+  }, [lobbyState.gameLobbyStatus]);
+
+
+  const [totalPerformance, setTotalPerformance] = useState<SectorPerformance>('okay');
+  
+  const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
+
+  useSectorScores({
+    activities: activities ?? [],
+    lobbyState,
+    setTotalScore,
+    setCoinsLeft,
+    setSector1Performance: setSectorPerformance,
+    setSector2Performance: setSectorPerformance,
+    setSector3Performance: setSectorPerformance,
+    setTotalPerformance,
+  });
+
   // Main Progress logic
+
+  const renderInputTeamName = (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.TEAM_NAME_INPUT) && (
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      <TeamNameInputScreen performance={totalPerformance} teamName={lobbyState?.[LobbyStateEnum.TEAM_NAME]} finalScore={totalScore} />
+    </div>
+  );
+
+  const renderEndingScreen = (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ENDING) && (
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      <EndingScreen performance={totalPerformance} finalScore={totalScore} />
+    </div>
+  )
 
   const renderCutScenes = (
     <>
@@ -216,6 +312,24 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           </h2>
         </div>
       </div>
+    </div>
+  )
+
+  const renderEndingLeaderBoard = (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.LEADERBOARD_DISPLAY) && (
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      <EndingLeaderboardOverlay
+        isOpen={true}
+        topWinner={leaderboardData.topWinner || undefined}
+        leaderboardData={leaderboardData.top5}
+        bottomHighlight={leaderboardData.currentTeamEntry || { 
+          name: lobbyState?.[LobbyStateEnum.TEAM_NAME], 
+          points: totalScore, 
+          position: 10 
+        }}
+      />
     </div>
   )
 
@@ -284,9 +398,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {renderProgressBar}
       {renderInstroductions}
       {renderStoryLine}
+      {renderEndingScreen}
+      {renderInputTeamName}
+      {renderEndingLeaderBoard}
 
       {/* Score Breakdown Modal */}
-      {showScoreBreakdownModal && (
+      {lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
         <ScoreBreakdownModal
           isOpen={true}
           breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect?.[lobbyState.round ?? 1] ?? 0, lobbyState.round ?? 1)}
