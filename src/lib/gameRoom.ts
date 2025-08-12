@@ -429,3 +429,82 @@ export async function saveTeamScoreToGlobalLeaderboard(
 
   await set(newEntryRef, entry);
 }
+
+// Types for leaderboard data
+export interface LeaderboardEntry {
+  teamName: string;
+  score: number;
+  timestamp: number;
+  submittedBy: string;
+  roomId: string;
+}
+
+export interface ProcessedLeaderboardData {
+  topWinner: { name: string; points: number } | null;
+  top5: { name: string; points: number }[];
+  currentTeamEntry: { name: string; points: number; position: number } | null;
+}
+
+// Function to fetch and process leaderboard data
+export async function getGlobalLeaderboard(currentTeamName?: string): Promise<ProcessedLeaderboardData> {
+  try {
+    const leaderboardRef = ref(database, 'global-leaderboard');
+    const snapshot = await get(leaderboardRef);
+    
+    if (!snapshot.exists()) {
+      return {
+        topWinner: null,
+        top5: [],
+        currentTeamEntry: null
+      };
+    }
+
+    // Convert to array and sort by score (descending)
+    const entries: LeaderboardEntry[] = Object.values(snapshot.val());
+    const sortedEntries = entries.sort((a, b) => b.score - a.score);
+
+    // Find current team position
+    let currentTeamEntry = null;
+    if (currentTeamName) {
+      const currentTeamIndex = sortedEntries.findIndex(entry => entry.teamName === currentTeamName);
+      if (currentTeamIndex !== -1) {
+        const currentTeam = sortedEntries[currentTeamIndex];
+        currentTeamEntry = {
+          name: currentTeam.teamName,
+          points: currentTeam.score,
+          position: currentTeamIndex + 1
+        };
+      }
+    }
+
+    // Process data
+    const topWinner = sortedEntries.length > 0 
+      ? { name: sortedEntries[0].teamName, points: sortedEntries[0].score }
+      : null;
+
+    // Get top 2-5, excluding current team if it's in this range
+    const top5Candidates = sortedEntries
+      .slice(1, 6)  // Skip the top winner, take next 4 (positions 2-5)
+      .filter(entry => !currentTeamName || entry.teamName !== currentTeamName);
+    
+    // If we filtered out the current team, take one more to fill the gap
+    const top5 = top5Candidates.length < 4 && sortedEntries.length > 6
+      ? [...top5Candidates, ...sortedEntries.slice(6, 7).filter(entry => !currentTeamName || entry.teamName !== currentTeamName)].slice(0, 4)
+      : top5Candidates;
+
+    const processedTop5 = top5.map(entry => ({ name: entry.teamName, points: entry.score }));
+
+    return {
+      topWinner,
+      top5: processedTop5,
+      currentTeamEntry
+    };
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    return {
+      topWinner: null,
+      top5: [],
+      currentTeamEntry: null
+    };
+  }
+}

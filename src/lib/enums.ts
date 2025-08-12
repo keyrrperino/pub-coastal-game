@@ -342,7 +342,9 @@ export enum LobbyStateEnum {
   PHASE_START_TIME = "phaseStartTime",
   PHASE_DURATION = "phaseDuration",
   // Player readiness tracking
-  READY_PLAYERS = "readyPlayers"
+  READY_PLAYERS = "readyPlayers",
+  // Team name storage
+  TEAM_NAME = "teamName"
 }
 
 export enum GameLobbyStatus {

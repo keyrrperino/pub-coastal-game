@@ -3,7 +3,7 @@ import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
-import { GameRoomService, saveTeamScoreToGlobalLeaderboard } from '@/lib/gameRoom';
+import { GameRoomService, saveTeamScoreToGlobalLeaderboard, getGlobalLeaderboard, ProcessedLeaderboardData } from '@/lib/gameRoom';
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
@@ -25,6 +25,7 @@ import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 import StartScreen from '@/components/StartScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
+import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
 
 interface SectorControlProps {
@@ -120,6 +121,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
   const [totalPerformance, setTotalPerformance] = useState<SectorPerformance>('okay');
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  
+  // Leaderboard state for ROUND_SCORE_BREAKDOWN phase
+  const [showLeaderboardOverlay, setShowLeaderboardOverlay] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState<ProcessedLeaderboardData>({
+    topWinner: null,
+    top5: [],
+    currentTeamEntry: null
+  });
 
   // Debug logging for round state
   useEffect(() => {
@@ -143,6 +152,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_STORYLINE:
@@ -151,6 +161,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_GAMEPLAY:
@@ -159,6 +170,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_CUTSCENES:
@@ -167,6 +179,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(true);
+        setShowLeaderboardOverlay(false);
         break;
         
       case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
@@ -175,6 +188,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(true);
+        setShowLeaderboardOverlay(true);
+        // Fetch leaderboard data when entering this phase
+        const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
+        getGlobalLeaderboard(currentTeamNameScore).then(data => {
+          setLeaderboardData(data);
+        });
         break;
       
       case GameLobbyStatus.ENDING:
@@ -183,6 +202,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(true);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         // Use totalScore from useSectorScores instead of calculated score
         setFinalScore(totalScore);
         break;
@@ -193,6 +213,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(true);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.LEADERBOARD_DISPLAY:
@@ -201,6 +222,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(true);
+        // Fetch leaderboard data when entering this phase
+        const currentTeamNameDisplay = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
+        getGlobalLeaderboard(currentTeamNameDisplay).then(data => {
+          setLeaderboardData(data);
+        });
         break;
       
       default:
@@ -210,6 +237,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
     }
   }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
@@ -640,7 +668,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
           {/* Top bar: Budget left and Timer right - hide during ending phase */}
-          {currentPhase !== GameLobbyStatus.ENDING && (
+          {currentPhase !== GameLobbyStatus.ENDING &&
+           currentPhase !== GameLobbyStatus.LEADERBOARD_DISPLAY && (
             <div className="w-full flex flex-row items-start justify-between">
               {/* Budget display left */}
               <div className="flex-1 flex items-start justify-start">
@@ -663,7 +692,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
            currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
            currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN &&
-           currentPhase !== GameLobbyStatus.ENDING && (
+           currentPhase !== GameLobbyStatus.ENDING &&
+           currentPhase !== GameLobbyStatus.LEADERBOARD_DISPLAY && (
             <>
               {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
                 <div className="absolute inset-0 z-20">
@@ -757,6 +787,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         isOpen={showTeamNameInput}
         onSubmit={async (teamName) => {
           try {
+            // Save team name to lobby state first
+            await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.TEAM_NAME, teamName);
+            console.log('Team name saved to lobby state:', teamName);
+            
             // Try using the gameRoomService method first
             if (typeof gameRoomService.saveTeamScore === 'function') {
               await gameRoomService.saveTeamScore(teamName, finalScore);
@@ -780,6 +814,18 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           }
         }}
         playerNumber={getPlayerNumber(sector)}
+      />
+
+      {/* Leaderboard Overlay for ROUND_SCORE_BREAKDOWN phase */}
+      <EndingLeaderboardOverlay
+        isOpen={showLeaderboardOverlay}
+        topWinner={leaderboardData.topWinner || undefined}
+        leaderboardData={leaderboardData.top5}
+        bottomHighlight={leaderboardData.currentTeamEntry || { 
+          name: lobbyState?.[LobbyStateEnum.TEAM_NAME] || `P${getPlayerNumber(sector)}`, 
+          points: totalScore, 
+          position: 10 
+        }}
       />
 
     </div>
