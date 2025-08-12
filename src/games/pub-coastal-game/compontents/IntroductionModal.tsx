@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTimer } from '@/components/hooks/useTimer';
-import Modal from './Modal';
+import TutorialScreen1 from '@/components/TutorialScreen1';
+import TutorialScreen2 from '@/components/TutorialScreen2';
+import TutorialScreen3 from '@/components/TutorialScreen3';
 
 interface IntroductionModalProps {
   isOpen: boolean;
@@ -15,106 +17,99 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   duration = 15,
   syncWithTimestamp
 }) => {
-  const { timeRemaining, progressPercentage } = useTimer({
-    duration,
-    onTimeUp: onDurationComplete,
-    startImmediately: isOpen,
-    syncWithTimestamp,
-  });
+  const [currentScreen, setCurrentScreen] = useState(1);
+  const [timeRemaining, setTimeRemaining] = useState(duration);
+  
+  // Calculate duration for each tutorial screen (1/3 of total duration)
+  const screenDuration = Math.floor(duration / 3);
+  
+  // Calculate which screen should be shown based on elapsed time
+  useEffect(() => {
+    if (!isOpen || !syncWithTimestamp) return;
 
-  // Fallback for when sync is not available
+    const updateCurrentScreen = () => {
+      const currentTime = Date.now();
+      const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
+      const remaining = Math.max(0, duration - elapsed);
+      
+      setTimeRemaining(remaining);
+      
+      if (elapsed < screenDuration) {
+        setCurrentScreen(1);
+      } else if (elapsed < screenDuration * 2) {
+        setCurrentScreen(2);
+      } else if (elapsed < duration) {
+        setCurrentScreen(3);
+      } else {
+        // Time is up, trigger completion
+        onDurationComplete?.();
+        return;
+      }
+    };
+
+    // Update immediately
+    updateCurrentScreen();
+
+    // Update every second
+    const interval = setInterval(updateCurrentScreen, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOpen, syncWithTimestamp, screenDuration, duration, onDurationComplete]);
+
+  // Fallback timer for when sync is not available
   useEffect(() => {
     if (!isOpen || syncWithTimestamp) return;
 
-    const timer = setTimeout(() => {
+    let timer1: NodeJS.Timeout;
+    let timer2: NodeJS.Timeout;
+    let timer3: NodeJS.Timeout;
+    let countdownInterval: NodeJS.Timeout;
+
+    // Set up sequential timers
+    timer1 = setTimeout(() => {
+      setCurrentScreen(2);
+    }, screenDuration * 1000);
+
+    timer2 = setTimeout(() => {
+      setCurrentScreen(3);
+    }, screenDuration * 2 * 1000);
+
+    timer3 = setTimeout(() => {
       onDurationComplete?.();
     }, duration * 1000);
 
-    return () => clearTimeout(timer);
-  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
+    // Countdown timer for fallback mode
+    countdownInterval = setInterval(() => {
+      setTimeRemaining(prev => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearInterval(countdownInterval);
+    };
+  }, [isOpen, onDurationComplete, duration, screenDuration, syncWithTimestamp]);
 
   if (!isOpen) return null;
 
+  // Render the appropriate tutorial screen
+  const renderCurrentScreen = () => {
+    switch (currentScreen) {
+      case 1:
+        return <TutorialScreen1 onContinue={() => {}} />;
+      case 2:
+        return <TutorialScreen2 onContinue={() => {}} />;
+      case 3:
+        return <TutorialScreen3 onContinue={() => {}} timeRemaining={timeRemaining} />;
+      default:
+        return <TutorialScreen1 onContinue={() => {}} />;
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
-      <div className="relative w-full h-full flex items-center justify-center">
-        {/* Background with coastal theme */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900 via-blue-700 to-teal-800"></div>
-        
-        {/* Animated waves */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-blue-600 opacity-50 animate-pulse"></div>
-        <div className="absolute bottom-8 left-0 right-0 h-24 bg-blue-500 opacity-40 animate-pulse delay-1000"></div>
-        
-        {/* Content */}
-        <div className="relative z-10 text-center text-white px-8">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 animate-fade-in">
-            COASTAL PROTECTORS
-          </h1>
-          <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-delay">
-            Join forces to defend our coastlines against rising seas and build a sustainable future together
-          </p>
-          
-          {/* Animated coastal icons */}
-          <div className="flex justify-center space-x-8 mb-12">
-            <div className="animate-bounce">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                🌱
-              </div>
-              <p className="text-sm mt-2">Mangroves</p>
-            </div>
-            <div className="animate-bounce delay-300">
-              <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center">
-                🧱
-              </div>
-              <p className="text-sm mt-2">Seawalls</p>
-            </div>
-            <div className="animate-bounce delay-700">
-              <div className="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center">
-                🏗️
-              </div>
-              <p className="text-sm mt-2">Reclamation</p>
-            </div>
-          </div>
-          
-          {/* Countdown timer visual */}
-          <div className="w-64 h-2 bg-white bg-opacity-30 rounded-full mx-auto overflow-hidden">
-            <div 
-              className="h-full bg-white transition-all duration-1000 ease-linear"
-              style={{ 
-                width: `${syncWithTimestamp ? progressPercentage : 100}%`,
-                animation: syncWithTimestamp ? undefined : 'shrinkWidth 15s linear forwards'
-              }}
-            ></div>
-          </div>
-          {syncWithTimestamp && (
-            <div className="text-white text-sm mt-2">
-              {timeRemaining}s remaining
-            </div>
-          )}
-          
-          <style jsx>{`
-            @keyframes shrinkWidth {
-              from { width: 100%; }
-              to { width: 0%; }
-            }
-            @keyframes fade-in {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes fade-in-delay {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-in {
-              animation: fade-in 1s ease-out forwards;
-            }
-            .animate-fade-in-delay {
-              animation: fade-in-delay 1s ease-out 0.5s forwards;
-              opacity: 0;
-            }
-          `}</style>
-        </div>
-      </div>
+    <div className="fixed inset-0 z-50">
+      {renderCurrentScreen()}
     </div>
   );
 };
