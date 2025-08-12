@@ -197,7 +197,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowScoreBreakdown(false);
         break;
     }
-  }, [currentPhase, activityLog, currentRound]);
+  }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
 
   // Timer is handled via Firebase sync in useTimer hook
   // No need to manually start/stop timers as they sync with Firebase timestamps

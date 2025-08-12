@@ -268,10 +268,10 @@ export default function AdminPhaseControl() {
         <div className="flex gap-4 flex-wrap">
           <button
             onClick={goToPreviousPhase}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 flex flex-col items-center"
+            className="w-32 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 flex flex-col items-center"
           >
             <span>← Previous</span>
-            <span className="text-xs mt-1">
+            <span className="text-xs mt-1 truncate max-w-full">
               {(() => {
                 const prevInfo = getPreviousPhaseInfo();
                 return prevInfo.isRoundPhase 
@@ -283,10 +283,10 @@ export default function AdminPhaseControl() {
           
           <button
             onClick={goToNextPhase}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex flex-col items-center"
+            className="w-32 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex flex-col items-center"
           >
             <span>Next →</span>
-            <span className="text-xs mt-1">
+            <span className="text-xs mt-1 truncate max-w-full">
               {(() => {
                 const nextInfo = getNextPhaseInfo();
                 return nextInfo.isRoundPhase 
@@ -298,7 +298,7 @@ export default function AdminPhaseControl() {
           
           <button
             onClick={() => updatePhase(selectedPhase)}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="w-40 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           >
             Set Selected Phase
           </button>
