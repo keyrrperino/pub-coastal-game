@@ -25,7 +25,7 @@ import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundIn
 import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 import StartScreen from '@/components/StartScreen';
-import LeaderboardDisplayScreen from '@/components/LeaderboardDisplayScreen';
+import PlayerBackToMenuScreen from '@/components/PlayerBackToMenuScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
 import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
@@ -728,7 +728,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             if (currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
               return (
                 <div className="absolute inset-0 z-20">
-                  <LeaderboardDisplayScreen
+                  <PlayerBackToMenuScreen
                     onBackToMainMenu={handleStartGame}
                     playerNumber={getPlayerNumber(sector)}
                   />

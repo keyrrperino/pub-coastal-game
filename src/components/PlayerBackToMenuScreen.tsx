@@ -6,7 +6,7 @@ interface LeaderboardDisplayScreenProps {
   playerNumber: number;
 }
 
-export default function LeaderboardDisplayScreen({
+export default function PlayerBackToMenuScreen({
   onBackToMainMenu,
   playerNumber,
 }: LeaderboardDisplayScreenProps) {
