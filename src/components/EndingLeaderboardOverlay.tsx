@@ -89,21 +89,29 @@ export default function EndingLeaderboardOverlay({
               </span>
             </div>
 
-            {/* Leaderboard entries (positions 2-5) */}
+            {/* Leaderboard entries */}
             <div className="space-y-[18px]">
-              {leaderboardData.map((entry, index) => (
-                <div key={entry.name} className="flex items-center justify-between">
-                  <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2]" 
-                        style={{ fontFamily: 'Novecento Cond Bold, sans-serif' }}>
-                    {index + 2}. {entry.name}
-                  </span>
-                  <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-                  <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right" 
-                        style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
-                    {entry.points}
-                  </span>
-                </div>
-              ))}
+              {leaderboardData.map((entry, index) => {
+                // Calculate position based on bottomHighlight position
+                const basePosition = bottomHighlight && bottomHighlight.position <= 5 
+                  ? bottomHighlight.position + 1 
+                  : 2;
+                const displayPosition = basePosition + index;
+                
+                return (
+                  <div key={entry.name} className="flex items-center justify-between">
+                    <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2]" 
+                          style={{ fontFamily: 'Novecento Cond Bold, sans-serif' }}>
+                      {displayPosition}. {entry.name}
+                    </span>
+                    <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
+                    <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right" 
+                          style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+                      {entry.points}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
