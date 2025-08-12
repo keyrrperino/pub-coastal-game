@@ -1050,8 +1050,7 @@ export function getGameContentCoordination(
 
   switch (currentPhase) {
     case GameLobbyStatus.INTRODUCTION:
-    case GameLobbyStatus.TUTORIAL:
-      // Show same content on both screens
+      // Show storyline content on main screen
       mainScreenContent = 'storyline';
       break;
     
@@ -1127,12 +1126,7 @@ export function getMainScreenStoryline(
         years: "2025 - 2100"
       };
     
-    case GameLobbyStatus.TUTORIAL:
-      return {
-        title: "How to Play",
-        content: "Each player controls a sector. Choose coastal protection measures wisely and coordinate with your team to maximize your defense against rising seas.",
-        years: "Tutorial"
-      };
+
     
     case GameLobbyStatus.ROUND_STORYLINE:
       switch (currentRound) {

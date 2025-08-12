@@ -37,7 +37,6 @@ const PHASE_DURATIONS: Record<GameLobbyStatus, number> = {
 
 const GAME_FLOW_SEQUENCE: GameLobbyStatus[] = [
   GameLobbyStatus.INTRODUCTION,
-  GameLobbyStatus.TUTORIAL,
   GameLobbyStatus.ROUND_STORYLINE,
   GameLobbyStatus.ROUND_INSTRUCTIONS,
   GameLobbyStatus.ROUND_GAMEPLAY,

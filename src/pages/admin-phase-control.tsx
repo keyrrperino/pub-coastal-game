@@ -17,7 +17,6 @@ const ROUND_PHASES = [
 
 const PRE_GAME_PHASES = [
   GameLobbyStatus.INTRODUCTION,
-  GameLobbyStatus.TUTORIAL,
 ];
 
 const POST_GAME_PHASES = [
