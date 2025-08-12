@@ -5,7 +5,9 @@ interface PlayerRound2ScreenProps {
   onContinue?: () => void;
 }
 
-export default function PlayerRound2Screen({ onContinue }: PlayerRound2ScreenProps) {
+export default function PlayerRound2Screen({
+  onContinue,
+}: PlayerRound2ScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -34,7 +36,7 @@ export default function PlayerRound2Screen({ onContinue }: PlayerRound2ScreenPro
               YEAR 2050-2075
             </h2>
           </div>
-          
+
           {/* Game Info Card */}
           <div className="max-w-4xl w-full mx-8">
             <div className="bg-[rgba(175,240,255,0.3)] backdrop-blur-[22px] border-2 border-gradient-to-br from-[#91E2FF] to-white rounded-[26px] px-6 py-4 shadow-[0_6px_30px_rgba(0,0,0,0.15)]">
@@ -46,12 +48,71 @@ export default function PlayerRound2Screen({ onContinue }: PlayerRound2ScreenPro
 
           {/* Countdown */}
           <div className="">
-            <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
-              3, 2, 1, GO!
+            <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)] relative h-20">
+              <span
+                className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                style={{
+                  animation:
+                    'countdownShow 1s ease-in-out 0s forwards, countdownHide 1s ease-in-out 1s forwards',
+                }}
+              >
+                3
+              </span>
+              <span
+                className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                style={{
+                  animation:
+                    'countdownShow 1s ease-in-out 2s forwards, countdownHide 1s ease-in-out 3s forwards',
+                }}
+              >
+                2
+              </span>
+              <span
+                className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                style={{
+                  animation:
+                    'countdownShow 1s ease-in-out 4s forwards, countdownHide 1s ease-in-out 5s forwards',
+                }}
+              >
+                1
+              </span>
+              <span
+                className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                style={{
+                  animation:
+                    'countdownShow 1s ease-in-out 6s forwards',
+                }}
+              >
+                GO!
+              </span>
             </h3>
+
+            <style jsx>{`
+              @keyframes countdownShow {
+                from {
+                  opacity: 0;
+                  transform: scale(0.8);
+                }
+                to {
+                  opacity: 1;
+                  transform: scale(1);
+                }
+              }
+
+              @keyframes countdownHide {
+                from {
+                  opacity: 1;
+                  transform: scale(1);
+                }
+                to {
+                  opacity: 0;
+                  transform: scale(0.8);
+                }
+              }
+            `}</style>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
