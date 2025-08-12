@@ -133,7 +133,7 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
           >
             <div className={styles.inputWrapper}>
               <label className={`${styles.inputLabel} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
-                PLAYER 1, INPUT TEAM NAME: {teamName ?? ''}
+                PLAYER 1, INPUT TEAM NAME:
               </label>
               <div className={styles.letterInputContainer}>
                 {[0, 1, 2].map((index) => (
@@ -147,10 +147,10 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
                     onFocus={() => setCurrentFocus(index)}
                   >
                     <div className={styles.letterDisplay}>
-                      {letters[index] || ''}
+                      {teamName[index] || ''}
                     </div>
                     <div className={`${styles.dashUnderneath} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
-                      {letters[index] ? '' : '-'}
+                      {teamName[index] ? '' : '-'}
                     </div>
                   </div>
                 ))}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Application, SplineEventName } from "@splinetool/runtime";
-import { GameRoomService } from "@/lib/gameRoom";
+import { GameRoomService, getGlobalLeaderboard, ProcessedLeaderboardData } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
@@ -34,6 +34,7 @@ import { useTimer } from "./hooks/useTimer";
 import { PHASE_DURATIONS } from "./hooks/phaseUtils";
 import EndingScreen from "./EndingScreen";
 import TeamNameInputScreen from "./TeamNameInputScreen";
+import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
 
 interface SplineFirebaseProps {
 }
@@ -187,6 +188,21 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     }
   }, [timeRemainingScoreBreakdown]);
 
+  const [leaderboardData, setLeaderboardData] = useState<ProcessedLeaderboardData>({
+    topWinner: null,
+    top5: [],
+    currentTeamEntry: null
+  });
+
+  useEffect(() => {
+    if (lobbyState.gameLobbyStatus === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+      const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
+      getGlobalLeaderboard(currentTeamNameScore).then(data => {
+        setLeaderboardData(data);
+      });
+    }
+  }, [lobbyState.gameLobbyStatus]);
+
 
   const [totalPerformance, setTotalPerformance] = useState<SectorPerformance>('okay');
   
@@ -289,6 +305,24 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     </div>
   )
 
+  const renderEndingLeaderBoard = (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.LEADERBOARD_DISPLAY) && (
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      <EndingLeaderboardOverlay
+        isOpen={true}
+        topWinner={leaderboardData.topWinner || undefined}
+        leaderboardData={leaderboardData.top5}
+        bottomHighlight={leaderboardData.currentTeamEntry || { 
+          name: lobbyState?.[LobbyStateEnum.TEAM_NAME], 
+          points: totalScore, 
+          position: 10 
+        }}
+      />
+    </div>
+  )
+
   const renderProgressBar = (
     (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && 
       <ProgressBar
@@ -350,6 +384,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {renderStoryLine}
       {renderEndingScreen}
       {renderInputTeamName}
+      {renderEndingLeaderBoard}
 
       {/* Score Breakdown Modal */}
       {lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
@@ -421,3 +456,4 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 };
 
 export default SplineFirebase; 
+
