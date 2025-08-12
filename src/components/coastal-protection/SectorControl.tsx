@@ -54,17 +54,22 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
   const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`, 'default'));
-  const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
-  const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
-  const [totalCoins, setTotalCoins] = useState(10);
-
+  const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   // Use Firebase round instead of phase-based currentRound for actual game progression
   const firebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+  
+  // Derive coin values from Firebase lobbyState
+  const coinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+  const coinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+  const coinsSpentThisRound = coinsSpentByRound[firebaseRound] ?? 0;
+  const totalCoins = coinsTotalPerRound - coinsSpentThisRound;
   
   // Game flow management
   const {
@@ -257,83 +262,47 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const progressionStateB = useProgression(activityLog, firebaseRound, sectorBId);
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
-    // Trigger Spline action
-    triggerSingleBuild(activityType as any);
+    if (isProcessing) return; // Prevent double-clicks
     
-    // Update local activity log immediately to prevent UI flicker
-    const newActivity: ActivityLogType = {
-      id: `temp-${Date.now()}`,
-      userId: `Player ${sector.slice(-1)}`,
-      userName: `Player ${sector.slice(-1)}`,
-      action: activityType,
-      value: `${activityType}`,
-      round: firebaseRound,
-      timestamp: Date.now()
-    };
-    setActivityLog(prev => [...prev, newActivity]);
-    
-    // Log activity to game room using public method (this will sync with Firebase)
-    const triggerConfig = SplineTriggersConfig[activityType];
-    const subSectorFromConfig = triggerConfig?.subSector || sectorId;
-    const result = await gameRoomService.addElement(activityType, `${activityType}`, firebaseRound, coinCost, true, subSectorFromConfig as any);
-    
-    if (result === 'insufficient') {
-      console.log('Insufficient coins - showing modal');
-      setShowInsufficientBudgetModal(true);
-    } else if (result !== 'ok') {
-      console.log('Failed to add element:', result);
+    setIsProcessing(true);
+    try {
+      // Trigger Spline action
+      triggerSingleBuild(activityType as any);
+      
+      // Log activity to Firebase
+      const triggerConfig = SplineTriggersConfig[activityType];
+      const subSectorFromConfig = triggerConfig?.subSector || sectorId;
+      const result = await gameRoomService.addElement(activityType, `${activityType}`, firebaseRound, coinCost, true, subSectorFromConfig as any);
+      
+      if (result === 'insufficient') {
+        console.log('Insufficient coins - showing modal');
+        setShowInsufficientBudgetModal(true);
+      } else if (result !== 'ok') {
+        console.log('Failed to add element:', result);
+      }
+    } finally {
+      setIsProcessing(false);
     }
-    // Note: Coin updates are handled via Firebase lobby state listener, not local state
-  }, [triggerSingleBuild, gameRoomService, currentRound]);
+  }, [isProcessing, triggerSingleBuild, gameRoomService, firebaseRound]);
 
   const handleDemolishClick = useCallback(async (sectorId: string, actionToDestroy: ActivityTypeEnum) => {
-    // Update local activity log immediately to prevent UI flicker
-    const demolishActivity: ActivityLogType = {
-      id: `temp-demolish-${Date.now()}`,
-      userId: `Player ${sector.slice(-1)}`,
-      userName: `Player ${sector.slice(-1)}`,
-      action: ActivityTypeEnum.DEMOLISH,
-      value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
-      round: firebaseRound,
-      timestamp: Date.now()
-    };
+    if (isProcessing) return; // Prevent double-clicks
     
-    // Update activity log with demolish action
-    const newActivityLog = [...activityLog, demolishActivity];
-    setActivityLog(newActivityLog);
-    
-    // Recalculate button sets ONLY for the demolished sector to reflect the new state
-    // Other sectors should keep their frozen button sets from round start
-    console.log(`Recalculating button sets after demolish for sector ${sectorId} only`);
-    setRoundStartButtonSets(prevButtonSets => {
-      const updatedButtonSets = { ...prevButtonSets };
+    setIsProcessing(true);
+    try {
+      // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
+      const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, firebaseRound, 1, false, sectorId as any);
       
-      // Only recalculate for the demolished sector
-      updatedButtonSets[sectorId] = {
-        mangroves: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'mangroves'),
-        seawall: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'seawall'),
-        landReclamation: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'land-reclamation'),
-        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'storm-surge-barrier'),
-        artificialReef: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'artificial-reef'),
-        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'hybrid-measure'),
-        revetment: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'revetment'),
-      };
-      
-      return updatedButtonSets;
-    });
-    setRoundStartActivityLog(newActivityLog);
-    
-    // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
-    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, firebaseRound, 1, false, sectorId as any);
-    
-    if (result === 'insufficient') {
-      console.log('Insufficient coins for demolish - showing modal');
-      setShowInsufficientBudgetModal(true);
-    } else if (result !== 'ok') {
-      console.log('Failed to demolish:', result);
+      if (result === 'insufficient') {
+        console.log('Insufficient coins for demolish - showing modal');
+        setShowInsufficientBudgetModal(true);
+      } else if (result !== 'ok') {
+        console.log('Failed to demolish:', result);
+      }
+    } finally {
+      setIsProcessing(false);
     }
-    // Note: Coin updates are handled via Firebase lobby state listener, not local state
-  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
+  }, [isProcessing, gameRoomService, firebaseRound]);
 
   const handlePlayerReady = useCallback(async () => {
     console.log('Player marking as ready...');
@@ -375,27 +344,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           await gameRoomService.joinRoom('default');
         }
         
-        // Listen to activity changes
+        // Listen to activity changes (stored separately from lobbyState at /activity path)
         gameRoomService.onActivityChange((activities) => {
           setActivityLog(activities);
         });
 
-        // Listen to round changes
-        gameRoomService.onRoundChange((round) => {
-          console.log('Firebase round changed to:', round);
-          setLocalRound(round);
-        });
-
-        // Listen to lobby state changes for coin updates
+        // Listen to lobby state changes for round, coins, phases, etc.
         gameRoomService.onLobbyStateChange((lobbyStateData) => {
           setLobbyState(lobbyStateData);
-          // Update coins based on shared lobby state
-          const coinsTotalPerRound = lobbyStateData[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
-          const coinsSpentByRound = lobbyStateData[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
-          const currentRound = lobbyStateData[LobbyStateEnum.ROUND] ?? 1;
-          const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
-          const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
-          setTotalCoins(coinsLeft);
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
