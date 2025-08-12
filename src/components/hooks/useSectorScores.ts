@@ -1,5 +1,3 @@
-// src/components/hooks/useSectorScores.ts
-
 import { useEffect } from 'react';
 import { ActivityLogType, LobbyStateType, RoundType } from '@/lib/types';
 import { UserSectorEnum } from '@/lib/enums';

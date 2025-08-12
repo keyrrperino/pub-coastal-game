@@ -59,23 +59,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     }
   }, [lobbyState.gameLobbyStatus]);
 
-  useEffect(() => {
-    // Calculate coins left from shared lobby state
-    const coinsTotalPerRound = lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
-    const coinsSpentByRound = lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
-    const currentRound = lobbyState.round ?? 1;
-    const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
-    const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
-    setCoinsLeft(coinsLeft);
-
-    useSectorScores({
-      activities: activities ?? [],
-      lobbyState,
-      setTotalScore,
-      setCoinsLeft,
-    });
-
-  }, [activities, lobbyState.gameLobbyStatus, lobbyState.round, lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND], lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND]]);
+  useSectorScores({
+    activities: activities ?? [],
+    lobbyState,
+    setTotalScore,
+    setCoinsLeft,
+  });
 
   useEffect(() => {
     if (triggerProgress >= 100) {
