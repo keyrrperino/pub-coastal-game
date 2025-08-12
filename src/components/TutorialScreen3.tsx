@@ -3,9 +3,10 @@ import Image from 'next/image';
 
 interface TutorialScreen3Props {
   onContinue: () => void;
+  timeRemaining?: number;
 }
 
-export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
+export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialScreen3Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -167,13 +168,21 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
                 DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE WITH YOUR TEAMMATES.
               </p>
               
-              <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8">
-                3... 2... 1... GO!
-              </h2>
-              
-              <p className="text-white text-xl text-center font-bold">
-                THE TIDES ARE RISING. START PLANNING!
-              </p>
+              {/* Show countdown only in the last 3 seconds */}
+              {timeRemaining !== undefined && timeRemaining <= 3 && (
+                <div className="flex flex-col items-center gap-6">
+                  <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8">
+                    {timeRemaining === 3 && "3..."}
+                    {timeRemaining === 2 && "2..."}
+                    {timeRemaining === 1 && "1..."}
+                    {timeRemaining === 0 && "GO!"}
+                  </h2>
+                  
+                  <p className="text-white text-xl text-center font-bold">
+                    THE TIDES ARE RISING. START PLANNING!
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

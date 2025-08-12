@@ -18,6 +18,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   syncWithTimestamp
 }) => {
   const [currentScreen, setCurrentScreen] = useState(1);
+  const [timeRemaining, setTimeRemaining] = useState(duration);
   
   // Calculate duration for each tutorial screen (1/3 of total duration)
   const screenDuration = Math.floor(duration / 3);
@@ -29,6 +30,9 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     const updateCurrentScreen = () => {
       const currentTime = Date.now();
       const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
+      const remaining = Math.max(0, duration - elapsed);
+      
+      setTimeRemaining(remaining);
       
       if (elapsed < screenDuration) {
         setCurrentScreen(1);
@@ -59,6 +63,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     let timer1: NodeJS.Timeout;
     let timer2: NodeJS.Timeout;
     let timer3: NodeJS.Timeout;
+    let countdownInterval: NodeJS.Timeout;
 
     // Set up sequential timers
     timer1 = setTimeout(() => {
@@ -73,10 +78,16 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       onDurationComplete?.();
     }, duration * 1000);
 
+    // Countdown timer for fallback mode
+    countdownInterval = setInterval(() => {
+      setTimeRemaining(prev => Math.max(0, prev - 1));
+    }, 1000);
+
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
+      clearInterval(countdownInterval);
     };
   }, [isOpen, onDurationComplete, duration, screenDuration, syncWithTimestamp]);
 
@@ -90,7 +101,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       case 2:
         return <TutorialScreen2 onContinue={() => {}} />;
       case 3:
-        return <TutorialScreen3 onContinue={() => {}} />;
+        return <TutorialScreen3 onContinue={() => {}} timeRemaining={timeRemaining} />;
       default:
         return <TutorialScreen1 onContinue={() => {}} />;
     }
