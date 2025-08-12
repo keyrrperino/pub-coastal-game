@@ -14,6 +14,7 @@ interface UseSectorScoresProps {
   setSector1Performance?: (performance: SectorPerformance) => void;
   setSector2Performance?: (performance: SectorPerformance) => void;
   setSector3Performance?: (performance: SectorPerformance) => void;
+  setTotalPerformance?: (performance: SectorPerformance) => void;
 }
 
 const getSectorPerformance = (score: number): SectorPerformance => {
@@ -30,6 +31,7 @@ export function useSectorScores({
   setSector1Performance,
   setSector2Performance,
   setSector3Performance,
+  setTotalPerformance,
 }: UseSectorScoresProps) {
   useEffect(() => {
     const sector1R1 = getSectorRoundScore(
@@ -167,5 +169,17 @@ export function useSectorScores({
       setSector3Performance(getSectorPerformance(sector3TotalDeduction));
     }
 
-  }, [activities, lobbyState, setSector1Performance, setSector2Performance, setSector3Performance]);
+    // Calculate total performance based on overall score
+    if (setTotalPerformance) {
+      const totalDeduction = OVERALL_SCORE_POINTS - overAllScore;
+      const performance = getSectorPerformance(totalDeduction);
+      console.log('🟡 TOTAL PERFORMANCE CALCULATION:');
+      console.log('Overall Score:', overAllScore);
+      console.log('Overall Score Points:', OVERALL_SCORE_POINTS);
+      console.log('Total Deduction:', totalDeduction);
+      console.log('Performance:', performance);
+      setTotalPerformance(performance);
+    }
+
+  }, [activities, lobbyState, setSector1Performance, setSector2Performance, setSector3Performance, setTotalPerformance]);
 }
