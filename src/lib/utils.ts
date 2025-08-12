@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, UserSectorEnum } from "./enums";
-import { ActivityLogType, NormalizedActivities, PlayerBreakdown, RoundBreakdown, ScenarioConfigurationType } from "./types";
+import { ActivityLogType, NormalizedActivities, OverallScores, OverallScoresTypes, PlayerBreakdown, RoundBreakdown, RoundType, ScenarioConfigurationType } from "./types";
 import { meanSeaLevels, sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -644,4 +644,264 @@ export function getRoundBreakdownByPlayer(
     playerBreakdown,
     roundPoints,
   };
+}
+
+
+export function getSectorRoundScore(
+  activities: ActivityLogType[],
+  sessionRandomizeEffect: string | number,
+  roundNumber: RoundType,
+  userId: UserSectorEnum,
+) {
+  console.log('activities', activities);
+  const meanSeaLevels: { 1: number; 2: number; 3: number; } = {
+    1: 0.3,
+    2: 0.7,
+    3: 1.15
+  }
+
+  const sectorNumber = userId.split("_").pop();
+
+  let scores: OverallScoresTypes = {
+    [userId]: {
+      sectorA: {
+        scores: [],
+        coins: [],
+        keys: []
+      },
+      sectorB: {
+        scores: [],
+        coins: [],
+        keys: []
+      },
+      totalScoreToDeduct: 0,
+      totalCoinsToDeduct: 0,
+    }
+  };
+
+  const isRoundOne = roundNumber === 1;
+
+  const previousSectorActivitiesA = !isRoundOne ? activities.filter(activity => 
+    activity.userId === userId && 
+    activity.subSector === `${sectorNumber}A` && 
+    activity.round === roundNumber - 1 && 
+    activity.isCpm
+  ) : [];
+
+  const sectorActivitiesA = activities.filter(activity => 
+    activity.userId === userId && 
+    activity.subSector === `${sectorNumber}A` && 
+    activity.round === roundNumber && 
+    activity.isCpm
+  );
+
+  const previousSectorActivitiesB = !isRoundOne ? activities.filter(activity => 
+    activity.userId === userId && 
+    activity.subSector === `${sectorNumber}B` && 
+    activity.round === roundNumber - 1 && 
+    activity.isCpm
+  ) : [];
+
+  const sectorActivitiesB = activities.filter(activity => 
+    activity.userId === userId && 
+    activity.subSector === `${sectorNumber}B` && 
+    activity.round === roundNumber && 
+    activity.isCpm
+  );
+
+  // sector A
+  if (isRoundOne && sectorActivitiesA.length <= 0) {
+    // round1
+    const key = `${sectorNumber}_${sectorNumber}A_None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    scores[userId]!.sectorA.coins.push(sceneSectorConfigurations[key].coin ?? 0);
+    scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+    scores[userId]!.sectorA.scores.push(sceneSectorConfigurations[key].score);
+    scores[userId]!.sectorA.keys.push(key);
+    scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  }
+
+  if (isRoundOne && sectorActivitiesA.length > 0) {
+    sectorActivitiesA.map((activity, index: number) => {
+      // round 1 previous activity should be the current one
+      const isLatestActivityIsDemolished = activity?.isDemolished;
+      const previousActivity = sectorActivitiesA[index + 1];
+
+      // is Demolished activity
+      if (isLatestActivityIsDemolished && previousActivity) {
+        const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        const data = sceneSectorConfigurations[key];
+        const score = (data.coin ?? 0) * 10;
+
+        scores[userId]!.sectorA.scores.push("dem - " + score);
+        scores[userId]!.sectorA.keys.push("dem - " + key);
+        scores[userId]!.totalScoreToDeduct += score;
+      }
+
+      // Still deduct all the activity that is not demolished status
+      if (!isLatestActivityIsDemolished) {
+        const key = `${sectorNumber}_${sectorNumber}A_${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        const { score } = sceneSectorConfigurations[key];
+
+        scores[userId]!.sectorA.scores.push(score);
+        scores[userId]!.sectorA.keys.push(key);
+        scores[userId]!.totalScoreToDeduct += score; 
+      }
+    });
+  }
+
+  // end
+
+  // sector b
+  if (isRoundOne && sectorActivitiesB.length <= 0) {
+    // round1
+    const key = `${sectorNumber}_${sectorNumber}B_None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    scores[userId]!.sectorB.coins.push(sceneSectorConfigurations[key].coin ?? 0);
+    scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+    scores[userId]!.sectorB.scores.push(sceneSectorConfigurations[key].score);
+    scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+    scores[userId]!.sectorB.keys.push(key);
+  }
+
+  if (isRoundOne && sectorActivitiesB.length > 0) {
+    sectorActivitiesB.map((activity, index: number) => {
+      // round 1 previous activity should be the current one
+      const isLatestActivityIsDemolished = activity?.isDemolished;
+      const previousActivity = sectorActivitiesB[index + 1];
+
+      // is Demolished activity
+      if (isLatestActivityIsDemolished && previousActivity) {
+        const key = `${sectorNumber}_${sectorNumber}B_${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        const data = sceneSectorConfigurations[key];
+        const score = (data.coin ?? 0) * 10;
+
+        scores[userId]!.sectorB.scores.push(score);
+        scores[userId]!.sectorB.keys.push(key);
+        scores[userId]!.totalScoreToDeduct += score;
+      }
+
+      // Still deduct all the activity that is not demolished status
+      if (!isLatestActivityIsDemolished) {
+        const key = `${sectorNumber}_${sectorNumber}B_${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        const {score} = sceneSectorConfigurations[key];
+
+        scores[userId]!.sectorB.scores.push(score);
+        scores[userId]!.sectorB.keys.push(key);
+        scores[userId]!.totalScoreToDeduct += score; 
+      }
+    });
+  }
+  // end
+
+
+  // ROUND 2 and 3
+  // sector A
+  if (!isRoundOne && sectorActivitiesA.length <= 0) {
+    // round1
+    const key = `${sectorNumber}_${sectorNumber}A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    scores[userId]!.sectorA.coins.push(sceneSectorConfigurations[key].coin ?? 0);
+    scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+    scores[userId]!.sectorA.scores.push(sceneSectorConfigurations[key].score);
+    scores[userId]!.sectorA.keys.push(key);
+    scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  }
+
+
+  if (!isRoundOne && sectorActivitiesA.length > 0 && previousSectorActivitiesA.length === 0) {
+    sectorActivitiesA.map((activity, index: number) => {
+      // round 1 previous activity should be the current one
+      const isLatestActivityIsDemolished = activity?.isDemolished;
+      const previousActivity = sectorActivitiesA[index + 1];
+
+      // is Demolished activity
+      if (isLatestActivityIsDemolished && previousActivity) {
+        const key = `${sectorNumber}_${sectorNumber}A_None-${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+
+        console.log(key);
+        const data = sceneSectorConfigurations[key];
+        const score = (data.coin ?? 0) * 10;
+
+        scores[userId]!.sectorA.scores.push("dem - " + score);
+        scores[userId]!.sectorA.keys.push("dem - " + key);
+        scores[userId]!.totalScoreToDeduct += score;
+      }
+
+      // Still deduct all the activity that is not demolished status
+      if (!isLatestActivityIsDemolished) {
+        const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        const { score } = sceneSectorConfigurations[key];
+
+        scores[userId]!.sectorA.scores.push(score);
+        scores[userId]!.sectorA.keys.push(key);
+        scores[userId]!.totalScoreToDeduct += score;
+      }
+    });
+  }
+
+
+  // // if dili round 1 unya walay activity sa round 2 sector A
+  // if (isNotRoundOne && sectorActivitiesA.length <= 0) {
+  //   // round2 and round3
+  //   if (previousSectorActivitiesA.length <= 0) {
+  //     const key = `1_1A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+  //     scores[userId]!.sectorA.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //     scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //     scores[userId]!.sectorA.scores = sceneSectorConfigurations[key].score;
+  //     scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  //   }
+  // }
+
+  // // if round 1 and walay sulod ang activity
+  // if (!isNotRoundOne && sector1Activities1B.length <= 0) {
+  //   const key = `1_1B_None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`
+  //   scores[userId]!.sectorB.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.sectorB.scores = sceneSectorConfigurations[key].score;
+  //   scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  // }
+
+  // if (isNotRoundOne && sector1Activities1B.length <= 0) {
+  //   const key = `1_1B_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`
+  //   scores[userId]!.sectorB.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.sectorB.scores = sceneSectorConfigurations[key].score;
+  //   scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  // }  
+
+  // if (!isNotRoundOne && sectorActivitiesA.length === 1) {
+  //   const key = `1_1A_${sectorActivitiesA[0].action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+  //   scores[userId]!.sectorA.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.sectorA.scores = sceneSectorConfigurations[key].score;
+  //   scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  // }
+
+
+  // else {
+  //   const isLatestPreviousActivityIsDemolished = previousSectorActivitiesA.length > 0 && previousSectorActivitiesA[previousSectorActivitiesA.length - 1].isDemolished;
+
+  //   // if ge demolish siya sa previous unya walay action, None ang left value key
+  //   if (isLatestPreviousActivityIsDemolished) {
+  //     // round1
+  //     const key = `1_1A_None-${}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+  //     scores[userId]!.sectorA.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //     scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //     scores[userId]!.sectorA.scores = sceneSectorConfigurations[key].score;
+  //     scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;        
+  //   } else {
+
+  //   }
+  // }
+
+
+  // // TODO: Demolish
+
+  // if (sectorActivitiesA.length > 1) {
+  //   const key = `1_1A_${sectorActivitiesA[0].action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+  //   scores[userId]!.sectorA.coins = sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.totalCoinsToDeduct += sceneSectorConfigurations[key].coin ?? 0;
+  //   scores[userId]!.sectorA.scores = sceneSectorConfigurations[key].score;
+  //   scores[userId]!.totalScoreToDeduct += sceneSectorConfigurations[key].score;
+  // }
+
+  return scores;
 }

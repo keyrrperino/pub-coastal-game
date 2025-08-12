@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { GameRoomService } from '@/lib/gameRoom';
 import { GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, SectorsButtonConfig, SplineTriggersConfig } from '@/lib/constants';
-import { ActivityLogType, LobbyStateType, NormalizedActivities, SectorEnum, SplineTriggerConfigItem } from '@/lib/types';
+import { ActivityLogType, LobbyStateType, NormalizedActivities, SectorEnum, SplineTriggerConfigItem, SubSectorType } from '@/lib/types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from '@/lib/enums';
 import clsx from 'clsx';
 import { hasActivityForSubSector, getNormalizeActivities, isGameOnGoing } from '@/lib/utils';
@@ -111,7 +111,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME, 
           Date.now());
     } else {
-      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, true);
+      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, true, btn.subSector);
     }
   }
 
@@ -145,7 +145,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
 
         return <button
           key={"mcp-" + idx}
-          disabled={isButtonTriggered?.length > 0 || disabled}
+          // disabled={isButtonTriggered?.length > 0 || disabled}
           style={{
             backgroundColor: bgColor,
 
@@ -155,7 +155,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
               "rounded-[10vh] pl-[2vw] pr-[2vw] bg-white p-[1vw] max-w-[18vw] h-[7vh] leading-[100%]",
               "hover:bg-blue-100 active:bg-blue-400 transition hover:text-[#2f2f2f]",
               "active:text-white disabled:cursor-not-allowed",
-              isButtonTriggered?.length > 0  ? "disabled:bg-blue-200 disabled:text-[#6EB6FF]" : "disabled:bg-gray-200 disabled:text-gray-400" 
+              // isButtonTriggered?.length > 0  ? "disabled:bg-blue-200 disabled:text-[#6EB6FF]" : "disabled:bg-gray-200 disabled:text-gray-400" 
             )
           }
           onClick={() => {
@@ -171,13 +171,11 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
   const renderUserSectors = () => {
     return Object.keys(buttonConfigs).map((sector: string) => {
       const sectorValue = sector as SectorEnum;
-      const subSectorTitle = sectorValue.replace(" ", ` ${sectorNumber}`);
+      const subSectorTitle = `Sector ` + sectorValue;
 
-      const [,subSector] = subSectorTitle.split(" ");
+      const subSector = (sectorNumber + `${sectorValue}`) as SubSectorType;
 
-      console.log(buttonConfigs[sectorValue].stormsurgebarrier, sectorValue, sector)
-
-      return (<div key={subSectorTitle} className={clsx(
+      return (<div key={subSector} className={clsx(
         `flex flex-col rounded-[1vw] p-[2vw] gap-[4vh]`,
       )}
       style={{
@@ -200,12 +198,32 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
           {renderButtons(buttonConfigs[sectorValue].reclamation ?? [], subSector, "rgba(255, 234, 207, 1)")}
           {renderButtons(buttonConfigs[sectorValue].hybrid ?? [], subSector, "rgba(255, 234, 207, 1)")}
           </div>
+
+          <button
+            key={'dem-' + sector}
+            style={{
+              backgroundColor: 'red',
+            }}
+            className={
+              clsx(
+                "rounded-[10vh] pl-[2vw] pr-[2vw] bg-white p-[1vw] max-w-[18vw] h-[7vh] leading-[100%]",
+                "hover:bg-blue-100 active:bg-blue-400 transition hover:text-[#2f2f2f]",
+              )
+            }
+            onClick={async () => {
+              await gameRoomService.current?.addElement(
+                ActivityTypeEnum.DEMOLISH,
+                '', lobbyState.round ?? 1, true, subSector);
+            }}
+          >
+            DEMOLISH
+          </button>
         </div>
       </div>);
     });
   };
 
-  const renderScene = !isGameStarted ? (
+  const renderScene = isGameStarted ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       {renderUserSectors()}
     </div>

@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
-import { ActivityLogType, LobbyStateType } from "@/lib/types";
+import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
-import { GameEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
+import { GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
 import { useMainProgress } from "./hooks/useMainProgress";
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
-import { calculateOverallScore, calculateOverallScoreFromScenarioConfigControlled, calculateTotalCoinsPerRound, getMeanSeaLevelForRound, getRandomEffectValue, getRoundBreakdownByPlayer, isGameOnGoing } from "@/lib/utils";
+import { calculateOverallScore, calculateOverallScoreFromScenarioConfigControlled, calculateTotalCoinsPerRound, getMeanSeaLevelForRound, getRandomEffectValue, getRoundBreakdownByPlayer, getSectorRoundScore, isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
 import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
 import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
@@ -59,19 +59,25 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [lobbyState.gameLobbyStatus]);
 
   useEffect(() => {
-    const round = !showGameOverModal ? (lobbyState.round ?? 1) : 4;
-    const { totalScore } = calculateOverallScoreFromScenarioConfigControlled(activities ?? [], lobbyState.randomizeEffect, round);
+    // const round = !showGameOverModal ? (lobbyState.round ?? 1) : 4;
+    // const { totalScore } = calculateOverallScoreFromScenarioConfigControlled(activities ?? [], lobbyState.randomizeEffect, round);
 
-    const score = OVERALL_SCORE_POINTS + totalScore;
-    setTotalScore(score);
+    // const score = OVERALL_SCORE_POINTS + totalScore;
+    // setTotalScore(score);
 
-    const coinsData = calculateTotalCoinsPerRound(activities ?? [], lobbyState.randomizeEffect);
+    // const coinsData = calculateTotalCoinsPerRound(activities ?? [], lobbyState.randomizeEffect);
 
-    setCoinsLeft(TOTAL_COINS_PER_ROUND - coinsData[lobbyState.round ?? 1].totalCoin);
+    // setCoinsLeft(TOTAL_COINS_PER_ROUND - coinsData[lobbyState.round ?? 1].totalCoin);
 
-    const data = getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, 1);
+    // const data = getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, 1);
 
-    console.log("breakdown score: ", data)
+
+    const sector1 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_ONE);
+    const sector2 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_TWO);
+    const sector3 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_THREE);
+
+    console.log(sector1, sector2, sector3);
+
 
   }, [activities, lobbyState.gameLobbyStatus, lobbyState.round]);
 

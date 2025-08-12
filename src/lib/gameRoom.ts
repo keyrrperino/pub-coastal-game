@@ -10,7 +10,7 @@ import {
   update,
   remove
 } from 'firebase/database';
-import { ActivityLogType, LobbyStateType, UserPresenceType } from './types';
+import { ActivityLogType, LobbyStateType, SubSectorType, UserPresenceType } from './types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from './enums';
 import { lobbyStateDefaultValue, ROOM_NAME } from './constants';
 
@@ -125,8 +125,9 @@ export class GameRoomService {
       if (snapshot.exists()) {
         const activities = Object.values(snapshot.val()) as ActivityLogType[];
         // Sort by timestamp, newest first
-        activities.sort((a, b) => a.timestamp - b.timestamp);
-        this.activityCallback!(activities); // Show last 10 activities
+        // dont change this is or else the scoring will be broken
+        activities.sort((a, b) => b.timestamp - a.timestamp);
+        this.activityCallback!(activities);
       }
     });
   }
@@ -202,14 +203,14 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, isCpm?: boolean): Promise<void> {
+  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, isCpm: boolean = false, subSector: SubSectorType): Promise<void> {
     if (!this.roomId) return;
 
     // Log activity
-    await this.logActivity(activityType, ActivityValue, round, isCpm);
+    await this.logActivity(activityType, ActivityValue, round, isCpm, subSector);
   }
 
-  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm?: boolean) {
+  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector: SubSectorType) {
     if (!this.roomId) return;
 
     const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
@@ -222,7 +223,9 @@ export class GameRoomService {
       action: activityType,
       value: activityValue,
       isCpm,
+      isDemolished: activityType === ActivityTypeEnum.DEMOLISH,
       round: round ?? 1,
+      subSector: subSector ?? null,
       timestamp: Date.now()
     };
 

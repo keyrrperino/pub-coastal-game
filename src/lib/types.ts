@@ -6,11 +6,15 @@ import {
   UserSectorEnum
 } from "./enums";
 
+export type SubSectorType = "1A" | "1B" | "2A" | "2B" | "3A" | "3B";
+export type RoundType = 1 | 2 | 3;
+
 export type SplineTriggerConfigItem = {
   state: string[];
   events: string[];
   buttonValue?: string;
-  activityType: ActivityTypeEnum;
+  activityType: ActivityTypeEnum | null;
+  subSector?: SubSectorType;
   delay?: number;
 
   lobbyState?: LobbyStateEnum;
@@ -23,8 +27,25 @@ export type SplineTriggersConfigType = Partial<{
 }>;
 
 export enum SectorEnum {
-  SECTOR_A = "Sector A",
-  SECTOR_B = "Sector B"
+  SECTOR_A = "A",
+  SECTOR_B = "B"
+};
+
+export type SubSectorScore = {
+  scores: (string | number)[];
+  coins: number[];
+  keys: string[];
+};
+
+export type SectorScore = {
+  sectorA: SubSectorScore;
+  sectorB: SubSectorScore;
+  totalScoreToDeduct: number;
+  totalCoinsToDeduct: number;
+};
+
+export type OverallScoresTypes = {
+  [key in UserSectorEnum]?: SectorScore;
 };
 
 export type ButtonGroupKey = 'mangroves' | 'reclamation' | 'stormsurgebarrier' | 'seawall' | 'hybrid' | 'artificialReef' | 'boardwalk' | 'path';
@@ -51,9 +72,11 @@ export type ActivityLogType = {
   userName: string;
   action: ActivityTypeEnum;
   value: string;
+  subSector?: string;
   timestamp: number;
   round?: number;
   isCpm?: boolean;
+  isDemolished?: boolean;
 }
 
 export type UserPresenceType = {
