@@ -41,13 +41,12 @@ export default function EndingLeaderboardOverlay({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0,0.7)]">
       {/* Main Container - match Figma dimensions */}
       <div className="relative w-[656px] h-[817px]">
         {/* Background container */}
         <div className="absolute inset-0 w-full h-full">
           {/* Blue background rounded rectangle */}
-          <div className="absolute top-[32px] left-[28px] w-[628px] h-[785px] bg-[#8491C6] rounded-[24px]" />
           
           {/* Header section (white) */}
           <div className="absolute top-0 left-0 w-[636px] h-[145px] bg-white rounded-t-[24px] flex items-center justify-center">
