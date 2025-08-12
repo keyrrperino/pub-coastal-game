@@ -2,8 +2,8 @@ import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, Splin
 import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
-export const ROOM_NAME = "rooms-v2";
-export const GAME_ROUND_TIMER = 30;
+export const ROOM_NAME = "rooms-v5";
+export const GAME_ROUND_TIMER = 300000;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
@@ -1160,17 +1160,17 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 3 },
 
   // Seawall 0.5
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-2`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.3-2`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R1_3A_2 },
   // Seawall 1.15
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL}-0.3-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R1_3A_2 },
   // Seawall 2
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
-  [`3_3B_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-0.5`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3A_2 },
 
   // --- SECTOR 3B (Player 3) ---
   "3_3B_None-0.3-1": { score: 30, coin: 0, cutscene: CutScenesEnum.R1_3B_0 },
@@ -1181,17 +1181,17 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-0.3-0.5`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R1_3B_1 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-0.3-2`]: { score: 50, coin: 1, cutscene: CutScenesEnum.R1_3B_1 },
   // Hybrid Measure 0.5
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-2`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-0.3-2`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
   // Hybrid Measure 1.15
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 2 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 2 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 2 },
   // Hybrid Measure 2
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 3 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 3 },
-  [`3_3A_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 3 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-1`]: { score: 0, coin: 3 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-0.5`]: { score: 0, coin: 3 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.3-2`]: { score: 0, coin: 3 },
 
   // Seawall 0.5
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-0.3-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R1_3B_2 },
@@ -2304,5 +2304,3 @@ export const sceneSectorConfigurations: ScenarioConfigurationType = {
   ...roundTwoScenarioConfiguration,
   ...roundThreeScenarioConfiguration
 }
-
-console.log("sceneSectorConfigurations", sceneSectorConfigurations);
