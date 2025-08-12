@@ -3,7 +3,7 @@ import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
-import { GameRoomService } from '@/lib/gameRoom';
+import { GameRoomService, saveTeamScoreToGlobalLeaderboard, getGlobalLeaderboard, ProcessedLeaderboardData } from '@/lib/gameRoom';
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
@@ -25,11 +25,18 @@ import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 import StartScreen from '@/components/StartScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
+import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
 
 interface SectorControlProps {
   sector: string;
 }
+
+// Helper function to get player number from sector
+const getPlayerNumber = (sector: string): number => {
+  const match = sector.match(/sector-(\d+)/);
+  return match ? parseInt(match[1], 10) : 1;
+};
 
 // Helper function to get sector titles
 const getSectorTitles = (sector: string) => {
@@ -65,6 +72,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
+
+  // Track previous phase for restart detection
+  const [previousPhase, setPreviousPhase] = useState<GameLobbyStatus | null>(null);
 
   // Helper function to reset all local game state
   const resetLocalGameState = useCallback(() => {
@@ -114,12 +124,29 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
   const [totalPerformance, setTotalPerformance] = useState<SectorPerformance>('okay');
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  
+  // Leaderboard state for ROUND_SCORE_BREAKDOWN phase
+  const [showLeaderboardOverlay, setShowLeaderboardOverlay] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState<ProcessedLeaderboardData>({
+    topWinner: null,
+    top5: [],
+    currentTeamEntry: null
+  });
 
   // Debug logging for round state
   useEffect(() => {
     console.log('SectorControl currentRound (phase-based):', currentRound);
     console.log('SectorControl firebaseRound (actual game round):', firebaseRound);
   }, [currentRound, firebaseRound]);
+
+  // Handle restart flow - reload when state changes away from RESTARTING
+  useEffect(() => {
+    if (previousPhase === GameLobbyStatus.RESTARTING && currentPhase !== GameLobbyStatus.RESTARTING) {
+      console.log('State changed away from RESTARTING - reloading page');
+      window.location.reload();
+    }
+    setPreviousPhase(currentPhase);
+  }, [currentPhase, previousPhase]);
 
   // Game flow phase management
   useEffect(() => {
@@ -137,6 +164,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_STORYLINE:
@@ -145,6 +173,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_GAMEPLAY:
@@ -153,6 +182,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.ROUND_CUTSCENES:
@@ -161,6 +191,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(true);
+        setShowLeaderboardOverlay(false);
         break;
         
       case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
@@ -169,6 +200,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(true);
+        setShowLeaderboardOverlay(false);
+        // Fetch leaderboard data when entering this phase
+        const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
+        getGlobalLeaderboard(currentTeamNameScore).then(data => {
+          setLeaderboardData(data);
+        });
         break;
       
       case GameLobbyStatus.ENDING:
@@ -177,6 +214,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(true);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         // Use totalScore from useSectorScores instead of calculated score
         setFinalScore(totalScore);
         break;
@@ -187,6 +225,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(true);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
       
       case GameLobbyStatus.LEADERBOARD_DISPLAY:
@@ -195,6 +234,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
+        break;
+      
+      case GameLobbyStatus.RESTARTING:
+        // Don't immediately reload - wait for state to change away from RESTARTING
+        console.log('RESTARTING phase detected - waiting for state change');
         break;
       
       default:
@@ -204,6 +249,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowLeaderboardOverlay(false);
         break;
     }
   }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
@@ -409,13 +455,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   const handleStartGame = useCallback(async () => {
     console.log('Starting game...');
+    
+    // If we're in LEADERBOARD_DISPLAY phase, set status to RESTARTING instead of starting a new game
+    if (currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+      console.log('In LEADERBOARD_DISPLAY phase - setting status to RESTARTING');
+      gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.RESTARTING);
+      return;
+    }
+    
     // Anyone can start the game - trigger the Spline action first
     const btn = SplineTriggersConfig[ActivityTypeEnum.START_GAME] as SplineTriggerConfigItem;
     await gameRoomService.addElement(btn.activityType!, btn.buttonValue ?? '', 0, 0, false, SubSectorEnum.ONE_A);
     
     // Then update the lobby status to start the game flow
     gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
-  }, [gameRoomService]);
+  }, [gameRoomService, currentPhase]);
 
   const handleShowLeaderboard = useCallback(() => {
     setIsLeaderboardOpen(true);
@@ -633,45 +687,63 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left and Timer right - hide during ending phase */}
-          {currentPhase !== GameLobbyStatus.ENDING && (
-            <div className="w-full flex flex-row items-start justify-between">
-              {/* Budget display left */}
-              <div className="flex-1 flex items-start justify-start">
-                <BudgetDisplay totalCoins={totalCoins} />
-              </div>
-              {/* Timer right */}
-              <div className="flex-1 flex items-start justify-end">
-                <Timer 
-                  key={`${currentRound}-${currentPhase}`}
-                  duration={showCutscene ? 0 : phaseDuration}
-                  onTimeUp={handleTimeUp} 
-                  isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
-                  syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-                />
-              </div>
-            </div>
-          )}
+          {/* Render content based on current phase */}
+          {(() => {
+            // Gameplay phases: Show Timer, Budget, and Sectors
+            if (currentPhase === GameLobbyStatus.ROUND_GAMEPLAY || 
+                currentPhase === GameLobbyStatus.ROUND_CUTSCENES || 
+                currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
+              return (
+                <>
+                  {/* Top bar: Budget left and Timer right */}
+                  <div className="w-full flex flex-row items-start justify-between">
+                    {/* Budget display left */}
+                    <div className="flex-1 flex items-start justify-start">
+                      <BudgetDisplay totalCoins={totalCoins} />
+                    </div>
+                    {/* Timer right */}
+                    <div className="flex-1 flex items-start justify-end">
+                      <Timer 
+                        key={`${currentRound}-${currentPhase}`}
+                        duration={showCutscene ? 0 : phaseDuration}
+                        onTimeUp={handleTimeUp} 
+                        isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
+                        syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                      />
+                    </div>
+                  </div>
 
-          {/* Start Screen - shown when not in gameplay, cutscenes, score breakdown, or ending */}
-          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
-           currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
-           currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN &&
-           currentPhase !== GameLobbyStatus.ENDING && (
-            <>
-              {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+                  {/* Sector sections */}
+                  <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+                    {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
+                    {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
+                  </div>
+                </>
+              );
+            }
+
+            // Start/Lobby phases: Show StartScreen
+            if (!currentPhase || 
+                currentPhase === GameLobbyStatus.INITIALIZING || 
+                currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+              return (
                 <div className="absolute inset-0 z-20">
-                  {/* Complete StartPage template repurposed for game start */}
                   <StartScreen
                     onStartGame={handleStartGame}
                     onShowLeaderboard={handleShowLeaderboard}
+                    playerNumber={getPlayerNumber(sector)}
                   />
                   <LeaderboardOverlay
                     isOpen={isLeaderboardOpen}
                     onClose={handleCloseLeaderboard}
                   />
                 </div>
-              ) : currentPhase === GameLobbyStatus.PREPARING ? (
+              );
+            }
+
+            // Preparing phase: Show loading message
+            if (currentPhase === GameLobbyStatus.PREPARING) {
+              return (
                 <div className="w-full flex items-center justify-center mt-8">
                   <div className="bg-white rounded-[16px] px-8 py-6">
                     <div className="text-center">
@@ -684,29 +756,16 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="w-full flex items-center justify-center mt-8">
-                  <div className="bg-white rounded-[16px] px-8 py-6">
-                    <div className="text-center">
-                      <div className="text-[24px] font-bold text-black text-center mb-4">
-                        {currentPhase.replace(/_/g, ' ')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+              );
+            }
 
-          {/* Sector sections - show during gameplay, cutscenes, and score breakdown */}
-          {(currentPhase === GameLobbyStatus.ROUND_GAMEPLAY || 
-            currentPhase === GameLobbyStatus.ROUND_CUTSCENES || 
-            currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) && (
-            <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-              {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
-              {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
-            </div>
-          )}
+            // Other phases: Show circular loader
+            return (
+              <div className="w-full h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white"></div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -749,11 +808,46 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <TeamNameInputModal 
         isOpen={showTeamNameInput}
         onSubmit={async (teamName) => {
-          // Handle team name submission (you can implement leaderboard logic here)
-          console.log('Team name submitted:', teamName, 'Score:', finalScore);
-          setShowTeamNameInput(false);
+          try {
+            // Save team name to lobby state first
+            await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.TEAM_NAME, teamName);
+            console.log('Team name saved to lobby state:', teamName);
+            
+            // Try using the gameRoomService method first
+            if (typeof gameRoomService.saveTeamScore === 'function') {
+              await gameRoomService.saveTeamScore(teamName, finalScore);
+              console.log('Team score saved via gameRoomService:', teamName, 'Score:', finalScore);
+            } else {
+              // Fallback to standalone function
+              console.log('Using fallback function to save team score');
+              await saveTeamScoreToGlobalLeaderboard(
+                teamName, 
+                finalScore, 
+                'default',
+                `Player ${sector.slice(-1)}`
+              );
+              console.log('Team score saved via standalone function:', teamName, 'Score:', finalScore);
+            }
+            setShowTeamNameInput(false);
+          } catch (error) {
+            console.error('Failed to save team score:', error);
+            // Still close the modal even if save fails
+            setShowTeamNameInput(false);
+          }
         }}
-        finalScore={finalScore}
+        playerNumber={getPlayerNumber(sector)}
+      />
+
+      {/* Leaderboard Overlay for ROUND_SCORE_BREAKDOWN phase */}
+      <EndingLeaderboardOverlay
+        isOpen={showLeaderboardOverlay}
+        topWinner={leaderboardData.topWinner || undefined}
+        leaderboardData={leaderboardData.top5}
+        bottomHighlight={leaderboardData.currentTeamEntry || { 
+          name: lobbyState?.[LobbyStateEnum.TEAM_NAME] || `P${getPlayerNumber(sector)}`, 
+          points: totalScore, 
+          position: 10 
+        }}
       />
 
     </div>
