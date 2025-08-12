@@ -3,10 +3,11 @@ import {
   CutScenesEnum,
   GameLobbyStatus,
   LobbyStateEnum,
+  SubSectorEnum,
   UserSectorEnum
 } from "./enums";
 
-export type SubSectorType = "1A" | "1B" | "2A" | "2B" | "3A" | "3B";
+export type SubSectorType = SubSectorEnum.ONE_A | SubSectorEnum.ONE_B | SubSectorEnum.TWO_A | SubSectorEnum.TWO_B | SubSectorEnum.THREE_A | SubSectorEnum.THREE_B;
 export type RoundType = 1 | 2 | 3;
 
 export type SplineTriggerConfigItem = {
