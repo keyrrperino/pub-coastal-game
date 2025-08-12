@@ -1,9 +1,9 @@
-import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, SplineEventName, UserSectorEnum } from "./enums";
-import { LobbyStateType, RoundType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
+import { ActivityDemolishTypeSector1AEnum, ActivityDemolishTypeSector1BEnum, ActivityDemolishTypeSector2AEnum, ActivityDemolishTypeSector2BEnum, ActivityDemolishTypeSector3AEnum, ActivityDemolishTypeSector3BEnum, ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, SplineEventName, SubSectorEnum, UserSectorEnum } from "./enums";
+import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType, SubSectorType, RoundType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
-export const ROOM_NAME = "rooms-v2";
-export const GAME_ROUND_TIMER = 30;
+export const ROOM_NAME = "rooms-v5";
+export const GAME_ROUND_TIMER = 300000;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
@@ -36,6 +36,12 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     activityType: ActivityTypeEnum.START_GAME,
     subTriggers: [ActivityTypeEnum.DISPLAY_INSTRUCTION]
   },
+  [ActivityTypeEnum.DEMOLISH]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "",
+    activityType: ActivityTypeEnum.DEMOLISH,
+  },
   [ActivityTypeEnum.DISPLAY_INSTRUCTION]: {
     state: ['State'],
     events: [
@@ -53,14 +59,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD PLANT MANGROVES",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES
   },
   [ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD PLANT MANGROVES",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK
   },
   // R1 1A / BUILD / 0.5 LAND RECLAMATION
@@ -68,7 +74,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 0.5M LAND RECLAMATION",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 1.15 LAND RECLAMATION
@@ -76,7 +82,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 1.15M LAND RECLAMATION",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 2 Land Reclamation
@@ -84,7 +90,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 2M Land Reclamation",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION
   },
   // R1 1A / BUILD / 0.5 SEAWALL
@@ -92,7 +98,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 0.5M SEAWALL",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL
   },
   // R1 1A / BUILD / 1.15 SEA WALL
@@ -100,7 +106,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 1.15M SEA WALL",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL
   },
   // R1 1A / BUILD / 2 SEA WALL
@@ -108,7 +114,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD / 2M SEA WALL",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL
   },
 
@@ -117,14 +123,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 1.15M",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL
   },
   [ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 2M",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL
   },
 
@@ -132,7 +138,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1A / BUILD PATH",
-    subSector: "1A",
+    subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH
   },
 
@@ -143,14 +149,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD PLANT MANGROVES",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES
   },
   [ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD BOARDWALK",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK
   },
 
@@ -159,7 +165,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 0.5M LAND RECLAMATION",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 1.15 LAND RECLAMATION
@@ -167,7 +173,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 1.15M LAND RECLAMATION",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 2 LAND RECLAMATION
@@ -175,7 +181,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 2M LAND RECLAMATION",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION
   },
   // R1 1B / BUILD / 0.5 SEAWALL
@@ -183,7 +189,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 0.5M SEAWALL",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL
   },
   // R1 1B / BUILD / 1.15 SEA WALL
@@ -191,7 +197,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 1.15M SEA WALL",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL
   },
   // R1 1B / BUILD / 2 SEA WALL
@@ -199,7 +205,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD / 2M SEA WALL",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL
   },
   
@@ -208,21 +214,21 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 1.15M",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15
   },
   [ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 2M",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2
   },
   [ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 1B / BUILD PATH",
-    subSector: "1B",
+    subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH
   },
 
@@ -232,14 +238,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD PLANT MANGROVES",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_PLANT_MANGROVES
   },
   [ActivityTypeEnum.R1_2A_UPGRADE_MANGROVES_BOARDWALK]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / UPGRADE MANGROVES BOARDWALK",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_UPGRADE_MANGROVES_BOARDWALK
   },
   // R1 2A / BUILD / 0.5 STORM SURGE BARRIER
@@ -247,7 +253,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD / 0.5M COASTAL PROTECTION BARRIER",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER
   },
   // // R1 2A / BUILD / 1.15 STORM SURGE BARRIER
@@ -255,7 +261,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   //   state: [],
   //   events: [SplineEventName.MOUSEUP],
   //   buttonValue: "R1 2A / BUILD / 1.15M STORM SURGE BARRIER",
-  // subSector: "2A",
+  // subSector: SubSectorEnum.TWO_A,
   //   activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_STORM_SURGE_BARRIER
   // },
   // R1 2A / BUILD / 2 STORM SURGE BARRIER
@@ -263,7 +269,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD / 2M COASTAL PROTECTION BARRIER",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_2_STORM_SURGE_BARRIER
   },
   // R1 2A / BUILD / 0.5 SEAWALL
@@ -271,7 +277,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD / 0.5M SEAWALL",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL
   },
   // R1 2A / BUILD / 1.15 SEA WALL
@@ -279,7 +285,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD / 1.15M SEA WALL",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL
   },
   // R1 2A / BUILD / 2 SEA WALL
@@ -287,14 +293,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / BUILD / 2M SEA WALL",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL
   },
   [ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2A / UPGRADE SEAWALL (WALK) PATH",
-    subSector: "2A",
+    subSector: SubSectorEnum.TWO_A,
     activityType: ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH
   },
 
@@ -305,14 +311,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD PLANT MANGROVES",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_PLANT_MANGROVES
   },
   [ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / UPGRADE MANGROVES BOARDWALK",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK
   },
   // R1 2B / BUILD / 0.5 STORM SURGE BARRIER
@@ -320,7 +326,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD / 0.5M STORM SURGE BARRIER",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_STORM_SURGE_BARRIER
   },
   // // R1 2B / BUILD / 1.15 STORM SURGE BARRIER
@@ -336,7 +342,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD / 2M STORM SURGE BARRIER",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_2_STORM_SURGE_BARRIER
   },
   // R1 2B / BUILD / 0.5 SEAWALL
@@ -344,7 +350,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD / 0.5M SEAWALL",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_0_5_SEAWALL
   },
   // R1 2B / BUILD / 1.15 SEA WALL
@@ -352,7 +358,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD / 1.15M SEA WALL",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_SEA_WALL
   },
   // R1 2B / BUILD / 2 SEA WALL
@@ -360,14 +366,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / BUILD / 2M SEA WALL",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_BUILD_2_SEA_WALL
   },
   [ActivityTypeEnum.R1_2B_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 2B / UPGRADE SEAWALL (WALK) PATH",
-    subSector: "2B",
+    subSector: SubSectorEnum.TWO_B,
     activityType: ActivityTypeEnum.R1_2B_UPGRADE_SEAWALL_WALK_PATH
   },
 
@@ -377,7 +383,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3A / BUILD ARTIFICIAL REEF",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     activityType: ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF
   },
   // R1 3A / BUILD / 0.5 SEAWALL
@@ -385,7 +391,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3A / BUILD / 0.5M SEAWALL",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL
   },
   // R1 3A / BUILD / 1.15 SEA WALL
@@ -393,7 +399,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3A / BUILD / 1.15M SEA WALL",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL
   },
   // R1 3A / BUILD / 2 SEA WALL
@@ -401,55 +407,55 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3A / BUILD / 2M SEA WALL",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     activityType: ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL
   },
   [ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3A / BUILD / 0.5M Hybrid Measure",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3A / BUILD / 1.15M Hybrid Measure",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3A / BUILD / 2M Hybrid Measure",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT]: {
     state: [],
     buttonValue: "R1 3A / UPGRADE / 1.15 ARTIFICIAL REEF SLOPING REVETMENT",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT
   },
   [ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT]: {
     state: [],
     buttonValue: "R1 3A / UPGRADE / 2 ARTIFICIAL REEF SLOPING REVETMENT",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT
   },
   [ActivityTypeEnum.R1_3A_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
     buttonValue: "R1 3A / UPGRADE SEAWALL (WALK) PATH",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_UPGRADE_SEAWALL_WALK_PATH
   },
   [ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH]: {
     state: [],
     buttonValue: "R1 3A / UPGRADE HYBRID MEASURE (WALK) PATH",
-    subSector: "3A",
+    subSector: SubSectorEnum.THREE_A,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH
   },
@@ -461,7 +467,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3B / BUILD ARTIFICIAL REEF",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     activityType: ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF
   },
   // R1 3B / BUILD / 0.5 SEAWALL
@@ -469,7 +475,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3B / BUILD / 0.5M SEAWALL",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL
   },
   // R1 3B / BUILD / 1.15 SEA WALL
@@ -477,7 +483,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3B / BUILD / 1.15M SEA WALL",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_SEA_WALL
   },
   // R1 3B / BUILD / 2 SEA WALL
@@ -485,55 +491,55 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     state: [],
     events: [SplineEventName.MOUSEUP],
     buttonValue: "R1 3B / BUILD / 2M SEA WALL",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL
   },
   [ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3B / BUILD / 0.5M Hybrid Measure",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3B / BUILD / 1.15M Hybrid Measure",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE]: {
     state: [],
     buttonValue: "R1 3B / BUILD / 2M Hybrid Measure",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE
   },
   [ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT]: {
     state: [],
     buttonValue: "R1 3B / UPGRADE / 1.15 ARTIFICIAL REEF SLOPING REVETMENT",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT
   },
   [ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT]: {
     state: [],
     buttonValue: "R1 3B / UPGRADE / 2 ARTIFICIAL REEF SLOPING REVETMENT",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT
   },
   [ActivityTypeEnum.R1_3B_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
     buttonValue: "R1 3B / UPGRADE SEAWALL (WALK) PATH",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_UPGRADE_SEAWALL_WALK_PATH
   },
   [ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH]: {
     state: [],
     buttonValue: "R1 3B / UPGRADE HYBRID MEASURE (WALK) PATH",
-    subSector: "3B",
+    subSector: SubSectorEnum.THREE_B,
     events: [SplineEventName.MOUSEUP],
     activityType: ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH
   },
@@ -672,7 +678,7 @@ export const lobbyStateDefaultValue = {
   [LobbyStateEnum.READY_PLAYERS]: {}
 } as LobbyStateType
 
-export const SPLINE_URL = "https://prod.spline.design/fIhV8lAzMkLzlKnk/scene.splinecode?v=1.2";
+export const SPLINE_URL = "https://prod.spline.design/fIhV8lAzMkLzlKnk/scene.splinecode?v=1.7";
 // export const SECTOR_ONE_CUT_SCENE = "https://prod.spline.design/xavPWWNp0hXnmIpL/scene.splinecode";
 
 export const SPLINE_URL_CUT_SCENE_R1_1A_0 = "https://prod.spline.design/vdAXmxfy4PzSNkGr/scene.splinecode";
@@ -2308,4 +2314,15 @@ export const sceneSectorConfigurations: ScenarioConfigurationType = {
   ...roundOneScenarioConfiguration,
   ...roundTwoScenarioConfiguration,
   ...roundThreeScenarioConfiguration
+}
+
+export const demolishConfigData: {
+  [key in SubSectorEnum]: string[];
+} = {
+  [SubSectorEnum.ONE_A]: Object.values(ActivityDemolishTypeSector1AEnum),
+  [SubSectorEnum.ONE_B]: Object.values(ActivityDemolishTypeSector1BEnum),
+  [SubSectorEnum.TWO_A]: Object.values(ActivityDemolishTypeSector2AEnum),
+  [SubSectorEnum.TWO_B]: Object.values(ActivityDemolishTypeSector2BEnum),
+  [SubSectorEnum.THREE_A]: Object.values(ActivityDemolishTypeSector3AEnum),
+  [SubSectorEnum.THREE_B]: Object.values(ActivityDemolishTypeSector3BEnum),
 }

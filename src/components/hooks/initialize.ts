@@ -63,8 +63,8 @@ const splineAppCutScenesRefs = Object.fromEntries(
       gameRoomServiceRef.current.onActivityChange((updatedActivities) => {
         setActivities((oldState) => {
           if (oldState !== null) {
-            const oldIds = new Set(oldState?.map(a => a.action));
-            const newActivities = updatedActivities.filter((a) => !oldIds.has(a.action));
+            const oldIds = new Set(oldState?.map(a => a.id));
+            const newActivities = updatedActivities.filter((a) => !oldIds.has(a.id));
             setNewActivities(newActivities);
           }
           return updatedActivities;

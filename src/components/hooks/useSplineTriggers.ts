@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Application, SplineEventName } from "@splinetool/runtime";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { SplineTriggersConfig } from "@/lib/constants";
-import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus } from "@/lib/enums";
+import { demolishConfigData, SplineTriggersConfig } from "@/lib/constants";
+import { ActivityDemolishTypeSector1BEnum, ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, SubSectorEnum } from "@/lib/enums";
 import { isGameOnGoing } from "@/lib/utils";
 
 type UseSplineTriggersProps = {
@@ -24,6 +24,7 @@ export function useSplineTriggers({
   lobbyState,
   setTriggerProgress,
 }: UseSplineTriggersProps) {
+
   // Run triggers after Spline is loaded and activities are available (with progress)
   useEffect(() => {
     const runTriggers = async () => {
@@ -31,7 +32,7 @@ export function useSplineTriggers({
 
       // Calculate total steps (max of state/events for each activity)
       let totalSteps = 0;
-      activities.forEach(act => {
+      activities.reverse().forEach(act => {
         const config = SplineTriggersConfig[act.action];
         if (config) {
           totalSteps += Math.max(config.state.length, config.events.length);
@@ -40,19 +41,20 @@ export function useSplineTriggers({
 
       let executed = 0;
 
-      console.log(totalSteps);
-
       for (const act of activities) {
         const config = SplineTriggersConfig[act.action as ActivityTypeEnum];
         if (!config) continue;
-        const obj = splineAppRef.current.findObjectByName?.(act.action.replace(/_/g, " ")); // Adjust name if needed
 
+        let actionName = act.action === ActivityTypeEnum.DEMOLISH ? `${act.subSector?.toLowerCase()} demolish` : act.action
+
+        const obj = splineAppRef.current.findObjectByName?.(actionName); // Adjust name if needed
+      
         for (let i = 0; i < Math.max(config.state.length, config.events.length); i++) {
           try {
             if (!obj) continue;
             if (config.state[i]) obj.state = config.state[i];
             if (config.events[i]) obj.emitEvent?.(config.events[i] as SplineEventName);
-            obj.visible = false;
+
           } catch(ex) {
             console.log("SOMETHING WENT WRONG WITH TRIGGER: ", act, config.state[i], config.state[i]);
           }
@@ -75,16 +77,20 @@ export function useSplineTriggers({
     if (!isLoaded || !splineAppRef.current) return;
 
     const runTriggers = async () => {
-      for (const act of newActivities) {
+
+      console.log(newActivities, 'hoy makalagot');
+      for (const act of newActivities.reverse()) {
         const config = SplineTriggersConfig[act.action as ActivityTypeEnum];
         if (!config) continue;
-        const obj = splineAppRef.current?.findObjectByName?.(act.action); // Adjust name if needed
+        let actionName = act.action === ActivityTypeEnum.DEMOLISH ? `${act.subSector?.toLowerCase()} demolish` : act.action
+
+        const obj = splineAppRef.current?.findObjectByName?.(actionName); // Adjust name if needed
 
         for (let i = 0; i < Math.max(config.state.length, config.events.length); i++) {
           if (!obj) continue;
           if (config.state[i]) obj.state = config.state[i];
           if (config.events[i]) obj.emitEvent?.(config.events[i] as SplineEventName);
-          obj.visible = false;
+          // obj.visible = false;
         }
       }
     };
@@ -93,19 +99,19 @@ export function useSplineTriggers({
     // eslint-disable-next-line
   }, [isLoaded, newActivities, splineAppRef]);
 
-  useEffect(() => {
-    if (isGameOnGoing(lobbyState.gameLobbyStatus)) {
-      const scene1 = splineAppRef.current?.findObjectByName('Title + Instructions + Play + Screen');
-      const scene2 = splineAppRef.current?.findObjectByName('Overworld');
+  // useEffect(() => {
+  //   if (isGameOnGoing(lobbyState.gameLobbyStatus)) {
+  //     const scene1 = splineAppRef.current?.findObjectByName('Title + Instructions + Play + Screen');
+  //     const scene2 = splineAppRef.current?.findObjectByName('Overworld');
   
     
-      if (scene1) {
-        scene1.visible = false;
-      }
+  //     if (scene1) {
+  //       scene1.visible = false;
+  //     }
     
-      if (scene2) {
-        scene2.visible = true;
-      }
-    }
-  }, [lobbyState.gameLobbyStatus]);
+  //     if (scene2) {
+  //       scene2.visible = true;
+  //     }
+  //   }
+  // }, [lobbyState.gameLobbyStatus]);
 }

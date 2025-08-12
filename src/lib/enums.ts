@@ -62,6 +62,14 @@ export enum CutScenesEnum {
   R2_3B_2 = "R2-3B-2",
 }
 
+export enum SubSectorEnum {
+  "ONE_A" = "1A",
+  "ONE_B" = "1B",
+  "TWO_A" = "2A",
+  "TWO_B" = "2B",
+  "THREE_A" = "3A",
+  "THREE_B" = "3B",
+} 
 
 export enum ActivityTypeEnum {
   START_GAME = "play btn",
@@ -250,6 +258,59 @@ export enum ActivityTypeEnum {
   R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH = "r1 3b hb ug wp",
   
   DEMOLISH = "demolish",
+}
+
+export enum ActivityDemolishTypeSector1AEnum {
+  LAND_RECLAMATION_1A = "1A land reclamation",
+  SEAWALL_1A = "seawall 1A",
+  MG_1A = "MG 1a",
+  SW_UG_WP_1A = "sw ug wp 1A",
+  LR_SW_1A = "lr sw 1a",
+  BW_UG_1A = "1a bw ug",
+}
+
+export enum ActivityDemolishTypeSector1BEnum {
+  MG_1B = "MG 1b",
+  BW_UG_1B = "1b bw ug",
+  LAND_RECLAMATION_1B = "1B land reclamation",
+  SEAWALL_1B = "seawall 1B",
+  SW_UG_WP_1B = "sw ug wp 1B",
+  LR_SW_1B = "lr sw 1b",
+}
+
+export enum ActivityDemolishTypeSector2AEnum {
+  SEAWALL_2A = "seawall 2A",
+  MG_2A = "MG 2a",
+  CPB_2A = "cpb 2A",
+  SW_UG_WP_2A = "sw ug wp 2A",
+  BW_UG_2A = "2a bw ug",
+}
+
+export enum ActivityDemolishTypeSector2BEnum {
+  SEAWALL_2B = "seawall 2B",
+  MG_2B = "MG 2b",
+  CPB_2B = "cpb 2B",
+  SW_UG_WP_2B = "sw ug wp 2B",
+  BW_UG_2B = "2b bw ug",
+}
+
+export enum ActivityDemolishTypeSector3AEnum {
+  HB_3A = "HB 3A",
+  SEAWALL_3A = "seawall 3A",
+  AR_3A = "AR-3A",
+  SW_UG_WP_3A = "sw ug wp 3A",
+  AR_UG_SR_3A = "ar ug sr 3a",
+  HB_UG_WP_3A = "hb ug wp 3a",
+  
+}
+
+export enum ActivityDemolishTypeSector3BEnum {
+  HB_3B = "HB 3B",
+  SEAWALL_3B = "seawall 3B",
+  AR_3B = "AR-3B",
+  SW_UG_WP_3B = "sw ug wp 3B",
+  AR_UG_SR_3B = "ar ug sr 3b",
+  HB_UG_WP_3B = "hb ug wp 3b",
 }
 
 export enum GameEnum {
