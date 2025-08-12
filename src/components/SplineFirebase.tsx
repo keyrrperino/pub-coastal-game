@@ -18,6 +18,7 @@ import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
 import { usePreparingProgress } from "./hooks/usePreparingProgress";
 import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
+import { useSectorScores } from "./hooks/useSectorScores";
 
 interface SplineFirebaseProps {
 }
@@ -48,7 +49,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState(false); // NEW
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [countdown, setCountdown]= useState(5);
-  const [coinsLeft, setCoinsLeft] = useState(10); // 1. Add new state
+  const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
 
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.RESTARTING) {
@@ -67,11 +68,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
     setCoinsLeft(coinsLeft);
 
-    const sector1 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_ONE);
-    const sector2 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_TWO);
-    const sector3 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_THREE);
-
-    console.log(sector1, sector2, sector3);
+    useSectorScores({
+      activities: activities ?? [],
+      lobbyState,
+      setTotalScore,
+      setCoinsLeft,
+    });
 
   }, [activities, lobbyState.gameLobbyStatus, lobbyState.round, lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND], lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND]]);
 
@@ -144,11 +146,10 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       // Proceed to next round
       if (gameRoomServiceRef.current) {
         gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-            [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-            [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
-          }
+          ...lobbyState,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: ((lobbyState.round ?? 1) + 1) as RoundType
         });
       }
       return;
@@ -218,7 +219,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
             Overall Score:
           </h1>
           <h2 className="text-right">
-            {totalScore}/10000 PTS
+            {totalScore} PTS
           </h2>
         </div>
       </div>
@@ -281,7 +282,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {showScoreBreakdownModal && (
         <ScoreBreakdownModal
           isOpen={true}
-          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, lobbyState.round ?? 1)}
+          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect?.[lobbyState.round ?? 1] ?? 0, lobbyState.round ?? 1)}
           roundNumber={(lobbyState.round ?? 1) as 1|2|3}
         />
       )}

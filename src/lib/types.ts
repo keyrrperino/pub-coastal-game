@@ -42,6 +42,8 @@ export type SectorScore = {
   sectorB: SubSectorScore;
   totalScoreToDeduct: number;
   totalCoinsToDeduct: number;
+  partialTotalScoreToDeduct: number;
+  totalScoreToDeductInRound?: number;
 };
 
 export type OverallScoresTypes = {
@@ -92,11 +94,11 @@ export type LobbyStateType = {
   [LobbyStateEnum.WATER_LEVEL_KEY]: number;
   [LobbyStateEnum.ROUND_TIMER]: number;
   [LobbyStateEnum.IS_DONE_SHOWING_INSTRUCTIONS]: boolean;
-  [LobbyStateEnum.RANDOMIZE_EFFECT]: number;
+  [LobbyStateEnum.RANDOMIZE_EFFECT]: {[key in RoundType]: number};
   [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus;
   [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: number;
   [LobbyStateEnum.COUNTDOWN_START_TIME]: number;
-  [LobbyStateEnum.ROUND]: number;
+  [LobbyStateEnum.ROUND]: RoundType;
   [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: number;
   [LobbyStateEnum.COINS_TOTAL_PER_ROUND]: number;
   [LobbyStateEnum.COINS_SPENT_BY_ROUND]: Record<number, number>;
