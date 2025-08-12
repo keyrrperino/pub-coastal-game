@@ -251,5 +251,5 @@ export function useSectorScores({
       setTotalPerformance(performance);
     }
 
-  }, [activities, lobbyState, setSector1Performance, setSector2Performance, setSector3Performance, setTotalPerformance]);
+  }, [activities, lobbyState]);
 }

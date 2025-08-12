@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTimer } from '@/components/hooks/useTimer';
-import EndingScreen1 from '@/components/EndingScreen1';
-import EndingScreen2 from '@/components/EndingScreen2';
-import EndingScreen3 from '@/components/EndingScreen3';
+import PlayerEndingScreen, { PlayerEndingType } from '@/components/PlayerEndingScreen';
 import { SectorPerformance } from '@/components/hooks/useSectorScores';
 
 interface EndingModalProps {
@@ -44,48 +42,31 @@ const EndingModal: React.FC<EndingModalProps> = ({
 
   console.log('🟢 ENDING MODAL: Rendering ending screen for performance:', totalPerformance);
 
-  // Render appropriate ending screen based on performance
-  switch (totalPerformance) {
-    case 'good':
-      console.log('🟢 ENDING MODAL: Rendering EndingScreen1 for good performance');
-      return (
-        <EndingScreen1 
-          finalScore={finalScore}
-          onRestart={() => {}}
-          onMainMenu={() => {}}
-        />
-      );
-      
-    case 'okay':
-      console.log('🟢 ENDING MODAL: Rendering EndingScreen2 for okay performance');
-      return (
-        <EndingScreen2 
-          finalScore={finalScore}
-          onRestart={() => {}}
-          onMainMenu={() => {}}
-        />
-      );
-      
-    case 'bad':
-      console.log('🟢 ENDING MODAL: Rendering EndingScreen3 for bad performance');
-      return (
-        <EndingScreen3 
-          finalScore={finalScore}
-          onRestart={() => {}}
-          onMainMenu={() => {}}
-        />
-      );
-      
-    default:
-      console.log('🟢 ENDING MODAL: Rendering default EndingScreen2 for unknown performance');
-      return (
-        <EndingScreen2 
-          finalScore={finalScore}
-          onRestart={() => {}}
-          onMainMenu={() => {}}
-        />
-      );
-  }
+  // Map performance to PlayerEndingType
+  const getEndingType = (performance: SectorPerformance): PlayerEndingType => {
+    switch (performance) {
+      case 'good':
+        return 'success';
+      case 'okay':
+        return 'moderate';
+      case 'bad':
+        return 'failure';
+      default:
+        return 'moderate';
+    }
+  };
+
+  const endingType = getEndingType(totalPerformance);
+  console.log('🟢 ENDING MODAL: Rendering PlayerEndingScreen with type:', endingType, 'for performance:', totalPerformance);
+
+  return (
+    <div className="fixed inset-0 z-50 w-screen h-screen">
+      <PlayerEndingScreen 
+        endingType={endingType}
+        finalScore={finalScore}
+      />
+    </div>
+  );
 };
 
 export default EndingModal;

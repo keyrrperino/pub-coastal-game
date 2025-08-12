@@ -633,28 +633,31 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left and Timer right */}
-          <div className="w-full flex flex-row items-start justify-between">
-            {/* Budget display left */}
-            <div className="flex-1 flex items-start justify-start">
-              <BudgetDisplay totalCoins={totalCoins} />
+          {/* Top bar: Budget left and Timer right - hide during ending phase */}
+          {currentPhase !== GameLobbyStatus.ENDING && (
+            <div className="w-full flex flex-row items-start justify-between">
+              {/* Budget display left */}
+              <div className="flex-1 flex items-start justify-start">
+                <BudgetDisplay totalCoins={totalCoins} />
+              </div>
+              {/* Timer right */}
+              <div className="flex-1 flex items-start justify-end">
+                <Timer 
+                  key={`${currentRound}-${currentPhase}`}
+                  duration={showCutscene ? 0 : phaseDuration}
+                  onTimeUp={handleTimeUp} 
+                  isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
+                  syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                />
+              </div>
             </div>
-            {/* Timer right */}
-            <div className="flex-1 flex items-start justify-end">
-              <Timer 
-                key={`${currentRound}-${currentPhase}`}
-                duration={showCutscene ? 0 : phaseDuration}
-                onTimeUp={handleTimeUp} 
-                isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
-                syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-              />
-            </div>
-          </div>
+          )}
 
-          {/* Start Screen - shown when not in gameplay, cutscenes, or score breakdown */}
+          {/* Start Screen - shown when not in gameplay, cutscenes, score breakdown, or ending */}
           {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
            currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
-           currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
+           currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN &&
+           currentPhase !== GameLobbyStatus.ENDING && (
             <>
               {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
                 <div className="absolute inset-0 z-20">
