@@ -5,7 +5,9 @@ interface TutorialScreen3Props {
   onContinue: () => void;
 }
 
-export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
+export default function TutorialScreen3({
+  onContinue,
+}: TutorialScreen3Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -29,10 +31,14 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center">
               <p className="text-white text-2xl font-bold">
-                IN EACH SECTOR, YOU HAVE A SELECTION OF THREE COASTAL PROTECTION MEASURES TO CHOOSE FROM: FROM PLANTING MANGROVES, TO BUILDING A SEAWALL OR A COASTAL BARRIER. ALL HAVE COSTS TIED TO THEM.
+                IN EACH SECTOR, YOU HAVE A SELECTION OF THREE COASTAL
+                PROTECTION MEASURES TO CHOOSE FROM: FROM PLANTING
+                MANGROVES, TO BUILDING A SEAWALL OR A COASTAL BARRIER.
+                ALL HAVE COSTS TIED TO THEM.
               </p>
               <p className="text-white text-2xl font-bold">
-                REMEMBER, EACH HAS ITS OWN STRENGTHS, WEAKNESSES, AND COSTS – TAKE A MOMENT TO EXPLORE YOUR OPTIONS.
+                REMEMBER, EACH HAS ITS OWN STRENGTHS, WEAKNESSES, AND
+                COSTS – TAKE A MOMENT TO EXPLORE YOUR OPTIONS.
               </p>
             </div>
 
@@ -50,17 +56,39 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
                         className="object-cover"
                       />
                     </div>
-                    <span className="text-white text-xl font-bold">MANGROVES</span>
+                    <span className="text-white text-xl font-bold">
+                      MANGROVES
+                    </span>
                   </div>
-                  
+
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                      <span className="text-black text-sm font-bold">PLANT</span>
+                      <span className="text-black text-sm font-bold">
+                        PLANT
+                      </span>
                     </div>
                     <div className="flex gap-1">
-                      <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                      <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                      <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                      <Image
+                        src="/assets/coin-icon.png"
+                        alt="Coin"
+                        width={12}
+                        height={12}
+                        className="object-contain"
+                      />
+                      <Image
+                        src="/assets/coin-icon.png"
+                        alt="Coin"
+                        width={12}
+                        height={12}
+                        className="object-contain"
+                      />
+                      <Image
+                        src="/assets/coin-icon.png"
+                        alt="Coin"
+                        width={12}
+                        height={12}
+                        className="object-contain"
+                      />
                     </div>
                   </div>
                 </div>
@@ -78,35 +106,79 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
                         className="object-cover"
                       />
                     </div>
-                    <span className="text-white text-xl font-bold">SEAWALL</span>
+                    <span className="text-white text-xl font-bold">
+                      SEAWALL
+                    </span>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">0.5M</span>
+                        <span className="text-black text-sm font-bold">
+                          0.5M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">1.15M</span>
+                        <span className="text-black text-sm font-bold">
+                          1.15M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">2M</span>
+                        <span className="text-black text-sm font-bold">
+                          2M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                   </div>
@@ -125,35 +197,79 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
                         className="object-cover"
                       />
                     </div>
-                    <span className="text-white text-xl font-bold">LAND RECLAMATION</span>
+                    <span className="text-white text-xl font-bold">
+                      LAND RECLAMATION
+                    </span>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">0.5M</span>
+                        <span className="text-black text-sm font-bold">
+                          0.5M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">1.15M</span>
+                        <span className="text-black text-sm font-bold">
+                          1.15M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div className="w-[76px] h-[76px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-sm font-bold">2M</span>
+                        <span className="text-black text-sm font-bold">
+                          2M
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={12} height={12} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={12}
+                          height={12}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                   </div>
@@ -164,13 +280,74 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
             {/* Bottom Section - Game Instructions and Countdown */}
             <div className="flex flex-col items-center gap-6 text-center">
               <p className="text-white text-2xl font-bold">
-                DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE WITH YOUR TEAMMATES.
+                DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR
+                THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE
+                WITH YOUR TEAMMATES.
               </p>
-              
-              <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8">
-                3... 2... 1... GO!
+
+              <h2 className="text-white text-7xl font-bold text-center leading-tight tracking-wide mt-8 relative h-20">
+                <span
+                  className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                  style={{
+                    animation:
+                      'countdownShow 1s ease-in-out 0s forwards, countdownHide 1s ease-in-out 1s forwards',
+                  }}
+                >
+                  3
+                </span>
+                <span
+                  className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                  style={{
+                    animation:
+                      'countdownShow 1s ease-in-out 2s forwards, countdownHide 1s ease-in-out 3s forwards',
+                  }}
+                >
+                  2
+                </span>
+                <span
+                  className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                  style={{
+                    animation:
+                      'countdownShow 1s ease-in-out 4s forwards, countdownHide 1s ease-in-out 5s forwards',
+                  }}
+                >
+                  1
+                </span>
+                <span
+                  className="inline-block absolute left-1/2 transform -translate-x-1/2 opacity-0 text-center"
+                  style={{
+                    animation:
+                      'countdownShow 1s ease-in-out 6s forwards',
+                  }}
+                >
+                  GO!
+                </span>
               </h2>
-              
+
+              <style jsx>{`
+                @keyframes countdownShow {
+                  from {
+                    opacity: 0;
+                    transform: scale(0.8);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: scale(1);
+                  }
+                }
+
+                @keyframes countdownHide {
+                  from {
+                    opacity: 1;
+                    transform: scale(1);
+                  }
+                  to {
+                    opacity: 0;
+                    transform: scale(0.8);
+                  }
+                }
+              `}</style>
+
               <p className="text-white text-xl text-center font-bold">
                 THE TIDES ARE RISING. START PLANNING!
               </p>
@@ -180,4 +357,5 @@ export default function TutorialScreen3({ onContinue }: TutorialScreen3Props) {
       </div>
     </div>
   );
-} 
+}
+
