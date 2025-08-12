@@ -277,7 +277,9 @@ export enum LobbyStateEnum {
   COINS_TOTAL_PER_ROUND = "coinsTotalPerRound",
   COINS_SPENT_BY_ROUND = "coinsSpentByRound",
   PHASE_START_TIME = "phaseStartTime",
-  PHASE_DURATION = "phaseDuration"
+  PHASE_DURATION = "phaseDuration",
+  // Player readiness tracking
+  READY_PLAYERS = "readyPlayers"
 }
 
 export enum GameLobbyStatus {

@@ -103,7 +103,7 @@ export type LobbyStateType = {
   [LobbyStateEnum.PHASE_START_TIME]: number;
   [LobbyStateEnum.PHASE_DURATION]: number;
   // Player readiness tracking
-  readyPlayers: Record<string, boolean>;
+  [LobbyStateEnum.READY_PLAYERS]: Record<string, boolean>;
 }
 
 
