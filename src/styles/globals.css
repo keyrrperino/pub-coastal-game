@@ -3,6 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Novecento Font Family */
+@font-face {
+  font-family: 'Novecento Bold';
+  src: url('/games/pub-coastal-spline/fonts/novecento-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Novecento';
+  src: url('/games/pub-coastal-spline/fonts/novecento.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
@@ -121,8 +138,8 @@
 
 @font-face {
   font-family: 'Novecento';
-  src: url('/games/pub-coastal-spline/fonts/novecento.woff2') format('truetype');
-  font-weight: 700;
+  src: url('/games/pub-coastal-spline/fonts/novecento.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -135,12 +152,24 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Novecento Condensed Bold';
+  src: url('/games/pub-coastal-spline/fonts/Novecento-cond-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   font-family: 'Novecento', sans-serif;
 }
 
 h1 {
   font-family: 'Novecento Bold', sans-serif;
+}
+
+.font-condensed {
+  font-family: 'Novecento Condensed Bold', sans-serif;
 }
 
 .coastal-bounce {
