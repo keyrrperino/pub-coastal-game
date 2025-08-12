@@ -6,6 +6,7 @@ import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
+import { SplineTriggersConfig } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
@@ -110,7 +111,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
 
-  const handleMeasureClick = useCallback((activityType: ActivityTypeEnum, coinCost: number) => {
+  const handleMeasureClick = useCallback((activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
     if (totalCoins >= coinCost) {
       // Trigger Spline action
       triggerSingleBuild(activityType as any);
@@ -128,7 +129,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       setActivityLog(prev => [...prev, newActivity]);
       
       // Log activity to game room using public method (this will sync with Firebase)
-      gameRoomService.addElement(activityType, `${activityType}`, currentRound, true, "1A");
+      const triggerConfig = SplineTriggersConfig[activityType];
+      const subSectorFromConfig = triggerConfig?.subSector || sectorId;
+      gameRoomService.addElement(activityType, `${activityType}`, currentRound, true, subSectorFromConfig as any);
       
       // Update coins
       setTotalCoins(prev => prev - coinCost);
@@ -138,7 +141,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       console.log('Insufficient coins - showing modal');
       setShowInsufficientBudgetModal(true);
     }
-  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound, sector]);
+  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
 
   const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
     // Check if player has enough coins for demolish (costs 1 coin)
@@ -185,7 +188,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase
-    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound);
+    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound, false, sectorId as any);
     
     // Demolish costs 1 coin
     setTotalCoins(prev => prev - 1);
@@ -313,7 +316,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
               return {
                 title: currentActionState.config.displayName,
                 coinCount: currentActionState.config.cost,
-                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost) : undefined,
+                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost, sectorId) : undefined,
                 isSelected,
                 disabled,
                 status: currentActionState.status, // Pass the status for potential UI enhancements

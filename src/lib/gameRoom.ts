@@ -203,14 +203,14 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, isCpm: boolean = false, subSector: SubSectorType): Promise<void> {
+  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, isCpm: boolean = false, subSector?: SubSectorType): Promise<void> {
     if (!this.roomId) return;
 
     // Log activity
     await this.logActivity(activityType, ActivityValue, round, isCpm, subSector);
   }
 
-  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector: SubSectorType) {
+  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector?: SubSectorType) {
     if (!this.roomId) return;
 
     const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
@@ -225,7 +225,7 @@ export class GameRoomService {
       isCpm,
       isDemolished: activityType === ActivityTypeEnum.DEMOLISH,
       round: round ?? 1,
-      subSector: subSector ?? null,
+      subSector: subSector ?? undefined,
       timestamp: Date.now()
     };
 

@@ -326,7 +326,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   //   state: [],
   //   events: [SplineEventName.MOUSEUP],
   //   buttonValue: "R1 2B / BUILD / 1.15M STORM SURGE BARRIER",
-  subSector: "2B",
+  //   subSector: "2B",
   //   activityType: ActivityTypeEnum.R1_2B_BUILD_1_15_STORM_SURGE_BARRIER
   // },
   // R1 2B / BUILD / 2 STORM SURGE BARRIER
