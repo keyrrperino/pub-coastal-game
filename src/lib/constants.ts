@@ -657,7 +657,9 @@ export const lobbyStateDefaultValue = {  roundTimer: GAME_ROUND_TIMER,
   countdownStartTime: Date.now(),
   countdownPreparationStartTime: Date.now(),
   roundTimerPercentage: 1,
-  round: 1
+  round: 1,
+  coinsTotalPerRound: TOTAL_COINS_PER_ROUND,
+  coinsSpentByRound: {}
 } as LobbyStateType
 
 export const SPLINE_URL = "https://prod.spline.design/fIhV8lAzMkLzlKnk/scene.splinecode?v=1.2";

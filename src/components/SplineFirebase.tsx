@@ -59,18 +59,13 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   }, [lobbyState.gameLobbyStatus]);
 
   useEffect(() => {
-    // const round = !showGameOverModal ? (lobbyState.round ?? 1) : 4;
-    // const { totalScore } = calculateOverallScoreFromScenarioConfigControlled(activities ?? [], lobbyState.randomizeEffect, round);
-
-    // const score = OVERALL_SCORE_POINTS + totalScore;
-    // setTotalScore(score);
-
-    // const coinsData = calculateTotalCoinsPerRound(activities ?? [], lobbyState.randomizeEffect);
-
-    // setCoinsLeft(TOTAL_COINS_PER_ROUND - coinsData[lobbyState.round ?? 1].totalCoin);
-
-    // const data = getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, 1);
-
+    // Calculate coins left from shared lobby state
+    const coinsTotalPerRound = lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const coinsSpentByRound = lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentRound = lobbyState.round ?? 1;
+    const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
+    const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
+    setCoinsLeft(coinsLeft);
 
     const sector1 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_ONE);
     const sector2 = getSectorRoundScore(activities ?? [], lobbyState.randomizeEffect, (lobbyState.round ?? 1) as RoundType, UserSectorEnum.USER_SECTOR_TWO);
@@ -78,8 +73,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
     console.log(sector1, sector2, sector3);
 
-
-  }, [activities, lobbyState.gameLobbyStatus, lobbyState.round]);
+  }, [activities, lobbyState.gameLobbyStatus, lobbyState.round, lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND], lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND]]);
 
   useEffect(() => {
     if (triggerProgress >= 100) {

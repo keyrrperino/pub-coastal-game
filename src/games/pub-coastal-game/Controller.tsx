@@ -104,14 +104,17 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
 
     if (btn.activityType === ActivityTypeEnum.START_GAME) {
       // this will show a new scene with 5 second countdown
-      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, false);
+      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, 0, false);
       await gameRoomService.current.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
       gameRoomService.current
         ?.updateLobbyStateKeyValue(
           LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME, 
           Date.now());
     } else {
-      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, true, btn.subSector);
+      // For other actions, we need to get the cost from the scenario config
+      // Since we don't have direct access to cost here, we'll use 0 as a fallback
+      // In a real implementation, you'd want to pass the cost or look it up
+      await gameRoomService.current.addElement(btn.activityType, btn.buttonValue ?? '', lobbyState.round ?? 1, 0, true, btn.subSector);
     }
   }
 
@@ -136,12 +139,12 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
     }
   }
 
-  const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[], subSector: string, bgColor: string) => {
+const renderButtons = (buttonConfigSector: SplineTriggerConfigItem[], subSector: string, bgColor: string) => {
     const disabled = hasActivityForSubSector(activities ?? [], sectorKey, subSector, lobbyState.round ?? 1);
     return (
       buttonConfigSector.map((btn, idx) => {
         const newButtonValue = btn.buttonValue?.split("/").slice(1).join("");
-        const isButtonTriggered = normalizeActivities.actions[btn.activityType];
+        const isButtonTriggered = btn.activityType ? normalizeActivities.actions[btn.activityType] : undefined;
 
         return <button
           key={"mcp-" + idx}
@@ -159,7 +162,9 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
             )
           }
           onClick={() => {
-            onButtonClick(btn as SplineTriggerConfigItem)
+            if (btn.activityType) {
+              onButtonClick(btn as SplineTriggerConfigItem)
+            }
           }}
         >
           {newButtonValue}
@@ -213,7 +218,7 @@ export default function PubCoastalGameSplineControllerApp({ sector }: PubCoastal
             onClick={async () => {
               await gameRoomService.current?.addElement(
                 ActivityTypeEnum.DEMOLISH,
-                '', lobbyState.round ?? 1, true, subSector);
+                '', lobbyState.round ?? 1, 1, false, subSector);
             }}
           >
             DEMOLISH

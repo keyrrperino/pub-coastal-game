@@ -273,7 +273,9 @@ export enum LobbyStateEnum {
   COUNTDOWN_START_TIME = "countdownStartTime",
   RANDOMIZE_EFFECT = "randomizeEffect",
   ROUND = "round",
-  COUNTDOWN_PREPARATION_START_TIME = "countdownPreparationStartTime"
+  COUNTDOWN_PREPARATION_START_TIME = "countdownPreparationStartTime",
+  COINS_TOTAL_PER_ROUND = "coinsTotalPerRound",
+  COINS_SPENT_BY_ROUND = "coinsSpentByRound"
 }
 
 export enum GameLobbyStatus {

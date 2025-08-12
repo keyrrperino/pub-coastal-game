@@ -97,7 +97,9 @@ export type LobbyStateType = {
   [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: number;
   [LobbyStateEnum.COUNTDOWN_START_TIME]: number;
   [LobbyStateEnum.ROUND]: number;
-  [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: number
+  [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: number;
+  [LobbyStateEnum.COINS_TOTAL_PER_ROUND]: number;
+  [LobbyStateEnum.COINS_SPENT_BY_ROUND]: Record<number, number>;
 }
 
 

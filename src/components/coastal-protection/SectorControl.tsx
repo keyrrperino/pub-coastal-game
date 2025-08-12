@@ -4,7 +4,7 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
-import { ActivityTypeEnum } from '@/lib/enums';
+import { ActivityTypeEnum, LobbyStateEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { SplineTriggersConfig } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
@@ -43,14 +43,15 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`));
-  const [totalCoins, setTotalCoins] = useState(10);
+  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`, 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [currentRound, setCurrentRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
+  const [lobbyState, setLobbyState] = useState<any>(null);
+  const [totalCoins, setTotalCoins] = useState(10);
 
   // Debug logging for round state
   useEffect(() => {
@@ -77,7 +78,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     return buttonSets;
   }, []);
 
-  // Handle round changes - reset coins and capture round start state
+  // Handle round changes - capture round start state
   useEffect(() => {
     if (currentRound !== previousRound) {
       console.log(`Round changed from ${previousRound} to ${currentRound}`);
@@ -88,11 +89,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       // Calculate button sets for this round
       const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
       setRoundStartButtonSets(buttonSets);
-      
-      if (previousRound !== 1) {
-        // Reset coins to starting amount for new round
-        setTotalCoins(10);
-      }
     }
     setPreviousRound(currentRound);
   }, [currentRound, previousRound, activityLog, calculateButtonSetsForRound]);
@@ -111,46 +107,40 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
 
-  const handleMeasureClick = useCallback((activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
-    if (totalCoins >= coinCost) {
-      // Trigger Spline action
-      triggerSingleBuild(activityType as any);
-      
-      // Update local activity log immediately to prevent UI flicker
-      const newActivity: ActivityLogType = {
-        id: `temp-${Date.now()}`,
-        userId: `Player ${sector.slice(-1)}`,
-        userName: `Player ${sector.slice(-1)}`,
-        action: activityType,
-        value: `${activityType}`,
-        round: currentRound,
-        timestamp: Date.now()
-      };
-      setActivityLog(prev => [...prev, newActivity]);
-      
-      // Log activity to game room using public method (this will sync with Firebase)
-      const triggerConfig = SplineTriggersConfig[activityType];
-      const subSectorFromConfig = triggerConfig?.subSector || sectorId;
-      gameRoomService.addElement(activityType, `${activityType}`, currentRound, true, subSectorFromConfig as any);
-      
-      // Update coins
+  const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
+    // Trigger Spline action
+    triggerSingleBuild(activityType as any);
+    
+    // Update local activity log immediately to prevent UI flicker
+    const newActivity: ActivityLogType = {
+      id: `temp-${Date.now()}`,
+      userId: `Player ${sector.slice(-1)}`,
+      userName: `Player ${sector.slice(-1)}`,
+      action: activityType,
+      value: `${activityType}`,
+      round: currentRound,
+      timestamp: Date.now()
+    };
+    setActivityLog(prev => [...prev, newActivity]);
+    
+    // Log activity to game room using public method (this will sync with Firebase)
+    const triggerConfig = SplineTriggersConfig[activityType];
+    const subSectorFromConfig = triggerConfig?.subSector || sectorId;
+    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentRound, coinCost, true, subSectorFromConfig as any);
+    
+    if (result === 'ok') {
+      // Update coins on successful spend
       setTotalCoins(prev => prev - coinCost);
-      
       console.log(`Action triggered: ${activityType}, Cost: ${coinCost} coins`);
-    } else {
+    } else if (result === 'insufficient') {
       console.log('Insufficient coins - showing modal');
       setShowInsufficientBudgetModal(true);
+    } else {
+      console.log('Failed to add element:', result);
     }
-  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound]);
+  }, [triggerSingleBuild, gameRoomService, currentRound]);
 
-  const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
-    // Check if player has enough coins for demolish (costs 1 coin)
-    if (totalCoins < 1) {
-      console.log('Insufficient coins for demolish - showing modal');
-      setShowInsufficientBudgetModal(true);
-      return;
-    }
-
+  const handleDemolishClick = useCallback(async (sectorId: string, actionToDestroy: ActivityTypeEnum) => {
     // Update local activity log immediately to prevent UI flicker
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
@@ -187,14 +177,20 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     });
     setRoundStartActivityLog(newActivityLog);
     
-    // Log demolish action to Firebase
-    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound, false, sectorId as any);
+    // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound, 1, false, sectorId as any);
     
-    // Demolish costs 1 coin
-    setTotalCoins(prev => prev - 1);
-    
-    console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, totalCoins]);
+    if (result === 'ok') {
+      // Demolish costs 1 coin
+      setTotalCoins(prev => prev - 1);
+      console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
+    } else if (result === 'insufficient') {
+      console.log('Insufficient coins for demolish - showing modal');
+      setShowInsufficientBudgetModal(true);
+    } else {
+      console.log('Failed to demolish:', result);
+    }
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
@@ -205,8 +201,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   useEffect(() => {
     const initializeGameRoom = async () => {
       try {
-        await gameRoomService.createRoom(true);
-        await gameRoomService.joinRoom('default');
+        // Try to join the existing room first
+        const joined = await gameRoomService.joinRoom('default');
+        if (!joined) {
+          // If room doesn't exist, create it
+          await gameRoomService.createRoom(true);
+          await gameRoomService.joinRoom('default');
+        }
         
         // Listen to activity changes
         gameRoomService.onActivityChange((activities) => {
@@ -217,6 +218,18 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         gameRoomService.onRoundChange((round) => {
           console.log('Firebase round changed to:', round);
           setCurrentRound(round);
+        });
+
+        // Listen to lobby state changes for coin updates
+        gameRoomService.onLobbyStateChange((lobbyStateData) => {
+          setLobbyState(lobbyStateData);
+          // Update coins based on shared lobby state
+          const coinsTotalPerRound = lobbyStateData[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+          const coinsSpentByRound = lobbyStateData[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+          const currentRound = lobbyStateData[LobbyStateEnum.ROUND] ?? 1;
+          const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
+          const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
+          setTotalCoins(coinsLeft);
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
