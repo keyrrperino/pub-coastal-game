@@ -104,6 +104,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Game flow phase management
   useEffect(() => {
+    // Close insufficient budget modal when phase changes (user can no longer take actions)
+    if (showInsufficientBudgetModal && currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY) {
+      console.log('Closing insufficient budget modal due to phase change to:', currentPhase);
+      setShowInsufficientBudgetModal(false);
+    }
+    
     // Handle phase-based modal displays and timers
     switch (currentPhase) {
       case GameLobbyStatus.INTRODUCTION:
@@ -274,10 +280,38 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     console.log('lobbyState round:', lobbyState?.[LobbyStateEnum.ROUND]);
     console.log('Activity type:', activityType, 'Cost:', coinCost);
     
+    // Check if we have sufficient coins BEFORE doing anything
+    const currentCoinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const currentCoinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentCoinsSpentThisRound = currentCoinsSpentByRound[currentFirebaseRound] ?? 0;
+    const currentTotalCoins = currentCoinsTotalPerRound - currentCoinsSpentThisRound;
+    
+    if (currentTotalCoins < coinCost) {
+      console.log('Insufficient coins - showing modal without taking action');
+      setShowInsufficientBudgetModal(true);
+      return; // Exit early - don't update UI or Firebase
+    }
+    
+    // Only proceed if we have sufficient coins
     // Trigger Spline action
     triggerSingleBuild(activityType as any);
     
-    // Update local activity log immediately to prevent UI flicker
+    // Log activity to Firebase FIRST (this will check coins again transactionally)
+    const triggerConfig = SplineTriggersConfig[activityType];
+    const subSectorFromConfig = triggerConfig?.subSector || sectorId;
+    console.log('🔵 Calling addElement with round:', currentFirebaseRound);
+    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentFirebaseRound, coinCost, true, subSectorFromConfig as any);
+    
+    if (result === 'insufficient') {
+      console.log('Insufficient coins from Firebase transaction - showing modal');
+      setShowInsufficientBudgetModal(true);
+      return; // Don't update local UI if Firebase transaction failed
+    } else if (result !== 'ok') {
+      console.log('Failed to add element:', result);
+      return; // Don't update local UI if Firebase operation failed
+    }
+    
+    // Only update local UI if Firebase transaction succeeded
     const newActivity: ActivityLogType = {
       id: `temp-${Date.now()}`,
       userId: `Player ${sector.slice(-1)}`,
@@ -289,18 +323,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     };
     setActivityLog(prev => [...prev, newActivity]);
     
-    // Log activity to game room using public method (this will sync with Firebase)
-    const triggerConfig = SplineTriggersConfig[activityType];
-    const subSectorFromConfig = triggerConfig?.subSector || sectorId;
-    console.log('🔵 Calling addElement with round:', currentFirebaseRound);
-    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentFirebaseRound, coinCost, true, subSectorFromConfig as any);
-    
-    if (result === 'insufficient') {
-      console.log('Insufficient coins - showing modal');
-      setShowInsufficientBudgetModal(true);
-    } else if (result !== 'ok') {
-      console.log('Failed to add element:', result);
-    }
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [triggerSingleBuild, gameRoomService, currentRound, lobbyState, sector]);
 
@@ -308,7 +330,31 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
     const currentFirebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
     
-    // Update local activity log immediately to prevent UI flicker
+    // Check if we have sufficient coins BEFORE doing anything (demolish costs 1 coin)
+    const currentCoinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const currentCoinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentCoinsSpentThisRound = currentCoinsSpentByRound[currentFirebaseRound] ?? 0;
+    const currentTotalCoins = currentCoinsTotalPerRound - currentCoinsSpentThisRound;
+    
+    if (currentTotalCoins < 1) {
+      console.log('Insufficient coins for demolish - showing modal without taking action');
+      setShowInsufficientBudgetModal(true);
+      return; // Exit early - don't update UI or Firebase
+    }
+    
+    // Log demolish action to Firebase FIRST (this will check coins again transactionally)
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, false, sectorId as any);
+    
+    if (result === 'insufficient') {
+      console.log('Insufficient coins for demolish from Firebase transaction - showing modal');
+      setShowInsufficientBudgetModal(true);
+      return; // Don't update local UI if Firebase transaction failed
+    } else if (result !== 'ok') {
+      console.log('Failed to demolish:', result);
+      return; // Don't update local UI if Firebase operation failed
+    }
+    
+    // Only update local UI if Firebase transaction succeeded
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
       userId: `Player ${sector.slice(-1)}`,
@@ -344,15 +390,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     });
     setRoundStartActivityLog(newActivityLog);
     
-    // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
-    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, false, sectorId as any);
-    
-    if (result === 'insufficient') {
-      console.log('Insufficient coins for demolish - showing modal');
-      setShowInsufficientBudgetModal(true);
-    } else if (result !== 'ok') {
-      console.log('Failed to demolish:', result);
-    }
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, lobbyState]);
 
