@@ -128,7 +128,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       setActivityLog(prev => [...prev, newActivity]);
       
       // Log activity to game room using public method (this will sync with Firebase)
-      gameRoomService.addElement(activityType, `${activityType}`, currentRound);
+      gameRoomService.addElement(activityType, `${activityType}`, currentRound, true, "1A");
       
       // Update coins
       setTotalCoins(prev => prev - coinCost);
