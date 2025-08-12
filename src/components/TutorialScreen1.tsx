@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 interface TutorialScreen1Props {
-  onContinue: () => void;
+  onContinue?: () => void;
 }
 
 export default function TutorialScreen1({ onContinue }: TutorialScreen1Props) {

@@ -53,6 +53,14 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     lobbyState: LobbyStateEnum.IS_DONE_SHOWING_INSTRUCTIONS,
     lobbyStateValue: true,
   },
+  [ActivityTypeEnum.CHANGE_SCENE]: {
+    state: [],
+    events: [
+      SplineEventName.MOUSEUP,
+    ],
+    activityType: ActivityTypeEnum.CHANGE_SCENE,
+  },
+  
 
   // R1 1A / BUILD PLANT MANGROVES
   [ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]: {
