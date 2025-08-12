@@ -468,7 +468,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     await gameRoomService.addElement(btn.activityType!, btn.buttonValue ?? '', 0, 0, false, SubSectorEnum.ONE_A);
     
     // Then update the lobby status to start the game flow
-    gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
+    gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
   }, [gameRoomService, currentPhase]);
 
   const handleShowLeaderboard = useCallback(() => {

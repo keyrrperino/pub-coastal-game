@@ -16,18 +16,18 @@ export function useLobbyPreparation({ lobbyState, gameRoomServiceRef }: UseLobby
       const timer = setTimeout(() => {
         // Update the lobby status to STARTED in Firebase
         gameRoomServiceRef.current
-          ?.updateLobbyStateKeyValue(
-            LobbyStateEnum.GAME_LOBBY_STATUS, 
-            GameLobbyStatus.INTRODUCTION);
+          ?.updateLobbyState({
+            ...lobbyState,
+            ...{
+              [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.INTRODUCTION,
+              [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.INTRODUCTION,
+              [LobbyStateEnum.PHASE_START_TIME]: Date.now()
+            }
+          });
         
-        gameRoomServiceRef.current
-          ?.addElement(ActivityTypeEnum.DISPLAY_INSTRUCTION, "", 1, 0);
-        
-        gameRoomServiceRef.current
-          ?.updateLobbyStateKeyValue(
-            LobbyStateEnum.PHASE_DURATION, 
-            PHASE_DURATIONS.INTRODUCTION
-          );
+        // gameRoomServiceRef.current
+        //   ?.addElement(ActivityTypeEnum.DISPLAY_INSTRUCTION, "", 1, 0);
+
       }, 10);
 
       return () => clearTimeout(timer);

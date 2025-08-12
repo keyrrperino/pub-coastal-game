@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 interface TutorialScreen3Props {
-  onContinue: () => void;
+  onContinue?: () => void;
   timeRemaining?: number;
 }
 
