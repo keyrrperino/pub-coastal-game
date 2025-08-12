@@ -47,29 +47,53 @@ export default function TutorialScreen2({ onContinue }: TutorialScreen2Props) {
 
             {/* Map Highlight Overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
+              {/* Sector 1 Highlight */}
               <Image
-                src="/assets/map-highlight.svg"
-                alt="Map Highlights"
+                src="/assets/sector1-highlight.svg"
+                alt="Sector 1 Highlight"
                 width={1109}
                 height={598}
-                className="object-contain"
+                className="object-contain absolute opacity-0 animate-fadeIn"
+                style={{
+                  animation: 'fadeIn 1s ease-in-out 0.5s forwards'
+                }}
+              />
+              
+              {/* Sector 2 Highlight */}
+              <Image
+                src="/assets/sector2-highlight.svg"
+                alt="Sector 2 Highlight"
+                width={1109}
+                height={598}
+                className="object-contain absolute opacity-0"
+                style={{
+                  animation: 'fadeIn 1s ease-in-out 1.5s forwards'
+                }}
+              />
+              
+              {/* Sector 3 Highlight */}
+              <Image
+                src="/assets/sector3-highlight.svg"
+                alt="Sector 3 Highlight"
+                width={1109}
+                height={598}
+                className="object-contain absolute opacity-0"
+                style={{
+                  animation: 'fadeIn 1s ease-in-out 2.5s forwards'
+                }}
               />
             </div>
 
-            {/* Player 1 Controls Sector 1 - Bottom Right */}
-            <div className="absolute bottom-4 right-4 text-red-400 text-2xl font-bold text-center bottom-[86px] right-[58px]">
-              <p>PLAYER 1<br />CONTROLS<br />SECTOR 1</p>
-            </div>
-
-            {/* Player 2 Controls Sector 2 - Left */}
-            <div className="absolute text-green-400 text-2xl font-bold text-center top-[29%] -left-[4%]">
-              <p>PLAYER 2<br />CONTROLS<br />SECTOR 2</p>
-            </div>
-
-            {/* Player 3 Controls Sector 3 - Top Right */}
-            <div className="absolute text-purple-400 text-2xl font-bold text-center top-[66px] -right-[21px]">
-              <p>PLAYER 3<br />CONTROLS<br />SECTOR 3</p>
-            </div>
+            <style jsx>{`
+              @keyframes fadeIn {
+                from {
+                  opacity: 0;
+                }
+                to {
+                  opacity: 1;
+                }
+              }
+            `}</style>
           </div>
         </div>
       </div>
