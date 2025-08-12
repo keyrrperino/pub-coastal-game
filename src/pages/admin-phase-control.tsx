@@ -155,13 +155,17 @@ export default function AdminPhaseControl() {
       // Reset lobby state to default
       await gameRoomService.updateLobbyState(lobbyStateDefaultValue);
       
+      // Explicitly set phase to INTRODUCTION and round to 1
+      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
+      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, 0);
+      
       // Clear all activities
       await gameRoomService.deleteActivities('default');
       
       // Reset all players ready state
       await gameRoomService.resetAllPlayersReady();
       
-      console.log('Firebase room has been completely reset');
+      console.log('Firebase room has been completely reset to INTRODUCTION');
       alert('Firebase room has been reset successfully!');
     } catch (error) {
       console.error('Failed to reset Firebase room:', error);
@@ -170,6 +174,12 @@ export default function AdminPhaseControl() {
   };
 
   const goToNextPhase = () => {
+    // Special logic: if current is Round 3 Score Breakdown, go to ENDING
+    if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && currentRound === 3) {
+      updatePhase(GameLobbyStatus.ENDING);
+      return;
+    }
+    
     const nextIndex = (currentPhaseIndex + 1) % PHASE_SEQUENCE.length;
     updatePhase(PHASE_SEQUENCE[nextIndex]);
   };
@@ -196,6 +206,15 @@ export default function AdminPhaseControl() {
   };
 
   const getNextPhaseInfo = () => {
+    // Special case: Round 3 Score Breakdown -> ENDING
+    if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && currentRound === 3) {
+      return {
+        phase: GameLobbyStatus.ENDING,
+        round: 3,
+        isRoundPhase: false
+      };
+    }
+    
     const nextIndex = (currentPhaseIndex + 1) % PHASE_SEQUENCE.length;
     return getPhaseRoundInfo(nextIndex);
   };
@@ -256,7 +275,7 @@ export default function AdminPhaseControl() {
               {(() => {
                 const prevInfo = getPreviousPhaseInfo();
                 return prevInfo.isRoundPhase 
-                  ? `R${prevInfo.round}: ${prevInfo.phase.replace('ROUND_', '')}` 
+                  ? `${prevInfo.phase.replace('ROUND_', '')}` 
                   : prevInfo.phase;
               })()}
             </span>
@@ -271,7 +290,7 @@ export default function AdminPhaseControl() {
               {(() => {
                 const nextInfo = getNextPhaseInfo();
                 return nextInfo.isRoundPhase 
-                  ? `R${nextInfo.round}: ${nextInfo.phase.replace('ROUND_', '')}` 
+                  ? `${nextInfo.phase.replace('ROUND_', '')}` 
                   : nextInfo.phase;
               })()}
             </span>
@@ -308,36 +327,7 @@ export default function AdminPhaseControl() {
           </p>
         </div>
 
-        {/* Phase Sequence Info */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-2">Phase Sequence:</h3>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            {PHASE_SEQUENCE.map((phase, index) => {
-              // Only highlight if both phase and index match current state
-              const isCurrentPhase = index === currentPhaseIndex;
-              // Show correct round for each phase based on position
-              const phaseRound = getPhaseRoundInfo(index).round;
-              
-              return (
-                <div 
-                  key={`${phase}-${index}`}
-                  className={`p-2 rounded ${
-                    isCurrentPhase ? 'bg-blue-200 border-2 border-blue-400' : 'bg-gray-50'
-                  }`}
-                >
-                  <div className="font-medium">
-                    {index + 1}. {phase}
-                  </div>
-                  {PHASE_SEQUENCE[index].startsWith('ROUND_') && (
-                    <div className="text-xs text-gray-500">
-                      Round {phaseRound}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+
       </div>
     </div>
   );
