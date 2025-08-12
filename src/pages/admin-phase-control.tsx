@@ -82,36 +82,33 @@ export default function AdminPhaseControl() {
     const roundNumber = Math.floor(phaseIndex / 6) + 1;
     
     try {
-      // Update each field individually
+      // Always update the phase first
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, newPhase);
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, phaseDuration);
       
-      // Update round if it's a valid phase index
-      if (phaseIndex !== -1) {
+      // Update round number when entering ROUND_STORYLINE (start of new round)
+      if (newPhase === GameLobbyStatus.ROUND_STORYLINE && phaseIndex !== -1) {
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, Math.min(roundNumber, 3));
+        console.log(`Round updated to: ${Math.min(roundNumber, 3)} (entering storyline phase)`);
       }
       
-      console.log(`Phase updated to: ${newPhase} (Round ${Math.min(roundNumber, 3)})`);
+      // Reset timer when entering ROUND_GAMEPLAY phase
+      if (newPhase === GameLobbyStatus.ROUND_GAMEPLAY) {
+        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, GAME_ROUND_TIMER);
+        console.log(`Timer reset for gameplay phase: ${GAME_ROUND_TIMER}s`);
+      } else {
+        // For other phases, just update duration and start time normally
+        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, phaseDuration);
+      }
+      
+      console.log(`Phase updated to: ${newPhase} (Round ${currentRound})`);
     } catch (error) {
       console.error('Failed to update phase:', error);
     }
   };
 
-  const updateRound = async (roundNumber: number) => {
-    if (!isConnected) return;
 
-    try {
-      // Update round and reset timer for ROUND_GAMEPLAY phase
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, roundNumber);
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, GAME_ROUND_TIMER);
-      
-      console.log(`Round updated to: ${roundNumber}`);
-    } catch (error) {
-      console.error('Failed to update round:', error);
-    }
-  };
 
   const resetFirebaseRoom = async () => {
     if (!isConnected) return;
@@ -154,6 +151,26 @@ export default function AdminPhaseControl() {
   const goToPreviousPhase = () => {
     const prevIndex = currentPhaseIndex === 0 ? PHASE_SEQUENCE.length - 1 : currentPhaseIndex - 1;
     updatePhase(PHASE_SEQUENCE[prevIndex]);
+  };
+
+  const getPhaseRoundInfo = (phaseIndex: number) => {
+    const phase = PHASE_SEQUENCE[phaseIndex];
+    const roundNumber = Math.floor(phaseIndex / 6) + 1;
+    return {
+      phase,
+      round: Math.min(roundNumber, 3),
+      isRoundPhase: roundNumber <= 3
+    };
+  };
+
+  const getNextPhaseInfo = () => {
+    const nextIndex = (currentPhaseIndex + 1) % PHASE_SEQUENCE.length;
+    return getPhaseRoundInfo(nextIndex);
+  };
+
+  const getPreviousPhaseInfo = () => {
+    const prevIndex = currentPhaseIndex === 0 ? PHASE_SEQUENCE.length - 1 : currentPhaseIndex - 1;
+    return getPhaseRoundInfo(prevIndex);
   };
 
   if (!isConnected) {
@@ -200,16 +217,32 @@ export default function AdminPhaseControl() {
         <div className="flex gap-4 flex-wrap">
           <button
             onClick={goToPreviousPhase}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 flex flex-col items-center"
           >
-            Previous Phase
+            <span>← Previous</span>
+            <span className="text-xs mt-1">
+              {(() => {
+                const prevInfo = getPreviousPhaseInfo();
+                return prevInfo.isRoundPhase 
+                  ? `R${prevInfo.round}: ${prevInfo.phase.replace('ROUND_', '')}` 
+                  : prevInfo.phase;
+              })()}
+            </span>
           </button>
           
           <button
             onClick={goToNextPhase}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex flex-col items-center"
           >
-            Next Phase
+            <span>Next →</span>
+            <span className="text-xs mt-1">
+              {(() => {
+                const nextInfo = getNextPhaseInfo();
+                return nextInfo.isRoundPhase 
+                  ? `R${nextInfo.round}: ${nextInfo.phase.replace('ROUND_', '')}` 
+                  : nextInfo.phase;
+              })()}
+            </span>
           </button>
           
           <button
@@ -219,46 +252,13 @@ export default function AdminPhaseControl() {
             Set Selected Phase
           </button>
         </div>
-
-        {/* Round Controls */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Round Controls:</h3>
-          <div className="flex gap-3">
-            <button
-              onClick={() => updateRound(1)}
-              className={`px-4 py-2 rounded ${
-                currentRound === 1 
-                  ? 'bg-red-600 text-white' 
-                  : 'bg-red-500 text-white hover:bg-red-600'
-              }`}
-            >
-              Round 1
-            </button>
-            <button
-              onClick={() => updateRound(2)}
-              className={`px-4 py-2 rounded ${
-                currentRound === 2 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-blue-500 text-white hover:bg-blue-600'
-              }`}
-            >
-              Round 2
-            </button>
-            <button
-              onClick={() => updateRound(3)}
-              className={`px-4 py-2 rounded ${
-                currentRound === 3 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-green-500 text-white hover:bg-green-600'
-              }`}
-            >
-              Round 3
-            </button>
-          </div>
-          <p className="text-sm text-gray-600 mt-2">
-            Round controls update the round number and reset the timer during gameplay phases.
-          </p>
+        
+        <div className="text-sm text-gray-600 mt-2">
+          <p>💡 <strong>Navigation:</strong> Previous/Next buttons automatically handle round transitions and show the next phase with round info.</p>
+          <p>🎯 <strong>Auto-logic:</strong> Round number updates when entering ROUND_STORYLINE. Timer resets when entering ROUND_GAMEPLAY.</p>
         </div>
+
+
 
         {/* Reset Controls */}
         <div className="border-t pt-6">
