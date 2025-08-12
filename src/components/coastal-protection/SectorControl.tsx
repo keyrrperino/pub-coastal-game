@@ -93,7 +93,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     currentRound,
     isTransitioning,
     startGameFlow,
-    getPhaseDuration,
     resetGameFlow,
     startActualGameFlow,
   } = useGameFlowController(lobbyState, setLobbyState);

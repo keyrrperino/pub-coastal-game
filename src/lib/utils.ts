@@ -1057,14 +1057,9 @@ export function getGameContentCoordination(
     case GameLobbyStatus.ROUND_STORYLINE:
       // Show storyline on main screen, instructions on controllers
       mainScreenContent = 'storyline';
-      controllerContent = GameLobbyStatus.ROUND_INSTRUCTIONS;
+      controllerContent = GameLobbyStatus.ROUND_STORYLINE;
       break;
-    
-    case GameLobbyStatus.ROUND_INSTRUCTIONS:
-      // Show storyline on main screen, instructions on controllers
-      mainScreenContent = 'storyline';
-      break;
-    
+
     case GameLobbyStatus.ROUND_GAMEPLAY:
       // Show overworld on main screen, game interface on controllers
       mainScreenContent = 'overworld';
