@@ -62,6 +62,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
 
+  // Helper function to reset all local game state
+  const resetLocalGameState = useCallback(() => {
+    console.log('Resetting all local game state');
+    setActivityLog([]);
+    setLocalRound(1);
+    setPreviousRound(1);
+    setRoundStartActivityLog([]);
+    setRoundStartButtonSets({});
+    setShowInsufficientBudgetModal(false);
+  }, []);
+
 
   // Use Firebase round instead of phase-based currentRound for actual game progression
   const firebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
@@ -435,6 +446,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         
         // Listen to activity changes
         gameRoomService.onActivityChange((activities) => {
+          // Reset local state when Firebase activities are empty (new game)
+          if (activities.length === 0 && activityLog.length > 0) {
+            console.log('Firebase activities cleared - resetting local state');
+            resetLocalGameState();
+            return; // Don't set empty activities if we just reset
+          }
           setActivityLog(activities);
         });
 
@@ -447,6 +464,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         // Listen to lobby state changes
         gameRoomService.onLobbyStateChange((lobbyStateData) => {
           setLobbyState(lobbyStateData);
+          
+          // Reset local state when starting a new game (lobby status is INITIALIZING with no prior state)
+          if (lobbyStateData && lobbyStateData.gameLobbyStatus === GameLobbyStatus.INITIALIZING) {
+            const hasExistingState = Object.keys(lobbyStateData.readyPlayers || {}).length > 0 || 
+                                   Object.keys(lobbyStateData.coinsSpentByRound || {}).length > 0;
+            
+            if (!hasExistingState) {
+              console.log('New game detected - clearing local selections');
+              resetLocalGameState();
+            }
+          }
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
@@ -458,7 +486,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     return () => {
       gameRoomService.disconnect();
     };
-  }, [gameRoomService]);
+  }, [gameRoomService, resetLocalGameState, activityLog.length]);
 
 
 
