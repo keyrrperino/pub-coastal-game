@@ -3,6 +3,7 @@ import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { LobbyStateType } from "@/lib/types";
 import { GameRoomService } from "@/lib/gameRoom";
 import { GAME_STARST_IN_COUNTDOWN } from "@/lib/constants";
+import { PHASE_DURATIONS } from "./phaseUtils";
 
 type UseLobbyPreparationProps = {
   lobbyState: LobbyStateType;
@@ -17,16 +18,17 @@ export function useLobbyPreparation({ lobbyState, gameRoomServiceRef }: UseLobby
         gameRoomServiceRef.current
           ?.updateLobbyStateKeyValue(
             LobbyStateEnum.GAME_LOBBY_STATUS, 
-            GameLobbyStatus.STARTED);
+            GameLobbyStatus.INTRODUCTION);
         
         gameRoomServiceRef.current
           ?.addElement(ActivityTypeEnum.DISPLAY_INSTRUCTION, "", 1, 0);
         
         gameRoomServiceRef.current
           ?.updateLobbyStateKeyValue(
-            LobbyStateEnum.COUNTDOWN_START_TIME, 
-            Date.now());
-      }, GAME_STARST_IN_COUNTDOWN * 1000);
+            LobbyStateEnum.PHASE_DURATION, 
+            PHASE_DURATIONS.INTRODUCTION
+          );
+      }, 10);
 
       return () => clearTimeout(timer);
     }
