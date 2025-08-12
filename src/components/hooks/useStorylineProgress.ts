@@ -3,7 +3,7 @@ import { GAME_ROUND_TIMER } from "@/lib/constants";
 import { GameLobbyStatus } from "@/lib/enums";
 import { isGameOnGoing } from "@/lib/utils";
 
-export function usePreparingProgress(
+export function useStorylineProgress(
   countdown: number = GAME_ROUND_TIMER,
   gameLobbyStatus: GameLobbyStatus,
   compareGameLobbyStatus: GameLobbyStatus,
@@ -43,7 +43,7 @@ export function usePreparingProgress(
           clearInterval(intervalRef.current!);
         }
       }
-    }, 30);
+    }, 0);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);

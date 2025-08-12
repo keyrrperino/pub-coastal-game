@@ -28,13 +28,13 @@ export function useCutSceneSequence(
 
   // Start sequence when progress is done
   useEffect(() => {
-    if (progress <= 0.02) {
+    if (progress <= 0.02 && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_GAMEPLAY) {
       const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect[lobbyState?.round ?? 1], activities);
       setCutScenes(dynamicCutScenes);
 
-      gameRoomServiceRef.current
-        ?.updateLobbyStateKeyValue(
-          LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_CUTSCENES);
+      // gameRoomServiceRef.current
+      //   ?.updateLobbyStateKeyValue(
+      //     LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_CUTSCENES);
       setCurrentCutSceneIndex(0);
     }
   }, [progress]);

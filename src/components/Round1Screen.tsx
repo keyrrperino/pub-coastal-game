@@ -2,10 +2,10 @@ import React from 'react';
 import RoundScreen from './RoundScreen';
 
 interface Round1ScreenProps {
-  onContinue: () => void;
+  timeRemaining: number;
 }
 
-export default function Round1Screen({ onContinue }: Round1ScreenProps) {
+export default function Round1Screen({ timeRemaining }: Round1ScreenProps) {
   const description = `Sea levels are beginning to rise — slowly, but steadily.
 By 2050, they could climb anywhere between 0.2 to 0.6 metres.
 
@@ -22,7 +22,7 @@ The next 25 years start now.`;
       roundNumber={1}
       yearRange="2025-2050"
       description={description}
-      onContinue={onContinue}
+      timeRemaining={timeRemaining}
     />
   );
 } 

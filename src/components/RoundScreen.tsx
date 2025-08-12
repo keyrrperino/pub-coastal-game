@@ -5,14 +5,14 @@ interface RoundScreenProps {
   roundNumber: number;
   yearRange: string;
   description: string;
-  onContinue: () => void;
+  timeRemaining: number;
 }
 
 export default function RoundScreen({
   roundNumber,
   yearRange,
   description,
-  onContinue,
+  timeRemaining
 }: RoundScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -56,10 +56,9 @@ export default function RoundScreen({
         {/* Continue Button */}
         <div className="mt-6">
           <button
-            onClick={onContinue}
             className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)] hover:opacity-80 transition-opacity duration-200 cursor-pointer"
           >
-            3, 2, 1, GO!
+            {timeRemaining === 0 ? 'GO!' : timeRemaining}
           </button>
         </div>
       </div>

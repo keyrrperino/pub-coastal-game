@@ -2,10 +2,10 @@ import React from 'react';
 import RoundScreen from './RoundScreen';
 
 interface Round2ScreenProps {
-  onContinue: () => void;
+  timeRemaining: number;
 }
 
-export default function Round2Screen({ onContinue }: Round2ScreenProps) {
+export default function Round2Screen({ timeRemaining }: Round2ScreenProps) {
   const description = `You've made it through the first phase - but the tides are still rising.
 Between now and 2075, mean sea levels are projected to increase by 0.7 to 1.5 meters.
 It's time to adapt, upgrade, or rethink your strategy.
@@ -24,7 +24,7 @@ The waters are too.
       roundNumber={2}
       yearRange="2050-2075"
       description={description}
-      onContinue={onContinue}
+      timeRemaining={timeRemaining}
     />
   );
 } 
