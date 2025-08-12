@@ -27,7 +27,7 @@ export function hasActivityForSubSector(activities: ActivityLogType[], userId: s
 }
 
 export function isGameOnGoing(value: GameLobbyStatus) {
-  return !![GameLobbyStatus.ROUND_GAMEPLAY, GameLobbyStatus.ENDING].includes(value);
+  return !![GameLobbyStatus.ROUND_GAMEPLAY].includes(value);
 }
 
 export function isCountdownExpired(countdownStartTime: number, countdown: number = 30): boolean {

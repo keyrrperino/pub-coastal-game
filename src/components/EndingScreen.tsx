@@ -1,10 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
+import { SectorPerformance } from './hooks/useSectorScores';
+import { PlayerEndingType } from './PlayerEndingScreen';
 
 export type EndingType = 'success' | 'moderate' | 'failure';
 
 interface EndingScreenProps {
-  endingType: EndingType;
+  performance: SectorPerformance;
   finalScore?: number;
   onRestart?: () => void;
   onMainMenu?: () => void;
@@ -47,11 +49,26 @@ const endingConfigs: Record<EndingType, EndingConfig> = {
 };
 
 export default function EndingScreen({ 
-  endingType,
+  performance,
   finalScore = 5000, 
   onRestart, 
   onMainMenu 
 }: EndingScreenProps) {
+  const getEndingType = (performance: SectorPerformance): PlayerEndingType => {
+    switch (performance) {
+      case 'good':
+        return 'success';
+      case 'okay':
+        return 'moderate';
+      case 'bad':
+        return 'failure';
+      default:
+        return 'moderate';
+    }
+  };
+
+
+  const endingType = getEndingType(performance);
   const config = endingConfigs[endingType];
 
   return (
