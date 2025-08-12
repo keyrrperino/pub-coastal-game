@@ -107,6 +107,8 @@ export type LobbyStateType = {
   [LobbyStateEnum.PHASE_DURATION]: number;
   // Player readiness tracking
   [LobbyStateEnum.READY_PLAYERS]: Record<string, boolean>;
+  // Leaderboard display state
+  [LobbyStateEnum.SHOW_LEADERBOARD]?: boolean;
   [LobbyStateEnum.TEAM_NAME]: string;
 }
 

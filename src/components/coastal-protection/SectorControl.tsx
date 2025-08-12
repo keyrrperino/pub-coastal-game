@@ -486,10 +486,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   }, [gameRoomService, currentPhase]);
 
   const handleShowLeaderboard = useCallback(async () => {
-    // Set Firebase state to indicate leaderboard is being shown
-    await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, true);
-    setIsLeaderboardOpen(true);
-  }, [gameRoomService]);
+    // Toggle Firebase state for leaderboard visibility based on current Firebase state
+    const currentFirebaseState = lobbyState?.[LobbyStateEnum.SHOW_LEADERBOARD] || false;
+    const newState = !currentFirebaseState;
+    await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, newState);
+    setIsLeaderboardOpen(newState);
+  }, [gameRoomService, lobbyState]);
 
   const handleCloseLeaderboard = useCallback(async () => {
     // Reset Firebase state when closing leaderboard
@@ -761,11 +763,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                     onStartGame={handleStartGame}
                     onShowLeaderboard={handleShowLeaderboard}
                     playerNumber={getPlayerNumber(sector)}
+                    isLeaderboardOpen={lobbyState?.[LobbyStateEnum.SHOW_LEADERBOARD] || false}
                   />
-                  {/*<LeaderboardOverlay*/}
-                  {/*  isOpen={isLeaderboardOpen}*/}
-                  {/*  onClose={handleCloseLeaderboard}*/}
-                  {/*/>*/}
                 </div>
               );
             }

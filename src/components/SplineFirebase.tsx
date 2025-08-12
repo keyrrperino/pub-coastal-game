@@ -35,6 +35,7 @@ import { PHASE_DURATIONS } from "./hooks/phaseUtils";
 import EndingScreen from "./EndingScreen";
 import TeamNameInputScreen from "./TeamNameInputScreen";
 import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
+import LeaderboardOverlay from "./LeaderboardOverlay";
 
 interface SplineFirebaseProps {
 }
@@ -66,6 +67,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [countdown, setCountdown]= useState(5);
   const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   useEffect(() => {
     (async () => { 
@@ -74,6 +76,14 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       }
     })();
   }, [lobbyState.gameLobbyStatus]);
+
+  // Listen to showLeaderboard state changes
+  useEffect(() => {
+    const showLeaderboard = lobbyState[LobbyStateEnum.SHOW_LEADERBOARD];
+    if (typeof showLeaderboard === 'boolean') {
+      setIsLeaderboardOpen(showLeaderboard);
+    }
+  }, [lobbyState]);
 
   useSectorScores({
     activities: activities ?? [],
@@ -363,6 +373,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     window.location.reload(); 
   }
 
+  const handleCloseLeaderboard = async () => {
+    // Reset Firebase state when closing leaderboard
+    await gameRoomServiceRef.current?.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, false);
+    setIsLeaderboardOpen(false);
+  };
+
   return (
     <div
       className="fixed inset-0 w-screen h-screen m-0 p-0 bg-black z-0"
@@ -451,9 +467,14 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           </span>
         </div>
       )}
+
+      {/* Leaderboard Overlay */}
+      <LeaderboardOverlay
+        isOpen={isLeaderboardOpen}
+        onClose={handleCloseLeaderboard}
+      />
     </div>
   );
 };
 
 export default SplineFirebase; 
-
