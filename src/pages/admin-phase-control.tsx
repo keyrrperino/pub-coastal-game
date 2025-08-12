@@ -166,7 +166,6 @@ export default function AdminPhaseControl() {
       await gameRoomService.resetAllPlayersReady();
       
       console.log('Firebase room has been completely reset to INTRODUCTION');
-      alert('Firebase room has been reset successfully!');
     } catch (error) {
       console.error('Failed to reset Firebase room:', error);
       alert('Failed to reset Firebase room. Check console for details.');
