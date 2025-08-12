@@ -168,21 +168,23 @@ export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialS
                 DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE WITH YOUR TEAMMATES.
               </p>
               
-              {/* Show countdown only in the last 3 seconds */}
-              {timeRemaining !== undefined && timeRemaining <= 3 && (
-                <div className="flex flex-col items-center gap-6">
-                  <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8">
-                    {timeRemaining === 3 && "3..."}
-                    {timeRemaining === 2 && "2..."}
-                    {timeRemaining === 1 && "1..."}
-                    {timeRemaining === 0 && "GO!"}
-                  </h2>
-                  
-                  <p className="text-white text-xl text-center font-bold">
-                    THE TIDES ARE RISING. START PLANNING!
-                  </p>
-                </div>
-              )}
+              {/* Reserved space for countdown - always present to prevent layout shift */}
+              <div className="flex flex-col items-center gap-6">
+                <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8 min-h-[72px] flex items-center">
+                  {timeRemaining !== undefined && timeRemaining <= 3 ? (
+                    <>
+                      {timeRemaining === 3 && "3..."}
+                      {timeRemaining === 2 && "2..."}
+                      {timeRemaining === 1 && "1..."}
+                      {timeRemaining === 0 && "GO!"}
+                    </>
+                  ) : null}
+                </h2>
+                
+                <p className="text-white text-xl text-center font-bold min-h-[28px] flex items-center">
+                  {timeRemaining !== undefined && timeRemaining <= 3 && "THE TIDES ARE RISING. START PLANNING!"}
+                </p>
+              </div>
             </div>
           </div>
         </div>
