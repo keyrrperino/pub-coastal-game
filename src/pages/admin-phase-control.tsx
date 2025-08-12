@@ -156,6 +156,7 @@ export default function AdminPhaseControl() {
       await gameRoomService.updateLobbyState(lobbyStateDefaultValue);
       
       // Explicitly set phase to INTRODUCTION and round to 1
+      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INITIALIZING);
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, 0);
       
