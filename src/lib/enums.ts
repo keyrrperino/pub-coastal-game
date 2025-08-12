@@ -344,7 +344,9 @@ export enum LobbyStateEnum {
   // Player readiness tracking
   READY_PLAYERS = "readyPlayers",
   // Team name storage
-  TEAM_NAME = "teamName"
+  TEAM_NAME = "teamName",
+  // Leaderboard display state
+  SHOW_LEADERBOARD = "showLeaderboard"
 }
 
 export enum GameLobbyStatus {
