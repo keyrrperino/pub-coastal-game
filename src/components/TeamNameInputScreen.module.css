@@ -1,0 +1,302 @@
+/* Font declarations moved to globals.css for better loading */
+
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: -71px;
+  left: -322px;
+  width: 2563px;
+  height: 1223px;
+  background-image: url('/assets/input-team-name-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  width: 1378px;
+  max-width: 90vw;
+}
+
+.congratulationsSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  width: 100%;
+}
+
+.congratulationsTitle {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 98.84px;
+  line-height: 0.8em;
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow: 0px 3.95px 3.95px 0px rgba(148, 107, 199, 1);
+  margin: 0;
+  width: 100%;
+}
+
+.congratulationsText {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 43px;
+  line-height: 1.2em;
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
+  margin: 0;
+  width: 1160px;
+  max-width: 100%;
+}
+
+.scoreSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scoreText {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1.2em;
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
+  margin: 0;
+}
+
+.scoreValue {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1.2em;
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
+  margin: 0;
+}
+
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 1490px;
+  max-width: 90vw;
+  border-radius: 55.7px;
+  box-shadow: 0px 12.62px 63.12px 0px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(37.13px);
+  position: relative;
+}
+
+
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  border-radius: 55.7px;
+  padding: 42.71px 64.06px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12.14px;
+  width: 100%;
+  border-radius: 55.7px;
+  justify-content: center;
+}
+
+.inputLabel {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 3.5rem;
+  line-height: 0.8em;
+  text-align: center;
+  color: #FFFFFF;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.letterInputContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.letterInput {
+  font-family: 'Novecento Bold', sans-serif;
+  font-weight: 700;
+  font-size: 70.58px;
+  line-height: 0.8em;
+  text-align: center;
+  color: #FFFFFF;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  user-select: none;
+  caret-color: transparent;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.letterDisplay {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashUnderneath {
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 70.58px;
+  color: #FFFFFF;
+  line-height: 0.8em;
+}
+
+.letterInput.focused {
+  outline: 2px solid #91E2FF;
+  background: rgba(145, 226, 255, 0.1);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0px 2.823094606399536px 2.823094606399536px 0px rgba(148, 107, 199, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .congratulationsTitle {
+    font-size: 70px;
+  }
+  
+  .congratulationsText {
+    font-size: 32px;
+  }
+  
+  .scoreText,
+  .scoreValue {
+    font-size: 45px;
+  }
+  
+  .letterInput {
+    font-size: 50px;
+    width: 60px;
+    height: 60px;
+  }
+  
+  .letterDisplay {
+    height: 50px;
+  }
+  
+  .dashUnderneath {
+    height: 10px;
+    font-size: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    gap: 40px;
+  }
+  
+  .congratulationsSection {
+    gap: 30px;
+  }
+  
+  .congratulationsTitle {
+    font-size: 50px;
+  }
+  
+  .congratulationsText {
+    font-size: 24px;
+  }
+  
+  .scoreText,
+  .scoreValue {
+    font-size: 32px;
+  }
+  
+  .inputSection {
+    padding: 30px 20px;
+    gap: 30px;
+  }
+  
+  .inputContainer {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .inputWrapper {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .inputLabel {
+    font-size: 36px;
+  }
+  
+  .letterInput {
+    font-size: 36px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .letterDisplay {
+    height: 40px;
+  }
+  
+  .dashUnderneath {
+    height: 10px;
+    font-size: 36px;
+  }
+  
+  .letterInputContainer {
+    gap: 15px;
+  }
+} 
