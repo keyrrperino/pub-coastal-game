@@ -112,6 +112,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [totalScore, setTotalScore] = useState(0);
   const [coinsLeft, setCoinsLeft] = useState(0);
   const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
+  const [totalPerformance, setTotalPerformance] = useState<SectorPerformance>('okay');
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   // Debug logging for round state
@@ -176,9 +177,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(true);
         setShowTeamNameInput(false);
         setShowCutscene(false);
-        // Calculate final score (simplified - you may want to implement proper scoring)
-        const calculatedScore = (activityLog?.length || 0) * 100 + (currentRound * 50);
-        setFinalScore(calculatedScore);
+        // Use totalScore from useSectorScores instead of calculated score
+        setFinalScore(totalScore);
         break;
       
       case GameLobbyStatus.TEAM_NAME_INPUT:
@@ -279,6 +279,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setSector1Performance: sectorNumber === '1' ? setSectorPerformance : undefined,
     setSector2Performance: sectorNumber === '2' ? setSectorPerformance : undefined,
     setSector3Performance: sectorNumber === '3' ? setSectorPerformance : undefined,
+    setTotalPerformance,
   });
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
@@ -722,10 +723,15 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
-        round={currentRound as 1 | 2 | 3}
+        round={firebaseRound as 1 | 2 | 3}
         duration={getPhaseDuration(GameLobbyStatus.ROUND_STORYLINE)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
+      />
+      
+      <PostRoundModal 
+        isOpen={showCutscene}
+        performance={sectorPerformance}
       />
 
       <EndingModal 
@@ -734,6 +740,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         finalScore={finalScore}
         duration={getPhaseDuration(GameLobbyStatus.ENDING)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+        totalPerformance={totalPerformance}
       />
       
       <TeamNameInputModal 
@@ -746,10 +753,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         finalScore={finalScore}
       />
 
-      <PostRoundModal 
-        isOpen={showCutscene}
-        performance={sectorPerformance}
-      />
     </div>
   );
 };
