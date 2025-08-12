@@ -23,12 +23,7 @@ export default function EndingScreensDemo() {
     };
 
     return (
-      <EndingScreen
-        endingType={currentScreen}
-        finalScore={scores[currentScreen]}
-        onRestart={handleRestart}
-        onMainMenu={handleMainMenu}
-      />
+      null
     );
   }
 
