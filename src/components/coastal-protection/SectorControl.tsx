@@ -128,16 +128,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const subSectorFromConfig = triggerConfig?.subSector || sectorId;
     const result = await gameRoomService.addElement(activityType, `${activityType}`, currentRound, coinCost, true, subSectorFromConfig as any);
     
-    if (result === 'ok') {
-      // Update coins on successful spend
-      setTotalCoins(prev => prev - coinCost);
-      console.log(`Action triggered: ${activityType}, Cost: ${coinCost} coins`);
-    } else if (result === 'insufficient') {
+    if (result === 'insufficient') {
       console.log('Insufficient coins - showing modal');
       setShowInsufficientBudgetModal(true);
-    } else {
+    } else if (result !== 'ok') {
       console.log('Failed to add element:', result);
     }
+    // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [triggerSingleBuild, gameRoomService, currentRound]);
 
   const handleDemolishClick = useCallback(async (sectorId: string, actionToDestroy: ActivityTypeEnum) => {
@@ -180,16 +177,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
     const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound, 1, false, sectorId as any);
     
-    if (result === 'ok') {
-      // Demolish costs 1 coin
-      setTotalCoins(prev => prev - 1);
-      console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-    } else if (result === 'insufficient') {
+    if (result === 'insufficient') {
       console.log('Insufficient coins for demolish - showing modal');
       setShowInsufficientBudgetModal(true);
-    } else {
+    } else if (result !== 'ok') {
       console.log('Failed to demolish:', result);
     }
+    // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
 
   const handleTimeUp = useCallback(() => {
