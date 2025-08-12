@@ -158,6 +158,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       setShowInsufficientBudgetModal(false);
     }
     
+    // Close leaderboard when moving to any game phase (not INITIALIZING)
+    if (isLeaderboardOpen && currentPhase && currentPhase !== GameLobbyStatus.INITIALIZING) {
+      console.log('Closing leaderboard due to phase change to:', currentPhase);
+      setIsLeaderboardOpen(false);
+      // Also reset Firebase state
+      gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, false);
+    }
+    
     // Handle phase-based modal displays and timers
     switch (currentPhase) {
       case GameLobbyStatus.INTRODUCTION:
@@ -254,7 +262,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowLeaderboardOverlay(false);
         break;
     }
-  }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
+  }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal, isLeaderboardOpen, gameRoomService]);
 
   // Timer is handled via Firebase sync in useTimer hook
   // No need to manually start/stop timers as they sync with Firebase timestamps
@@ -458,6 +466,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const handleStartGame = useCallback(async () => {
     console.log('Starting game...');
     
+    // Close leaderboard when starting game (reset Firebase state)
+    await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, false);
+    setIsLeaderboardOpen(false);
+    
     // If we're in LEADERBOARD_DISPLAY phase, set status to RESTARTING instead of starting a new game
     if (currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
       console.log('In LEADERBOARD_DISPLAY phase - setting status to RESTARTING');
@@ -473,13 +485,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
   }, [gameRoomService, currentPhase]);
 
-  const handleShowLeaderboard = useCallback(() => {
+  const handleShowLeaderboard = useCallback(async () => {
+    // Set Firebase state to indicate leaderboard is being shown
+    await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, true);
     setIsLeaderboardOpen(true);
-  }, []);
+  }, [gameRoomService]);
 
-  const handleCloseLeaderboard = useCallback(() => {
+  const handleCloseLeaderboard = useCallback(async () => {
+    // Reset Firebase state when closing leaderboard
+    await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.SHOW_LEADERBOARD, false);
     setIsLeaderboardOpen(false);
-  }, []);
+  }, [gameRoomService]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Round gameplay time is up! Waiting for admin to move to next phase...');
@@ -746,10 +762,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                     onShowLeaderboard={handleShowLeaderboard}
                     playerNumber={getPlayerNumber(sector)}
                   />
-                  <LeaderboardOverlay
-                    isOpen={isLeaderboardOpen}
-                    onClose={handleCloseLeaderboard}
-                  />
+                  {/*<LeaderboardOverlay*/}
+                  {/*  isOpen={isLeaderboardOpen}*/}
+                  {/*  onClose={handleCloseLeaderboard}*/}
+                  {/*/>*/}
                 </div>
               );
             }
