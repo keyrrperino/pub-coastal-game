@@ -2,8 +2,8 @@ import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, Splin
 import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
-export const ROOM_NAME = "rooms-v5";
-export const GAME_ROUND_TIMER = 300000;
+export const ROOM_NAME = "rooms-v2";
+export const GAME_ROUND_TIMER = 30;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
