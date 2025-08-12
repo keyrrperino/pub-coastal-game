@@ -73,6 +73,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
 
+  // Track previous phase for restart detection
+  const [previousPhase, setPreviousPhase] = useState<GameLobbyStatus | null>(null);
+
   // Helper function to reset all local game state
   const resetLocalGameState = useCallback(() => {
     console.log('Resetting all local game state');
@@ -135,6 +138,15 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     console.log('SectorControl currentRound (phase-based):', currentRound);
     console.log('SectorControl firebaseRound (actual game round):', firebaseRound);
   }, [currentRound, firebaseRound]);
+
+  // Handle restart flow - reload when state changes away from RESTARTING
+  useEffect(() => {
+    if (previousPhase === GameLobbyStatus.RESTARTING && currentPhase !== GameLobbyStatus.RESTARTING) {
+      console.log('State changed away from RESTARTING - reloading page');
+      window.location.reload();
+    }
+    setPreviousPhase(currentPhase);
+  }, [currentPhase, previousPhase]);
 
   // Game flow phase management
   useEffect(() => {
@@ -226,8 +238,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         break;
       
       case GameLobbyStatus.RESTARTING:
-        console.log('RESTARTING phase detected - reloading page');
-        window.location.reload();
+        // Don't immediately reload - wait for state to change away from RESTARTING
+        console.log('RESTARTING phase detected - waiting for state change');
         break;
       
       default:
