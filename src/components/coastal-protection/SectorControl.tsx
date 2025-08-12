@@ -675,36 +675,47 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left and Timer right - hide during ending phase */}
-          {currentPhase !== GameLobbyStatus.ENDING &&
-           currentPhase !== GameLobbyStatus.LEADERBOARD_DISPLAY && (
-            <div className="w-full flex flex-row items-start justify-between">
-              {/* Budget display left */}
-              <div className="flex-1 flex items-start justify-start">
-                <BudgetDisplay totalCoins={totalCoins} />
-              </div>
-              {/* Timer right */}
-              <div className="flex-1 flex items-start justify-end">
-                <Timer 
-                  key={`${currentRound}-${currentPhase}`}
-                  duration={showCutscene ? 0 : phaseDuration}
-                  onTimeUp={handleTimeUp} 
-                  isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
-                  syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-                />
-              </div>
-            </div>
-          )}
+          {/* Render content based on current phase */}
+          {(() => {
+            // Gameplay phases: Show Timer, Budget, and Sectors
+            if (currentPhase === GameLobbyStatus.ROUND_GAMEPLAY || 
+                currentPhase === GameLobbyStatus.ROUND_CUTSCENES || 
+                currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
+              return (
+                <>
+                  {/* Top bar: Budget left and Timer right */}
+                  <div className="w-full flex flex-row items-start justify-between">
+                    {/* Budget display left */}
+                    <div className="flex-1 flex items-start justify-start">
+                      <BudgetDisplay totalCoins={totalCoins} />
+                    </div>
+                    {/* Timer right */}
+                    <div className="flex-1 flex items-start justify-end">
+                      <Timer 
+                        key={`${currentRound}-${currentPhase}`}
+                        duration={showCutscene ? 0 : phaseDuration}
+                        onTimeUp={handleTimeUp} 
+                        isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
+                        syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                      />
+                    </div>
+                  </div>
 
-          {/* Start Screen - shown when not in gameplay, cutscenes, score breakdown, or ending */}
-          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
-           currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
-           currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN &&
-           currentPhase !== GameLobbyStatus.ENDING && (
-            <>
-              {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING || currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY ? (
+                  {/* Sector sections */}
+                  <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+                    {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
+                    {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
+                  </div>
+                </>
+              );
+            }
+
+            // Start/Lobby phases: Show StartScreen
+            if (!currentPhase || 
+                currentPhase === GameLobbyStatus.INITIALIZING || 
+                currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+              return (
                 <div className="absolute inset-0 z-20">
-                  {/* Complete StartPage template repurposed for game start */}
                   <StartScreen
                     onStartGame={handleStartGame}
                     onShowLeaderboard={handleShowLeaderboard}
@@ -715,7 +726,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                     onClose={handleCloseLeaderboard}
                   />
                 </div>
-              ) : currentPhase === GameLobbyStatus.PREPARING ? (
+              );
+            }
+
+            // Preparing phase: Show loading message
+            if (currentPhase === GameLobbyStatus.PREPARING) {
+              return (
                 <div className="w-full flex items-center justify-center mt-8">
                   <div className="bg-white rounded-[16px] px-8 py-6">
                     <div className="text-center">
@@ -728,29 +744,16 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="w-full flex items-center justify-center mt-8">
-                  <div className="bg-white rounded-[16px] px-8 py-6">
-                    <div className="text-center">
-                      <div className="text-[24px] font-bold text-black text-center mb-4">
-                        {currentPhase.replace(/_/g, ' ')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+              );
+            }
 
-          {/* Sector sections - show during gameplay, cutscenes, and score breakdown */}
-          {(currentPhase === GameLobbyStatus.ROUND_GAMEPLAY || 
-            currentPhase === GameLobbyStatus.ROUND_CUTSCENES || 
-            currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) && (
-            <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-              {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
-              {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
-            </div>
-          )}
+            // Other phases: Show circular loader
+            return (
+              <div className="w-full h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white"></div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
