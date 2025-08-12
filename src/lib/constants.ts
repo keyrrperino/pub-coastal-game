@@ -3,13 +3,13 @@ import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonCon
 import { getRandomEffectValue } from "./utils";
 
 export const ROOM_NAME = "rooms-v7";
-export const GAME_ROUND_TIMER = 1;
-export const GAME_STARST_IN_COUNTDOWN = 1;
-export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 1;
+export const GAME_ROUND_TIMER = 30;
+export const GAME_STARST_IN_COUNTDOWN = 15;
+export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
 export const TOTAL_COINS_PER_ROUND = 10;
-export const MODAL_CLOSE_COUNTDOWN_VALUE = 1;
-export const CUT_SCENE_TIMER_MILLISECONDS = 1; // 5 seconds
+export const MODAL_CLOSE_COUNTDOWN_VALUE = 5;
+export const CUT_SCENE_TIMER_MILLISECONDS = 5000; // 5 seconds
 
 // export const ROOM_NAME = "rooms-v4";
 // export const GAME_ROUND_TIMER = 1;
