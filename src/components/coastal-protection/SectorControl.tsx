@@ -4,7 +4,7 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
-import { ActivityTypeEnum, LobbyStateEnum } from '@/lib/enums';
+import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
 import { ActivityLogType } from '@/lib/types';
 import { SplineTriggersConfig } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
@@ -189,7 +189,26 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
     // Handle round end logic here
-  }, []);
+    // Update the lobby state to advance to the next round or trigger round end actions
+    // This will be synchronized across all controllers
+    
+    // Update lobby state to advance to next round and reset timer (max 3 rounds)
+    if (lobbyState) {
+      const currentRound = lobbyState[LobbyStateEnum.ROUND] ?? 1;
+      if (currentRound < 3) {
+        // Advance to next round
+        gameRoomService.updateLobbyState({
+          ...lobbyState,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: currentRound + 1
+        });
+      } else {
+        // Game ends after round 3 - you might want to implement end game logic here
+        console.log('Game completed all 3 rounds!');
+      }
+    }
+  }, [gameRoomService, lobbyState]);
 
   // Initialize game room connection and listen to activity changes
   useEffect(() => {
@@ -420,7 +439,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             </div>
             {/* Timer right */}
             <div className="flex-1 flex items-start justify-end">
-              <Timer key={currentRound} initialSeconds={30} onTimeUp={handleTimeUp} />
+              <Timer 
+                key={currentRound} 
+                initialSeconds={30} 
+                onTimeUp={handleTimeUp} 
+                countdownStartTime={lobbyState?.countdownStartTime}
+              />
             </div>
           </div>
 

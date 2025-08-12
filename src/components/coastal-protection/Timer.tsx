@@ -1,35 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Hint from './Hint';
 import styles from './styles.module.css';
+import { GAME_ROUND_TIMER } from '@/lib/constants';
 
 interface TimerProps {
   initialSeconds?: number;
   onTimeUp?: () => void;
+  countdownStartTime?: number; // Synchronized start time from lobby state
 }
 
-const Timer: React.FC<TimerProps> = ({ initialSeconds = 30, onTimeUp }) => {
+const Timer: React.FC<TimerProps> = ({ 
+  initialSeconds = GAME_ROUND_TIMER, 
+  onTimeUp,
+  countdownStartTime 
+}) => {
   const [seconds, setSeconds] = useState(initialSeconds);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastUpdateTimeRef = useRef<number>(Date.now());
 
-  // Reset timer when initialSeconds changes
+  // Reset timer when initialSeconds or countdownStartTime changes
   useEffect(() => {
-    setSeconds(initialSeconds);
-  }, [initialSeconds]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
+    // If we have a synchronized start time, calculate the actual remaining time
+    if (countdownStartTime) {
+      const elapsed = Math.floor((Date.now() - countdownStartTime) / 1000);
+      const remaining = Math.max(0, initialSeconds - elapsed);
+      setSeconds(remaining);
+      
+      // Clear existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      
+      // Set up new interval to update every second
+      intervalRef.current = setInterval(() => {
+        const newElapsed = Math.floor((Date.now() - countdownStartTime) / 1000);
+        const newRemaining = Math.max(0, initialSeconds - newElapsed);
+        
+        setSeconds(newRemaining);
+        
+        if (newRemaining <= 0) {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
           onTimeUp?.();
-          return 0;
         }
-        return prev - 1;
-      });
-    }, 1000);
+      }, 1000);
+    } else {
+      // Fallback to local timer if no synchronized time
+      setSeconds(initialSeconds);
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [initialSeconds, countdownStartTime, onTimeUp]);
 
-    return () => clearInterval(interval);
-  }, [onTimeUp, initialSeconds]);
-
+  // Progress percentage based on initial seconds for consistent visual progress
   const progressPercentage = (seconds / initialSeconds) * 100;
   const isAlmostUp = seconds <= 10 && seconds > 0;
 
