@@ -722,7 +722,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
-        round={currentRound as 1 | 2 | 3}
+        round={firebaseRound as 1 | 2 | 3}
         duration={getPhaseDuration(GameLobbyStatus.ROUND_STORYLINE)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
