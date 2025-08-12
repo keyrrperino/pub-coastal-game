@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useTimer } from '@/components/hooks/useTimer';
 import Modal from './Modal';
 
 interface TutorialModalProps {
   isOpen: boolean;
-  onDurationComplete: () => void;
+  onDurationComplete?: () => void;
   duration?: number;
+  syncWithTimestamp?: number;
 }
 
 const TutorialModal: React.FC<TutorialModalProps> = ({ 
   isOpen, 
   onDurationComplete, 
-  duration = 15 
+  duration = 15,
+  syncWithTimestamp
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -42,8 +45,26 @@ const TutorialModal: React.FC<TutorialModalProps> = ({
     }
   ];
 
+  const { timeRemaining, progressPercentage } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Update current step based on remaining time
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !syncWithTimestamp) return;
+    
+    const elapsed = duration - timeRemaining;
+    const stepDuration = duration / tutorialSteps.length;
+    const calculatedStep = Math.floor(elapsed / stepDuration);
+    setCurrentStep(Math.min(calculatedStep, tutorialSteps.length - 1));
+  }, [timeRemaining, isOpen, duration, tutorialSteps.length, syncWithTimestamp]);
+
+  // Fallback for local timing when sync is not available
+  useEffect(() => {
+    if (!isOpen || syncWithTimestamp) return;
 
     const stepTimer = setInterval(() => {
       setCurrentStep((prev) => {
@@ -56,14 +77,14 @@ const TutorialModal: React.FC<TutorialModalProps> = ({
     }, duration * 1000 / tutorialSteps.length);
 
     const completeTimer = setTimeout(() => {
-      onDurationComplete();
+      onDurationComplete?.();
     }, duration * 1000);
 
     return () => {
       clearInterval(stepTimer);
       clearTimeout(completeTimer);
     };
-  }, [isOpen, onDurationComplete, duration, tutorialSteps.length]);
+  }, [isOpen, onDurationComplete, duration, tutorialSteps.length, syncWithTimestamp]);
 
   if (!isOpen) return null;
 

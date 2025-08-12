@@ -1,28 +1,39 @@
 import React, { useEffect } from 'react';
+import { useTimer } from '@/components/hooks/useTimer';
 import Modal from './Modal';
 
 interface EndingModalProps {
   isOpen: boolean;
-  onDurationComplete: () => void;
+  onDurationComplete?: () => void;
   finalScore?: number;
   duration?: number;
+  syncWithTimestamp?: number;
 }
 
 const EndingModal: React.FC<EndingModalProps> = ({ 
   isOpen, 
   onDurationComplete, 
   finalScore = 0,
-  duration = 15 
+  duration = 15,
+  syncWithTimestamp
 }) => {
+  const { timeRemaining, progressPercentage } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Fallback for when sync is not available
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || syncWithTimestamp) return;
 
     const timer = setTimeout(() => {
-      onDurationComplete();
+      onDurationComplete?.();
     }, duration * 1000);
 
     return () => clearTimeout(timer);
-  }, [isOpen, onDurationComplete, duration]);
+  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
 
   if (!isOpen) return null;
 

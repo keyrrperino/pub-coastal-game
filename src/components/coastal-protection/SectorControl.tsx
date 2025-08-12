@@ -9,7 +9,7 @@ import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
-import { useSynchronizedPhaseTimer, getSynchronizedPhaseDuration } from '@/components/hooks/useSynchronizedPhaseTimer';
+import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
 
@@ -55,7 +55,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
   const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`, 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
-  const [currentRound, setCurrentRound] = useState(1);
+  const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
@@ -66,28 +66,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Game flow management
   const {
     currentPhase,
-    currentRound: gameFlowRound,
+    currentRound,
     isTransitioning,
     startGameFlow,
-    transitionToNextPhase,
     getPhaseDuration,
     resetGameFlow,
     startActualGameFlow,
   } = useGameFlowController(lobbyState, setLobbyState);
 
-  // Phase timer management
-  const {
-    seconds: timerSeconds,
-    isRunning: isTimerRunning,
-    timeRemaining,
-    progress: timerProgress,
-    startTimer,
-    stopTimer,
-  } = useSynchronizedPhaseTimer({
-    lobbyState,
-    onTimeUp: transitionToNextPhase,
-    defaultDuration: GAME_ROUND_TIMER,
-  });
+  // Phase timer management - values for Timer component
+  const phaseStartTime = lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || 0;
+  const phaseDuration = lobbyState?.[LobbyStateEnum.PHASE_DURATION] || GAME_ROUND_TIMER;
 
   // Modal states for game flow
   const [showIntroduction, setShowIntroduction] = useState(false);
@@ -160,7 +149,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowScoreBreakdown(false);
         // Calculate final score (simplified - you may want to implement proper scoring)
-        const calculatedScore = (activityLog?.length || 0) * 100 + (gameFlowRound * 50);
+        const calculatedScore = (activityLog?.length || 0) * 100 + (currentRound * 50);
         setFinalScore(calculatedScore);
         break;
       
@@ -192,29 +181,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowScoreBreakdown(false);
         break;
     }
-  }, [currentPhase, activityLog, gameFlowRound]);
+  }, [currentPhase, activityLog, currentRound]);
 
-  // Auto-start timers for phases with automatic timing
-  useEffect(() => {
-    const duration = getSynchronizedPhaseDuration(currentPhase);
-    if (duration > 0 && !isTimerRunning) {
-      startTimer(duration);
-    } else if (duration === 0) {
-      stopTimer();
-    }
-  }, [currentPhase, isTimerRunning, startTimer, stopTimer]);
+  // Timer is handled via Firebase sync in useTimer hook
+  // No need to manually start/stop timers as they sync with Firebase timestamps
 
   // Handle score breakdown modal auto-advance
   useEffect(() => {
     if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && showScoreBreakdown) {
       const timer = setTimeout(() => {
         setShowScoreBreakdown(false);
-        transitionToNextPhase();
-      }, getSynchronizedPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN) * 1000);
+      }, getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN) * 1000);
 
       return () => clearTimeout(timer);
     }
-  }, [currentPhase, showScoreBreakdown, transitionToNextPhase]);
+  }, [currentPhase, showScoreBreakdown, getPhaseDuration]);
 
 
 
@@ -264,6 +245,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
+
+  // Always call useProgression hooks at the top level to follow Rules of Hooks
+  const sectorAId = `${sector.slice(-1)}A`;
+  const sectorBId = `${sector.slice(-1)}B`;
+  const progressionStateA = useProgression(activityLog, currentRound, sectorAId);
+  const progressionStateB = useProgression(activityLog, currentRound, sectorBId);
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
     // Trigger Spline action
@@ -366,30 +353,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   }, [lobbyState?.readyPlayers, lobbyState?.gameLobbyStatus, gameRoomService]);
 
   const handleTimeUp = useCallback(() => {
-    console.log('Time is up!');
-    // Handle round end logic here
-    // Update the lobby state to advance to the next round or trigger round end actions
-    // This will be synchronized across all controllers
-    
-    // Update lobby state to advance to next round and reset timer (max 3 rounds)
-    if (lobbyState) {
-      const currentRound = lobbyState[LobbyStateEnum.ROUND] ?? 1;
-      if (currentRound < 3) {
-        // Advance to next round with synchronized timer
-        const nextRound = currentRound + 1;
-        gameRoomService.updateLobbyState({
-          ...lobbyState,
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-          [LobbyStateEnum.ROUND]: nextRound,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
-        });
-      } else {
-        // Game ends after round 3 - you might want to implement end game logic here
-        console.log('Game completed all 3 rounds!');
-      }
-    }
-  }, [gameRoomService, lobbyState]);
+    console.log('Round gameplay time is up! Waiting for admin to move to next phase...');
+    // Do nothing - wait for admin-phase-control page to move to next phase
+  }, []);
 
   // Timer is now managed by the game flow system above
 
@@ -413,7 +379,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         // Listen to round changes
         gameRoomService.onRoundChange((round) => {
           console.log('Firebase round changed to:', round);
-          setCurrentRound(round);
+          setLocalRound(round);
         });
 
         // Listen to lobby state changes for coin updates
@@ -442,9 +408,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
 
   // Helper function to render sector section using ProgressionState system
-  const renderSectorSection = (sectorId: string, title: string) => {
-    // Use current state for button states (active/disabled/selected)
-    const progressionState = useProgression(activityLog, currentRound, sectorId);
+  const renderSectorSection = (sectorId: string, title: string, progressionState: any) => {
+    // progression state is now passed as parameter to avoid calling hooks conditionally
     
     // Get additional data needed for comprehensive "No More Available Upgrades" check
     const activeActions = calculateActiveActions(activityLog);
@@ -585,99 +550,59 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left, Round center, Timer right */}
+          {/* Top bar: Budget left and Timer right */}
           <div className="w-full flex flex-row items-start justify-between">
             {/* Budget display left */}
             <div className="flex-1 flex items-start justify-start">
               <BudgetDisplay totalCoins={totalCoins} />
             </div>
-            {/* Round display center */}
-            <div className="flex-1 flex items-start justify-center">
-              <div className="bg-white rounded-[16px] px-6 py-3">
-                {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY ? (
-                  <>
-                    <div className="text-[24px] font-bold text-black text-center">
-                      ROUND {currentRound}
-                    </div>
-                    {/* Temporary test buttons for round transitions */}
-                    <div className="flex gap-1 mt-2 justify-center">
-                      <button 
-                        onClick={() => gameRoomService.updateLobbyState({
-                          ...lobbyState,
-                          [LobbyStateEnum.ROUND]: 1,
-                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
-                        })}
-                        className="bg-red-500 text-white px-2 py-1 rounded text-xs"
-                      >
-                        R1
-                      </button>
-                      <button 
-                        onClick={() => gameRoomService.updateLobbyState({
-                          ...lobbyState,
-                          [LobbyStateEnum.ROUND]: 2,
-                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
-                        })}
-                        className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-                      >
-                        R2
-                      </button>
-                      <button 
-                        onClick={() => gameRoomService.updateLobbyState({
-                          ...lobbyState,
-                          [LobbyStateEnum.ROUND]: 3,
-                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
-                        })}
-                        className="bg-green-500 text-white px-2 py-1 rounded text-xs"
-                      >
-                        R3
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center">
-                    <div className="text-[24px] font-bold text-black text-center mb-2">
-                      {currentPhase.replace(/_/g, ' ')}
-                    </div>
-                    {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
-                      <button
-                        onClick={handlePlayerReady}
-                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition"
-                      >
-                        Ready
-                      </button>
-                    ) : currentPhase === GameLobbyStatus.PREPARING ? (
-                      <div className="text-center">
-                        <div className="text-lg text-black mb-2">
-                          Waiting for all players...
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Ready: {Object.values(lobbyState?.readyPlayers || {}).filter(ready => ready).length}/3
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
-              </div>
-            </div>
             {/* Timer right */}
             <div className="flex-1 flex items-start justify-end">
               <Timer 
-                key={currentRound} 
-                seconds={timerSeconds} 
+                key={`${currentRound}-${currentPhase}`}
+                duration={phaseDuration}
                 onTimeUp={handleTimeUp} 
-                isRunning={isTimerRunning}
+                isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY}
+                syncWithTimestamp={phaseStartTime > 0 ? phaseStartTime : undefined}
               />
             </div>
           </div>
 
+          {/* Player Status Area - shown when not in gameplay */}
+          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && (
+            <div className="w-full flex items-center justify-center mt-8">
+              <div className="bg-white rounded-[16px] px-8 py-6">
+                <div className="text-center">
+                  <div className="text-[24px] font-bold text-black text-center mb-4">
+                    {currentPhase.replace(/_/g, ' ')}
+                  </div>
+                  {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+                    <button
+                      onClick={handlePlayerReady}
+                      className="bg-blue-500 text-white px-6 py-3 rounded text-lg hover:bg-blue-600 transition"
+                    >
+                      Ready
+                    </button>
+                  ) : currentPhase === GameLobbyStatus.PREPARING ? (
+                    <div className="text-center">
+                      <div className="text-lg text-black mb-2">
+                        Waiting for all players...
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Ready: {Object.values(lobbyState?.readyPlayers || {}).filter(ready => ready).length}/3
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Sector sections - only show during gameplay */}
           {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && (
             <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-              {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
-              {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
+              {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
+              {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
             </div>
           )}
         </div>
@@ -692,34 +617,40 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Game Flow Modals */}
       <IntroductionModal 
         isOpen={showIntroduction}
-        onDurationComplete={transitionToNextPhase}
-        duration={getSynchronizedPhaseDuration(GameLobbyStatus.INTRODUCTION)}
+        onDurationComplete={() => {}}
+        duration={getPhaseDuration(GameLobbyStatus.INTRODUCTION)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
       />
       
       <TutorialModal 
         isOpen={showTutorial}
-        onDurationComplete={transitionToNextPhase}
-        duration={getSynchronizedPhaseDuration(GameLobbyStatus.TUTORIAL)}
+        onDurationComplete={() => {}}
+        duration={getPhaseDuration(GameLobbyStatus.TUTORIAL)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
       />
       
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
-        onDurationComplete={transitionToNextPhase}
-        round={gameFlowRound as 1 | 2 | 3}
-        duration={getSynchronizedPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+        round={currentRound as 1 | 2 | 3}
+        duration={getPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+        onDurationComplete={() => {}}
       />
       
       <ScoreBreakdownModal 
         isOpen={showScoreBreakdown}
         breakdown={{ totalPoints: finalScore, roundPoints: Math.floor(finalScore / 3) }}
-        roundNumber={gameFlowRound as 1 | 2 | 3}
+        roundNumber={currentRound as 1 | 2 | 3}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+        onDurationComplete={() => {}}
       />
       
       <EndingModal 
         isOpen={showEnding}
-        onDurationComplete={transitionToNextPhase}
+        onDurationComplete={() => {}}
         finalScore={finalScore}
-        duration={getSynchronizedPhaseDuration(GameLobbyStatus.ENDING)}
+        duration={getPhaseDuration(GameLobbyStatus.ENDING)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
       />
       
       <TeamNameInputModal 
@@ -728,7 +659,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           // Handle team name submission (you can implement leaderboard logic here)
           console.log('Team name submitted:', teamName, 'Score:', finalScore);
           setShowTeamNameInput(false);
-          transitionToNextPhase();
         }}
         finalScore={finalScore}
       />

@@ -1,28 +1,39 @@
 import React, { useEffect } from 'react';
+import { useTimer } from '@/components/hooks/useTimer';
 import Modal from './Modal';
 
 interface RoundInstructionsModalProps {
   isOpen: boolean;
-  onDurationComplete: () => void;
+  onDurationComplete?: () => void;
   round: number;
   duration?: number;
+  syncWithTimestamp?: number;
 }
 
 const RoundInstructionsModal: React.FC<RoundInstructionsModalProps> = ({ 
   isOpen, 
   onDurationComplete, 
   round,
-  duration = 15 
+  duration = 15,
+  syncWithTimestamp
 }) => {
+  const { timeRemaining, progressPercentage } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Fallback for when sync is not available
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || syncWithTimestamp) return;
 
     const timer = setTimeout(() => {
-      onDurationComplete();
+      onDurationComplete?.();
     }, duration * 1000);
 
     return () => clearTimeout(timer);
-  }, [isOpen, onDurationComplete, duration]);
+  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
 
   const getRoundContent = (roundNumber: number) => {
     switch (roundNumber) {

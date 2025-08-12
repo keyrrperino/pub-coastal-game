@@ -1,24 +1,35 @@
 import React from 'react';
+import { useTimer } from '@/components/hooks/useTimer';
 import Hint from './Hint';
 import styles from './styles.module.css';
 
 interface TimerProps {
-  seconds: number;
+  duration: number;
   onTimeUp?: () => void;
   isRunning?: boolean;
+  syncWithTimestamp?: number;
+  hintText?: string;
+  showHint?: boolean;
 }
 
 const Timer: React.FC<TimerProps> = ({ 
-  seconds, 
+  duration,
   onTimeUp,
-  isRunning = true 
+  isRunning = true,
+  syncWithTimestamp,
+  hintText = "HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE",
+  showHint = true,
 }) => {
-  // For progress calculation, we need to know the original duration
-  // Since we're getting remaining seconds, we'll assume a default max duration
-  // This could be improved by passing the original duration as a prop
-  const defaultDuration = 30;
-  const progressPercentage = isRunning ? (seconds / defaultDuration) * 100 : 0;
-  const isAlmostUp = seconds <= 10 && seconds > 0 && isRunning;
+  const {
+    timeRemaining,
+    progressPercentage,
+    isAlmostUp,
+  } = useTimer({
+    duration,
+    onTimeUp,
+    startImmediately: isRunning,
+    syncWithTimestamp,
+  });
 
   return (
     <div className="flex flex-row items-center gap-8 w-full">
@@ -51,16 +62,18 @@ const Timer: React.FC<TimerProps> = ({
           </div>
         </div>
         {/* Hint below, outside the white box */}
-        <div className="text-left mt-2">
-          <Hint text="HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE" />
-        </div>
+        {showHint && (
+          <div className="text-left mt-2">
+            <Hint text={hintText} />
+          </div>
+        )}
       </div>
       {/* Timer value */}
       <div className={`flex items-baseline ml-4 ${isAlmostUp ? styles.timerWiggle : ''}`}>
         <div
           className={`${styles.novecentoBold} text-[120px] font-bold leading-[1] text-white uppercase w-[150px] text-center`}
         >
-          {seconds}
+          {timeRemaining}
         </div>
         <div
           className={`${styles.novecentoBold} text-[42.75px] font-bold leading-[1] text-white uppercase ml-2`}

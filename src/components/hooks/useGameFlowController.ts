@@ -9,7 +9,6 @@ interface GameFlowControllerReturn {
   currentRound: number;
   isTransitioning: boolean;
   startGameFlow: () => void;
-  transitionToNextPhase: () => void;
   getPhaseDuration: (phase: GameLobbyStatus) => number;
   resetGameFlow: () => void;
   startActualGameFlow: () => void;
@@ -79,49 +78,7 @@ export function useGameFlowController(
     return PHASE_DURATIONS[phase] || 0;
   }, []);
 
-  const transitionToNextPhase = useCallback(() => {
-    setIsTransitioning(true);
-    
-    const nextIndex = flowIndex + 1;
-    if (nextIndex >= GAME_FLOW_SEQUENCE.length) {
-      // Game flow completed, return to initialization
-      setCurrentPhase(GameLobbyStatus.ENDED);
-      setFlowIndex(0);
-      setLobbyState(prev => createDefaultLobbyState({
-        ...(prev || {}),
-        gameLobbyStatus: GameLobbyStatus.ENDED,
-        phaseStartTime: 0,
-        phaseDuration: 0
-      }));
-    } else {
-      const nextPhase = GAME_FLOW_SEQUENCE[nextIndex];
-      const phaseDuration = getPhaseDuration(nextPhase);
-      setCurrentPhase(nextPhase);
-      setFlowIndex(nextIndex);
-      
-      // Update round number based on phase
-      if (nextPhase === GameLobbyStatus.ROUND_STORYLINE) {
-        const roundNumber = Math.floor(nextIndex / 6) + 1;
-        setCurrentRound(roundNumber);
-        setLobbyState(prev => createDefaultLobbyState({
-          ...(prev || {}),
-          round: roundNumber, 
-          gameLobbyStatus: nextPhase,
-          phaseStartTime: Date.now(),
-          phaseDuration: phaseDuration
-        }));
-      } else {
-        setLobbyState(prev => createDefaultLobbyState({
-          ...(prev || {}),
-          gameLobbyStatus: nextPhase,
-          phaseStartTime: Date.now(),
-          phaseDuration: phaseDuration
-        }));
-      }
-    }
-    
-    setTimeout(() => setIsTransitioning(false), 500);
-  }, [flowIndex, setLobbyState, getPhaseDuration]);
+
 
   const startGameFlow = useCallback(() => {
     // This function is now handled by the handlePlayerReady function instead
@@ -193,7 +150,6 @@ export function useGameFlowController(
     currentRound,
     isTransitioning,
     startGameFlow,
-    transitionToNextPhase,
     getPhaseDuration,
     resetGameFlow,
     startActualGameFlow,

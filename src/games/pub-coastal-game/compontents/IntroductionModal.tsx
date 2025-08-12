@@ -1,26 +1,37 @@
 import React, { useEffect } from 'react';
+import { useTimer } from '@/components/hooks/useTimer';
 import Modal from './Modal';
 
 interface IntroductionModalProps {
   isOpen: boolean;
-  onDurationComplete: () => void;
+  onDurationComplete?: () => void;
   duration?: number;
+  syncWithTimestamp?: number;
 }
 
 const IntroductionModal: React.FC<IntroductionModalProps> = ({ 
   isOpen, 
   onDurationComplete, 
-  duration = 15 
+  duration = 15,
+  syncWithTimestamp
 }) => {
+  const { timeRemaining, progressPercentage } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Fallback for when sync is not available
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || syncWithTimestamp) return;
 
     const timer = setTimeout(() => {
-      onDurationComplete();
+      onDurationComplete?.();
     }, duration * 1000);
 
     return () => clearTimeout(timer);
-  }, [isOpen, onDurationComplete, duration]);
+  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
 
   if (!isOpen) return null;
 
@@ -70,11 +81,16 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
             <div 
               className="h-full bg-white transition-all duration-1000 ease-linear"
               style={{ 
-                width: '100%',
-                animation: 'shrinkWidth 15s linear forwards'
+                width: `${syncWithTimestamp ? progressPercentage : 100}%`,
+                animation: syncWithTimestamp ? undefined : 'shrinkWidth 15s linear forwards'
               }}
             ></div>
           </div>
+          {syncWithTimestamp && (
+            <div className="text-white text-sm mt-2">
+              {timeRemaining}s remaining
+            </div>
+          )}
           
           <style jsx>{`
             @keyframes shrinkWidth {

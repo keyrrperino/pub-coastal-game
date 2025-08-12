@@ -1,4 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useTimer } from '@/components/hooks/useTimer';
+import { getPhaseDuration } from '@/components/hooks/phaseUtils';
+import { GameLobbyStatus } from '@/lib/enums';
+
+interface ScoreBreakdownModalProps {
+  isOpen: boolean;
+  breakdown: any;
+  roundNumber: 1 | 2 | 3;
+  syncWithTimestamp?: number;
+  onDurationComplete?: () => void;
+}
 
 // Example: breakdown = getRoundBreakdownByPlayer(...)
 // roundNumber: 1, 2, or 3
@@ -34,11 +45,29 @@ export default function ScoreBreakdownModal({
   isOpen,
   breakdown,
   roundNumber,
-}: {
-  isOpen: boolean;
-  breakdown: any; // from getRoundBreakdownByPlayer
-  roundNumber: 1 | 2 | 3;
-}) {
+  syncWithTimestamp,
+  onDurationComplete,
+}: ScoreBreakdownModalProps) {
+  const duration = getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN);
+  
+  const { timeRemaining } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Fallback timer for when sync is not available
+  useEffect(() => {
+    if (!isOpen || syncWithTimestamp || !onDurationComplete) return;
+
+    const timer = setTimeout(() => {
+      onDurationComplete();
+    }, duration * 1000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
+
   if (!isOpen || !breakdown) return null;
 
   const color = roundColorMap[roundNumber];
