@@ -124,15 +124,9 @@ export function useGameFlowController(
   }, [flowIndex, setLobbyState, getPhaseDuration]);
 
   const startGameFlow = useCallback(() => {
-    // First, set the player as ready and update lobby state to PREPARING
-    setLobbyState(prev => createDefaultLobbyState({
-      ...(prev || {}),
-      gameLobbyStatus: GameLobbyStatus.PREPARING,
-      round: 1,
-      phaseStartTime: 0,
-      phaseDuration: 0
-    }));
-  }, [setLobbyState]);
+    // This function is now handled by the handlePlayerReady function instead
+    // which properly updates Firebase without race conditions
+  }, []);
 
   const startActualGameFlow = useCallback(() => {
     const phaseDuration = getPhaseDuration(GameLobbyStatus.INTRODUCTION);

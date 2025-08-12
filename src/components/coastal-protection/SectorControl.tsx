@@ -349,16 +349,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Set this player as ready
     await gameRoomService.setPlayerReady(true);
     
-    // Update local lobby state to PREPARING
-    setLobbyState((prev: LobbyStateType | null) => createDefaultLobbyState({
-      ...(prev || {}),
-      gameLobbyStatus: GameLobbyStatus.PREPARING,
-      readyPlayers: {
-        ...(prev?.readyPlayers || {}),
-        [gameRoomService.getCurrentUserId()]: true
-      }
-    }));
+    // Don't change the game status here - let the useGameFlowController handle it
+    // when all players are ready (it monitors readyPlayers and auto-starts when count >= 3)
   }, [gameRoomService]);
+
+  // Monitor player readiness and transition to PREPARING when all players are ready
+  useEffect(() => {
+    if (lobbyState && lobbyState.gameLobbyStatus === GameLobbyStatus.INITIALIZING) {
+      const readyCount = Object.values(lobbyState.readyPlayers || {}).filter(ready => ready).length;
+      
+      if (readyCount >= 3) { // All 3 players are ready
+        console.log('All players are ready! Moving to PREPARING...');
+        gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
+      }
+    }
+  }, [lobbyState?.readyPlayers, lobbyState?.gameLobbyStatus, gameRoomService]);
 
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
@@ -649,7 +654,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                           Waiting for all players...
                         </div>
                         <div className="text-sm text-gray-600">
-                          Ready: {Object.keys(lobbyState?.readyPlayers || {}).length}/3
+                          Ready: {Object.values(lobbyState?.readyPlayers || {}).filter(ready => ready).length}/3
                         </div>
                       </div>
                     ) : null}
