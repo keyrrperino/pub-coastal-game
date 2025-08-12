@@ -1,18 +1,51 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styles from './InputTeamNameScreen.module.css';
+import styles from './TeamNameInputScreen.module.css';
 
-interface InputTeamNameScreenProps {
+export type EndingScenario = 'success' | 'moderate' | 'failure';
+
+interface TeamNameInputScreenProps {
+  endingScenario: EndingScenario;
   finalScore: number;
   onSubmit: (teamName: string) => void;
 }
 
-const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({ 
+interface ScenarioConfig {
+  title: string;
+  subtitle: string;
+  bgColor: string;
+  borderGradient: string;
+}
+
+const scenarioConfigs: Record<EndingScenario, ScenarioConfig> = {
+  success: {
+    title: "Congratulations!",
+    subtitle: "You've successfully defended Singapore's shores from rising sea levels.",
+    bgColor: "rgba(175, 255, 178, 0.3)",
+    borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)"
+  },
+  moderate: {
+    title: "Well done!",
+    subtitle: "You've made important progress protecting Singapore's coasts.",
+    bgColor: "rgba(255, 238, 175, 0.3)",
+    borderGradient: "linear-gradient(135deg, #FFEEAF 0%, #FFFFFF 100%)"
+  },
+  failure: {
+    title: "Oh no",
+    subtitle: "too many floods have breached Singapore's defenses this time. But don't give up!",
+    bgColor: "rgba(255, 175, 175, 0.3)",
+    borderGradient: "linear-gradient(135deg, rgba(17, 68, 153, 0) 0%, #FFFFFF 100%)"
+  }
+};
+
+const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({ 
+  endingScenario,
   finalScore, 
   onSubmit 
 }) => {
   const [letters, setLetters] = useState(['', '', '']);
   const [currentFocus, setCurrentFocus] = useState(0);
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const config = scenarioConfigs[endingScenario];
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === 'Enter') {
@@ -65,11 +98,6 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
         setCurrentFocus(index + 1);
       }
     }
-    
-    // Prevent any other input
-    if (e.key.length === 1 && !/[A-Za-z]/.test(e.key)) {
-      e.preventDefault();
-    }
   };
 
   const handleInputClick = (index: number) => {
@@ -83,7 +111,7 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
   }, [currentFocus]);
 
   return (
-    <div className={styles.container} style={{ fontFamily: 'initial' }}>
+    <div className={styles.container}>
       {/* Background Image */}
       <div className={styles.backgroundImage} />
       
@@ -95,10 +123,10 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
         {/* Congratulations Section */}
         <div className={styles.congratulationsSection}>
           <h1 className={styles.congratulationsTitle}>
-            Congratulations!
+            {config.title}
           </h1>
           <p className={styles.congratulationsText}>
-            You've successfully defended Singapore's shores from rising sea levels.
+            {config.subtitle}
           </p>
           <div className={styles.scoreSection}>
             <p className={styles.scoreText}>
@@ -110,11 +138,33 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
           </div>
         </div>
 
-                {/* Input Section */}
+        {/* Input Section */}
         <div className={styles.inputSection}>
+          <style jsx>{`
+            div::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              border-radius: 55.7px;
+              padding: 4.64px;
+              background: ${config.borderGradient};
+              -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+              -webkit-mask-composite: xor;
+              mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+              mask-composite: exclude;
+              pointer-events: none;
+            }
+          `}</style>
           <div 
             className={styles.inputContainer}
-            style={{ backgroundColor: 'rgba(175, 255, 178, 0.3)' }}
+            style={{ backgroundColor: config.bgColor }}
           >
             <div className={styles.inputWrapper}>
               <label className={`${styles.inputLabel} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
@@ -152,4 +202,4 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
   );
 };
 
-export default InputTeamNameScreen; 
+export default TeamNameInputScreen; 

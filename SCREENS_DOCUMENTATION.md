@@ -1,310 +1,122 @@
-# Coastal Protectors - Screens Documentation
+# Screens created in this branch (feat/ui-screens)
 
-This document provides a comprehensive overview of all screens in the Coastal Protectors game, their purposes, and how to access them.
+Only the new screens and overlays added in this branch are listed below, with links and minimal integration snippets.
 
-## Table of Contents
-- [Screen Categories](#screen-categories)
-- [Main Game Screens](#main-game-screens)
-- [Tutorial Screens](#tutorial-screens)
-- [Player Screens](#player-screens)
-- [Control Screens](#control-screens)
-- [Navigation Flow](#navigation-flow)
-- [File Structure](#file-structure)
-- [Styling Guidelines](#styling-guidelines)
+## Team name input (ending flow)
+- Page: `/team-name-input-demo`
+- Component: `src/components/TeamNameInputScreen.tsx`
+- Purpose: Reusable 3-letter team name input with scenario theming (success/moderate/failure)
 
-## Screen Categories
+Usage:
+```tsx
+import TeamNameInputScreen, { EndingScenario } from '@/components/TeamNameInputScreen';
 
-The game consists of four main categories of screens:
-
-1. **Main Game Screens** - Core gameplay screens (start, rounds)
-2. **Tutorial Screens** - Introduction and learning screens
-3. **Player Screens** - Player-specific round screens
-4. **Control Screens** - Administrative and control interfaces
-
-## Main Game Screens
-
-### Start Screen
-- **URL**: `/start` or `/` (homepage)
-- **Component**: `src/components/StartScreen.tsx`
-- **Page**: `src/pages/start.tsx`
-- **Purpose**: Main entry point with game title, player indicator, and action buttons
-- **Features**:
-  - Coastal background image
-  - "START GAME" button (navigates to Round 1)
-  - "SHOW LEADERBOARD" button
-  - Player indicator showing "PLAYER 1"
-
-### Round Screens
-
-#### Round 1 Screen
-- **URL**: `/round1`
-- **Component**: `src/components/Round1Screen.tsx`
-- **Page**: `src/pages/round1.tsx`
-- **Year Range**: 2025-2050
-- **Purpose**: First round introduction with specific instructions
-- **Features**:
-  - Round title and year range
-  - Detailed mission description
-  - "3, 2, 1, GO!" button
-  - Breakdown overlay
-
-#### Round 2 Screen
-- **URL**: `/round2`
-- **Component**: `src/components/Round2Screen.tsx`
-- **Page**: `src/pages/round2.tsx`
-- **Year Range**: 2050-2075
-- **Purpose**: Second round introduction
-- **Features**: Same structure as Round 1 with different content
-
-#### Round 3 Screen
-- **URL**: `/round3`
-- **Component**: `src/components/Round3Screen.tsx`
-- **Page**: `src/pages/round3.tsx`
-- **Year Range**: 2075-2100
-- **Purpose**: Final round introduction
-- **Features**: Same structure as Round 1 with different content
-
-### Base Round Component
-- **Component**: `src/components/RoundScreen.tsx`
-- **Purpose**: Reusable base component for all round screens
-- **Props**:
-  - `roundNumber`: The round number (1, 2, or 3)
-  - `yearRange`: The year range for the round
-  - `description`: The round description text
-  - `onContinue`: Callback function when the button is clicked
-
-## Tutorial Screens
-
-### Tutorial 1 - Welcome Screen
-- **URL**: `/tutorial/1`
-- **Component**: `src/components/TutorialScreen1.tsx`
-- **Page**: `src/pages/tutorial/1.tsx`
-- **Purpose**: Welcome message and mission overview
-- **Features**:
-  - Welcome to Coastal Protection Taskforce
-  - Mission description about sea level rise
-  - Disclaimer about simulation
-  - "CONTINUE" button
-
-### Tutorial 2 - Sectors Overview
-- **URL**: `/tutorial/2`
-- **Component**: `src/components/TutorialScreen2.tsx`
-- **Page**: `src/pages/tutorial/2.tsx`
-- **Purpose**: Singapore sectors and player assignments
-- **Features**:
-  - Three colored sectors (Green, Red, Yellow)
-  - Player assignments for each sector
-  - Subsector examples (Industrial, Commercial, Residential)
-  - "CONTINUE" button
-
-### Tutorial 3 - Protection Measures
-- **URL**: `/tutorial/3`
-- **Component**: `src/components/TutorialScreen3.tsx`
-- **Page**: `src/pages/tutorial/3.tsx`
-- **Purpose**: Coastal protection measures overview
-- **Features**:
-  - Three protection measures: Land Reclamation, Seawall, Mangroves
-  - Cost indicators (gold coins)
-  - Sea level protection levels (2m, 1.15m, 0.5m)
-  - "3... 2... 1... go!" countdown
-  - "START GAME" button
-
-## Player Screens
-
-### Player Round Screens
-These screens are specifically designed for player view with simplified information.
-
-#### Player Round 1
-- **URL**: `/player/round1`
-- **Component**: `src/components/player-screens/PlayerRound1Screen.tsx`
-- **Page**: `src/pages/player/round1.tsx`
-- **Purpose**: Player-specific Round 1 screen
-- **Features**:
-  - Simplified round information
-  - Game info card with time and coins
-  - "3, 2, 1, GO!" countdown
-
-#### Player Round 2
-- **URL**: `/player/round2`
-- **Component**: `src/components/player-screens/PlayerRound2Screen.tsx`
-- **Page**: `src/pages/player/round2.tsx`
-- **Purpose**: Player-specific Round 2 screen
-
-#### Player Round 3
-- **URL**: `/player/round3`
-- **Component**: `src/components/player-screens/PlayerRound3Screen.tsx`
-- **Page**: `src/pages/player/round3.tsx`
-- **Purpose**: Player-specific Round 3 screen
-
-## Control Screens
-
-### Control Index
-- **URL**: `/control`
-- **Component**: `src/pages/control/index.tsx`
-- **Purpose**: Main control interface for managing the game
-- **Features**:
-  - Game management controls
-  - Sector overview
-  - Player management
-
-### Sector Control
-- **URL**: `/control/[sector]` (dynamic route)
-- **Component**: `src/pages/control/[sector].tsx`
-- **Purpose**: Control interface for specific sectors
-- **Features**:
-  - Sector-specific controls
-  - Player assignment management
-  - Game state monitoring
-
-### Old Control Screens
-- **URLs**: `/old-control`, `/old-control/[sector]`
-- **Components**: `src/pages/old-control/index.tsx`, `src/pages/old-control/[sector].tsx`
-- **Purpose**: Legacy control interfaces (kept for reference)
-
-## Navigation Flow
-
-### Main Game Flow
-```
-Start Screen (/start)
-    ↓
-Round 1 (/round1)
-    ↓
-Round 2 (/round2)
-    ↓
-Round 3 (/round3)
-    ↓
-Game End
+<TeamNameInputScreen
+  endingScenario={"success" as EndingScenario}
+  finalScore={9500}
+  onSubmit={(teamName) => {
+    // Persist or broadcast the team name, then proceed
+  }}
+/>
 ```
 
-### Tutorial Flow
-```
-Tutorial 1 (/tutorial/1)
-    ↓
-Tutorial 2 (/tutorial/2)
-    ↓
-Tutorial 3 (/tutorial/3)
-    ↓
-Round 1 (/round1)
-```
+## Player input screens (in-game)
+- Player 1 (with input): `/input-screens/player-1`
+- Player 2+ (informational): `/input-screens/player-2`
+- Demo selector: `/player-screens-demo`
+- Component: `src/components/PlayerTeamNameScreen.tsx`
 
-### Player Flow
-```
-Player Round 1 (/player/round1)
-    ↓
-Player Round 2 (/player/round2)
-    ↓
-Player Round 3 (/player/round3)
-```
+Usage (component):
+```tsx
+import PlayerTeamNameScreen from '@/components/PlayerTeamNameScreen';
 
-### Control Flow
-```
-Control Index (/control)
-    ↓
-Sector Control (/control/[sector])
+// Player 1 (can type and save)
+<PlayerTeamNameScreen
+  playerNumber={1}
+  onSubmit={(teamName) => {
+    // Save teamName and advance flow
+  }}
+/>
+
+// Player 2+ (informational only)
+<PlayerTeamNameScreen playerNumber={2} />
 ```
 
-## File Structure
-
-```
-src/
-├── components/
-│   ├── StartScreen.tsx
-│   ├── RoundScreen.tsx
-│   ├── Round1Screen.tsx
-│   ├── Round2Screen.tsx
-│   ├── Round3Screen.tsx
-│   ├── TutorialScreen1.tsx
-│   ├── TutorialScreen2.tsx
-│   ├── TutorialScreen3.tsx
-│   ├── player-screens/
-│   │   ├── index.ts
-│   │   ├── PlayerRound1Screen.tsx
-│   │   ├── PlayerRound2Screen.tsx
-│   │   └── PlayerRound3Screen.tsx
-│   └── tutorial-screens/
-│       └── index.ts
-├── pages/
-│   ├── start.tsx
-│   ├── round1.tsx
-│   ├── round2.tsx
-│   ├── round3.tsx
-│   ├── tutorial/
-│   │   ├── 1.tsx
-│   │   ├── 2.tsx
-│   │   └── 3.tsx
-│   ├── player/
-│   │   ├── round1.tsx
-│   │   ├── round2.tsx
-│   │   └── round3.tsx
-│   └── control/
-│       ├── index.tsx
-│       └── [sector].tsx
-└── public/
-    └── assets/
-        ├── tutorial-bg.png
-        ├── land-reclamation-icon-6b707d.png
-        ├── seawall-icon-41fadd.png
-        └── mangroves-icon-3a15a8.png
+Router usage (pages already provided):
+```ts
+router.push('/input-screens/player-1');
+router.push('/input-screens/player-2');
 ```
 
-## Styling Guidelines
+## Ending leaderboard overlay (with bottom yellow bar)
+- Page: `/ending-leaderboard-demo`
+- Component: `src/components/EndingLeaderboardOverlay.tsx`
+- Purpose: Leaderboard overlay only (no background), with yellow highlight row at the bottom
 
-### Color Scheme
-- **Primary Blue**: `#005DFF`
-- **Cyan Accent**: `#91E2FF`
-- **Purple Shadow**: `rgba(148,107,199,1)`
-- **Background Overlay**: `rgba(0,0,0,0.5)`
-- **Card Background**: `rgba(175,240,255,0.3)`
+Usage:
+```tsx
+import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 
-### Typography
-- **Font Family**: Novecento Bold
-- **Large Titles**: 7xl-9xl
-- **Medium Text**: 3xl-4xl
-- **Small Text**: text-sm-xs
+const [open, setOpen] = useState(true);
 
-### Effects
-- **Drop Shadows**: `drop-shadow-[0_4px_4px_rgba(148,107,199,1)]`
-- **Backdrop Blur**: `backdrop-blur-[64px]`
-- **Gradient Borders**: `border-gradient-to-br from-[#91E2FF] to-white`
+<EndingLeaderboardOverlay
+  isOpen={open}
+  onClose={() => setOpen(false)}
+  // Optional overrides (defaults match Figma):
+  // leaderboardData={[{ name: 'KEN', points: 2400 }, ...]}
+  // topWinner={{ name: 'PUB', points: 2500 }}
+  // bottomHighlight={{ name: 'RfF', points: 500 }}
+/>
+```
 
-### Responsive Design
-- All screens are responsive and work on different screen sizes
-- Mobile-first approach with proper scaling
-- Touch-friendly button sizes
+## Player ending screens (text-only variants)
+- Page: `/player-ending-screens-demo`
+- Components: `src/components/EndingScreen1.tsx`, `EndingScreen2.tsx`, `EndingScreen3.tsx`
 
-## Quick Access Reference
+Usage:
+```tsx
+import EndingScreen1 from '@/components/EndingScreen1';
+import EndingScreen2 from '@/components/EndingScreen2';
+import EndingScreen3 from '@/components/EndingScreen3';
 
-### Main URLs
-- **Start**: `/start`
-- **Tutorial 1**: `/tutorial/1`
-- **Tutorial 2**: `/tutorial/2`
-- **Tutorial 3**: `/tutorial/3`
-- **Round 1**: `/round1`
-- **Round 2**: `/round2`
-- **Round 3**: `/round3`
+// Choose one by scenario
+<EndingScreen1 finalScore={9500} />
+<EndingScreen2 finalScore={7500} />
+<EndingScreen3 finalScore={3500} />
+```
 
-### Player URLs
-- **Player Round 1**: `/player/round1`
-- **Player Round 2**: `/player/round2`
-- **Player Round 3**: `/player/round3`
+## Tutorial screens
+- Pages: `/tutorial/1`, `/tutorial/2`, `/tutorial/3`
+- Components: `src/components/TutorialScreen1.tsx`, `TutorialScreen2.tsx`, `TutorialScreen3.tsx`
 
-### Control URLs
-- **Control Index**: `/control`
-- **Sector Control**: `/control/[sector]` (replace [sector] with actual sector)
+Usage (callbacks wired by host flow):
+```tsx
+import TutorialScreen1 from '@/components/TutorialScreen1';
+import TutorialScreen2 from '@/components/TutorialScreen2';
+import TutorialScreen3 from '@/components/TutorialScreen3';
 
-## Development Notes
+<TutorialScreen1 onContinue={() => router.push('/tutorial/2')} />
+<TutorialScreen2 onContinue={() => router.push('/tutorial/3')} />
+<TutorialScreen3 onContinue={() => router.push('/round1')} />
+```
 
-- All screens use Next.js Image component for optimized loading
-- Components are TypeScript-based with proper interfaces
-- Navigation uses Next.js router for client-side routing
-- All assets are stored in `/public/assets/` directory
-- Styling uses Tailwind CSS with custom color values
-- Components follow a consistent structure and naming convention
+## Modals (demo)
+- Page: `/modal-demo`
+- Component entry: `src/components/CoastalGameModal.tsx`
 
-## Future Enhancements
+Usage:
+```tsx
+import CoastalGameModal from '@/components/CoastalGameModal';
 
-- Add loading states for better UX
-- Implement animations between screen transitions
-- Add sound effects for button interactions
-- Create mobile-specific layouts
-- Add accessibility features (ARIA labels, keyboard navigation) 
+<CoastalGameModal
+  isOpen
+  onClose={() => setOpen(false)}
+  onContinue={() => {/* advance */}}
+  // pass optional sector data, budget, etc.
+/>
+```
+
+Notes:
+- All routes above are available in this branch; integrate by either navigating to the page routes or embedding the components directly into your flow.
+- Fonts: Novecento Bold/Condensed are registered globally in `src/styles/globals.css`.
+- Text shadows follow the ending screens; use Tailwind `drop-shadow-[...]` classes as shown in components. 

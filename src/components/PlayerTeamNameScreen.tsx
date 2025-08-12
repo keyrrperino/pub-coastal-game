@@ -1,23 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styles from './InputTeamNameScreen.module.css';
+import styles from './PlayerTeamNameScreen.module.css';
 
-interface InputTeamNameScreenProps {
-  finalScore: number;
-  onSubmit: (teamName: string) => void;
+interface PlayerTeamNameScreenProps {
+  playerNumber: number;
+  onSubmit?: (teamName: string) => void;
 }
 
-const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({ 
-  finalScore, 
+const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({ 
+  playerNumber,
   onSubmit 
 }) => {
   const [letters, setLetters] = useState(['', '', '']);
   const [currentFocus, setCurrentFocus] = useState(0);
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isPlayer1 = playerNumber === 1;
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === 'Enter') {
       const teamName = letters.join('').toUpperCase();
-      if (teamName.length === 3) {
+      if (teamName.length === 3 && onSubmit) {
         onSubmit(teamName);
       }
       return;
@@ -65,15 +66,17 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
         setCurrentFocus(index + 1);
       }
     }
-    
-    // Prevent any other input
-    if (e.key.length === 1 && !/[A-Za-z]/.test(e.key)) {
-      e.preventDefault();
-    }
   };
 
   const handleInputClick = (index: number) => {
     setCurrentFocus(index);
+  };
+
+  const handleSave = () => {
+    const teamName = letters.join('').toUpperCase();
+    if (teamName.length === 3 && onSubmit) {
+      onSubmit(teamName);
+    }
   };
 
   useEffect(() => {
@@ -83,7 +86,7 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
   }, [currentFocus]);
 
   return (
-    <div className={styles.container} style={{ fontFamily: 'initial' }}>
+    <div className={styles.container}>
       {/* Background Image */}
       <div className={styles.backgroundImage} />
       
@@ -92,33 +95,12 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
       
       {/* Content */}
       <div className={styles.content}>
-        {/* Congratulations Section */}
-        <div className={styles.congratulationsSection}>
-          <h1 className={styles.congratulationsTitle}>
-            Congratulations!
-          </h1>
-          <p className={styles.congratulationsText}>
-            You've successfully defended Singapore's shores from rising sea levels.
-          </p>
-          <div className={styles.scoreSection}>
-            <p className={styles.scoreText}>
-              YOUR FINAL SCORE:
-            </p>
-            <p className={styles.scoreValue}>
-              {finalScore.toLocaleString()}
-            </p>
-          </div>
-        </div>
-
-                {/* Input Section */}
-        <div className={styles.inputSection}>
-          <div 
-            className={styles.inputContainer}
-            style={{ backgroundColor: 'rgba(175, 255, 178, 0.3)' }}
-          >
+        {isPlayer1 ? (
+          // Player 1 - Input Screen
+          <div className={styles.inputSection}>
             <div className={styles.inputWrapper}>
               <label className={`${styles.inputLabel} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
-                PLAYER 1, INPUT TEAM NAME:
+                input team name:
               </label>
               <div className={styles.letterInputContainer}>
                 {[0, 1, 2].map((index) => (
@@ -145,11 +127,28 @@ const InputTeamNameScreen: React.FC<InputTeamNameScreenProps> = ({
                 ))}
               </div>
             </div>
+            <button 
+              className={styles.saveButton}
+              onClick={handleSave}
+              disabled={letters.join('').length !== 3}
+            >
+              Save
+            </button>
           </div>
-        </div>
+        ) : (
+          // Other Players - Informational Screen
+          <div className={styles.infoSection}>
+            <h1 className={`${styles.infoTitle} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
+              Choose a team name
+            </h1>
+            <p className={`${styles.infoText} drop-shadow-[0px_1.6955209970474243px_1.6955209970474243px_0px_rgba(148,107,199,1)]`}>
+              and go to player 1 to save your team's name. See how you did on the leaderboards!
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default InputTeamNameScreen; 
+export default PlayerTeamNameScreen; 
