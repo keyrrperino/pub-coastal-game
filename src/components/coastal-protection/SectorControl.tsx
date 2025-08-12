@@ -200,7 +200,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(true);
-        setShowLeaderboardOverlay(true);
+        setShowLeaderboardOverlay(false);
         // Fetch leaderboard data when entering this phase
         const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
         getGlobalLeaderboard(currentTeamNameScore).then(data => {
