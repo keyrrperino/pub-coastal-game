@@ -63,6 +63,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
   const [totalCoins, setTotalCoins] = useState(10);
 
+  // Use Firebase round instead of phase-based currentRound for actual game progression
+  const firebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+  
   // Game flow management
   const {
     currentPhase,
@@ -89,8 +92,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Debug logging for round state
   useEffect(() => {
-    console.log('SectorControl currentRound state:', currentRound);
-  }, [currentRound]);
+    console.log('SectorControl currentRound (phase-based):', currentRound);
+    console.log('SectorControl firebaseRound (actual game round):', firebaseRound);
+  }, [currentRound, firebaseRound]);
 
   // Game flow phase management
   useEffect(() => {
@@ -219,18 +223,18 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Handle round changes - capture round start state
   useEffect(() => {
-    if (currentRound !== previousRound) {
-      console.log(`Round changed from ${previousRound} to ${currentRound}`);
+    if (firebaseRound !== previousRound) {
+      console.log(`Round changed from ${previousRound} to ${firebaseRound}`);
       // Capture the activity log state at the start of this round
       const roundStartLog = [...activityLog];
       setRoundStartActivityLog(roundStartLog);
       
       // Calculate button sets for this round
-      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, firebaseRound);
       setRoundStartButtonSets(buttonSets);
     }
-    setPreviousRound(currentRound);
-  }, [currentRound, previousRound, activityLog, calculateButtonSetsForRound]);
+    setPreviousRound(firebaseRound);
+  }, [firebaseRound, previousRound, activityLog, calculateButtonSetsForRound]);
 
   // Initialize button sets on first load (R1)
   useEffect(() => {
@@ -238,10 +242,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       console.log('Initializing button sets for R1');
       const roundStartLog = [...activityLog];
       setRoundStartActivityLog(roundStartLog);
-      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, firebaseRound);
       setRoundStartButtonSets(buttonSets);
     }
-  }, [activityLog, currentRound, roundStartButtonSets, calculateButtonSetsForRound]);
+  }, [activityLog, firebaseRound, roundStartButtonSets, calculateButtonSetsForRound]);
   
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
@@ -249,8 +253,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Always call useProgression hooks at the top level to follow Rules of Hooks
   const sectorAId = `${sector.slice(-1)}A`;
   const sectorBId = `${sector.slice(-1)}B`;
-  const progressionStateA = useProgression(activityLog, currentRound, sectorAId);
-  const progressionStateB = useProgression(activityLog, currentRound, sectorBId);
+  const progressionStateA = useProgression(activityLog, firebaseRound, sectorAId);
+  const progressionStateB = useProgression(activityLog, firebaseRound, sectorBId);
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
     // Trigger Spline action
@@ -263,7 +267,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       userName: `Player ${sector.slice(-1)}`,
       action: activityType,
       value: `${activityType}`,
-      round: currentRound,
+      round: firebaseRound,
       timestamp: Date.now()
     };
     setActivityLog(prev => [...prev, newActivity]);
@@ -271,7 +275,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Log activity to game room using public method (this will sync with Firebase)
     const triggerConfig = SplineTriggersConfig[activityType];
     const subSectorFromConfig = triggerConfig?.subSector || sectorId;
-    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentRound, coinCost, true, subSectorFromConfig as any);
+    const result = await gameRoomService.addElement(activityType, `${activityType}`, firebaseRound, coinCost, true, subSectorFromConfig as any);
     
     if (result === 'insufficient') {
       console.log('Insufficient coins - showing modal');
@@ -290,7 +294,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       userName: `Player ${sector.slice(-1)}`,
       action: ActivityTypeEnum.DEMOLISH,
       value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
-      round: currentRound,
+      round: firebaseRound,
       timestamp: Date.now()
     };
     
@@ -306,13 +310,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       // Only recalculate for the demolished sector
       updatedButtonSets[sectorId] = {
-        mangroves: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'mangroves'),
-        seawall: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'seawall'),
-        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'land-reclamation'),
-        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'storm-surge-barrier'),
-        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'artificial-reef'),
-        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'hybrid-measure'),
-        revetment: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'revetment'),
+        mangroves: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'revetment'),
       };
       
       return updatedButtonSets;
@@ -320,7 +324,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
-    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound, 1, false, sectorId as any);
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, firebaseRound, 1, false, sectorId as any);
     
     if (result === 'insufficient') {
       console.log('Insufficient coins for demolish - showing modal');
@@ -456,13 +460,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           sectorActions, 
           activeActions, 
           activeCPMPath, 
-          currentRound
+          firebaseRound
         );
         const completionRound = getCPMCompletionRound(config.key, sectorId, activityLog);
         const hasNoMoreAvailableUpgrades = !hasAnySelectableInMeasureType && 
                                activeCPMPath === config.key &&
                                completionRound !== null && 
-                               currentRound > completionRound;
+                               firebaseRound > completionRound;
         
         // If no actions and not active CPM path, don't show the card
         if (config.roundStartActions.length === 0 && !hasNoMoreAvailableUpgrades) {
