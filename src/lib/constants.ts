@@ -1,5 +1,5 @@
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, SplineEventName, UserSectorEnum } from "./enums";
-import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
+import { LobbyStateType, RoundType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
 export const ROOM_NAME = "rooms-v2";
@@ -18,7 +18,7 @@ export const CUT_SCENE_TIMER_MILLISECOND = 5000; // 5 seconds
 // export const OVERALL_SCORE_POINTS = 2500;
 // export const TOTAL_COINS_PER_ROUND = 10;
 // export const MODAL_CLOSE_COUNTDOWN_VALUE = 1;
-// export const CUT_SCENE_TIMER_MILLISECONDS = 500;
+export const CUT_SCENE_TIMER_MILLISECONDS = 500;
 
 export const userIdToSector: Record<string, number> = {
   user_sector_1: 1,
@@ -651,25 +651,25 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
 };
 
 export const lobbyStateDefaultValue = {
-  roundTimer: GAME_ROUND_TIMER,
-  waterLevel: 0,
-  gameStartsInCountdown: GAME_STARST_IN_COUNTDOWN,
-  gameLobbyStatus: GameLobbyStatus.INITIALIZING,
-  isDoneShowingInstructions: false,
-  randomizeEffect: {
+  [LobbyStateEnum.ROUND_TIMER]: GAME_ROUND_TIMER,
+  [LobbyStateEnum.WATER_LEVEL_KEY]: 0,
+  [LobbyStateEnum.GAME_STARTS_IN_COUNDOWN_KEY]: GAME_STARST_IN_COUNTDOWN,
+  [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.INITIALIZING,
+  [LobbyStateEnum.IS_DONE_SHOWING_INSTRUCTIONS]: false,
+  [LobbyStateEnum.RANDOMIZE_EFFECT]: {
     1: getRandomEffectValue(1),
     2: getRandomEffectValue(2),
     3: getRandomEffectValue(3),
   },
-  countdownStartTime: Date.now(),
-  countdownPreparationStartTime: Date.now(),
-  roundTimerPercentage: 1,
-  round: 0,
-  coinsTotalPerRound: TOTAL_COINS_PER_ROUND,
-  coinsSpentByRound: {},
-  phaseStartTime: 0,
-  phaseDuration: 0,
-  readyPlayers: {}
+  [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+  [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: Date.now(),
+  [LobbyStateEnum.ROUND_TIMER_PERCENTAGE]: 1,
+  [LobbyStateEnum.ROUND]: 1 as RoundType,
+  [LobbyStateEnum.COINS_TOTAL_PER_ROUND]: TOTAL_COINS_PER_ROUND,
+  [LobbyStateEnum.COINS_SPENT_BY_ROUND]: {},
+  [LobbyStateEnum.PHASE_START_TIME]: 0,
+  [LobbyStateEnum.PHASE_DURATION]: 0,
+  [LobbyStateEnum.READY_PLAYERS]: {}
 } as LobbyStateType
 
 export const SPLINE_URL = "https://prod.spline.design/fIhV8lAzMkLzlKnk/scene.splinecode?v=1.2";
