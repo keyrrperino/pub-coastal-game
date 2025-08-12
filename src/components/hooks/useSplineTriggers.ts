@@ -39,6 +39,8 @@ export function useSplineTriggers({
         }
       });
 
+      console.log('totalSteps: ', totalSteps);
+
       let executed = 0;
 
       for (const act of activities) {
@@ -50,6 +52,8 @@ export function useSplineTriggers({
         const obj = splineAppRef.current.findObjectByName?.(actionName); // Adjust name if needed
       
         for (let i = 0; i < Math.max(config.state.length, config.events.length); i++) {
+          executed++;
+
           try {
             if (!obj) continue;
             if (config.state[i]) obj.state = config.state[i];
@@ -58,12 +62,13 @@ export function useSplineTriggers({
           } catch(ex) {
             console.log("SOMETHING WENT WRONG WITH TRIGGER: ", act, config.state[i], config.state[i]);
           }
-          executed++;
           setTriggerProgress(Math.round((executed / totalSteps) * 100));
           // Wait a bit between triggers for realism/animation
           await new Promise(res => setTimeout(res, 300));
         }
       }
+
+      console.log("executed", executed)
     };
 
     if (triggerProgress <= 0) {

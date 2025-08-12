@@ -6,6 +6,7 @@ import { isGameOnGoing } from "@/lib/utils";
 export function usePreparingProgress(
   countdown: number = GAME_ROUND_TIMER,
   gameLobbyStatus: GameLobbyStatus,
+  compareGameLobbyStatus: GameLobbyStatus,
   triggersLoading: boolean,
   countdownStartTime: number,
   delayBeforeStart: number = 0 // in seconds
@@ -15,7 +16,7 @@ export function usePreparingProgress(
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!(gameLobbyStatus === GameLobbyStatus.PREPARING) || triggersLoading) {
+    if (!(gameLobbyStatus === compareGameLobbyStatus) || triggersLoading) {
       setProgress(1);
       setIsStarting(true);
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -42,7 +43,7 @@ export function usePreparingProgress(
           clearInterval(intervalRef.current!);
         }
       }
-    }, 30);
+    }, 0);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -58,7 +59,7 @@ export function usePreparingProgress(
     countdownDisplay = Math.ceil(delayBeforeStart - elapsed / 1000);
   } else {
     // During countdown phase
-    countdownDisplay = Math.ceil(progress * countdown);
+    countdownDisplay = Math.floor(progress * countdown); // Changed to Math.floor
   }
   if (countdownDisplay < 0) countdownDisplay = 0;
 

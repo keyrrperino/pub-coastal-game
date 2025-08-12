@@ -34,7 +34,7 @@ export function useCutSceneSequence(
 
       gameRoomServiceRef.current
         ?.updateLobbyStateKeyValue(
-          LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_ONE_GAME_ENDED);
+          LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.ROUND_CUTSCENES);
       setCurrentCutSceneIndex(0);
     }
   }, [progress]);

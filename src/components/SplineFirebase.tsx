@@ -19,6 +19,13 @@ import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
 import { usePreparingProgress } from "./hooks/usePreparingProgress";
 import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
 import { useSectorScores } from "./hooks/useSectorScores";
+import Tutorial1Page from "@/pages/tutorial/1";
+import Tutorial2Page from "@/pages/tutorial/2";
+import Tutorial3Page from "@/pages/tutorial/3";
+import TutorialScreen3 from "./TutorialScreen3";
+import TutorialScreen2 from "./TutorialScreen2";
+import TutorialScreen1 from "./TutorialScreen1";
+import { useLobbyInstruction } from "./hooks/useLobbyInstruction";
 
 interface SplineFirebaseProps {
 }
@@ -83,7 +90,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     lobbyState
   });
 
-
   const {progress, isStarting} = useMainProgress(
     GAME_ROUND_TIMER, // countdown seconds
     lobbyState.gameLobbyStatus,
@@ -92,13 +98,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     3 // <-- 3 seconds delay before countdown starts
   );
 
-  const {progress: progressStartsInCountdown, countdownProgressTimer} = usePreparingProgress(
-    GAME_STARST_IN_COUNTDOWN, // countdown seconds
-    lobbyState.gameLobbyStatus,
-    triggersLoading,
-    lobbyState.countdownPreparationStartTime,
-    2 // <-- 2 seconds delay before countdown starts
-  );
+  const {currentTutorial, timeRemaining} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
 
   const { cutSceneStatus, currentCutScene } = 
     useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
@@ -136,7 +136,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       if (gameRoomServiceRef.current) {
         gameRoomServiceRef.current.updateLobbyState({
           ...lobbyState,
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY,
           [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
           [LobbyStateEnum.ROUND]: ((lobbyState.round ?? 1) + 1) as RoundType
         });
@@ -225,21 +225,16 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       />
   )
 
-  const renderStartsInCountdownProgressBar = (
-    (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.PREPARING) && 
-      <ProgressBar
-        progress={progressStartsInCountdown}
-        key="startsInCountdown"
-        round={lobbyState.round}
-        containerClassName="fixed z-10 bottom-[15vh] left-[30vw]"
-        countdownProgressTimer={countdownProgressTimer}
-        hasTextCountdown={false}
-        style={{
-          bottom: `${15}vh`,
-          transition: 'bottom 0.6s cubic-bezier(0.4,0,0.2,1)',
-          // ...other styles
-        }}
-      />
+  const renderInstroductions = (
+    (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.INTRODUCTION) && 
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
+      style={{ borderRadius: 0 }}
+    >
+      {currentTutorial === 0 && <TutorialScreen1 />}
+      {currentTutorial === 1 && <TutorialScreen2 />}
+      {currentTutorial === 2 && <TutorialScreen3 timeRemaining={timeRemaining}  />}
+    </div>
   )
 
   const resetGame = async () => {
@@ -265,7 +260,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
       {renderScore}
       {renderProgressBar}
-      {renderStartsInCountdownProgressBar}
+      {renderInstroductions}
 
       {/* Score Breakdown Modal */}
       {showScoreBreakdownModal && (
