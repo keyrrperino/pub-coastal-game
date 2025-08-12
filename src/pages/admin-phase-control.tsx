@@ -9,7 +9,6 @@ const gameRoomService = new GameRoomService();
 // Single round cycle that repeats based on current round
 const ROUND_PHASES = [
   GameLobbyStatus.ROUND_STORYLINE,
-  GameLobbyStatus.ROUND_INSTRUCTIONS,
   GameLobbyStatus.ROUND_GAMEPLAY,
   GameLobbyStatus.ROUND_CUTSCENES,
   GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
@@ -17,7 +16,6 @@ const ROUND_PHASES = [
 
 const PRE_GAME_PHASES = [
   GameLobbyStatus.INTRODUCTION,
-  GameLobbyStatus.TUTORIAL,
 ];
 
 const POST_GAME_PHASES = [

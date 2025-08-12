@@ -18,7 +18,6 @@ import { ActionStatus, ActionState } from '@/lib/types';
 
 // Import modal components
 import IntroductionModal from '@/games/pub-coastal-game/compontents/IntroductionModal';
-import TutorialModal from '@/games/pub-coastal-game/compontents/TutorialModal';
 import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundInstructionsModal';
 import ScoreBreakdownModal from '@/games/pub-coastal-game/compontents/ScoreBreakdownModal';
 import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
@@ -103,7 +102,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   // Modal states for game flow
   const [showIntroduction, setShowIntroduction] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
   const [showRoundInstructions, setShowRoundInstructions] = useState(false);
   const [showEnding, setShowEnding] = useState(false);
   const [showTeamNameInput, setShowTeamNameInput] = useState(false);
@@ -129,25 +127,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     switch (currentPhase) {
       case GameLobbyStatus.INTRODUCTION:
         setShowIntroduction(true);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowScoreBreakdown(false);
         break;
       
-      case GameLobbyStatus.TUTORIAL:
+      case GameLobbyStatus.ROUND_STORYLINE:
         setShowIntroduction(false);
-        setShowTutorial(true);
-        setShowRoundInstructions(false);
-        setShowEnding(false);
-        setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
-        break;
-      
-      case GameLobbyStatus.ROUND_INSTRUCTIONS:
-        setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(true);
         setShowEnding(false);
         setShowTeamNameInput(false);
@@ -156,7 +143,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       case GameLobbyStatus.ROUND_GAMEPLAY:
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
@@ -165,7 +151,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
@@ -174,7 +159,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       case GameLobbyStatus.ENDING:
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(true);
         setShowTeamNameInput(false);
@@ -186,7 +170,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       case GameLobbyStatus.TEAM_NAME_INPUT:
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(true);
@@ -195,7 +178,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       case GameLobbyStatus.LEADERBOARD_DISPLAY:
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
@@ -205,7 +187,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       default:
         // Hide all modals for other phases
         setShowIntroduction(false);
-        setShowTutorial(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
@@ -718,17 +699,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
       />
       
-      <TutorialModal 
-        isOpen={showTutorial}
-        onDurationComplete={() => {}}
-        duration={getPhaseDuration(GameLobbyStatus.TUTORIAL)}
-        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
-      />
+
       
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
         round={currentRound as 1 | 2 | 3}
-        duration={getPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+        duration={getPhaseDuration(GameLobbyStatus.ROUND_STORYLINE)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
       />

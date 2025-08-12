@@ -3,9 +3,10 @@ import Image from 'next/image';
 
 interface PlayerRound3ScreenProps {
   onContinue?: () => void;
+  timeRemaining?: number;
 }
 
-export default function PlayerRound3Screen({ onContinue }: PlayerRound3ScreenProps) {
+export default function PlayerRound3Screen({ onContinue, timeRemaining }: PlayerRound3ScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -44,11 +45,13 @@ export default function PlayerRound3Screen({ onContinue }: PlayerRound3ScreenPro
             </div>
           </div>
 
-          {/* Countdown */}
-          <div className="m">
-            <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
-              3, 2, 1, GO!
-            </h3>
+          {/* Countdown - always reserve space to prevent layout shift */}
+          <div className="h-24 flex items-center justify-center">
+            {timeRemaining !== undefined && (
+              <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
+                {Math.ceil(timeRemaining) === 0 ? 'GO!' : Math.ceil(timeRemaining)}
+              </h3>
+            )}
           </div>
         </div>
       </div>
