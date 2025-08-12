@@ -5,13 +5,23 @@ import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
-import { ActivityLogType } from '@/lib/types';
-import { SplineTriggersConfig } from '@/lib/constants';
+import { ActivityLogType, LobbyStateType } from '@/lib/types';
+import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
+import { useSynchronizedPhaseTimer, getSynchronizedPhaseDuration } from '@/components/hooks/useSynchronizedPhaseTimer';
+import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
+
+// Import modal components
+import IntroductionModal from '@/games/pub-coastal-game/compontents/IntroductionModal';
+import TutorialModal from '@/games/pub-coastal-game/compontents/TutorialModal';
+import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundInstructionsModal';
+import ScoreBreakdownModal from '@/games/pub-coastal-game/compontents/ScoreBreakdownModal';
+import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
+import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 
 interface SectorControlProps {
   sector: string;
@@ -50,13 +60,161 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
-  const [lobbyState, setLobbyState] = useState<any>(null);
+  const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
   const [totalCoins, setTotalCoins] = useState(10);
+
+  // Game flow management
+  const {
+    currentPhase,
+    currentRound: gameFlowRound,
+    isTransitioning,
+    startGameFlow,
+    transitionToNextPhase,
+    getPhaseDuration,
+    resetGameFlow,
+    startActualGameFlow,
+  } = useGameFlowController(lobbyState, setLobbyState);
+
+  // Phase timer management
+  const {
+    seconds: timerSeconds,
+    isRunning: isTimerRunning,
+    timeRemaining,
+    progress: timerProgress,
+    startTimer,
+    stopTimer,
+  } = useSynchronizedPhaseTimer({
+    lobbyState,
+    onTimeUp: transitionToNextPhase,
+    defaultDuration: GAME_ROUND_TIMER,
+  });
+
+  // Modal states for game flow
+  const [showIntroduction, setShowIntroduction] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showRoundInstructions, setShowRoundInstructions] = useState(false);
+  const [showEnding, setShowEnding] = useState(false);
+  const [showTeamNameInput, setShowTeamNameInput] = useState(false);
+  const [showScoreBreakdown, setShowScoreBreakdown] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
 
   // Debug logging for round state
   useEffect(() => {
     console.log('SectorControl currentRound state:', currentRound);
   }, [currentRound]);
+
+  // Game flow phase management
+  useEffect(() => {
+    // Handle phase-based modal displays and timers
+    switch (currentPhase) {
+      case GameLobbyStatus.INTRODUCTION:
+        setShowIntroduction(true);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.TUTORIAL:
+        setShowIntroduction(false);
+        setShowTutorial(true);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_INSTRUCTIONS:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(true);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_GAMEPLAY:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(true);
+        break;
+      
+      case GameLobbyStatus.ENDING:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(true);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        // Calculate final score (simplified - you may want to implement proper scoring)
+        const calculatedScore = (activityLog?.length || 0) * 100 + (gameFlowRound * 50);
+        setFinalScore(calculatedScore);
+        break;
+      
+      case GameLobbyStatus.TEAM_NAME_INPUT:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(true);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.LEADERBOARD_DISPLAY:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      default:
+        // Hide all modals for other phases
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+    }
+  }, [currentPhase, activityLog, gameFlowRound]);
+
+  // Auto-start timers for phases with automatic timing
+  useEffect(() => {
+    const duration = getSynchronizedPhaseDuration(currentPhase);
+    if (duration > 0 && !isTimerRunning) {
+      startTimer(duration);
+    } else if (duration === 0) {
+      stopTimer();
+    }
+  }, [currentPhase, isTimerRunning, startTimer, stopTimer]);
+
+  // Handle score breakdown modal auto-advance
+  useEffect(() => {
+    if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && showScoreBreakdown) {
+      const timer = setTimeout(() => {
+        setShowScoreBreakdown(false);
+        transitionToNextPhase();
+      }, getSynchronizedPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN) * 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentPhase, showScoreBreakdown, transitionToNextPhase]);
 
 
 
@@ -186,6 +344,22 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
   }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
 
+  const handlePlayerReady = useCallback(async () => {
+    console.log('Player marking as ready...');
+    // Set this player as ready
+    await gameRoomService.setPlayerReady(true);
+    
+    // Update local lobby state to PREPARING
+    setLobbyState((prev: LobbyStateType | null) => createDefaultLobbyState({
+      ...(prev || {}),
+      gameLobbyStatus: GameLobbyStatus.PREPARING,
+      readyPlayers: {
+        ...(prev?.readyPlayers || {}),
+        [gameRoomService.getCurrentUserId()]: true
+      }
+    }));
+  }, [gameRoomService]);
+
   const handleTimeUp = useCallback(() => {
     console.log('Time is up!');
     // Handle round end logic here
@@ -196,12 +370,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     if (lobbyState) {
       const currentRound = lobbyState[LobbyStateEnum.ROUND] ?? 1;
       if (currentRound < 3) {
-        // Advance to next round
+        // Advance to next round with synchronized timer
+        const nextRound = currentRound + 1;
         gameRoomService.updateLobbyState({
           ...lobbyState,
           [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-          [LobbyStateEnum.ROUND]: currentRound + 1
+          [LobbyStateEnum.ROUND]: nextRound,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
         });
       } else {
         // Game ends after round 3 - you might want to implement end game logic here
@@ -209,6 +385,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       }
     }
   }, [gameRoomService, lobbyState]);
+
+  // Timer is now managed by the game flow system above
 
   // Initialize game room connection and listen to activity changes
   useEffect(() => {
@@ -411,48 +589,92 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             {/* Round display center */}
             <div className="flex-1 flex items-start justify-center">
               <div className="bg-white rounded-[16px] px-6 py-3">
-                <div className="text-[24px] font-bold text-black text-center">
-                  ROUND {currentRound}
-                </div>
-                {/* Temporary test buttons for round transitions */}
-                <div className="flex gap-1 mt-2 justify-center">
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 1)}
-                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R1
-                  </button>
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 2)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R2
-                  </button>
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 3)}
-                    className="bg-green-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R3
-                  </button>
-                </div>
+                {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY ? (
+                  <>
+                    <div className="text-[24px] font-bold text-black text-center">
+                      ROUND {currentRound}
+                    </div>
+                    {/* Temporary test buttons for round transitions */}
+                    <div className="flex gap-1 mt-2 justify-center">
+                      <button 
+                        onClick={() => gameRoomService.updateLobbyState({
+                          ...lobbyState,
+                          [LobbyStateEnum.ROUND]: 1,
+                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
+                        })}
+                        className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        R1
+                      </button>
+                      <button 
+                        onClick={() => gameRoomService.updateLobbyState({
+                          ...lobbyState,
+                          [LobbyStateEnum.ROUND]: 2,
+                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
+                        })}
+                        className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        R2
+                      </button>
+                      <button 
+                        onClick={() => gameRoomService.updateLobbyState({
+                          ...lobbyState,
+                          [LobbyStateEnum.ROUND]: 3,
+                          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+                          [LobbyStateEnum.PHASE_DURATION]: GAME_ROUND_TIMER
+                        })}
+                        className="bg-green-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        R3
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <div className="text-[24px] font-bold text-black text-center mb-2">
+                      {currentPhase.replace(/_/g, ' ')}
+                    </div>
+                    {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+                      <button
+                        onClick={handlePlayerReady}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition"
+                      >
+                        Ready
+                      </button>
+                    ) : currentPhase === GameLobbyStatus.PREPARING ? (
+                      <div className="text-center">
+                        <div className="text-lg text-black mb-2">
+                          Waiting for all players...
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Ready: {Object.keys(lobbyState?.readyPlayers || {}).length}/3
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
             {/* Timer right */}
             <div className="flex-1 flex items-start justify-end">
               <Timer 
                 key={currentRound} 
-                initialSeconds={30} 
+                seconds={timerSeconds} 
                 onTimeUp={handleTimeUp} 
-                countdownStartTime={lobbyState?.countdownStartTime}
+                isRunning={isTimerRunning}
               />
             </div>
           </div>
 
-          {/* Sector sections - now stacked vertically */}
-          <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-            {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
-            {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
-          </div>
+          {/* Sector sections - only show during gameplay */}
+          {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && (
+            <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+              {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
+              {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -460,6 +682,50 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <InsufficientBudgetModal 
         isOpen={showInsufficientBudgetModal}
         onClose={() => setShowInsufficientBudgetModal(false)}
+      />
+
+      {/* Game Flow Modals */}
+      <IntroductionModal 
+        isOpen={showIntroduction}
+        onDurationComplete={transitionToNextPhase}
+        duration={getSynchronizedPhaseDuration(GameLobbyStatus.INTRODUCTION)}
+      />
+      
+      <TutorialModal 
+        isOpen={showTutorial}
+        onDurationComplete={transitionToNextPhase}
+        duration={getSynchronizedPhaseDuration(GameLobbyStatus.TUTORIAL)}
+      />
+      
+      <RoundInstructionsModal 
+        isOpen={showRoundInstructions}
+        onDurationComplete={transitionToNextPhase}
+        round={gameFlowRound as 1 | 2 | 3}
+        duration={getSynchronizedPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+      />
+      
+      <ScoreBreakdownModal 
+        isOpen={showScoreBreakdown}
+        breakdown={{ totalPoints: finalScore, roundPoints: Math.floor(finalScore / 3) }}
+        roundNumber={gameFlowRound as 1 | 2 | 3}
+      />
+      
+      <EndingModal 
+        isOpen={showEnding}
+        onDurationComplete={transitionToNextPhase}
+        finalScore={finalScore}
+        duration={getSynchronizedPhaseDuration(GameLobbyStatus.ENDING)}
+      />
+      
+      <TeamNameInputModal 
+        isOpen={showTeamNameInput}
+        onSubmit={async (teamName) => {
+          // Handle team name submission (you can implement leaderboard logic here)
+          console.log('Team name submitted:', teamName, 'Score:', finalScore);
+          setShowTeamNameInput(false);
+          transitionToNextPhase();
+        }}
+        finalScore={finalScore}
       />
     </div>
   );

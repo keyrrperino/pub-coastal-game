@@ -343,6 +343,44 @@ export class GameRoomService {
     return this.roomId;
   }
 
+  // Player readiness methods
+  async setPlayerReady(isReady: boolean = true): Promise<void> {
+    if (!this.roomId) return;
+
+    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    await update(readyPlayersRef, {
+      [this.userId]: isReady
+    });
+  }
+
+  async setPlayerNotReady(): Promise<void> {
+    await this.setPlayerReady(false);
+  }
+
+  async resetAllPlayersReady(): Promise<void> {
+    if (!this.roomId) return;
+
+    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    await set(readyPlayersRef, {});
+  }
+
+  areAllPlayersReady(lobbyState: LobbyStateType): boolean {
+    if (!lobbyState.readyPlayers) {
+      return false;
+    }
+
+    const readyCount = Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
+    return readyCount >= 3; // Always expect 3 players
+  }
+
+  getReadyPlayersCount(lobbyState: LobbyStateType): number {
+    if (!lobbyState.readyPlayers) {
+      return 0;
+    }
+
+    return Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
+  }
+
   disconnect() {
     if (this.roomId) {
       const userPresenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/presence/${this.userId}`);

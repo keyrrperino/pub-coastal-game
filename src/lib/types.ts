@@ -100,6 +100,10 @@ export type LobbyStateType = {
   [LobbyStateEnum.COUNTDOWN_PREPARATION_START_TIME]: number;
   [LobbyStateEnum.COINS_TOTAL_PER_ROUND]: number;
   [LobbyStateEnum.COINS_SPENT_BY_ROUND]: Record<number, number>;
+  [LobbyStateEnum.PHASE_START_TIME]: number;
+  [LobbyStateEnum.PHASE_DURATION]: number;
+  // Player readiness tracking
+  readyPlayers: Record<string, boolean>;
 }
 
 
@@ -117,6 +121,14 @@ export type PlayerBreakdown = {
   actionsScore: number;
   coinsSpent: number;
   scenarios: { key: string; config: any }[];
+};
+
+export type MainScreenContent = 'storyline' | 'overworld' | 'cutscenes' | 'ending' | 'leaderboard';
+
+export type GameContentState = {
+  mainScreenContent: MainScreenContent;
+  controllerContent: GameLobbyStatus;
+  currentRound: number;
 };
 
 export type RoundBreakdown = {
