@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Application } from "@splinetool/runtime";
 import { CutScenesEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
-import { splineCutScenesUrls } from "@/lib/constants";
+import { CUT_SCENE_TIMER_MILLISECONDS, splineCutScenesUrls } from "@/lib/constants";
 import { GameRoomService } from "@/lib/gameRoom";
 import { getCutScenes } from "@/lib/utils";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
@@ -29,7 +29,7 @@ export function useCutSceneSequence(
   // Start sequence when progress is done
   useEffect(() => {
     if (progress <= 0.02) {
-      const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect, activities);
+      const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect[lobbyState?.round ?? 1], activities);
       setCutScenes(dynamicCutScenes);
 
       gameRoomServiceRef.current
@@ -64,7 +64,7 @@ export function useCutSceneSequence(
           }
           return idx !== null && idx + 1 < cutScenes.length ? idx + 1 : null
         });
-      }, 5000);
+      }, CUT_SCENE_TIMER_MILLISECONDS);
 
       return () => clearTimeout(timer);
     } else {

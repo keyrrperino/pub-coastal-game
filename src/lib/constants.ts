@@ -9,14 +9,16 @@ export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;
 export const OVERALL_SCORE_POINTS = 2500;
 export const TOTAL_COINS_PER_ROUND = 10;
 export const MODAL_CLOSE_COUNTDOWN_VALUE = 5;
+export const CUT_SCENE_TIMER_MILLISECOND = 5000; // 5 seconds
 
 // export const ROOM_NAME = "rooms-v4";
-// export const GAME_ROUND_TIMER = 10000000;
+// export const GAME_ROUND_TIMER = 1;
 // export const GAME_STARST_IN_COUNTDOWN = 1;
 // export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 1;
-// export const OVERALL_SCORE_POINTS = 10000;
+// export const OVERALL_SCORE_POINTS = 2500;
 // export const TOTAL_COINS_PER_ROUND = 10;
-// export const MODAL_CLOSE_COUNTDOWN_VALUE = 5;
+// export const MODAL_CLOSE_COUNTDOWN_VALUE = 1;
+// export const CUT_SCENE_TIMER_MILLISECONDS = 500;
 
 export const userIdToSector: Record<string, number> = {
   user_sector_1: 1,
@@ -648,12 +650,17 @@ export const SectorsButtonConfig: SectorsButtonConfigType = {
   }
 };
 
-export const lobbyStateDefaultValue = {  roundTimer: GAME_ROUND_TIMER,
+export const lobbyStateDefaultValue = {
+  roundTimer: GAME_ROUND_TIMER,
   waterLevel: 0,
   gameStartsInCountdown: GAME_STARST_IN_COUNTDOWN,
   gameLobbyStatus: GameLobbyStatus.INITIALIZING,
   isDoneShowingInstructions: false,
-  randomizeEffect: getRandomEffectValue(),
+  randomizeEffect: {
+    1: getRandomEffectValue(1),
+    2: getRandomEffectValue(2),
+    3: getRandomEffectValue(3),
+  },
   countdownStartTime: Date.now(),
   countdownPreparationStartTime: Date.now(),
   roundTimerPercentage: 1,
