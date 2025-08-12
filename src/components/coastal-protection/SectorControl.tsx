@@ -222,12 +222,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
-        setShowLeaderboardOverlay(true);
-        // Fetch leaderboard data when entering this phase
-        const currentTeamNameDisplay = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
-        getGlobalLeaderboard(currentTeamNameDisplay).then(data => {
-          setLeaderboardData(data);
-        });
+        setShowLeaderboardOverlay(false);
+        break;
+      
+      case GameLobbyStatus.RESTARTING:
+        console.log('RESTARTING phase detected - reloading page');
+        window.location.reload();
         break;
       
       default:
@@ -443,13 +443,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
   const handleStartGame = useCallback(async () => {
     console.log('Starting game...');
+    
+    // If we're in LEADERBOARD_DISPLAY phase, set status to RESTARTING instead of starting a new game
+    if (currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY) {
+      console.log('In LEADERBOARD_DISPLAY phase - setting status to RESTARTING');
+      gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.RESTARTING);
+      return;
+    }
+    
     // Anyone can start the game - trigger the Spline action first
     const btn = SplineTriggersConfig[ActivityTypeEnum.START_GAME] as SplineTriggerConfigItem;
     await gameRoomService.addElement(btn.activityType!, btn.buttonValue ?? '', 0, 0, false, SubSectorEnum.ONE_A);
     
     // Then update the lobby status to start the game flow
     gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
-  }, [gameRoomService]);
+  }, [gameRoomService, currentPhase]);
 
   const handleShowLeaderboard = useCallback(() => {
     setIsLeaderboardOpen(true);
@@ -692,10 +700,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
            currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
            currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN &&
-           currentPhase !== GameLobbyStatus.ENDING &&
-           currentPhase !== GameLobbyStatus.LEADERBOARD_DISPLAY && (
+           currentPhase !== GameLobbyStatus.ENDING && (
             <>
-              {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+              {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING || currentPhase === GameLobbyStatus.LEADERBOARD_DISPLAY ? (
                 <div className="absolute inset-0 z-20">
                   {/* Complete StartPage template repurposed for game start */}
                   <StartScreen
