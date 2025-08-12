@@ -4,18 +4,32 @@ import { UserSectorEnum } from '@/lib/enums';
 import { getSectorRoundScore } from '@/lib/utils';
 import { OVERALL_SCORE_POINTS, TOTAL_COINS_PER_ROUND } from '@/lib/constants';
 
+export type SectorPerformance = 'good' | 'okay' | 'bad';
+
 interface UseSectorScoresProps {
   activities: ActivityLogType[];
   lobbyState: LobbyStateType;
   setTotalScore: (score: number) => void;
   setCoinsLeft: (coins: number) => void;
+  setSector1Performance?: (performance: SectorPerformance) => void;
+  setSector2Performance?: (performance: SectorPerformance) => void;
+  setSector3Performance?: (performance: SectorPerformance) => void;
 }
+
+const getSectorPerformance = (score: number): SectorPerformance => {
+  if (score >= 0 && score <= 30) return 'good';
+  if (score >= 31 && score <= 60) return 'okay';
+  return 'bad';
+};
 
 export function useSectorScores({
   activities,
   lobbyState,
   setTotalScore,
   setCoinsLeft,
+  setSector1Performance,
+  setSector2Performance,
+  setSector3Performance,
 }: UseSectorScoresProps) {
   useEffect(() => {
     const sector1R1 = getSectorRoundScore(
@@ -128,5 +142,30 @@ export function useSectorScores({
     const currentRoundCoins = lobbyState.round === 1 ? coinsR1 : lobbyState.round === 2 ? coinsR2 : coinsR3;
     setCoinsLeft(TOTAL_COINS_PER_ROUND - currentRoundCoins);
 
-  }, [activities, lobbyState]);
+    // Calculate sector performances and set them if setters are provided
+    if (setSector1Performance) {
+      const sector1TotalDeduction = 
+        (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+        (sector1R2.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+        (sector1R3.user_sector_1?.totalScoreToDeductInRound ?? 0);
+      setSector1Performance(getSectorPerformance(sector1TotalDeduction));
+    }
+
+    if (setSector2Performance) {
+      const sector2TotalDeduction = 
+        (sector2R1.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+        (sector2R2.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+        (sector2R3.user_sector_2?.totalScoreToDeductInRound ?? 0);
+      setSector2Performance(getSectorPerformance(sector2TotalDeduction));
+    }
+
+    if (setSector3Performance) {
+      const sector3TotalDeduction = 
+        (sector3R1.user_sector_3?.totalScoreToDeductInRound ?? 0) +
+        (sector3R2.user_sector_3?.totalScoreToDeductInRound ?? 0) +
+        (sector3R3.user_sector_3?.totalScoreToDeductInRound ?? 0);
+      setSector3Performance(getSectorPerformance(sector3TotalDeduction));
+    }
+
+  }, [activities, lobbyState, setSector1Performance, setSector2Performance, setSector3Performance]);
 }

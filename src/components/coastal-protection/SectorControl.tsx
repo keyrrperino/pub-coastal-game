@@ -12,6 +12,7 @@ import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContex
 import { useProgression } from '@/components/hooks/useProgression';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
+import { useSectorScores, SectorPerformance } from '@/components/hooks/useSectorScores';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
@@ -19,11 +20,12 @@ import { ActionStatus, ActionState } from '@/lib/types';
 // Import modal components
 import IntroductionModal from '@/games/pub-coastal-game/compontents/IntroductionModal';
 import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundInstructionsModal';
-import ScoreBreakdownModal from '@/games/pub-coastal-game/compontents/ScoreBreakdownModal';
+
 import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
 import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 import StartScreen from '@/components/StartScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
+import PostRoundModal from '@/components/PostRoundModal';
 
 interface SectorControlProps {
   sector: string;
@@ -105,8 +107,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [showRoundInstructions, setShowRoundInstructions] = useState(false);
   const [showEnding, setShowEnding] = useState(false);
   const [showTeamNameInput, setShowTeamNameInput] = useState(false);
-  const [showScoreBreakdown, setShowScoreBreakdown] = useState(false);
+
+  const [showCutscene, setShowCutscene] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [coinsLeft, setCoinsLeft] = useState(0);
+  const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   // Debug logging for round state
@@ -130,7 +136,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
       
       case GameLobbyStatus.ROUND_STORYLINE:
@@ -138,7 +144,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(true);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
       
       case GameLobbyStatus.ROUND_GAMEPLAY:
@@ -146,15 +152,23 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
       
+      case GameLobbyStatus.ROUND_CUTSCENES:
+        setShowIntroduction(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowCutscene(true);
+        break;
+        
       case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
         setShowIntroduction(false);
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(true);
+        setShowCutscene(true);
         break;
       
       case GameLobbyStatus.ENDING:
@@ -162,7 +176,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(true);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         // Calculate final score (simplified - you may want to implement proper scoring)
         const calculatedScore = (activityLog?.length || 0) * 100 + (currentRound * 50);
         setFinalScore(calculatedScore);
@@ -173,7 +187,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(true);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
       
       case GameLobbyStatus.LEADERBOARD_DISPLAY:
@@ -181,7 +195,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
       
       default:
@@ -190,7 +204,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowScoreBreakdown(false);
+        setShowCutscene(false);
         break;
     }
   }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
@@ -198,16 +212,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Timer is handled via Firebase sync in useTimer hook
   // No need to manually start/stop timers as they sync with Firebase timestamps
 
-  // Handle score breakdown modal auto-advance
-  useEffect(() => {
-    if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && showScoreBreakdown) {
-      const timer = setTimeout(() => {
-        setShowScoreBreakdown(false);
-      }, getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN) * 1000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [currentPhase, showScoreBreakdown, getPhaseDuration]);
 
 
 
@@ -263,6 +268,19 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const sectorBId = `${sector.slice(-1)}B`;
   const progressionStateA = useProgression(activityLog, firebaseRound, sectorAId);
   const progressionStateB = useProgression(activityLog, firebaseRound, sectorBId);
+
+  // Use sector scores to calculate performance for this specific sector
+  const sectorNumber = sector.slice(-1);
+  
+  useSectorScores({
+    activities: activityLog,
+    lobbyState,
+    setTotalScore,
+    setCoinsLeft,
+    setSector1Performance: sectorNumber === '1' ? setSectorPerformance : undefined,
+    setSector2Performance: sectorNumber === '2' ? setSectorPerformance : undefined,
+    setSector3Performance: sectorNumber === '3' ? setSectorPerformance : undefined,
+  });
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
     // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
@@ -625,16 +643,18 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             <div className="flex-1 flex items-start justify-end">
               <Timer 
                 key={`${currentRound}-${currentPhase}`}
-                duration={phaseDuration}
+                duration={showCutscene ? 0 : phaseDuration}
                 onTimeUp={handleTimeUp} 
-                isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY}
-                syncWithTimestamp={phaseStartTime > 0 ? phaseStartTime : undefined}
+                isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
+                syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
               />
             </div>
           </div>
 
-          {/* Start Screen - shown when not in gameplay */}
-          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && (
+          {/* Start Screen - shown when not in gameplay, cutscenes, or score breakdown */}
+          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && 
+           currentPhase !== GameLobbyStatus.ROUND_CUTSCENES && 
+           currentPhase !== GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
             <>
               {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
                 <div className="absolute inset-0 z-20">
@@ -675,8 +695,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
             </>
           )}
 
-          {/* Sector sections - only show during gameplay */}
-          {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && (
+          {/* Sector sections - show during gameplay, cutscenes, and score breakdown */}
+          {(currentPhase === GameLobbyStatus.ROUND_GAMEPLAY || 
+            currentPhase === GameLobbyStatus.ROUND_CUTSCENES || 
+            currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) && (
             <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
               {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
               {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
@@ -699,8 +721,6 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
       />
       
-
-      
       <RoundInstructionsModal 
         isOpen={showRoundInstructions}
         round={currentRound as 1 | 2 | 3}
@@ -708,15 +728,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
       />
-      
-      <ScoreBreakdownModal 
-        isOpen={showScoreBreakdown}
-        breakdown={{ totalPoints: finalScore, roundPoints: Math.floor(finalScore / 3) }}
-        roundNumber={currentRound as 1 | 2 | 3}
-        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
-        onDurationComplete={() => {}}
-      />
-      
+
       <EndingModal 
         isOpen={showEnding}
         onDurationComplete={() => {}}
@@ -733,6 +745,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           setShowTeamNameInput(false);
         }}
         finalScore={finalScore}
+      />
+
+      <PostRoundModal 
+        isOpen={showCutscene}
+        performance={sectorPerformance}
       />
     </div>
   );
