@@ -61,10 +61,16 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
   const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
-  const [totalCoins, setTotalCoins] = useState(10);
+
 
   // Use Firebase round instead of phase-based currentRound for actual game progression
   const firebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+  
+  // Calculate totalCoins from Firebase state
+  const coinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+  const coinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+  const coinsSpentThisRound = coinsSpentByRound[firebaseRound] ?? 0;
+  const totalCoins = coinsTotalPerRound - coinsSpentThisRound;
   
   // Game flow management
   const {
@@ -257,6 +263,17 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const progressionStateB = useProgression(activityLog, firebaseRound, sectorBId);
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
+    // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
+    const currentFirebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+    
+    // Debug logging to check round values
+    console.log('🟡 MEASURE CLICK DEBUG:');
+    console.log('currentRound (phase-based):', currentRound);
+    console.log('firebaseRound (stale):', firebaseRound);
+    console.log('currentFirebaseRound (fresh):', currentFirebaseRound);
+    console.log('lobbyState round:', lobbyState?.[LobbyStateEnum.ROUND]);
+    console.log('Activity type:', activityType, 'Cost:', coinCost);
+    
     // Trigger Spline action
     triggerSingleBuild(activityType as any);
     
@@ -267,7 +284,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       userName: `Player ${sector.slice(-1)}`,
       action: activityType,
       value: `${activityType}`,
-      round: firebaseRound,
+      round: currentFirebaseRound,
       timestamp: Date.now()
     };
     setActivityLog(prev => [...prev, newActivity]);
@@ -275,7 +292,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     // Log activity to game room using public method (this will sync with Firebase)
     const triggerConfig = SplineTriggersConfig[activityType];
     const subSectorFromConfig = triggerConfig?.subSector || sectorId;
-    const result = await gameRoomService.addElement(activityType, `${activityType}`, firebaseRound, coinCost, true, subSectorFromConfig as any);
+    console.log('🔵 Calling addElement with round:', currentFirebaseRound);
+    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentFirebaseRound, coinCost, true, subSectorFromConfig as any);
     
     if (result === 'insufficient') {
       console.log('Insufficient coins - showing modal');
@@ -284,9 +302,12 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       console.log('Failed to add element:', result);
     }
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
-  }, [triggerSingleBuild, gameRoomService, currentRound]);
+  }, [triggerSingleBuild, gameRoomService, currentRound, lobbyState, sector]);
 
   const handleDemolishClick = useCallback(async (sectorId: string, actionToDestroy: ActivityTypeEnum) => {
+    // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
+    const currentFirebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+    
     // Update local activity log immediately to prevent UI flicker
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
@@ -294,7 +315,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       userName: `Player ${sector.slice(-1)}`,
       action: ActivityTypeEnum.DEMOLISH,
       value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
-      round: firebaseRound,
+      round: currentFirebaseRound,
       timestamp: Date.now()
     };
     
@@ -310,13 +331,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       // Only recalculate for the demolished sector
       updatedButtonSets[sectorId] = {
-        mangroves: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'mangroves'),
-        seawall: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'seawall'),
-        landReclamation: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'land-reclamation'),
-        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'storm-surge-barrier'),
-        artificialReef: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'artificial-reef'),
-        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'hybrid-measure'),
-        revetment: calculateRoundStartButtonSet(newActivityLog, firebaseRound, sectorId, 'revetment'),
+        mangroves: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'revetment'),
       };
       
       return updatedButtonSets;
@@ -324,7 +345,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     setRoundStartActivityLog(newActivityLog);
     
     // Log demolish action to Firebase (DEMOLISH always costs 1 coin, handled in service)
-    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, firebaseRound, 1, false, sectorId as any);
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, false, sectorId as any);
     
     if (result === 'insufficient') {
       console.log('Insufficient coins for demolish - showing modal');
@@ -333,7 +354,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       console.log('Failed to demolish:', result);
     }
     // Note: Coin updates are handled via Firebase lobby state listener, not local state
-  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound]);
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, lobbyState]);
 
   const handlePlayerReady = useCallback(async () => {
     console.log('Player marking as ready...');
@@ -386,16 +407,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           setLocalRound(round);
         });
 
-        // Listen to lobby state changes for coin updates
+        // Listen to lobby state changes
         gameRoomService.onLobbyStateChange((lobbyStateData) => {
           setLobbyState(lobbyStateData);
-          // Update coins based on shared lobby state
-          const coinsTotalPerRound = lobbyStateData[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
-          const coinsSpentByRound = lobbyStateData[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
-          const currentRound = lobbyStateData[LobbyStateEnum.ROUND] ?? 1;
-          const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
-          const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
-          setTotalCoins(coinsLeft);
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);

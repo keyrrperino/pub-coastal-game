@@ -211,6 +211,11 @@ export class GameRoomService {
     // Force demolish to cost 1
     const finalCost = activityType === ActivityTypeEnum.DEMOLISH ? 1 : Math.max(0, cost | 0);
 
+    // Debug logging
+    console.log('🔴 GAMEROOM addElement DEBUG:');
+    console.log('Activity:', activityType, 'Round:', round, 'Cost:', finalCost);
+    console.log('Coin deduction path:', `${ROOM_NAME}/${this.roomId}/lobbyState/coinsSpentByRound/${round}`);
+
     // Transactionally spend coins for this round under lobbyState/coinsSpentByRound/{round}
     const coinsRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsSpentByRound/${round}`);
     const totalPerRoundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsTotalPerRound`);
