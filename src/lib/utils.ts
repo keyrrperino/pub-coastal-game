@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "./enums";
-import { ActivityLogType, LobbyStateType, NormalizedActivities, OverallScoresTypes, PlayerBreakdown, RoundBreakdown, RoundType, ScenarioConfigurationType } from "./types";
+import { ActivityLogType, LobbyStateType, NormalizedActivities, OverallScoresTypes, PlayerBreakdown, RoundBreakdown, RoundType, ScenarioConfigurationType, GameContentState, MainScreenContent } from "./types";
 import { meanSeaLevels, sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -1033,4 +1033,147 @@ export const addUpScoreAndCoinB = (
   newScoreData[userId]!.totalScoreToDeductInRound = newScoreData[userId]!.totalScoreToDeduct - newScoreData[userId]!.partialTotalScoreToDeduct;
 
   return newScoreData;
+}
+
+/**
+ * Coordinates content between main screen and controllers based on game phase
+ * @param currentPhase The current game lobby status
+ * @param currentRound The current round number
+ * @returns GameContentState with what to show on main screen vs controllers
+ */
+export function getGameContentCoordination(
+  currentPhase: GameLobbyStatus,
+  currentRound: number
+): GameContentState {
+  let mainScreenContent: MainScreenContent = 'overworld';
+  let controllerContent: GameLobbyStatus = currentPhase;
+
+  switch (currentPhase) {
+    case GameLobbyStatus.INTRODUCTION:
+    case GameLobbyStatus.TUTORIAL:
+      // Show same content on both screens
+      mainScreenContent = 'storyline';
+      break;
+    
+    case GameLobbyStatus.ROUND_STORYLINE:
+      // Show storyline on main screen, instructions on controllers
+      mainScreenContent = 'storyline';
+      controllerContent = GameLobbyStatus.ROUND_INSTRUCTIONS;
+      break;
+    
+    case GameLobbyStatus.ROUND_INSTRUCTIONS:
+      // Show storyline on main screen, instructions on controllers
+      mainScreenContent = 'storyline';
+      break;
+    
+    case GameLobbyStatus.ROUND_GAMEPLAY:
+      // Show overworld on main screen, game interface on controllers
+      mainScreenContent = 'overworld';
+      break;
+    
+    case GameLobbyStatus.ROUND_CUTSCENES:
+      // Show cutscenes on main screen, maybe status on controllers
+      mainScreenContent = 'cutscenes';
+      break;
+    
+    case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
+      // Could show scores on main screen or keep overworld
+      mainScreenContent = 'overworld';
+      break;
+    
+    case GameLobbyStatus.ENDING:
+      // Show ending on main screen, congrats on controllers
+      mainScreenContent = 'ending';
+      break;
+    
+    case GameLobbyStatus.TEAM_NAME_INPUT:
+      // Show ending/leaderboard prep on main screen, input form on controllers
+      mainScreenContent = 'leaderboard';
+      break;
+    
+    case GameLobbyStatus.LEADERBOARD_DISPLAY:
+      // Show leaderboard on main screen, maybe final congrats on controllers
+      mainScreenContent = 'leaderboard';
+      break;
+    
+    default:
+      // Default to overworld for any other phases
+      mainScreenContent = 'overworld';
+      break;
+  }
+
+  return {
+    mainScreenContent,
+    controllerContent,
+    currentRound,
+  };
+}
+
+/**
+ * Gets the appropriate storyline content for the main screen based on current phase and round
+ * @param currentPhase The current game lobby status
+ * @param currentRound The current round number
+ * @returns Storyline content object
+ */
+export function getMainScreenStoryline(
+  currentPhase: GameLobbyStatus,
+  currentRound: number
+): { title: string; content: string; years: string } {
+  switch (currentPhase) {
+    case GameLobbyStatus.INTRODUCTION:
+      return {
+        title: "Welcome to Coastal Protectors",
+        content: "The year is 2025. Sea levels are beginning to rise. Your team must work together to protect our coastlines for the next 75 years.",
+        years: "2025 - 2100"
+      };
+    
+    case GameLobbyStatus.TUTORIAL:
+      return {
+        title: "How to Play",
+        content: "Each player controls a sector. Choose coastal protection measures wisely and coordinate with your team to maximize your defense against rising seas.",
+        years: "Tutorial"
+      };
+    
+    case GameLobbyStatus.ROUND_STORYLINE:
+      switch (currentRound) {
+        case 1:
+          return {
+            title: "Round 1: The First Challenge",
+            content: "2025-2050: Sea levels begin to rise. Initial protection measures are crucial. Build your first line of defense.",
+            years: "2025 - 2050"
+          };
+        case 2:
+          return {
+            title: "Round 2: Rising Tides",
+            content: "2050-2075: Sea levels accelerate. Your initial defenses will be tested. Upgrade and expand your protection systems.",
+            years: "2050 - 2075"
+          };
+        case 3:
+          return {
+            title: "Round 3: Final Stand",
+            content: "2075-2100: Maximum sea level rise. This is your final chance to save the coast. Deploy your ultimate protection strategies.",
+            years: "2075 - 2100"
+          };
+        default:
+          return {
+            title: "Round " + currentRound,
+            content: "Protect your sector from rising seas.",
+            years: "Future"
+          };
+      }
+    
+    case GameLobbyStatus.ENDING:
+      return {
+        title: "Mission Complete",
+        content: "2100: Your efforts have shaped the future of our coastlines. See how your team performed against the challenge of rising seas.",
+        years: "2100"
+      };
+    
+    default:
+      return {
+        title: "Coastal Protectors",
+        content: "Work together to protect our coastlines from rising seas.",
+        years: "2025 - 2100"
+      };
+  }
 }

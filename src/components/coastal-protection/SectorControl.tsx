@@ -4,13 +4,24 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService } from '@/lib/gameRoom';
-import { ActivityTypeEnum } from '@/lib/enums';
-import { ActivityLogType } from '@/lib/types';
+import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
+import { ActivityLogType, LobbyStateType } from '@/lib/types';
+import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
+import { getPhaseDuration } from '@/components/hooks/phaseUtils';
+import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
+
+// Import modal components
+import IntroductionModal from '@/games/pub-coastal-game/compontents/IntroductionModal';
+import TutorialModal from '@/games/pub-coastal-game/compontents/TutorialModal';
+import RoundInstructionsModal from '@/games/pub-coastal-game/compontents/RoundInstructionsModal';
+import ScoreBreakdownModal from '@/games/pub-coastal-game/compontents/ScoreBreakdownModal';
+import EndingModal from '@/games/pub-coastal-game/compontents/EndingModal';
+import TeamNameInputModal from '@/games/pub-coastal-game/compontents/TeamNameInputModal';
 
 interface SectorControlProps {
   sector: string;
@@ -42,19 +53,176 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`));
-  const [totalCoins, setTotalCoins] = useState(10);
+  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`, 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
-  const [currentRound, setCurrentRound] = useState(1);
+  const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
   const [roundStartActivityLog, setRoundStartActivityLog] = useState<ActivityLogType[]>([]);
   const [roundStartButtonSets, setRoundStartButtonSets] = useState<RoundStartButtonSets>({});
   const [showInsufficientBudgetModal, setShowInsufficientBudgetModal] = useState(false);
+  const [lobbyState, setLobbyState] = useState<any>(createDefaultLobbyState());
+
+  // Helper function to reset all local game state
+  const resetLocalGameState = useCallback(() => {
+    console.log('Resetting all local game state');
+    setActivityLog([]);
+    setLocalRound(1);
+    setPreviousRound(1);
+    setRoundStartActivityLog([]);
+    setRoundStartButtonSets({});
+    setShowInsufficientBudgetModal(false);
+  }, []);
+
+
+  // Use Firebase round instead of phase-based currentRound for actual game progression
+  const firebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+  
+  // Calculate totalCoins from Firebase state
+  const coinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+  const coinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+  const coinsSpentThisRound = coinsSpentByRound[firebaseRound] ?? 0;
+  const totalCoins = coinsTotalPerRound - coinsSpentThisRound;
+  
+  // Game flow management
+  const {
+    currentPhase,
+    currentRound,
+    isTransitioning,
+    startGameFlow,
+    getPhaseDuration,
+    resetGameFlow,
+    startActualGameFlow,
+  } = useGameFlowController(lobbyState, setLobbyState);
+
+  // Phase timer management - values for Timer component
+  const phaseStartTime = lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || 0;
+  const phaseDuration = lobbyState?.[LobbyStateEnum.PHASE_DURATION] || GAME_ROUND_TIMER;
+
+  // Modal states for game flow
+  const [showIntroduction, setShowIntroduction] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showRoundInstructions, setShowRoundInstructions] = useState(false);
+  const [showEnding, setShowEnding] = useState(false);
+  const [showTeamNameInput, setShowTeamNameInput] = useState(false);
+  const [showScoreBreakdown, setShowScoreBreakdown] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
 
   // Debug logging for round state
   useEffect(() => {
-    console.log('SectorControl currentRound state:', currentRound);
-  }, [currentRound]);
+    console.log('SectorControl currentRound (phase-based):', currentRound);
+    console.log('SectorControl firebaseRound (actual game round):', firebaseRound);
+  }, [currentRound, firebaseRound]);
+
+  // Game flow phase management
+  useEffect(() => {
+    // Close insufficient budget modal when phase changes (user can no longer take actions)
+    if (showInsufficientBudgetModal && currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY) {
+      console.log('Closing insufficient budget modal due to phase change to:', currentPhase);
+      setShowInsufficientBudgetModal(false);
+    }
+    
+    // Handle phase-based modal displays and timers
+    switch (currentPhase) {
+      case GameLobbyStatus.INTRODUCTION:
+        setShowIntroduction(true);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.TUTORIAL:
+        setShowIntroduction(false);
+        setShowTutorial(true);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_INSTRUCTIONS:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(true);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_GAMEPLAY:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(true);
+        break;
+      
+      case GameLobbyStatus.ENDING:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(true);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        // Calculate final score (simplified - you may want to implement proper scoring)
+        const calculatedScore = (activityLog?.length || 0) * 100 + (currentRound * 50);
+        setFinalScore(calculatedScore);
+        break;
+      
+      case GameLobbyStatus.TEAM_NAME_INPUT:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(true);
+        setShowScoreBreakdown(false);
+        break;
+      
+      case GameLobbyStatus.LEADERBOARD_DISPLAY:
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+      
+      default:
+        // Hide all modals for other phases
+        setShowIntroduction(false);
+        setShowTutorial(false);
+        setShowRoundInstructions(false);
+        setShowEnding(false);
+        setShowTeamNameInput(false);
+        setShowScoreBreakdown(false);
+        break;
+    }
+  }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal]);
+
+  // Timer is handled via Firebase sync in useTimer hook
+  // No need to manually start/stop timers as they sync with Firebase timestamps
+
+  // Handle score breakdown modal auto-advance
+  useEffect(() => {
+    if (currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && showScoreBreakdown) {
+      const timer = setTimeout(() => {
+        setShowScoreBreakdown(false);
+      }, getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN) * 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentPhase, showScoreBreakdown, getPhaseDuration]);
 
 
 
@@ -76,25 +244,20 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     return buttonSets;
   }, []);
 
-  // Handle round changes - reset coins and capture round start state
+  // Handle round changes - capture round start state
   useEffect(() => {
-    if (currentRound !== previousRound) {
-      console.log(`Round changed from ${previousRound} to ${currentRound}`);
+    if (firebaseRound !== previousRound) {
+      console.log(`Round changed from ${previousRound} to ${firebaseRound}`);
       // Capture the activity log state at the start of this round
       const roundStartLog = [...activityLog];
       setRoundStartActivityLog(roundStartLog);
       
       // Calculate button sets for this round
-      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, firebaseRound);
       setRoundStartButtonSets(buttonSets);
-      
-      if (previousRound !== 1) {
-        // Reset coins to starting amount for new round
-        setTotalCoins(10);
-      }
     }
-    setPreviousRound(currentRound);
-  }, [currentRound, previousRound, activityLog, calculateButtonSetsForRound]);
+    setPreviousRound(firebaseRound);
+  }, [firebaseRound, previousRound, activityLog, calculateButtonSetsForRound]);
 
   // Initialize button sets on first load (R1)
   useEffect(() => {
@@ -102,60 +265,114 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       console.log('Initializing button sets for R1');
       const roundStartLog = [...activityLog];
       setRoundStartActivityLog(roundStartLog);
-      const buttonSets = calculateButtonSetsForRound(roundStartLog, currentRound);
+      const buttonSets = calculateButtonSetsForRound(roundStartLog, firebaseRound);
       setRoundStartButtonSets(buttonSets);
     }
-  }, [activityLog, currentRound, roundStartButtonSets, calculateButtonSetsForRound]);
+  }, [activityLog, firebaseRound, roundStartButtonSets, calculateButtonSetsForRound]);
   
   // Get sector titles
   const sectorTitles = getSectorTitles(sector);
 
-  const handleMeasureClick = useCallback((activityType: ActivityTypeEnum, coinCost: number) => {
-    if (totalCoins >= coinCost) {
-      // Trigger Spline action
-      triggerSingleBuild(activityType as any);
-      
-      // Update local activity log immediately to prevent UI flicker
-      const newActivity: ActivityLogType = {
-        id: `temp-${Date.now()}`,
-        userId: `Player ${sector.slice(-1)}`,
-        userName: `Player ${sector.slice(-1)}`,
-        action: activityType,
-        value: `${activityType}`,
-        round: currentRound,
-        timestamp: Date.now()
-      };
-      setActivityLog(prev => [...prev, newActivity]);
-      
-      // Log activity to game room using public method (this will sync with Firebase)
-      gameRoomService.addElement(activityType, `${activityType}`, currentRound, true, "1A");
-      
-      // Update coins
-      setTotalCoins(prev => prev - coinCost);
-      
-      console.log(`Action triggered: ${activityType}, Cost: ${coinCost} coins`);
-    } else {
-      console.log('Insufficient coins - showing modal');
-      setShowInsufficientBudgetModal(true);
-    }
-  }, [totalCoins, triggerSingleBuild, gameRoomService, currentRound, sector]);
+  // Always call useProgression hooks at the top level to follow Rules of Hooks
+  const sectorAId = `${sector.slice(-1)}A`;
+  const sectorBId = `${sector.slice(-1)}B`;
+  const progressionStateA = useProgression(activityLog, firebaseRound, sectorAId);
+  const progressionStateB = useProgression(activityLog, firebaseRound, sectorBId);
 
-  const handleDemolishClick = useCallback((sectorId: string, actionToDestroy: ActivityTypeEnum) => {
-    // Check if player has enough coins for demolish (costs 1 coin)
-    if (totalCoins < 1) {
-      console.log('Insufficient coins for demolish - showing modal');
+  const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
+    // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
+    const currentFirebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+    
+    // Debug logging to check round values
+    console.log('🟡 MEASURE CLICK DEBUG:');
+    console.log('currentRound (phase-based):', currentRound);
+    console.log('firebaseRound (stale):', firebaseRound);
+    console.log('currentFirebaseRound (fresh):', currentFirebaseRound);
+    console.log('lobbyState round:', lobbyState?.[LobbyStateEnum.ROUND]);
+    console.log('Activity type:', activityType, 'Cost:', coinCost);
+    
+    // Check if we have sufficient coins BEFORE doing anything
+    const currentCoinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const currentCoinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentCoinsSpentThisRound = currentCoinsSpentByRound[currentFirebaseRound] ?? 0;
+    const currentTotalCoins = currentCoinsTotalPerRound - currentCoinsSpentThisRound;
+    
+    if (currentTotalCoins < coinCost) {
+      console.log('Insufficient coins - showing modal without taking action');
       setShowInsufficientBudgetModal(true);
-      return;
+      return; // Exit early - don't update UI or Firebase
     }
+    
+    // Only proceed if we have sufficient coins
+    // Trigger Spline action
+    triggerSingleBuild(activityType as any);
+    
+    // Log activity to Firebase FIRST (this will check coins again transactionally)
+    const triggerConfig = SplineTriggersConfig[activityType];
+    const subSectorFromConfig = triggerConfig?.subSector || sectorId;
+    console.log('🔵 Calling addElement with round:', currentFirebaseRound);
+    const result = await gameRoomService.addElement(activityType, `${activityType}`, currentFirebaseRound, coinCost, true, subSectorFromConfig as any);
+    
+    if (result === 'insufficient') {
+      console.log('Insufficient coins from Firebase transaction - showing modal');
+      setShowInsufficientBudgetModal(true);
+      return; // Don't update local UI if Firebase transaction failed
+    } else if (result !== 'ok') {
+      console.log('Failed to add element:', result);
+      return; // Don't update local UI if Firebase operation failed
+    }
+    
+    // Only update local UI if Firebase transaction succeeded
+    const newActivity: ActivityLogType = {
+      id: `temp-${Date.now()}`,
+      userId: `Player ${sector.slice(-1)}`,
+      userName: `Player ${sector.slice(-1)}`,
+      action: activityType,
+      value: `${activityType}`,
+      round: currentFirebaseRound,
+      timestamp: Date.now()
+    };
+    setActivityLog(prev => [...prev, newActivity]);
+    
+    // Note: Coin updates are handled via Firebase lobby state listener, not local state
+  }, [triggerSingleBuild, gameRoomService, currentRound, lobbyState, sector]);
 
-    // Update local activity log immediately to prevent UI flicker
+  const handleDemolishClick = useCallback(async (sectorId: string, actionToDestroy: ActivityTypeEnum) => {
+    // Get the CURRENT firebaseRound from lobbyState to avoid stale closure
+    const currentFirebaseRound = lobbyState?.[LobbyStateEnum.ROUND] || 1;
+    
+    // Check if we have sufficient coins BEFORE doing anything (demolish costs 1 coin)
+    const currentCoinsTotalPerRound = lobbyState?.[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const currentCoinsSpentByRound = lobbyState?.[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentCoinsSpentThisRound = currentCoinsSpentByRound[currentFirebaseRound] ?? 0;
+    const currentTotalCoins = currentCoinsTotalPerRound - currentCoinsSpentThisRound;
+    
+    if (currentTotalCoins < 1) {
+      console.log('Insufficient coins for demolish - showing modal without taking action');
+      setShowInsufficientBudgetModal(true);
+      return; // Exit early - don't update UI or Firebase
+    }
+    
+    // Log demolish action to Firebase FIRST (this will check coins again transactionally)
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, false, sectorId as any);
+    
+    if (result === 'insufficient') {
+      console.log('Insufficient coins for demolish from Firebase transaction - showing modal');
+      setShowInsufficientBudgetModal(true);
+      return; // Don't update local UI if Firebase transaction failed
+    } else if (result !== 'ok') {
+      console.log('Failed to demolish:', result);
+      return; // Don't update local UI if Firebase operation failed
+    }
+    
+    // Only update local UI if Firebase transaction succeeded
     const demolishActivity: ActivityLogType = {
       id: `temp-demolish-${Date.now()}`,
       userId: `Player ${sector.slice(-1)}`,
       userName: `Player ${sector.slice(-1)}`,
       action: ActivityTypeEnum.DEMOLISH,
       value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
-      round: currentRound,
+      round: currentFirebaseRound,
       timestamp: Date.now()
     };
     
@@ -171,49 +388,93 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       // Only recalculate for the demolished sector
       updatedButtonSets[sectorId] = {
-        mangroves: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'mangroves'),
-        seawall: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'seawall'),
-        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'land-reclamation'),
-        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'storm-surge-barrier'),
-        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'artificial-reef'),
-        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'hybrid-measure'),
-        revetment: calculateRoundStartButtonSet(newActivityLog, currentRound, sectorId, 'revetment'),
+        mangroves: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'mangroves'),
+        seawall: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'seawall'),
+        landReclamation: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'land-reclamation'),
+        stormSurgeBarrier: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'storm-surge-barrier'),
+        artificialReef: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'artificial-reef'),
+        hybridMeasure: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'hybrid-measure'),
+        revetment: calculateRoundStartButtonSet(newActivityLog, currentFirebaseRound, sectorId, 'revetment'),
       };
       
       return updatedButtonSets;
     });
     setRoundStartActivityLog(newActivityLog);
     
-    // Log demolish action to Firebase
-    gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentRound);
+    // Note: Coin updates are handled via Firebase lobby state listener, not local state
+  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, lobbyState]);
+
+  const handlePlayerReady = useCallback(async () => {
+    console.log('Player marking as ready...');
+    // Set this player as ready
+    await gameRoomService.setPlayerReady(true);
     
-    // Demolish costs 1 coin
-    setTotalCoins(prev => prev - 1);
-    
-    console.log(`Demolish action triggered for sector ${sectorId}, destroying: ${actionToDestroy}`);
-  }, [gameRoomService, currentRound, sector, activityLog, calculateButtonSetsForRound, totalCoins]);
+    // Don't change the game status here - let the useGameFlowController handle it
+    // when all players are ready (it monitors readyPlayers and auto-starts when count >= 3)
+  }, [gameRoomService]);
+
+  // Monitor player readiness and transition to PREPARING when all players are ready
+  useEffect(() => {
+    if (lobbyState && lobbyState.gameLobbyStatus === GameLobbyStatus.INITIALIZING) {
+      const readyCount = Object.values(lobbyState.readyPlayers || {}).filter(ready => ready).length;
+      
+      if (readyCount >= 3) { // All 3 players are ready
+        console.log('All players are ready! Moving to PREPARING...');
+        gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.PREPARING);
+      }
+    }
+  }, [lobbyState?.readyPlayers, lobbyState?.gameLobbyStatus, gameRoomService]);
 
   const handleTimeUp = useCallback(() => {
-    console.log('Time is up!');
-    // Handle round end logic here
+    console.log('Round gameplay time is up! Waiting for admin to move to next phase...');
+    // Do nothing - wait for admin-phase-control page to move to next phase
   }, []);
+
+  // Timer is now managed by the game flow system above
 
   // Initialize game room connection and listen to activity changes
   useEffect(() => {
     const initializeGameRoom = async () => {
       try {
-        await gameRoomService.createRoom(true);
-        await gameRoomService.joinRoom('default');
+        // Try to join the existing room first
+        const joined = await gameRoomService.joinRoom('default');
+        if (!joined) {
+          // If room doesn't exist, create it
+          await gameRoomService.createRoom(true);
+          await gameRoomService.joinRoom('default');
+        }
         
         // Listen to activity changes
         gameRoomService.onActivityChange((activities) => {
+          // Reset local state when Firebase activities are empty (new game)
+          if (activities.length === 0 && activityLog.length > 0) {
+            console.log('Firebase activities cleared - resetting local state');
+            resetLocalGameState();
+            return; // Don't set empty activities if we just reset
+          }
           setActivityLog(activities);
         });
 
         // Listen to round changes
         gameRoomService.onRoundChange((round) => {
           console.log('Firebase round changed to:', round);
-          setCurrentRound(round);
+          setLocalRound(round);
+        });
+
+        // Listen to lobby state changes
+        gameRoomService.onLobbyStateChange((lobbyStateData) => {
+          setLobbyState(lobbyStateData);
+          
+          // Reset local state when starting a new game (lobby status is INITIALIZING with no prior state)
+          if (lobbyStateData && lobbyStateData.gameLobbyStatus === GameLobbyStatus.INITIALIZING) {
+            const hasExistingState = Object.keys(lobbyStateData.readyPlayers || {}).length > 0 || 
+                                   Object.keys(lobbyStateData.coinsSpentByRound || {}).length > 0;
+            
+            if (!hasExistingState) {
+              console.log('New game detected - clearing local selections');
+              resetLocalGameState();
+            }
+          }
         });
       } catch (error) {
         console.error('Failed to initialize game room:', error);
@@ -225,14 +486,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     return () => {
       gameRoomService.disconnect();
     };
-  }, [gameRoomService]);
+  }, [gameRoomService, resetLocalGameState, activityLog.length]);
 
 
 
   // Helper function to render sector section using ProgressionState system
-  const renderSectorSection = (sectorId: string, title: string) => {
-    // Use current state for button states (active/disabled/selected)
-    const progressionState = useProgression(activityLog, currentRound, sectorId);
+  const renderSectorSection = (sectorId: string, title: string, progressionState: any) => {
+    // progression state is now passed as parameter to avoid calling hooks conditionally
     
     // Get additional data needed for comprehensive "No More Available Upgrades" check
     const activeActions = calculateActiveActions(activityLog);
@@ -279,13 +539,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
           sectorActions, 
           activeActions, 
           activeCPMPath, 
-          currentRound
+          firebaseRound
         );
         const completionRound = getCPMCompletionRound(config.key, sectorId, activityLog);
         const hasNoMoreAvailableUpgrades = !hasAnySelectableInMeasureType && 
                                activeCPMPath === config.key &&
                                completionRound !== null && 
-                               currentRound > completionRound;
+                               firebaseRound > completionRound;
         
         // If no actions and not active CPM path, don't show the card
         if (config.roundStartActions.length === 0 && !hasNoMoreAvailableUpgrades) {
@@ -313,7 +573,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
               return {
                 title: currentActionState.config.displayName,
                 coinCount: currentActionState.config.cost,
-                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost) : undefined,
+                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost, sectorId) : undefined,
                 isSelected,
                 disabled,
                 status: currentActionState.status, // Pass the status for potential UI enhancements
@@ -373,52 +633,61 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
-          {/* Top bar: Budget left, Round center, Timer right */}
+          {/* Top bar: Budget left and Timer right */}
           <div className="w-full flex flex-row items-start justify-between">
             {/* Budget display left */}
             <div className="flex-1 flex items-start justify-start">
               <BudgetDisplay totalCoins={totalCoins} />
             </div>
-            {/* Round display center */}
-            <div className="flex-1 flex items-start justify-center">
-              <div className="bg-white rounded-[16px] px-6 py-3">
-                <div className="text-[24px] font-bold text-black text-center">
-                  ROUND {currentRound}
-                </div>
-                {/* Temporary test buttons for round transitions */}
-                <div className="flex gap-1 mt-2 justify-center">
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 1)}
-                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R1
-                  </button>
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 2)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R2
-                  </button>
-                  <button 
-                    onClick={() => gameRoomService.updateLobbyStateKeyValue('round' as any, 3)}
-                    className="bg-green-500 text-white px-2 py-1 rounded text-xs"
-                  >
-                    R3
-                  </button>
-                </div>
-              </div>
-            </div>
             {/* Timer right */}
             <div className="flex-1 flex items-start justify-end">
-              <Timer key={currentRound} initialSeconds={30} onTimeUp={handleTimeUp} />
+              <Timer 
+                key={`${currentRound}-${currentPhase}`}
+                duration={phaseDuration}
+                onTimeUp={handleTimeUp} 
+                isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY}
+                syncWithTimestamp={phaseStartTime > 0 ? phaseStartTime : undefined}
+              />
             </div>
           </div>
 
-          {/* Sector sections - now stacked vertically */}
-          <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
-            {renderSectorSection(`${sector.slice(-1)}A`, sectorTitles.sectorA)}
-            {renderSectorSection(`${sector.slice(-1)}B`, sectorTitles.sectorB)}
-          </div>
+          {/* Player Status Area - shown when not in gameplay */}
+          {currentPhase !== GameLobbyStatus.ROUND_GAMEPLAY && (
+            <div className="w-full flex items-center justify-center mt-8">
+              <div className="bg-white rounded-[16px] px-8 py-6">
+                <div className="text-center">
+                  <div className="text-[24px] font-bold text-black text-center mb-4">
+                    {currentPhase.replace(/_/g, ' ')}
+                  </div>
+                  {!currentPhase || currentPhase === GameLobbyStatus.INITIALIZING ? (
+                    <button
+                      onClick={handlePlayerReady}
+                      className="bg-blue-500 text-white px-6 py-3 rounded text-lg hover:bg-blue-600 transition"
+                    >
+                      Ready
+                    </button>
+                  ) : currentPhase === GameLobbyStatus.PREPARING ? (
+                    <div className="text-center">
+                      <div className="text-lg text-black mb-2">
+                        Waiting for all players...
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Ready: {Object.values(lobbyState?.readyPlayers || {}).filter(ready => ready).length}/3
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Sector sections - only show during gameplay */}
+          {currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && (
+            <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+              {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
+              {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -426,6 +695,55 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <InsufficientBudgetModal 
         isOpen={showInsufficientBudgetModal}
         onClose={() => setShowInsufficientBudgetModal(false)}
+      />
+
+      {/* Game Flow Modals */}
+      <IntroductionModal 
+        isOpen={showIntroduction}
+        onDurationComplete={() => {}}
+        duration={getPhaseDuration(GameLobbyStatus.INTRODUCTION)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+      />
+      
+      <TutorialModal 
+        isOpen={showTutorial}
+        onDurationComplete={() => {}}
+        duration={getPhaseDuration(GameLobbyStatus.TUTORIAL)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+      />
+      
+      <RoundInstructionsModal 
+        isOpen={showRoundInstructions}
+        round={currentRound as 1 | 2 | 3}
+        duration={getPhaseDuration(GameLobbyStatus.ROUND_INSTRUCTIONS)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+        onDurationComplete={() => {}}
+      />
+      
+      <ScoreBreakdownModal 
+        isOpen={showScoreBreakdown}
+        breakdown={{ totalPoints: finalScore, roundPoints: Math.floor(finalScore / 3) }}
+        roundNumber={currentRound as 1 | 2 | 3}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+        onDurationComplete={() => {}}
+      />
+      
+      <EndingModal 
+        isOpen={showEnding}
+        onDurationComplete={() => {}}
+        finalScore={finalScore}
+        duration={getPhaseDuration(GameLobbyStatus.ENDING)}
+        syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
+      />
+      
+      <TeamNameInputModal 
+        isOpen={showTeamNameInput}
+        onSubmit={async (teamName) => {
+          // Handle team name submission (you can implement leaderboard logic here)
+          console.log('Team name submitted:', teamName, 'Score:', finalScore);
+          setShowTeamNameInput(false);
+        }}
+        finalScore={finalScore}
       />
     </div>
   );

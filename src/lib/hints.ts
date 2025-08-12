@@ -1,0 +1,6 @@
+export const HINTS = [
+  "WARNING: YOU ONLY GET TO CHOOSE ONCE",
+  "HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE"
+] as const;
+
+export type HintType = typeof HINTS[number];

@@ -63,7 +63,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       onValue(ref(database, 'gameState/revetmentValue'), snap => setRevetmentValueState(snap.val())),
       onValue(ref(database, 'gameState/isSeaWallBuilding'), snap => setIsSeaWallBuildingState(!!snap.val())),
       onValue(ref(database, 'gameState/isRevetmentBuilding'), snap => setIsRevetmentBuildingState(!!snap.val())),
-      onValue(ref(database, 'gameState/singleBuild'), snap => setSingleBuildState(snap.val())),
+      onValue(ref(database, 'gameState/singleBuild'), snap => {
+        // Reset single build state when Firebase value is null (indicating a new game)
+        const value = snap.val();
+        setSingleBuildState(value);
+        
+        // If the value is null and we had a previous value, reset all related states
+        if (value === null) {
+          console.log('Spline game state cleared - resetting Spline states');
+          setSeawallValueState(null);
+          setRevetmentValueState(null);
+          setIsSeaWallBuildingState(false);
+          setIsRevetmentBuildingState(false);
+          setIsGameLoadedState(false);
+          setIsGameStartedState(false);
+        }
+      }),
       onValue(ref(database, 'gameState/isGameLoaded'), snap => setIsGameLoadedState(!!snap.val())),
       onValue(ref(database, 'gameState/isGameStarted'), snap => setIsGameStartedState(!!snap.val())),
     ];

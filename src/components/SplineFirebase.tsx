@@ -59,12 +59,23 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     }
   }, [lobbyState.gameLobbyStatus]);
 
-  useSectorScores({
-    activities: activities ?? [],
-    lobbyState,
-    setTotalScore,
-    setCoinsLeft,
-  });
+  useEffect(() => {
+    // Calculate coins left from shared lobby state
+    const coinsTotalPerRound = lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND] ?? 10;
+    const coinsSpentByRound = lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND] ?? {};
+    const currentRound = lobbyState.round ?? 1;
+    const coinsSpentThisRound = coinsSpentByRound[currentRound] ?? 0;
+    const coinsLeft = coinsTotalPerRound - coinsSpentThisRound;
+    setCoinsLeft(coinsLeft);
+
+    useSectorScores({
+      activities: activities ?? [],
+      lobbyState,
+      setTotalScore,
+      setCoinsLeft,
+    });
+
+  }, [activities, lobbyState.gameLobbyStatus, lobbyState.round, lobbyState[LobbyStateEnum.COINS_TOTAL_PER_ROUND], lobbyState[LobbyStateEnum.COINS_SPENT_BY_ROUND]]);
 
   useEffect(() => {
     if (triggerProgress >= 100) {
@@ -135,11 +146,10 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       // Proceed to next round
       if (gameRoomServiceRef.current) {
         gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
-            [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
-            [LobbyStateEnum.ROUND]: (lobbyState.round ?? 1) + 1
-          }
+          ...lobbyState,
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.STARTED,
+          [LobbyStateEnum.COUNTDOWN_START_TIME]: Date.now(),
+          [LobbyStateEnum.ROUND]: ((lobbyState.round ?? 1) + 1) as RoundType
         });
       }
       return;
@@ -272,7 +282,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {showScoreBreakdownModal && (
         <ScoreBreakdownModal
           isOpen={true}
-          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect, lobbyState.round ?? 1)}
+          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect?.[lobbyState.round ?? 1] ?? 0, lobbyState.round ?? 1)}
           roundNumber={(lobbyState.round ?? 1) as 1|2|3}
         />
       )}

@@ -8,7 +8,8 @@ import {
   onDisconnect, 
   serverTimestamp,
   update,
-  remove
+  remove,
+  runTransaction
 } from 'firebase/database';
 import { ActivityLogType, LobbyStateType, SubSectorType, UserPresenceType } from './types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from './enums';
@@ -77,6 +78,7 @@ export class GameRoomService {
     this.listenToPresence();
     this.listenToWaterLevel();
     this.listenToRound();
+    this.listenToLobbyState(); // Add this line to listen to lobby state changes
     
     return true;
   }
@@ -203,14 +205,42 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, isCpm: boolean = false, subSector: SubSectorType): Promise<void> {
-    if (!this.roomId) return;
+  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, cost: number, isCpm: boolean = false, subSector?: SubSectorType): Promise<'ok' | 'insufficient' | 'no-room'> {
+    if (!this.roomId) return 'no-room';
 
-    // Log activity
+    // Force demolish to cost 1
+    const finalCost = activityType === ActivityTypeEnum.DEMOLISH ? 1 : Math.max(0, cost | 0);
+
+    // Transactionally spend coins for this round under lobbyState/coinsSpentByRound/{round}
+    const coinsRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsSpentByRound/${round}`);
+    const totalPerRoundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsTotalPerRound`);
+
+    // Read total per round once (fallback to 10 if missing)
+    let coinsTotalPerRound = 10;
+    try {
+      const snap = await get(totalPerRoundRef);
+      if (snap.exists() && typeof snap.val() === 'number') {
+        coinsTotalPerRound = snap.val();
+      }
+    } catch {}
+
+    const committed = await runTransaction(coinsRef, (current) => {
+      const spent = typeof current === 'number' ? current : 0;
+      const next = spent + finalCost;
+      if (next > coinsTotalPerRound) return; // abort
+      return next;
+    }).then(res => res.committed).catch(() => false);
+
+    if (!committed) {
+      return 'insufficient';
+    }
+
+    // Log activity after successful spend
     await this.logActivity(activityType, ActivityValue, round, isCpm, subSector);
+    return 'ok';
   }
 
-  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector: SubSectorType) {
+  private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector?: SubSectorType) {
     if (!this.roomId) return;
 
     const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
@@ -225,7 +255,7 @@ export class GameRoomService {
       isCpm,
       isDemolished: activityType === ActivityTypeEnum.DEMOLISH,
       round: round ?? 1,
-      subSector: subSector ?? null,
+      subSector: subSector ?? undefined,
       timestamp: Date.now()
     };
 
@@ -311,6 +341,44 @@ export class GameRoomService {
 
   getCurrentRoomId(): string | null {
     return this.roomId;
+  }
+
+  // Player readiness methods
+  async setPlayerReady(isReady: boolean = true): Promise<void> {
+    if (!this.roomId) return;
+
+    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    await update(readyPlayersRef, {
+      [this.userId]: isReady
+    });
+  }
+
+  async setPlayerNotReady(): Promise<void> {
+    await this.setPlayerReady(false);
+  }
+
+  async resetAllPlayersReady(): Promise<void> {
+    if (!this.roomId) return;
+
+    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    await set(readyPlayersRef, {});
+  }
+
+  areAllPlayersReady(lobbyState: LobbyStateType): boolean {
+    if (!lobbyState.readyPlayers) {
+      return false;
+    }
+
+    const readyCount = Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
+    return readyCount >= 3; // Always expect 3 players
+  }
+
+  getReadyPlayersCount(lobbyState: LobbyStateType): number {
+    if (!lobbyState.readyPlayers) {
+      return 0;
+    }
+
+    return Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
   }
 
   disconnect() {

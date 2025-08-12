@@ -1,4 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useTimer } from '@/components/hooks/useTimer';
+import { getPhaseDuration } from '@/components/hooks/phaseUtils';
+import { GameLobbyStatus } from '@/lib/enums';
+
+interface ScoreBreakdownModalProps {
+  isOpen: boolean;
+  breakdown: any;
+  roundNumber: 1 | 2 | 3;
+  syncWithTimestamp?: number;
+  onDurationComplete?: () => void;
+}
 
 // Example: breakdown = getRoundBreakdownByPlayer(...)
 // roundNumber: 1, 2, or 3
@@ -34,22 +45,34 @@ export default function ScoreBreakdownModal({
   isOpen,
   breakdown,
   roundNumber,
-}: {
-  isOpen: boolean;
-  breakdown: any; // from getRoundBreakdownByPlayer
-  roundNumber: 1 | 2 | 3;
-}) {
+  syncWithTimestamp,
+  onDurationComplete,
+}: ScoreBreakdownModalProps) {
+  const duration = getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN);
+  
+  const { timeRemaining } = useTimer({
+    duration,
+    onTimeUp: onDurationComplete,
+    startImmediately: isOpen,
+    syncWithTimestamp,
+  });
+
+  // Fallback timer for when sync is not available
+  useEffect(() => {
+    if (!isOpen || syncWithTimestamp || !onDurationComplete) return;
+
+    const timer = setTimeout(() => {
+      onDurationComplete();
+    }, duration * 1000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, onDurationComplete, duration, syncWithTimestamp]);
+
   if (!isOpen || !breakdown) return null;
 
   const color = roundColorMap[roundNumber];
-  const prevRoundPoints =
-    roundNumber === 1
-      ? breakdown.totalPoints
-      : roundNumber === 2
-      ? breakdown.roundPoints
-      : roundNumber === 3
-      ? breakdown.roundPoints
-      : 0;
+  // Dummy data - will be implemented later
+  const prevRoundPoints = breakdown?.totalPoints || breakdown?.roundPoints || 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0,0.7)]">
@@ -78,39 +101,47 @@ export default function ScoreBreakdownModal({
                 {prevRoundPoints.toLocaleString()}
               </span>
             </div>
-            {Object.entries(playerLabels).map(([playerKey, label]) => (
-              <div key={playerKey} className="mb-2">
-                <div className="flex justify-between items-center text-white font-bold text-lg">
-                  <span>{label} ACTIONS</span>
-                  <span
-                    className={
-                      breakdown.playerBreakdown[playerKey].actionsScore < 0
-                        ? "text-red-400"
-                        : "text-white"
-                    }
-                  >
-                    {breakdown.playerBreakdown[playerKey].actionsScore > 0
-                      ? `+${breakdown.playerBreakdown[playerKey].actionsScore}`
-                      : breakdown.playerBreakdown[playerKey].actionsScore}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-white font-bold text-lg">
-                  <span>{label} MONEY SPENT</span>
-                  <div className="flex">
-                    {Array.from({
-                      length: breakdown.playerBreakdown[playerKey].coinsSpent,
-                    }).map((_, i) => (
-                      <img
-                        key={'bcoin-' + i}
-                        src="/games/pub-coastal-spline/images/coin.svg"
-                        alt="coin"
-                        className="w-[0.8vw] h-[0.8vw]"
-                      />
-                    ))}
+            {Object.entries(playerLabels).map(([playerKey, label]) => {
+              // Dummy data - will be implemented later
+              const playerData = breakdown?.playerBreakdown?.[playerKey] || {
+                actionsScore: 0,
+                coinsSpent: 0
+              };
+              
+              return (
+                <div key={playerKey} className="mb-2">
+                  <div className="flex justify-between items-center text-white font-bold text-lg">
+                    <span>{label} ACTIONS</span>
+                    <span
+                      className={
+                        playerData.actionsScore < 0
+                          ? "text-red-400"
+                          : "text-white"
+                      }
+                    >
+                      {playerData.actionsScore > 0
+                        ? `+${playerData.actionsScore}`
+                        : playerData.actionsScore}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-white font-bold text-lg">
+                    <span>{label} MONEY SPENT</span>
+                    <div className="flex">
+                      {Array.from({
+                        length: playerData.coinsSpent,
+                      }).map((_, i) => (
+                        <img
+                          key={'bcoin-' + i}
+                          src="/games/pub-coastal-spline/images/coin.svg"
+                          alt="coin"
+                          className="w-[0.8vw] h-[0.8vw]"
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {/* Footer */}
           <div className={`px-6 py-6 text-center`}>
@@ -120,7 +151,7 @@ export default function ScoreBreakdownModal({
               ROUND {roundNumber} POINTS
             </div>
             <div className="text-5xl font-extrabold text-[#222] tracking-wide">
-              {breakdown.roundPoints.toLocaleString()}
+              {(breakdown?.roundPoints || 0).toLocaleString()}
             </div>
           </div>
         </div>
