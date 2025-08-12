@@ -54,17 +54,23 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
       return;
     }
 
-    // Handle letter input
-    if (e.key.length === 1 && /[A-Za-z]/.test(e.key)) {
+    // Handle any single character input
+    if (e.key.length === 1) {
       e.preventDefault();
-      const newLetters = [...letters];
-      newLetters[index] = e.key.toUpperCase();
-      setLetters(newLetters);
       
-      // Move to next input if not at the end
-      if (index < 2) {
-        setCurrentFocus(index + 1);
+      // Accept letters and numbers
+      if (/[A-Za-z0-9]/.test(e.key)) {
+        const newLetters = [...letters];
+        newLetters[index] = e.key.toUpperCase();
+        setLetters(newLetters);
+        
+        // Move to next input if not at the end
+        if (index < 2) {
+          setCurrentFocus(index + 1);
+        }
       }
+      // For invalid characters, we prevent the default but don't update state
+      // This ensures the cursor behavior is consistent
     }
   };
 

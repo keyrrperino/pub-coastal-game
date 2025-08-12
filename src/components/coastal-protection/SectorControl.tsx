@@ -3,7 +3,7 @@ import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
-import { GameRoomService } from '@/lib/gameRoom';
+import { GameRoomService, saveTeamScoreToGlobalLeaderboard } from '@/lib/gameRoom';
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
@@ -756,11 +756,30 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <TeamNameInputModal 
         isOpen={showTeamNameInput}
         onSubmit={async (teamName) => {
-          // Handle team name submission (you can implement leaderboard logic here)
-          console.log('Team name submitted:', teamName, 'Score:', finalScore);
-          setShowTeamNameInput(false);
+          try {
+            // Try using the gameRoomService method first
+            if (typeof gameRoomService.saveTeamScore === 'function') {
+              await gameRoomService.saveTeamScore(teamName, finalScore);
+              console.log('Team score saved via gameRoomService:', teamName, 'Score:', finalScore);
+            } else {
+              // Fallback to standalone function
+              console.log('Using fallback function to save team score');
+              await saveTeamScoreToGlobalLeaderboard(
+                teamName, 
+                finalScore, 
+                'default',
+                `Player ${sector.slice(-1)}`
+              );
+              console.log('Team score saved via standalone function:', teamName, 'Score:', finalScore);
+            }
+            setShowTeamNameInput(false);
+          } catch (error) {
+            console.error('Failed to save team score:', error);
+            // Still close the modal even if save fails
+            setShowTeamNameInput(false);
+          }
         }}
-        finalScore={finalScore}
+        playerNumber={getPlayerNumber(sector)}
       />
 
     </div>

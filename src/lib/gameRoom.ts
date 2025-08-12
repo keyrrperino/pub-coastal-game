@@ -291,6 +291,23 @@ export class GameRoomService {
     await set(roundRef, round);
   }
 
+  async saveTeamScore(teamName: string, score: number): Promise<void> {
+    if (!this.roomId) return;
+
+    const leaderboardRef = ref(database, 'global-leaderboard');
+    const newEntryRef = push(leaderboardRef);
+    
+    const entry = {
+      teamName,
+      score,
+      timestamp: Date.now(),
+      submittedBy: this.userId,
+      roomId: this.roomId
+    };
+
+    await set(newEntryRef, entry);
+  }
+
   onActivityChange(callback: (activities: ActivityLogType[]) => void) {
     this.activityCallback = callback;
     if (this.roomId) {
@@ -390,4 +407,25 @@ export class GameRoomService {
       });
     }
   }
+}
+
+// Standalone function for saving team scores (doesn't require GameRoomService instance)
+export async function saveTeamScoreToGlobalLeaderboard(
+  teamName: string, 
+  score: number, 
+  roomId: string = 'default',
+  userId: string = 'anonymous'
+): Promise<void> {
+  const leaderboardRef = ref(database, 'global-leaderboard');
+  const newEntryRef = push(leaderboardRef);
+  
+  const entry = {
+    teamName,
+    score,
+    timestamp: Date.now(),
+    submittedBy: userId,
+    roomId
+  };
+
+  await set(newEntryRef, entry);
 }
