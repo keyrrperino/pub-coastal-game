@@ -6,7 +6,7 @@ import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
 import { GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
-import { useMainProgress } from "./hooks/useMainProgress";
+ 
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
 import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
 import { calculateOverallScore, calculateOverallScoreFromScenarioConfigControlled, calculateTotalCoinsPerRound, getMeanSeaLevelForRound, getRandomEffectValue, getRoundBreakdownByPlayer, getSectorRoundScore, isGameOnGoing } from "@/lib/utils";
@@ -52,7 +52,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     triggersLoading, setTriggersLoading,
     triggerProgress, setTriggerProgress,
   } = useInitialize();
-  const [totalScore, setTotalScore] = useState<number>(10000);
+  const [totalScore, setTotalScore] = useState<number>(2500);
   useHideAllTriggers(isLoaded, splineAppRef, lobbyState);
   useLobbyPreparation({ lobbyState, gameRoomServiceRef });
 
@@ -62,10 +62,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     setIsLoaded
   );
 
-  const [showRoundEndModal, setShowRoundEndModal] = useState(false);
-  const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState(false); // NEW
-  const [showGameOverModal, setShowGameOverModal] = useState(false);
-  const [countdown, setCountdown]= useState(5);
+  
   const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
@@ -109,19 +106,22 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     lobbyState
   });
 
-  const {progress, isStarting} = useMainProgress(
-    lobbyState.phaseDuration,
-    lobbyState.gameLobbyStatus,
-    triggersLoading,
-    lobbyState.phaseStartTime,
-    1 // <-- 3 seconds delay before countdown starts
-  );
+  const onRoundGameplayTimeUp = () => {
+    if (gameRoomServiceRef.current && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_GAMEPLAY) {
+      gameRoomServiceRef.current.updateLobbyState({
+        ...lobbyState, ...{
+        [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_CUTSCENES,
+        [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+        [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_CUTSCENES,
+      }});
+    }
+  };
 
   const {currentTutorial, timeRemaining} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
   const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
 
   const { cutSceneStatus, currentCutScene } = 
-    useCutSceneSequence(progress, gameRoomServiceRef, lobbyState, activities ?? []);
+    useCutSceneSequence(lobbyState, activities ?? []);
 
   useEffect(() => {
     if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
@@ -336,11 +336,13 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const renderProgressBar = (
     (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && 
       <ProgressBar
-        progress={progress}
-        key="lead"
-        round={lobbyState.round}
-        containerClassName="fixed z-10 top-[9vh] left-[30vw]"
-      />
+          containerClassName="fixed z-10 top-[9vh] left-[30vw]"
+          key={`${lobbyState.round ?? 1}-${lobbyState.gameLobbyStatus}`}
+          duration={lobbyState.phaseDuration}
+          onTimeUp={onRoundGameplayTimeUp}
+          isRunning={!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_GAMEPLAY}
+          syncWithTimestamp={lobbyState.phaseStartTime}
+        />
   )
 
   const renderInstroductions = (
@@ -411,50 +413,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
         />
       )}
 
-      {/* Prepare for Round Modal */}
-      {showRoundEndModal && 
-        <AnimatedModal isOpen={true}>
-          <AnimatedTitle>
-            <h1>˗ˏˋ Round {lobbyState.round ?? 1} Finished ˎˊ˗</h1>
-            <h1>Prepare for Round {(lobbyState.round ?? 1) + 1}</h1>
-          </AnimatedTitle>
-        </AnimatedModal>
-      }
-      
-
-      {showGameOverModal && 
-        <AnimatedModal isOpen={true}>
-          <AnimatedTitle>
-            {
-              <>
-                <h1>˗ˏˋ Game Over ˎˊ˗</h1>
-                <button
-                  className="
-                    mt-[5vh]
-                    flex items-center justify-center
-                    w-[406px] h-[83px]
-                    pt-[37px] pr-[45px] pb-[37px] pl-[45px]
-                    gap-[10px]
-                    opacity-100
-                    rounded-[500px]
-                    bg-[#DD0046] text-white font-bold text-[48px]
-                    focus:outline-none
-                    transition
-                    hover:bg-[#FF2A6D] active:bg-[#FF4E86]
-                    cursor-pointer
-                  "
-                  onClick={() => {
-                    resetGame();
-                  }}
-                >
-                  Restart
-                </button>
-              </>
-            }
-          </AnimatedTitle>
-        </AnimatedModal>
-      }
-      
       {/* Loading overlay with percentage */}
       {(triggersLoading) && (
         <div 

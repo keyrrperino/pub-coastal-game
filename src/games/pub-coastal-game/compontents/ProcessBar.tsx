@@ -1,25 +1,34 @@
+import { useTimer } from '@/components/hooks/useTimer';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-interface ProgressBarProps {
-  progress: number;
+interface TimerProps {
+  duration: number;
+  onTimeUp?: () => void;
+  isRunning?: boolean;
+  syncWithTimestamp?: number;
+  hintText?: string;
+  showHint?: boolean;
   containerClassName?: string;
-  round: number;
-  countdownProgressTimer?: number;
-  hasTextCountdown?: boolean;
-  topToBottomAnimation?: boolean;
   style?: React.CSSProperties; // <-- added
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
-  progress,
+const ProgressBar: React.FC<TimerProps> = ({ 
+  duration,
+  onTimeUp,
+  isRunning = true,
+  syncWithTimestamp,
   containerClassName,
-  round,
-  hasTextCountdown,
-  countdownProgressTimer,
-  style // <-- added
+  style,
 }) => {
-
+  const {
+    progressPercentage,
+  } = useTimer({
+    duration,
+    onTimeUp,
+    startImmediately: isRunning,
+    syncWithTimestamp,
+  });
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -72,27 +81,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         >
           {/* Progress Fill */}
           <div
-            className="absolute left-0 top-0 h-full bg-[#342eff]"
+            className="absolute left-0 top-0 h-full transition-all duration-1000 ease-linear bg-[#002CFF]"
             style={{
-              width: `${progress * 100}%`,
-              transition: 'width 0.1s linear',
-              opacity: 0.9,
+              width: `${progressPercentage}%`,
+              borderRadius: '10px',
             }}
           />
         </div>
-        {hasTextCountdown &&
-          <span
-            style={{
-              marginLeft: '1vw',
-              fontWeight: 700,
-              fontSize: '1.2vw',
-              color: '#060606',
-              minWidth: '2vw',
-              textAlign: 'right',
-            }}
-          >
-            {((countdownProgressTimer ?? 0) <= 1 ? 1 : countdownProgressTimer)}s
-          </span>}
       </div>
     </>
   );

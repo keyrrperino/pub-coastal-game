@@ -155,7 +155,7 @@ export function calculateOverallScorePerRound(
   });
 
   // Start from 10,000 and add the (negative) totalScore
-  return 10000 + totalScore;
+  return 2500 + totalScore;
 }
 
 
@@ -206,7 +206,7 @@ export function calculateOverallScore(
   });
 
   // Start from 10,000 and add the (negative) totalScore
-  return 10000 + totalScore;
+  return 2500 + totalScore;
 }
 
 
@@ -256,7 +256,7 @@ export function calculateRoundScore(
   });
 
   // Start from 10,000 and add the (negative) totalScore
-  return 10000 + totalScore;
+  return 2500 + totalScore;
 }
 // ... existing code ...
 
