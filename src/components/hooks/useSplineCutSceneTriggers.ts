@@ -3,10 +3,26 @@ import { Application } from "@splinetool/runtime";
 import { CutScenesEnum, GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
  
 import { GameRoomService } from "@/lib/gameRoom";
-import { getCutScenes } from "@/lib/utils";
-import { ActivityLogType, LobbyStateType } from "@/lib/types";
+import { ActivityLogType, LobbyStateType, OverallScoresTypes, RoundType } from "@/lib/types";
 import { PHASE_DURATIONS } from "./phaseUtils";
 import { useTimer } from "./useTimer";
+import { meanSeaLevels, roundOneScenarioConfiguration, sceneSectorConfigurations } from "@/lib/constants";
+
+const getCutScenes = (round: RoundType, overAllScores: { [key in RoundType]?: OverallScoresTypes }): CutScenesEnum[] => {
+  console.log(overAllScores);
+  const keys = [
+    overAllScores[round]?.user_sector_1?.sectorA.keys[0],
+    overAllScores[round]?.user_sector_1?.sectorB.keys[0],
+    overAllScores[round]?.user_sector_2?.sectorA.keys[0],
+    overAllScores[round]?.user_sector_2?.sectorB.keys[0],
+    overAllScores[round]?.user_sector_2?.sectorA.keys[0],
+    overAllScores[round]?.user_sector_2?.sectorB.keys[0],
+  ].filter((key): key is string => typeof key === 'string'); // Filter out non-string values
+
+  return keys.map((value) => {
+    return sceneSectorConfigurations[value].cutscene as CutScenesEnum;
+  });
+};
 
 export enum CutScenesStatusEnum {
   STARTED = "STARTED",
@@ -16,7 +32,7 @@ export enum CutScenesStatusEnum {
 
 export function useCutSceneSequence(
   lobbyState: LobbyStateType,
-  activities: ActivityLogType[]
+  overAllScores: {[key in RoundType]?: OverallScoresTypes}
 ) {
   const [currentCutSceneIndex, setCurrentCutSceneIndex] = useState<number | null>(null);
   const [currentCutScene, setCurrentCutScene] = useState<CutScenesEnum | null>(null);
@@ -29,21 +45,23 @@ export function useCutSceneSequence(
   // Initialize cutscenes when entering ROUND_CUTSCENES
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES) {
-      const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect[lobbyState?.round ?? 1], activities);
+      const dynamicCutScenes = getCutScenes(lobbyState.round ?? 1, overAllScores);
+      console.log(dynamicCutScenes);
       setCutScenes(dynamicCutScenes);
       setCurrentCutSceneIndex(0);
     }
-  }, [lobbyState.gameLobbyStatus]);
+  }, [lobbyState.gameLobbyStatus, getCutScenes]);
 
   // Ensure cutscenes initialize when entering ROUND_CUTSCENES from elsewhere (e.g., admin)
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES && cutScenes.length === 0) {
-      const dynamicCutScenes = getCutScenes(0.3, lobbyState.randomizeEffect[lobbyState?.round ?? 1], activities);
+      const dynamicCutScenes = getCutScenes(lobbyState.round ?? 1, overAllScores);
+      console.log(dynamicCutScenes);
       setCutScenes(dynamicCutScenes);
       setCurrentCutSceneIndex(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lobbyState.gameLobbyStatus]);
+  }, [lobbyState.gameLobbyStatus, getCutScenes]);
 
   // Load the current cutscene
   useEffect(() => {

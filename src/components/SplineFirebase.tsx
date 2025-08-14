@@ -80,9 +80,11 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
   const overAllScores = useSectorScores({
     activities: activities ?? [],
+    newActivities: newActivities,
     lobbyState,
     setTotalScore,
     setCoinsLeft,
+    triggersLoading
   });
 
   useEffect(() => {
@@ -117,7 +119,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
 
   const { cutSceneStatus, currentCutScene } = 
-    useCutSceneSequence(lobbyState, activities ?? []);
+    useCutSceneSequence(lobbyState, overAllScores);
 
   useEffect(() => {
     if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
@@ -404,6 +406,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
         <ScoreBreakdownModal
           isOpen={true}
+          key={lobbyState.round + "-breakdownmodal"}
           breakdown={overAllScores}
           roundNumber={(lobbyState.round ?? 1) as 1|2|3}
         />

@@ -2,14 +2,14 @@ import { GameLobbyStatus } from '@/lib/enums';
 
 // Phase duration configuration
 export const PHASE_DURATIONS: Record<GameLobbyStatus, number> = {
-  [GameLobbyStatus.INTRODUCTION]: 30,
-  [GameLobbyStatus.ROUND_STORYLINE]: 15,
-  [GameLobbyStatus.ROUND_GAMEPLAY]: 30,
-  [GameLobbyStatus.ROUND_CUTSCENES]: 30,
-  [GameLobbyStatus.ROUND_SCORE_BREAKDOWN]: 5,
-  [GameLobbyStatus.ENDING]: 15,
+  [GameLobbyStatus.INTRODUCTION]: 1,
+  [GameLobbyStatus.ROUND_STORYLINE]: 1,
+  [GameLobbyStatus.ROUND_GAMEPLAY]: 300000,
+  [GameLobbyStatus.ROUND_CUTSCENES]: 6,
+  [GameLobbyStatus.ROUND_SCORE_BREAKDOWN]: 1,
+  [GameLobbyStatus.ENDING]: 1,
   [GameLobbyStatus.TEAM_NAME_INPUT]: 0, // Manual transition
-  [GameLobbyStatus.LEADERBOARD_DISPLAY]: 5,
+  [GameLobbyStatus.LEADERBOARD_DISPLAY]: 1,
   [GameLobbyStatus.INITIALIZING]: 0,
   [GameLobbyStatus.PREPARING]: 0,
   [GameLobbyStatus.RESTARTING]: 0,
