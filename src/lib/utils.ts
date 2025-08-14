@@ -816,8 +816,14 @@ export function getSectorRoundScore(
       scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     } else { // if ang previous action has action and no activity in curent round
       const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
-      const { coin, score } = sceneSectorConfigurations[key];
-      scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
+      console.log(roundNumber, "newKey: ", key, "sectorActivitiesA: ", sectorActivitiesA, "previousSectorActivitiesA: ", previousSectorActivitiesA);
+      try {
+        const { coin, score } = sceneSectorConfigurations[key];
+        scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
+      } catch (ex) {
+        const { coin, score } = sceneSectorConfigurations["default"];
+        scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
+      }
     }
   }
 
@@ -940,6 +946,7 @@ export function getSectorRoundScore(
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("key: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1189,16 +1196,19 @@ export const addUpScoreAndCoinA = (
   currentRound: number,
   gameStatus: GameLobbyStatus) => {
   const newScoreData = {...scoreData};
-  if (!(currentRound === 3 && gameStatus === GameLobbyStatus.ROUND_ONE_GAME_ENDED)) {
-    if (round >= currentRound) {
-      if (currentRound === 1 && key.includes("_None-")) {
-        newScoreData[userId]!.partialTotalScoreToDeduct += score;
-      }
-      if (currentRound !== 1 && key.includes("_None-None-")) {
-        newScoreData[userId]!.partialTotalScoreToDeduct += score;
-      }
+  if (gameStatus === GameLobbyStatus.ROUND_GAMEPLAY) {
+    if (currentRound === 1 && key.includes("_None-")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
+    }
+    if (currentRound === 2 && key.includes("-None-0")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
+    }
+    if (currentRound === 3 && key.includes("-None-1")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
     }
   }
+
+  
 
   newScoreData[userId]!.sectorA.scores.push(score);
   newScoreData[userId]!.sectorA.coins.push(coin);
@@ -1221,14 +1231,15 @@ export const addUpScoreAndCoinB = (
   gameStatus: GameLobbyStatus
 ) => {
   const newScoreData = {...scoreData};
-  if (!(currentRound === 3 && gameStatus === GameLobbyStatus.ROUND_ONE_GAME_ENDED)) {
-    if (round >= currentRound) {
-      if (currentRound === 1 && key.includes("_None-")) {
-        newScoreData[userId]!.partialTotalScoreToDeduct += score;
-      }
-      if (currentRound !== 1 && key.includes("_None-None-")) {
-        newScoreData[userId]!.partialTotalScoreToDeduct += score;
-      }
+  if (!(gameStatus !== GameLobbyStatus.ROUND_GAMEPLAY)) {
+    if (currentRound === 1 && key.includes("_None-")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
+    }
+    if (currentRound === 2 && key.includes("-None-0")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
+    }
+    if (currentRound === 3 && key.includes("-None-1")) {
+      newScoreData[userId]!.partialTotalScoreToDeduct += score;
     }
   }
 

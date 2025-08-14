@@ -9,6 +9,7 @@ interface ScoreBreakdownModalProps {
   isOpen: boolean;
   breakdown: {[key in RoundType]?: OverallScoresTypes | undefined};
   roundNumber: RoundType;
+  totalScore: number;
   syncWithTimestamp?: number;
   onDurationComplete?: () => void;
 }
@@ -43,6 +44,7 @@ export default function ScoreBreakdownModal({
   roundNumber,
   syncWithTimestamp,
   onDurationComplete,
+  totalScore
 }: ScoreBreakdownModalProps) {
   const duration = getPhaseDuration(GameLobbyStatus.ROUND_SCORE_BREAKDOWN);
   
@@ -94,6 +96,79 @@ export default function ScoreBreakdownModal({
     + (breakdown[previousRoundNumber]?.user_sector_2?.totalScoreToDeduct ?? 0)
     + (breakdown[previousRoundNumber]?.user_sector_3?.totalScoreToDeduct ?? 0);
 
+
+  const getTotalPoints = () => {
+    let overAllScore = OVERALL_SCORE_POINTS - (
+      (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_3?.totalScoreToDeduct ?? 0)
+    );
+
+    if (roundNumber === 1) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0))
+    }
+  
+    if (roundNumber === 2) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_3?.totalScoreToDeduct ?? 0)
+      )
+    }
+
+    return overAllScore;
+  }
+
+  const getPrviousRoundTotalPoints = () => {
+    let overAllScore = OVERALL_SCORE_POINTS - (
+      (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[2]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+      (breakdown[3]?.user_sector_3?.totalScoreToDeduct ?? 0)
+    );
+
+    if (roundNumber === 1) {
+      overAllScore = OVERALL_SCORE_POINTS; 
+    }
+
+    if (roundNumber === 2) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0))
+    }
+  
+    if (roundNumber === 3) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (breakdown[1]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[1]?.user_sector_3?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_1?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_2?.totalScoreToDeduct ?? 0) +
+        (breakdown[2]?.user_sector_3?.totalScoreToDeduct ?? 0)
+      )
+    }
+
+    return overAllScore;
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
@@ -128,13 +203,13 @@ export default function ScoreBreakdownModal({
               {/* Total Points */}
               <div className="flex items-center justify-between">
                 <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                  Total Points
+                  {roundNumber === 1 ? "TOTAL" : "ROUND " + (roundNumber - 1)} POINTS
                 </span>
                 <div style={{
                     backgroundColor: roundColors[roundNumber].color2
                   }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
                 <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                  {2500 - (totalPoints ?? 0)}
+                  {(getPrviousRoundTotalPoints() ?? 0)}
                 </span>
               </div>
               
@@ -160,7 +235,7 @@ export default function ScoreBreakdownModal({
                             color: playerScore < 0 ? "#FF0000" : "#202020"
                           }}
                         >
-                          {playerScore < 0 ? "-" : ""}{playerScore}
+                          {playerScore === 0 ? "" : "-"}{playerScore}
                         </span>
                       </div>
                       
@@ -193,7 +268,10 @@ export default function ScoreBreakdownModal({
           }} className="px-8 py-6">
             <div className="text-center">
               <div className="text-[clamp(20px,3vw,34px)] font-bold text-white">
-                ROUND 1 POINTS
+                ROUND {roundNumber} POINTS
+              </div>
+              <div className="text-[clamp(40px,8vw,73px)] font-bold text-white">
+                {(getTotalPoints() ?? 0)}
               </div>
             </div>
           </div>

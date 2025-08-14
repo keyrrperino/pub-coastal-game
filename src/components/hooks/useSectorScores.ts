@@ -16,7 +16,7 @@ interface UseSectorScoresProps {
   setSector2Performance?: (performance: SectorPerformance) => void;
   setSector3Performance?: (performance: SectorPerformance) => void;
   setTotalPerformance?: (performance: SectorPerformance) => void;
-  triggersLoading: boolean;
+  triggersLoading?: boolean;
 }
 
 // Per-round sector performance evaluation
@@ -73,7 +73,7 @@ const getSectorPerformance = (
 };
 
 const getTotalPerformance = (totalScore: number): SectorPerformance => {
-  if (totalScore > 1000) return 'good';
+  if (totalScore >= 1000) return 'good';
   if (totalScore >= 625 && totalScore <= 999) return 'okay';
   return 'bad'; // < 625
 };
@@ -274,7 +274,7 @@ export function useSectorScores({
       },
     })
 
-  }, [newActivities, triggersLoading]);
+  }, [newActivities, triggersLoading, lobbyState.gameLobbyStatus]);
 
 
   return overallScoresData;

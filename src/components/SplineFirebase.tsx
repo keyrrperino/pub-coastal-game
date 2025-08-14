@@ -78,15 +78,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     }
   }, [lobbyState]);
 
-  const overAllScores = useSectorScores({
-    activities: activities ?? [],
-    newActivities: newActivities,
-    lobbyState,
-    setTotalScore,
-    setCoinsLeft,
-    triggersLoading
-  });
-
   useEffect(() => {
     if (triggerProgress >= 100) {
       setTriggersLoading(false);
@@ -117,22 +108,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
 
   const {currentTutorial, timeRemaining} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
   const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
-
-  const { cutSceneStatus, currentCutScene } = 
-    useCutSceneSequence(lobbyState, overAllScores);
-
-  useEffect(() => {
-    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
-      if (gameRoomServiceRef.current) {
-        gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_SCORE_BREAKDOWN,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
-        }});
-      }
-    }
-  }, [cutSceneStatus]);
 
   const isScoreBreakdownTimesUp = () => {
     if (gameRoomServiceRef.current) {
@@ -216,7 +191,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   
   const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
 
-  useSectorScores({
+  const overAllScores = useSectorScores({
     activities: activities ?? [],
     lobbyState,
     setTotalScore,
@@ -225,7 +200,25 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     setSector2Performance: setSectorPerformance,
     setSector3Performance: setSectorPerformance,
     setTotalPerformance,
+    triggersLoading,
+    newActivities
   });
+
+  const { cutSceneStatus, currentCutScene } = 
+    useCutSceneSequence(lobbyState, overAllScores);
+
+  useEffect(() => {
+    if (cutSceneStatus === CutScenesStatusEnum.ENDED && lobbyState.round <= 3) {
+      if (gameRoomServiceRef.current) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_SCORE_BREAKDOWN,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
+        }});
+      }
+    }
+  }, [cutSceneStatus]);
 
   // Main Progress logic
 
@@ -408,6 +401,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
           isOpen={true}
           key={lobbyState.round + "-breakdownmodal"}
           breakdown={overAllScores}
+          totalScore={totalScore}
           roundNumber={(lobbyState.round ?? 1) as 1|2|3}
         />
       )}
