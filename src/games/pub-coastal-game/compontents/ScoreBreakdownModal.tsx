@@ -134,7 +134,7 @@ export default function ScoreBreakdownModal({
                     backgroundColor: roundColors[roundNumber].color2
                   }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
                 <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                  {totalPoints}
+                  {2500 - (totalPoints ?? 0)}
                 </span>
               </div>
               
