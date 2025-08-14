@@ -147,7 +147,7 @@ export default function ScoreBreakdownModal({
 
                   return (
                     <>
-                      <div className="flex items-center justify-between">
+                      <div key={"sector_" + userSector} className="flex items-center justify-between">
                         <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
                           {playerName} actions
                         </span>
@@ -174,8 +174,8 @@ export default function ScoreBreakdownModal({
                           }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
                         <div className="flex gap-2">
                           {
-                            Array(playerCoinsSpent).map(() => {
-                              return <img src="/assets/coin-icon.png" alt="coin" className="w-5 h-5" />;
+                            Array(playerCoinsSpent).fill(null).map((value, index) => {
+                              return <img key={"image" + index.toString()} src="/assets/coin-icon.png" alt="coin" className="w-5 h-5" />;
                             })
                           }
                         </div>

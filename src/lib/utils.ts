@@ -386,8 +386,6 @@ export function calculateOverallScoreFromScenarioConfigControlled(
     }
   });
 
-  console.log("matchedData: ", matchedData);
-
   return { data: matchedData, dataStr: matchedDataString, totalScore };
 }
 
@@ -505,8 +503,6 @@ export function calculateTotalCoinsPerRound(
       result[currentRound].data.push({ key, config });
     }
   });
-
-  console.log(result)
 
   return result;
 }
@@ -820,7 +816,6 @@ export function getSectorRoundScore(
       scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     } else { // if ang previous action has action and no activity in curent round
       const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
-      console.log(key);
       const { coin, score } = sceneSectorConfigurations[key];
       scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     }
