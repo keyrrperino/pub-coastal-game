@@ -18,9 +18,6 @@ import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
 import { usePreparingProgress } from "./hooks/usePreparingProgress";
 import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
 import { SectorPerformance, useSectorScores } from "./hooks/useSectorScores";
-import Tutorial1Page from "@/pages/tutorial/1";
-import Tutorial2Page from "@/pages/tutorial/2";
-import Tutorial3Page from "@/pages/tutorial/3";
 import TutorialScreen3 from "./TutorialScreen3";
 import TutorialScreen2 from "./TutorialScreen2";
 import TutorialScreen1 from "./TutorialScreen1";
@@ -81,7 +78,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     }
   }, [lobbyState]);
 
-  useSectorScores({
+  const overAllScores = useSectorScores({
     activities: activities ?? [],
     lobbyState,
     setTotalScore,
@@ -407,7 +404,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       {lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
         <ScoreBreakdownModal
           isOpen={true}
-          breakdown={getRoundBreakdownByPlayer(activities ?? [], lobbyState.randomizeEffect?.[lobbyState.round ?? 1] ?? 0, lobbyState.round ?? 1)}
+          breakdown={overAllScores}
           roundNumber={(lobbyState.round ?? 1) as 1|2|3}
         />
       )}

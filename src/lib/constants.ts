@@ -2,7 +2,7 @@ import { ActivityDemolishTypeSector1AEnum, ActivityDemolishTypeSector1BEnum, Act
 import { LobbyStateType, ScenarioConfigurationType, SectorEnum, SectorsButtonConfigType, SplineTriggerConfigItem, SplineTriggersConfigType, SubSectorType, RoundType } from "./types";
 import { getRandomEffectValue } from "./utils";
 
-export const ROOM_NAME = "rooms-v102";
+export const ROOM_NAME = "rooms-v2";
 export const GAME_ROUND_TIMER = 30;
 export const GAME_STARST_IN_COUNTDOWN = 15;
 export const DELAY_IN_SECONDS_BEFORE_GAME_STARST_IN_COUNTDOWN = 3;

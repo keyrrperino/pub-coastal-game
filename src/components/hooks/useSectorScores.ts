@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { ActivityLogType, LobbyStateType, RoundType } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { ActivityLogType, LobbyStateType, OverallScoresTypes, RoundType } from '@/lib/types';
 import { UserSectorEnum, LobbyStateEnum } from '@/lib/enums';
 import { getSectorRoundScore } from '@/lib/utils';
 import { OVERALL_SCORE_POINTS, TOTAL_COINS_PER_ROUND } from '@/lib/constants';
@@ -86,6 +86,7 @@ export function useSectorScores({
   setSector3Performance,
   setTotalPerformance,
 }: UseSectorScoresProps) {
+  const [overallScoresData, setOverallScoreData] = useState<{ [key in RoundType]?: OverallScoresTypes }>({});
   useEffect(() => {
     const sector1R1 = getSectorRoundScore(
       activities ?? [],
@@ -162,24 +163,24 @@ export function useSectorScores({
       lobbyState.gameLobbyStatus
     );
 
-    console.log({
-      round1: {
+    setOverallScoreData({
+      1: {
         ...sector1R1,
         ...sector2R1,
         ...sector3R1,
       },
-      round2: {
+      2: {
 
         ...sector1R2,
         ...sector2R2,
         ...sector3R2,
       },
-      round3: {
+      3: {
         ...sector1R3,
         ...sector2R3,
         ...sector3R3,
       },
-    })
+    });
 
     const overAllScore = OVERALL_SCORE_POINTS - (
       (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
@@ -232,4 +233,7 @@ export function useSectorScores({
     }
 
   }, [activities, lobbyState]);
+
+
+  return overallScoresData;
 }

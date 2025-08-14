@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useTimer } from '@/components/hooks/useTimer';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
-import { GameLobbyStatus } from '@/lib/enums';
+import { GameLobbyStatus, UserSectorEnum } from '@/lib/enums';
+import { OverallScoresTypes, RoundType, SectorEnum } from "@/lib/types";
+import { OVERALL_SCORE_POINTS } from "@/lib/constants";
 
 interface ScoreBreakdownModalProps {
   isOpen: boolean;
-  breakdown: any;
-  roundNumber: 1 | 2 | 3;
+  breakdown: {[key in RoundType]?: OverallScoresTypes | undefined};
+  roundNumber: RoundType;
   syncWithTimestamp?: number;
   onDurationComplete?: () => void;
 }
@@ -35,12 +37,6 @@ const roundColorMap = {
   },
 };
 
-const playerLabels = {
-  P1: "P1",
-  P2: "P2",
-  P3: "P3",
-};
-
 export default function ScoreBreakdownModal({
   isOpen,
   breakdown,
@@ -57,6 +53,21 @@ export default function ScoreBreakdownModal({
     syncWithTimestamp,
   });
 
+  const roundColors: {[key in RoundType]: {color1: string; color2: string}} = {
+    1: {
+      color1: "rgba(132, 145, 198, 1)",
+      color2: "#2A81FA",
+    },
+    2: {
+      color1: "rgba(230, 202, 119, 1)",
+      color2: "rgba(239, 159, 12, 1)",
+    },
+    3: {
+      color1: "rgba(230, 119, 133, 1)",
+      color2: "rgba(221, 0, 70, 1)",
+    },
+  };
+
   // Fallback timer for when sync is not available
   useEffect(() => {
     if (!isOpen || syncWithTimestamp || !onDurationComplete) return;
@@ -72,86 +83,118 @@ export default function ScoreBreakdownModal({
 
   const color = roundColorMap[roundNumber];
   // Dummy data - will be implemented later
-  const prevRoundPoints = breakdown?.totalPoints || breakdown?.roundPoints || 0;
+
+  const previousRoundNumber = roundNumber == 1 ? roundNumber as RoundType : (roundNumber - 1) as RoundType;
+
+  const prevRoundPoints = (breakdown[previousRoundNumber]?.user_sector_1?.totalScoreToDeduct ?? 0)
+    + (breakdown[previousRoundNumber]?.user_sector_2?.totalScoreToDeduct ?? 0)
+    + (breakdown[previousRoundNumber]?.user_sector_3?.totalScoreToDeduct ?? 0);
+
+  const totalPoints = (breakdown[roundNumber]?.user_sector_1?.totalScoreToDeduct ?? 0)
+    + (breakdown[previousRoundNumber]?.user_sector_2?.totalScoreToDeduct ?? 0)
+    + (breakdown[previousRoundNumber]?.user_sector_3?.totalScoreToDeduct ?? 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0,0.7)]">
-      <div className="relative">
-        {/* Shadow Layer */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+    >
+      {/* Main Container - responsive and larger */}
+      <div className="relative w-[90vw] max-w-[600px] h-[90vh] max-h-[800px] scale-90">
+        {/* Background Container - positioned behind white sections */}
         <div
-          className={`absolute top-3 left-3 w-full h-full ${color.shadow} rounded-2xl opacity-60 -z-10`}
-        ></div>
-        {/* Modal Card */}
-        <div className="w-[370px] rounded-2xl bg-white shadow-2xl overflow-hidden">
-          {/* Header */}
-          <div className="pt-7 pb-4 px-6">
-            <h2 className="text-2xl font-extrabold text-center tracking-wide">
-              ROUND {roundNumber} BREAKDOWN
-            </h2>
+          className="absolute top-[29px] left-[26px] w-full h-full rounded-[22px]"
+          style={{
+            backgroundColor: roundColors[roundNumber].color1
+          }}
+        />
+        
+        {/* White sections that extend to edges */}
+        <div className="absolute inset-0 flex flex-col">
+          {/* This will be handled by the content overlay */}
+        </div>
+        
+        {/* Content Overlay */}
+        <div className="absolute inset-0 flex flex-col rounded-[22px] overflow-hidden">
+          {/* Header Section */}
+          <div className="flex-1 bg-white flex items-center justify-center">
+            <h1 className="text-[#202020] text-[clamp(24px,4vw,38px)] font-bold text-center leading-[1.2] tracking-wide pt-6 pb-2">
+              Round {roundNumber}<br />BREAKDOWN
+            </h1>
           </div>
-          {/* Colored Section */}
-          <div className={`${color.bg} px-6 py-6 text-center`}>
-            <div className="flex justify-between items-center text-white font-bold text-lg mb-2">
-              <span>
-                {roundNumber === 1
-                  ? "TOTAL POINTS"
-                  : `ROUND ${roundNumber - 1} POINTS`}
-              </span>
-              <span>
-                {prevRoundPoints.toLocaleString()}
-              </span>
-            </div>
-            {Object.entries(playerLabels).map(([playerKey, label]) => {
-              // Dummy data - will be implemented later
-              const playerData = breakdown?.playerBreakdown?.[playerKey] || {
-                actionsScore: 0,
-                coinsSpent: 0
-              };
+          
+          {/* Breakdown List in White Section */}
+          <div className="flex-1 bg-white px-14 py-8">
+            <div className="flex flex-col space-y-2">
+              {/* Total Points */}
+              <div className="flex items-center justify-between">
+                <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
+                  Total Points
+                </span>
+                <div style={{
+                    backgroundColor: roundColors[roundNumber].color2
+                  }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
+                <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
+                  {totalPoints}
+                </span>
+              </div>
               
-              return (
-                <div key={playerKey} className="mb-2">
-                  <div className="flex justify-between items-center text-white font-bold text-lg">
-                    <span>{label} ACTIONS</span>
-                    <span
-                      className={
-                        playerData.actionsScore < 0
-                          ? "text-red-400"
-                          : "text-white"
-                      }
-                    >
-                      {playerData.actionsScore > 0
-                        ? `+${playerData.actionsScore}`
-                        : playerData.actionsScore}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-white font-bold text-lg">
-                    <span>{label} MONEY SPENT</span>
-                    <div className="flex">
-                      {Array.from({
-                        length: playerData.coinsSpent,
-                      }).map((_, i) => (
-                        <img
-                          key={'bcoin-' + i}
-                          src="/games/pub-coastal-spline/images/coin.svg"
-                          alt="coin"
-                          className="w-[0.8vw] h-[0.8vw]"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {/* Footer */}
-          <div className={`px-6 py-6 text-center`}>
-            <div
-              className={`text-2xl font-extrabold ${color.text} tracking-wide`}
-            >
-              ROUND {roundNumber} POINTS
+              {
+                Object.values(UserSectorEnum).map((userSector) => {
+                  const playerData = (breakdown[roundNumber] ?? {})[userSector];
+                  const playerScore = playerData?.totalScoreToDeduct ?? 0;
+                  const playerCoinsSpent = (playerData?.totalCoinsToDeduct ?? 0);
+                  const playerName = `P${userSector.split("_").pop()}`;
+
+                  return (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
+                          {playerName} actions
+                        </span>
+                        <div style={{
+                            backgroundColor: roundColors[roundNumber].color2
+                          }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
+                        <span
+                          className={"text-[clamp(16px,2.5vw,31px)] font-bold font-condensed"}
+                          style={{
+                            color: playerScore < 0 ? "#FF0000" : "#202020"
+                          }}
+                        >
+                          {playerScore < 0 ? "-" : ""}{playerScore}
+                        </span>
+                      </div>
+                      
+                      {/* P1 Money spent */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
+                          {playerName} Money spent
+                        </span>
+                        <div style={{
+                            backgroundColor: roundColors[roundNumber].color2
+                          }} className="flex-1 mx-3 border-b border-dotted border-[1.68px]" />
+                        <div className="flex gap-2">
+                          {
+                            Array(playerCoinsSpent).map(() => {
+                              return <img src="/assets/coin-icon.png" alt="coin" className="w-5 h-5" />;
+                            })
+                          }
+                        </div>
+                      </div>
+                    </>
+                  )
+                })
+              }
             </div>
-            <div className="text-5xl font-extrabold text-[#222] tracking-wide">
-              {(breakdown?.roundPoints || 0).toLocaleString()}
+          </div>
+          
+          {/* Bottom Section - Final Score */}
+          <div style={{
+            backgroundColor: roundColors[roundNumber].color2
+          }} className="px-8 py-6">
+            <div className="text-center">
+              <div className="text-[clamp(20px,3vw,34px)] font-bold text-white">
+                ROUND 1 POINTS
+              </div>
             </div>
           </div>
         </div>
