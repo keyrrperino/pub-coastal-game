@@ -712,57 +712,6 @@ export const SPLINE_URL_CUT_SCENE_R1_3B_0 = "https://prod.spline.design/R4qXQ7AX
 export const SPLINE_URL_CUT_SCENE_R1_3B_1 = "https://prod.spline.design/GbN0AfPIuGbvqlQo/scene.splinecode";
 export const SPLINE_URL_CUT_SCENE_R1_3B_2 = "https://prod.spline.design/uzyU-PW08SccKLTz/scene.splinecode";
 
-export const splineCutScenesUrls: { [key in CutScenesEnum]: string } = {
-  [CutScenesEnum.R1_1A_0]: SPLINE_URL_CUT_SCENE_R1_1A_0,
-  [CutScenesEnum.R1_1A_1]: SPLINE_URL_CUT_SCENE_R1_1A_1,
-  [CutScenesEnum.R1_1A_2]: SPLINE_URL_CUT_SCENE_R1_1A_2,
-  [CutScenesEnum.R1_1A_3]: SPLINE_URL_CUT_SCENE_R1_1A_3,
-  [CutScenesEnum.R1_1B_0]: SPLINE_URL_CUT_SCENE_R1_1B_0,
-  [CutScenesEnum.R1_1B_1]: SPLINE_URL_CUT_SCENE_R1_1B_1,
-  [CutScenesEnum.R1_1B_2]: SPLINE_URL_CUT_SCENE_R1_1B_2,
-  [CutScenesEnum.R1_1B_3]: SPLINE_URL_CUT_SCENE_R1_1B_3,
-  [CutScenesEnum.R1_2A_0]: SPLINE_URL_CUT_SCENE_R1_2A_0,
-  [CutScenesEnum.R1_2A_1]: SPLINE_URL_CUT_SCENE_R1_2A_1,
-  [CutScenesEnum.R1_2A_2]: SPLINE_URL_CUT_SCENE_R1_2A_2,
-  [CutScenesEnum.R1_2B_0]: SPLINE_URL_CUT_SCENE_R1_2B_0,
-  [CutScenesEnum.R1_2B_1]: SPLINE_URL_CUT_SCENE_R1_2B_1,
-  [CutScenesEnum.R1_2B_2]: SPLINE_URL_CUT_SCENE_R1_2B_2,
-  [CutScenesEnum.R1_3A_0]: SPLINE_URL_CUT_SCENE_R1_3A_0,
-  [CutScenesEnum.R1_3A_1]: SPLINE_URL_CUT_SCENE_R1_3A_1,
-  [CutScenesEnum.R1_3A_2]: SPLINE_URL_CUT_SCENE_R1_3A_2,
-  [CutScenesEnum.R1_3B_0]: SPLINE_URL_CUT_SCENE_R1_3B_0,
-  [CutScenesEnum.R1_3B_1]: SPLINE_URL_CUT_SCENE_R1_3B_1,
-  [CutScenesEnum.R1_3B_2]: SPLINE_URL_CUT_SCENE_R1_3B_2,
-  
-  // Round 2 cutscenes (using Round 1 URLs as placeholders)
-  [CutScenesEnum.R2_1A_0]: SPLINE_URL_CUT_SCENE_R1_1A_0,
-  [CutScenesEnum.R2_1A_1]: SPLINE_URL_CUT_SCENE_R1_1A_1,
-  [CutScenesEnum.R2_1A_2]: SPLINE_URL_CUT_SCENE_R1_1A_2,
-  [CutScenesEnum.R2_1A_3]: SPLINE_URL_CUT_SCENE_R1_1A_3,
-  [CutScenesEnum.R2_1B_0]: SPLINE_URL_CUT_SCENE_R1_1B_0,
-  [CutScenesEnum.R2_1B_1]: SPLINE_URL_CUT_SCENE_R1_1B_1,
-  [CutScenesEnum.R2_1B_2]: SPLINE_URL_CUT_SCENE_R1_1B_2,
-  [CutScenesEnum.R2_1B_3]: SPLINE_URL_CUT_SCENE_R1_1B_3,
-  [CutScenesEnum.R2_2A_0]: SPLINE_URL_CUT_SCENE_R1_2A_0,
-  [CutScenesEnum.R2_2A_1]: SPLINE_URL_CUT_SCENE_R1_2A_1,
-  [CutScenesEnum.R2_2A_2]: SPLINE_URL_CUT_SCENE_R1_2A_2,
-  [CutScenesEnum.R2_2B_0]: SPLINE_URL_CUT_SCENE_R1_2B_0,
-  [CutScenesEnum.R2_2B_1]: SPLINE_URL_CUT_SCENE_R1_2B_1,
-  [CutScenesEnum.R2_2B_2]: SPLINE_URL_CUT_SCENE_R1_2B_2,
-  [CutScenesEnum.R2_3A_0]: SPLINE_URL_CUT_SCENE_R1_3A_0,
-  [CutScenesEnum.R2_3A_1]: SPLINE_URL_CUT_SCENE_R1_3A_1,
-  [CutScenesEnum.R2_3A_2]: SPLINE_URL_CUT_SCENE_R1_3A_2,
-  [CutScenesEnum.R2_3B_0]: SPLINE_URL_CUT_SCENE_R1_3B_0,
-  [CutScenesEnum.R2_3B_1]: SPLINE_URL_CUT_SCENE_R1_3B_1,
-  [CutScenesEnum.R2_3B_2]: SPLINE_URL_CUT_SCENE_R1_3B_2,
-}
-
-// export const SECTOR_ONE_CUT_SCENE = "https://prod.spline.design/Df0lzW5I4mQVEEL8/scene.splinecode";
-// export const SECTOR_TWO_CUT_SCENE = "https://prod.spline.design/jyRKRnzG5WXmKNnN/scene.splinecode";
-// export const SECTOR_THREE_CUT_SCENE = "https://prod.spline.design/pcdKvsuBWMwg4q85/scene.splinecode";
-
-
-
 export enum FlashReportDataEnum {
   R1_1A_0 = "R1 1a 0",
   R1_1A_1 = "R1 1a 1",

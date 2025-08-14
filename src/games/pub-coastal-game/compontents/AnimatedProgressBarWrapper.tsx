@@ -33,17 +33,18 @@ const AnimatedProgressBarWrapper: React.FC = () => {
   const animatedBottom = bottomStart - (bottomStart - bottomEnd) * dropProgress;
 
   return (
-    <ProcessBar
-      progress={progress}
-      round={round}
-      countdownProgressTimer={countdownProgressTimer}
-      hasTextCountdown={hasTextCountdown}
-      containerClassName="fixed z-10 left-[30vw]"
-      style={{
-        bottom: `${animatedBottom}vh`,
-        transition: 'bottom 0.6s cubic-bezier(0.4,0,0.2,1)',
-      }}
-    />
+    // <ProcessBar
+    //   progress={progress}
+    //   round={round}
+    //   countdownProgressTimer={countdownProgressTimer}
+    //   hasTextCountdown={hasTextCountdown}
+    //   containerClassName="fixed z-10 left-[30vw]"
+    //   style={{
+    //     bottom: `${animatedBottom}vh`,
+    //     transition: 'bottom 0.6s cubic-bezier(0.4,0,0.2,1)',
+    //   }}
+    // />
+    null
   );
 };
 

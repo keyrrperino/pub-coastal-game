@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Application } from "@splinetool/runtime";
-import { SPLINE_URL, splineCutScenesUrls } from "@/lib/constants";
+import { SPLINE_URL } from "@/lib/constants";
 import { CutScenesEnum } from "@/lib/enums";
 
 export function useSplineLoader(

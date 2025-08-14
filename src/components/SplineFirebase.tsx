@@ -3,7 +3,7 @@ import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService, getGlobalLeaderboard, ProcessedLeaderboardData } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
-import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, splineCutScenesUrls, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
+import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
 import { GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
  
@@ -12,7 +12,6 @@ import { useLobbyPreparation } from "./hooks/useLobbyPreparation";
 import { calculateOverallScore, calculateOverallScoreFromScenarioConfigControlled, calculateTotalCoinsPerRound, getMeanSeaLevelForRound, getRandomEffectValue, getRoundBreakdownByPlayer, getSectorRoundScore, isGameOnGoing } from "@/lib/utils";
 import { useSplineLoader } from "./hooks/useSplineLoader";
 import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSceneTriggers";
-import { useCutSceneSplineLoader } from "./hooks/useCutSceneSplineLoader";
 import { useHideAllTriggers } from "./hooks/useHideAllSplineTriggers";
 import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
