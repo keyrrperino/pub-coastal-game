@@ -821,8 +821,9 @@ export function getSectorRoundScore(
         const { coin, score } = sceneSectorConfigurations[key];
         scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
       } catch (ex) {
-        const { coin, score } = sceneSectorConfigurations["default"];
-        scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
+        console.log("ERROR_KEY: ", key);
+        // const { coin, score } = sceneSectorConfigurations["default"];
+        // scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
       }
     }
   }
