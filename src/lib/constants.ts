@@ -1492,6 +1492,9 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-0.7-1`]: { score: 70, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-0.7-2`]: { score: 150, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
 
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-0.7-1`]: { score: 50, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-0.7-2`]: { score: 130, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
+
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.7-1`]: { score: 20, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL}-0.7-2`]: { score: 100, cutscene: CutScenesEnum.R2_3A_0, coin: 1 },
 

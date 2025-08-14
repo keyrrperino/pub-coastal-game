@@ -413,7 +413,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     }
     
     // Log demolish action to Firebase FIRST (this will check coins again transactionally)
-    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, false, sectorId as any);
+    const result = await gameRoomService.addElement(ActivityTypeEnum.DEMOLISH, sectorId, currentFirebaseRound, 1, true, sectorId as any);
     
     if (result === 'insufficient') {
       console.log('Insufficient coins for demolish from Firebase transaction - showing modal');
