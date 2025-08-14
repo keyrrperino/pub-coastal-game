@@ -1,11 +1,16 @@
 import React from 'react';
 import Image from 'next/image';
+import { OverallScoresTypes, RoundType } from '@/lib/types';
+import { UserSectorEnum } from '@/lib/enums';
 
 export type PostRoundPerformance = 'good' | 'okay' | 'bad';
 
 interface PostRoundModalProps {
   isOpen: boolean;
   performance: PostRoundPerformance;
+  currentRound: number;
+  sector: UserSectorEnum;
+  overallScoresData: { [key in RoundType]?: OverallScoresTypes };
   onClose?: () => void;
   onContinue?: () => void;
 }
@@ -42,11 +47,60 @@ export default function PostRoundModal({
   isOpen,
   performance,
   onClose,
+  sector,
+  overallScoresData,
+  currentRound,
   onContinue
 }: PostRoundModalProps) {
   if (!isOpen) return null;
 
-  const config = performanceConfigs[performance];
+  const getPerformanceRound = (): PostRoundPerformance => {
+    const roundData = overallScoresData[(currentRound ?? 1) as RoundType];
+
+    const totalScoreRound = roundData ? (roundData[sector]?.totalScoreToDeduct ?? 0) : 0;
+
+    let performance = "okay";
+    if (currentRound === 1) {
+      if (totalScoreRound >= 0 && totalScoreRound <= 30) {
+        performance = "good";
+      }
+      if (totalScoreRound > 30 && totalScoreRound <= 60) {
+        performance = "okay";
+      }
+      if (totalScoreRound > 60 && totalScoreRound <= 120) {
+        performance = "bad";
+      }
+    }
+
+    if (currentRound === 2) {
+      if (totalScoreRound >= 0 && totalScoreRound <= 69.99) {
+        performance = "good";
+      }
+      if (totalScoreRound > 70 && totalScoreRound <= 160) {
+        performance = "okay";
+      }
+      if (totalScoreRound > 160 && totalScoreRound <= 300) {
+        performance = "bad";
+      }
+    }
+
+    if (currentRound === 3) {
+      if (totalScoreRound >= 0 && totalScoreRound <= 89.99) {
+        performance = "good";
+      }
+      if (totalScoreRound > 90 && totalScoreRound <= 230) {
+        performance = "okay";
+      }
+      if (totalScoreRound > 230 && totalScoreRound <= 400) {
+        performance = "bad";
+      }
+    }
+
+    return performance as PostRoundPerformance;
+  }
+
+
+  const config = performanceConfigs[getPerformanceRound()];
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

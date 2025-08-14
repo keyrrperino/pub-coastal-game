@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { SectorPerformance } from './hooks/useSectorScores';
 import { PlayerEndingType } from './PlayerEndingScreen';
+import { OverallScoresTypes, RoundType } from '@/lib/types';
 
 export type EndingType = 'success' | 'moderate' | 'failure';
 
@@ -50,7 +51,7 @@ const endingConfigs: Record<EndingType, EndingConfig> = {
 
 export default function EndingScreen({ 
   performance,
-  finalScore = 5000, 
+  finalScore = 2500, 
   onRestart, 
   onMainMenu 
 }: EndingScreenProps) {

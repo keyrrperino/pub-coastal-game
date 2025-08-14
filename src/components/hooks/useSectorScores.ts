@@ -8,6 +8,7 @@ export type SectorPerformance = 'good' | 'okay' | 'bad';
 
 interface UseSectorScoresProps {
   activities: ActivityLogType[];
+  newActivities: ActivityLogType[];
   lobbyState: LobbyStateType;
   setTotalScore: (score: number) => void;
   setCoinsLeft: (coins: number) => void;
@@ -15,6 +16,7 @@ interface UseSectorScoresProps {
   setSector2Performance?: (performance: SectorPerformance) => void;
   setSector3Performance?: (performance: SectorPerformance) => void;
   setTotalPerformance?: (performance: SectorPerformance) => void;
+  triggersLoading?: boolean;
 }
 
 // Per-round sector performance evaluation
@@ -71,13 +73,14 @@ const getSectorPerformance = (
 };
 
 const getTotalPerformance = (totalScore: number): SectorPerformance => {
-  if (totalScore > 1000) return 'good';
+  if (totalScore >= 1000) return 'good';
   if (totalScore >= 625 && totalScore <= 999) return 'okay';
   return 'bad'; // < 625
 };
 
 export function useSectorScores({
   activities,
+  newActivities,
   lobbyState,
   setTotalScore,
   setCoinsLeft,
@@ -85,8 +88,10 @@ export function useSectorScores({
   setSector2Performance,
   setSector3Performance,
   setTotalPerformance,
+  triggersLoading
 }: UseSectorScoresProps) {
   const [overallScoresData, setOverallScoreData] = useState<{ [key in RoundType]?: OverallScoresTypes }>({});
+
   useEffect(() => {
     const sector1R1 = getSectorRoundScore(
       activities ?? [],
@@ -182,7 +187,7 @@ export function useSectorScores({
       },
     });
 
-    const overAllScore = OVERALL_SCORE_POINTS - (
+    let overAllScore = OVERALL_SCORE_POINTS - (
       (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
       (sector2R1.user_sector_2?.totalScoreToDeductInRound ?? 0) +
       (sector3R1.user_sector_3?.totalScoreToDeductInRound ?? 0) +
@@ -193,6 +198,24 @@ export function useSectorScores({
       (sector2R3.user_sector_2?.totalScoreToDeductInRound ?? 0) +
       (sector3R3.user_sector_3?.totalScoreToDeductInRound ?? 0)
     );
+
+    if (lobbyState.round === 1) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+        (sector2R1.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+        (sector3R1.user_sector_3?.totalScoreToDeductInRound ?? 0))
+    }
+  
+    if (lobbyState.round === 2) {
+      overAllScore = OVERALL_SCORE_POINTS - (
+        (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+        (sector2R1.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+        (sector3R1.user_sector_3?.totalScoreToDeductInRound ?? 0) +
+        (sector1R2.user_sector_1?.totalScoreToDeductInRound ?? 0) +
+        (sector2R2.user_sector_2?.totalScoreToDeductInRound ?? 0) +
+        (sector3R2.user_sector_3?.totalScoreToDeductInRound ?? 0)
+      )
+    }
 
     setTotalScore(overAllScore);
 
@@ -232,7 +255,26 @@ export function useSectorScores({
       setTotalPerformance(performance);
     }
 
-  }, [activities, lobbyState]);
+    console.log({
+      1: {
+        ...sector1R1,
+        ...sector2R1,
+        ...sector3R1,
+      },
+      2: {
+
+        ...sector1R2,
+        ...sector2R2,
+        ...sector3R2,
+      },
+      3: {
+        ...sector1R3,
+        ...sector2R3,
+        ...sector3R3,
+      },
+    })
+
+  }, [newActivities, triggersLoading, lobbyState.gameLobbyStatus]);
 
 
   return overallScoresData;

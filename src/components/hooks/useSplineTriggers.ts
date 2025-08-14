@@ -82,8 +82,6 @@ export function useSplineTriggers({
     if (!isLoaded || !splineAppRef.current) return;
 
     const runTriggers = async () => {
-
-      console.log(newActivities, 'hoy makalagot');
       for (const act of newActivities.reverse()) {
         const config = SplineTriggersConfig[act.action as ActivityTypeEnum];
         if (!config) continue;

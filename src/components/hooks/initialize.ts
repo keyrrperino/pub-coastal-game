@@ -3,23 +3,13 @@ import { useRef, useState, useEffect } from "react";
 import { Application } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
-import { GAME_ROUND_TIMER, lobbyStateDefaultValue } from "@/lib/constants";
+import { lobbyStateDefaultValue } from "@/lib/constants";
 import { CutScenesEnum, GameEnum } from "@/lib/enums";
-import { isCountdownExpired } from "@/lib/utils";
 
 export function useInitialize() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const splineAppRef = useRef<Application | null>(null);
-
-  const canvasCutScenesRefs = Object.fromEntries(
-    Object.values(CutScenesEnum).map(key => [key, useRef<HTMLCanvasElement | null>(null)])
-  ) as { [key in CutScenesEnum]: React.RefObject<HTMLCanvasElement | null> };
-  // For spline app refs
-const splineAppCutScenesRefs = Object.fromEntries(
-  Object.values(CutScenesEnum).map(key => [key, useRef<Application | null>(null)])
-) as { [key in CutScenesEnum]: React.RefObject<Application | null> };
-
   const gameRoomServiceRef = useRef<GameRoomService | null>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -44,7 +34,6 @@ const splineAppCutScenesRefs = Object.fromEntries(
     sectorThree1A: false,
     sectorThree1B: false, 
   });
-  const isGameRoundDone = isCountdownExpired(lobbyState.countdownStartTime, GAME_ROUND_TIMER);
 
   // Initialization effect (from your old content)
   useEffect(() => {
@@ -98,9 +87,7 @@ const splineAppCutScenesRefs = Object.fromEntries(
 
   return {
     canvasRef,
-    canvasCutScenesRefs,
     splineAppRef,
-    splineAppCutScenesRefs,
     gameRoomServiceRef,
     isLoaded, setIsLoaded,
     activities, setActivities,

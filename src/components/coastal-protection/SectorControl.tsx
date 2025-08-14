@@ -5,7 +5,7 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService, saveTeamScoreToGlobalLeaderboard, getGlobalLeaderboard, ProcessedLeaderboardData } from '@/lib/gameRoom';
-import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum } from '@/lib/enums';
+import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum, UserSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
 import { SplineTriggerConfigItem } from '@/lib/types';
@@ -327,8 +327,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   // Use sector scores to calculate performance for this specific sector
   const sectorNumber = sector.slice(-1);
   
-  useSectorScores({
+  const overallScoresData = useSectorScores({
     activities: activityLog,
+    newActivities: activityLog,
     lobbyState,
     setTotalScore,
     setCoinsLeft,
@@ -822,6 +823,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       <PostRoundModal 
         isOpen={showCutscene}
         performance={sectorPerformance}
+        overallScoresData={overallScoresData}
+        currentRound={firebaseRound}
+        sector={("user_sector_" + getPlayerNumber(sector)) as UserSectorEnum}
       />
 
       <EndingModal 
