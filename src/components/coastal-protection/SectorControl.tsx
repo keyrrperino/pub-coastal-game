@@ -66,7 +66,7 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = useState(() => new GameRoomService(`Player ${sector.slice(-1)}`, 'default'));
+  const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);

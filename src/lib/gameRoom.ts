@@ -205,7 +205,14 @@ export class GameRoomService {
     });
   }
 
-  async addElement(activityType: ActivityTypeEnum, ActivityValue: string, round: number, cost: number, isCpm: boolean = false, subSector?: SubSectorType): Promise<'ok' | 'insufficient' | 'no-room'> {
+  async addElement(
+    activityType: ActivityTypeEnum, 
+    ActivityValue: string, 
+    round: number, 
+    cost: number, 
+    isCpm: boolean = false, 
+    subSector?: SubSectorType
+  ): Promise<'ok' | 'insufficient' | 'no-room'> {
     if (!this.roomId) return 'no-room';
 
     // Force demolish to cost 1

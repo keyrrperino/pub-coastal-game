@@ -162,7 +162,24 @@ export function useSectorScores({
       lobbyState.gameLobbyStatus
     );
 
+    console.log({
+      round1: {
+        ...sector1R1,
+        ...sector2R1,
+        ...sector3R1,
+      },
+      round2: {
 
+        ...sector1R2,
+        ...sector2R2,
+        ...sector3R2,
+      },
+      round3: {
+        ...sector1R3,
+        ...sector2R3,
+        ...sector3R3,
+      },
+    })
 
     const overAllScore = OVERALL_SCORE_POINTS - (
       (sector1R1.user_sector_1?.totalScoreToDeductInRound ?? 0) +
