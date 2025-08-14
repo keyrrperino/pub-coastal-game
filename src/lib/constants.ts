@@ -1391,8 +1391,8 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_2A_5 },
   [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_2A_5 },
 
-  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH}-0.7-1`]: { score: 20, coin: 1, cutscene: CutScenesEnum.RR2_2A_6 },
-  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH}-0.7-2`]: { score: 100, coin: 1, cutscene: CutScenesEnum.RR2_2A_6 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH}-0.7-1`]: { score: 20, coin: 1, cutscene: CutScenesEnum.R2_2A_6 },
+  [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_2A_UPGRADE_SEAWALL_WALK_PATH}-0.7-2`]: { score: 100, coin: 1, cutscene: CutScenesEnum.R2_2A_6 },
 
 
   [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_2A_5 },
@@ -2301,8 +2301,8 @@ export const optionalScenarioConfiguration: ScenarioConfigurationType = {
   [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_SEAWALL_WALK_PATH}-None-1.15-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_5 },
   [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_SEAWALL_WALK_PATH}-None-1.15-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_5 },
 
-  [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_8 },
-  [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_8 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_7 },
+  [`2_2B_${ActivityTypeEnum.R1_2B_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_2B_7 },
 
   [`3_3A_${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-None-1.15-1`]: { score: 50, cutscene: CutScenesEnum.R2_3A_5, coin: 0 },
   [`3_3A_${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-None-1.15-2`]: { score: 50, cutscene: CutScenesEnum.R2_3A_5, coin: 0 },

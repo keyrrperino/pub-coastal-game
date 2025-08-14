@@ -74,7 +74,7 @@ export default function ModalDemo() {
       </div>
 
       {/* Post-Round Modal */}
-      <PostRoundModal
+      {/* <PostRoundModal
         isOpen={showPostRoundModal}
         performance={performance}
         onClose={() => setShowPostRoundModal(false)}
@@ -82,7 +82,7 @@ export default function ModalDemo() {
           setShowPostRoundModal(false);
           console.log('Continuing to next round...');
         }}
-      />
+      /> */}
 
       {/* Coastal Game Modal */}
       <CoastalGameModal
