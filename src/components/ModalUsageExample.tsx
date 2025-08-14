@@ -87,12 +87,12 @@ export default function ModalUsageExample() {
       </div>
 
       {/* Post-Round Feedback Modal */}
-      <PostRoundModal
+      {/* <PostRoundModal
         isOpen={gameState === 'postRound'}
         performance={performance}
         onClose={() => setGameState('playing')}
         onContinue={continueToNextRound}
-      />
+      /> */}
 
       {/* Coastal Game Interface Modal */}
       <CoastalGameModal

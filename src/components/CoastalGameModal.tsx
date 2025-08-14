@@ -291,14 +291,14 @@ export default function CoastalGameModal({
       </div>
 
       {/* Post-Round Feedback Modal */}
-      {showPostRoundFeedback && (
-        <PostRoundModal
-          isOpen={showPostRoundFeedback}
-          performance={performance}
-          onClose={onClose}
-          onContinue={onContinue}
-        />
-      )}
+      {/* {showPostRoundFeedback && (
+        // <PostRoundModal
+        //   isOpen={showPostRoundFeedback}
+        //   performance={performance}
+        //   onClose={onClose}
+        //   onContinue={onContinue}
+        // />
+      )} */}
     </>
   );
 } 
