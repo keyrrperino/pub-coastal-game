@@ -77,18 +77,19 @@ const zone1Template: Record<string, TemplateAction> = {
   BUILD_LAND_RECLAMATION_0_5: {
     displayName: '0.5m', cost: 1, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
   BUILD_LAND_RECLAMATION_1_15: {
     displayName: '1.15m', cost: 2, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
-    replaces: ['BUILD_LAND_RECLAMATION_0_5'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_2'],
     measureType: 'land-reclamation',
   },
   BUILD_LAND_RECLAMATION_2: {
     displayName: '2m', cost: 3, unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_SEAWALL_0_5'],
-    replaces: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_1_15: {
