@@ -74,6 +74,15 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
 
   const handleInputClick = (index: number) => {
     setCurrentFocus(index);
+    // Ensure the input gets focus
+    if (inputRefs.current[index]) {
+      inputRefs.current[index]?.focus();
+    }
+  };
+
+  const handleContainerClick = (index: number) => {
+    // Click on the container should focus the input
+    handleInputClick(index);
   };
 
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>, index: number) => {
@@ -94,6 +103,16 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
       inputRefs.current[currentFocus]?.focus();
     }
   }, [currentFocus]);
+
+  // Auto-focus first input on mount for Player 1
+  useEffect(() => {
+    if (isPlayer1 && inputRefs.current[0]) {
+      setTimeout(() => {
+        inputRefs.current[0]?.focus();
+        setCurrentFocus(0);
+      }, 100); // Small delay to ensure component is fully mounted
+    }
+  }, [isPlayer1]);
 
   // Call onChange whenever letters change
   useEffect(() => {
@@ -125,6 +144,7 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
                   <div
                     key={index}
                     className={`${styles.letterInput} ${currentFocus === index ? styles.focused : ''} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}
+                    onClick={() => handleContainerClick(index)}
                   >
                     <input
                       ref={(el) => {
@@ -134,7 +154,7 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
                       value={letters[index]}
                       onChange={(e) => handleInputChange(e, index)}
                       onKeyDown={(e) => handleKeyDown(e, index)}
-                      onClick={() => handleInputClick(index)}
+
                       onBlur={() => setCurrentFocus(-1)}
                       onFocus={(e) => handleInputFocus(e, index)}
                       maxLength={1}
