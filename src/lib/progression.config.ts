@@ -95,21 +95,19 @@ const zone1Template: Record<string, TemplateAction> = {
   UPGRADE_LR_TO_SEAWALL_1_15: {
     displayName: 'Sea Wall 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5']],
-    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2', 'UPGRADE_LR_TO_SEAWALL_2', 'UPGRADE_LR_TO_SEAWALL_3'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_2: {
     displayName: 'Sea Wall 2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_0_5'], ['BUILD_LAND_RECLAMATION_1_15']],
-    replaces: ['UPGRADE_LR_TO_SEAWALL_1_15'],
-    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2', 'UPGRADE_LR_TO_SEAWALL_1_15', 'UPGRADE_LR_TO_SEAWALL_3'],
     measureType: 'land-reclamation',
   },
   UPGRADE_LR_TO_SEAWALL_3: {
     displayName: 'Sea Wall 3m', cost: 4, unlocksInRound: 2,
     prerequisites: [['BUILD_LAND_RECLAMATION_1_15'], ['BUILD_LAND_RECLAMATION_2']],
-    replaces: ['UPGRADE_LR_TO_SEAWALL_1_15', 'UPGRADE_LR_TO_SEAWALL_2'],
-    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2'],
+    blocksActions: ['BUILD_LAND_RECLAMATION_0_5', 'BUILD_LAND_RECLAMATION_1_15', 'BUILD_LAND_RECLAMATION_2', 'UPGRADE_LR_TO_SEAWALL_1_15', 'UPGRADE_LR_TO_SEAWALL_2'],
     measureType: 'land-reclamation',
   },
 };
