@@ -14,10 +14,28 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
 }) => {
   const [letters, setLetters] = useState(['', '', '']);
   const [currentFocus, setCurrentFocus] = useState(0);
-  const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const isPlayer1 = playerNumber === 1;
 
-  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const value = e.target.value.toUpperCase();
+    
+    // Take only the last character entered (handles multiple character input on mobile)
+    const lastChar = value.slice(-1);
+    
+    if (/[A-Z0-9]/.test(lastChar) || lastChar === '') {
+      const newLetters = [...letters];
+      newLetters[index] = lastChar;
+      setLetters(newLetters);
+      
+      // Move to next input if character was entered and not at the end
+      if (lastChar && index < 2) {
+        setCurrentFocus(index + 1);
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === 'Enter') {
       const teamName = letters.join('').toUpperCase();
       if (teamName.length === 3 && onSubmit) {
@@ -27,19 +45,18 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
     }
 
     if (e.key === 'Backspace') {
-      e.preventDefault();
+      e.preventDefault(); // Always prevent default to avoid race conditions
       const newLetters = [...letters];
-      if (newLetters[index] === '') {
-        // Move to previous input and clear it
-        if (index > 0) {
-          newLetters[index - 1] = '';
-          setLetters(newLetters);
-          setCurrentFocus(index - 1);
-        }
-      } else {
-        // Clear current input
+      
+      if (letters[index] !== '') {
+        // Current box has content, clear it
         newLetters[index] = '';
         setLetters(newLetters);
+      } else if (index > 0) {
+        // Current box is empty, move to previous input and clear it
+        newLetters[index - 1] = '';
+        setLetters(newLetters);
+        setCurrentFocus(index - 1);
       }
       return;
     }
@@ -55,29 +72,25 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
       setCurrentFocus(index + 1);
       return;
     }
-
-    // Handle any single character input
-    if (e.key.length === 1) {
-      e.preventDefault();
-      
-      // Accept letters and numbers
-      if (/[A-Za-z0-9]/.test(e.key)) {
-        const newLetters = [...letters];
-        newLetters[index] = e.key.toUpperCase();
-        setLetters(newLetters);
-        
-        // Move to next input if not at the end
-        if (index < 2) {
-          setCurrentFocus(index + 1);
-        }
-      }
-      // For invalid characters, we prevent the default but don't update state
-      // This ensures the cursor behavior is consistent
-    }
   };
 
   const handleInputClick = (index: number) => {
     setCurrentFocus(index);
+    // Ensure the input gets focus
+    if (inputRefs.current[index]) {
+      inputRefs.current[index]?.focus();
+    }
+  };
+
+  const handleContainerClick = (index: number) => {
+    // Click on the container should focus the input
+    handleInputClick(index);
+  };
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>, index: number) => {
+    setCurrentFocus(index);
+    // Select all text so typing overwrites existing content
+    e.target.select();
   };
 
   const handleSave = () => {
@@ -92,6 +105,16 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
       inputRefs.current[currentFocus]?.focus();
     }
   }, [currentFocus]);
+
+  // Auto-focus first input on mount for Player 1
+  useEffect(() => {
+    if (isPlayer1 && inputRefs.current[0]) {
+      setTimeout(() => {
+        inputRefs.current[0]?.focus();
+        setCurrentFocus(0);
+      }, 100); // Small delay to ensure component is fully mounted
+    }
+  }, [isPlayer1]);
 
   // Call onChange whenever letters change
   useEffect(() => {
@@ -122,20 +145,34 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
                 {[0, 1, 2].map((index) => (
                   <div
                     key={index}
-                    ref={(el) => {
-                      inputRefs.current[index] = el;
-                    }}
                     className={`${styles.letterInput} ${currentFocus === index ? styles.focused : ''} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    onClick={() => handleInputClick(index)}
-                    onBlur={() => setCurrentFocus(-1)}
-                    onFocus={() => setCurrentFocus(index)}
+                    onClick={() => handleContainerClick(index)}
                   >
-                    <div className={styles.letterDisplay}>
-                      {letters[index] || ''}
-                    </div>
+                    <input
+                      ref={(el) => {
+                        inputRefs.current[index] = el;
+                      }}
+                      type="text"
+                      value={letters[index]}
+                      onChange={(e) => handleInputChange(e, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+
+                      onBlur={() => setCurrentFocus(-1)}
+                      onFocus={(e) => handleInputFocus(e, index)}
+                      maxLength={1}
+                      className={styles.letterDisplay}
+                      style={{ 
+                        background: 'transparent', 
+                        border: 'none', 
+                        outline: 'none',
+                        textAlign: 'center',
+                        width: '100%',
+                        height: '100%',
+                        fontSize: 'inherit',
+                        fontFamily: 'inherit',
+                        color: 'inherit'
+                      }}
+                    />
                     <div className={`${styles.dashUnderneath} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
                       {letters[index] ? '' : '-'}
                     </div>
