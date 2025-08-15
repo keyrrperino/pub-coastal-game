@@ -702,16 +702,19 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     const canDemolish = hasAnyConstructionInSector(sectorId, activityLog);
     const isDemolishAllowedForSector = isDemolishAllowed(sectorId, firebaseRound);
     
-    // Only show demolish option in R2+ (hide completely in R1)
-    const demolishOption = firebaseRound === 1 ? undefined : {
+    // Only show demolish option when it's actually clickable
+    // Hide in R1, hide if already used in round, hide if other actions taken first, hide if nothing to demolish
+    const shouldShowDemolish = canDemolish && isDemolishAllowedForSector;
+    
+    const demolishOption = shouldShowDemolish ? {
       coinCount: 1,
-      onClick: (canDemolish && isDemolishAllowedForSector) ? () => {
+      onClick: () => {
         // Demolish all actions for this specific sector
         // We don't need to pass a specific action ID since demolish removes all actions in the sector
         handleDemolishClick(sectorId, ActivityTypeEnum.DEMOLISH);
-      } : undefined,
-      disabled: !canDemolish || !isDemolishAllowedForSector,
-    };
+      },
+      disabled: false, // Always enabled when shown since we only show when clickable
+    } : undefined;
 
     return (
       <SectorSection
