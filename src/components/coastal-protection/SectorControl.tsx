@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import SectorSection from './SectorSection';
 import BudgetDisplay from './BudgetDisplay';
@@ -885,17 +885,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       
       <TeamNameInputModal 
         isOpen={showTeamNameInput}
-        onChange={async (teamName) => {
-          // Update lobby state as user types (only if team name is not empty)
-          if (teamName.trim()) {
-            try {
-              await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.TEAM_NAME, teamName);
-              console.log('Team name updated in lobby state while typing:', teamName);
-            } catch (error) {
-              console.error('Failed to update team name while typing:', error);
-            }
-          }
-        }}
+        onChange={useMemo(() => {
+          let timeoutId: NodeJS.Timeout;
+          return async (teamName: string) => {
+            // Debounce rapid updates to prevent Firebase blinking
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(async () => {
+              try {
+                await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.TEAM_NAME, teamName);
+                console.log('Team name updated in lobby state while typing:', teamName);
+              } catch (error) {
+                console.error('Failed to update team name while typing:', error);
+              }
+            }, 300); // 300ms debounce
+          };
+        }, [])}
         onSubmit={async (teamName) => {
           try {
             // Save team name to lobby state first

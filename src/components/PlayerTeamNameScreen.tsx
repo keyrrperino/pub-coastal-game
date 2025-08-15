@@ -45,17 +45,19 @@ const PlayerTeamNameScreen: React.FC<PlayerTeamNameScreenProps> = ({
     }
 
     if (e.key === 'Backspace') {
-      if (letters[index] === '') {
+      e.preventDefault(); // Always prevent default to avoid race conditions
+      const newLetters = [...letters];
+      
+      if (letters[index] !== '') {
+        // Current box has content, clear it
+        newLetters[index] = '';
+        setLetters(newLetters);
+      } else if (index > 0) {
         // Current box is empty, move to previous input and clear it
-        if (index > 0) {
-          e.preventDefault();
-          const newLetters = [...letters];
-          newLetters[index - 1] = '';
-          setLetters(newLetters);
-          setCurrentFocus(index - 1);
-        }
+        newLetters[index - 1] = '';
+        setLetters(newLetters);
+        setCurrentFocus(index - 1);
       }
-      // If current box has content, let the default backspace behavior clear it
       return;
     }
 
