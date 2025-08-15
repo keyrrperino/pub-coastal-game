@@ -215,13 +215,13 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 2,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15'],
     measureType: 'hybrid-measure',
   },
   BUILD_PATH_FROM_HYBRID: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
     prerequisites: [['BUILD_HYBRID_MEASURE_0_5'], ['BUILD_HYBRID_MEASURE_1_15'], ['BUILD_HYBRID_MEASURE_2']],
     blocksActions: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15', 'BUILD_HYBRID_MEASURE_2'],
     measureType: 'hybrid-measure',
