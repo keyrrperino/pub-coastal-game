@@ -141,6 +141,13 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     subSector: SubSectorEnum.ONE_A,
     activityType: ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL
   },
+  [ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1A / UPGRADE LR TO SEAWALL / 3M",
+    subSector: SubSectorEnum.ONE_A,
+    activityType: ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL
+  },
 
   [ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH]: {
     state: [],
@@ -887,6 +894,7 @@ export const subSectors = [
 
     ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL,
     ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL,
+    ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL,
     ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH,
   ]},
   { sector: 1, subSector: "1B", activities: [
