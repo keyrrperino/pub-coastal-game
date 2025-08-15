@@ -390,6 +390,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       action: activityType,
       value: `${activityType}`,
       round: currentFirebaseRound,
+      subSector: subSectorFromConfig,
       timestamp: Date.now()
     };
     setActivityLog(prev => [...prev, newActivity]);
@@ -433,6 +434,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
       action: ActivityTypeEnum.DEMOLISH,
       value: sectorId, // Store the specific sector being demolished (e.g., "1A", "1B")
       round: currentFirebaseRound,
+      subSector: sectorId,
       timestamp: Date.now()
     };
     
@@ -504,6 +506,44 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
     console.log('Round gameplay time is up! Waiting for admin to move to next phase...');
     // Do nothing - wait for admin-phase-control page to move to next phase
   }, []);
+
+  // Helper functions for DEMOLISH restrictions
+  const isDemolishUsedInRound = useCallback((sectorId: string, round: number): boolean => {
+    return activityLog.some(activity => 
+      activity.action === ActivityTypeEnum.DEMOLISH && 
+      activity.round === round &&
+      activity.subSector === sectorId
+    );
+  }, [activityLog]);
+
+  const hasActionsInCurrentRound = useCallback((sectorId: string, round: number): boolean => {
+    return activityLog.some(activity => {
+      if (activity.round === round && activity.subSector === sectorId) {
+        return true;
+      }
+      
+      return false;
+    });
+  }, [activityLog]);
+
+  const isDemolishAllowed = useCallback((sectorId: string, round: number): boolean => {
+    // R1: DEMOLISH not available
+    if (round === 1) {
+      return false;
+    }
+    
+    // R2+: Can only use once per round
+    if (isDemolishUsedInRound(sectorId, round)) {
+      return false;
+    }
+    
+    // R2+: Must be first action of the round
+    if (hasActionsInCurrentRound(sectorId, round)) {
+      return false;
+    }
+    
+    return true;
+  }, [isDemolishUsedInRound, hasActionsInCurrentRound]);
 
   // Timer is now managed by the game flow system above
 
@@ -660,15 +700,21 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
 
     // Determine if there are any constructions in this sector across the entire game session
     const canDemolish = hasAnyConstructionInSector(sectorId, activityLog);
-    const demolishOption = {
+    const isDemolishAllowedForSector = isDemolishAllowed(sectorId, firebaseRound);
+    
+    // Only show demolish option when it's actually clickable
+    // Hide in R1, hide if already used in round, hide if other actions taken first, hide if nothing to demolish
+    const shouldShowDemolish = canDemolish && isDemolishAllowedForSector;
+    
+    const demolishOption = shouldShowDemolish ? {
       coinCount: 1,
-      onClick: canDemolish ? () => {
+      onClick: () => {
         // Demolish all actions for this specific sector
         // We don't need to pass a specific action ID since demolish removes all actions in the sector
         handleDemolishClick(sectorId, ActivityTypeEnum.DEMOLISH);
-      } : undefined,
-      disabled: !canDemolish,
-    };
+      },
+      disabled: false, // Always enabled when shown since we only show when clickable
+    } : undefined;
 
     return (
       <SectorSection

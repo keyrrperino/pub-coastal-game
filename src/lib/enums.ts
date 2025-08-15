@@ -150,6 +150,9 @@ export enum ActivityTypeEnum {
   // R1 1A / BUILD / 2 Land Reclamation
   R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL = "r1 1a lr ug sw 2",
 
+  // R1 1A / UPGRADE / 3 Land Reclamation SEAWALL
+  R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL = "r1 1a lr ug sw 3",
+
   // R1 1A / UPGRADE Seawall (WALK) PATH
   R1_1A_UPGRADE_SEAWALL_WALK_PATH = "r1 1a sw ug wp",
 
@@ -175,6 +178,9 @@ export enum ActivityTypeEnum {
   R1_1B_UPGRADE_LR_TO_SEAWALL_1_15 = "r1 1b lr ug sw 1.15",
 
   R1_1B_UPGRADE_LR_TO_SEAWALL_2 = "r1 1b lr ug sw 2",
+
+  // R1 1B / UPGRADE / 3 Land Reclamation SEAWALL
+  R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL = "r1 1b lr ug sw 3",
 
   // R1 1B / BUILD / 0.5 SEAWALL
   R1_1B_BUILD_0_5_SEAWALL = "r1 1b sw 0.5",
