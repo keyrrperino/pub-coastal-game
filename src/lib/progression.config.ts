@@ -62,13 +62,13 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
@@ -133,13 +133,13 @@ const zone2Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
@@ -191,13 +191,13 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 1,
+    displayName: '2m', cost: 3, unlocksInRound: 2,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
   },
   BUILD_PATH_FROM_SEAWALL: {
-    displayName: 'Build Path', cost: 1, unlocksInRound: 2,
+    displayName: 'Build Path', cost: 1, unlocksInRound: 3,
     prerequisites: [['BUILD_SEAWALL_0_5'], ['BUILD_SEAWALL_1_15'], ['BUILD_SEAWALL_2']],
     blocksActions: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15', 'BUILD_SEAWALL_2'],
     measureType: 'seawall',
