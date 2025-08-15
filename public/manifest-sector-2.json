@@ -1,0 +1,31 @@
+{
+  "name": "Coastal Pub Game - Sector 2",
+  "short_name": "Sector 2",
+  "description": "Coastal protection game - Sector 2 control panel",
+  "start_url": "/control/sector-2",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "landscape-primary",
+  "categories": ["games", "education"],
+  "scope": "/control/sector-2",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

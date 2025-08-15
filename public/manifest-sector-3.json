@@ -1,0 +1,31 @@
+{
+  "name": "Coastal Pub Game - Sector 3",
+  "short_name": "Sector 3",
+  "description": "Coastal protection game - Sector 3 control panel",
+  "start_url": "/control/sector-3",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "landscape-primary",
+  "categories": ["games", "education"],
+  "scope": "/control/sector-3",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

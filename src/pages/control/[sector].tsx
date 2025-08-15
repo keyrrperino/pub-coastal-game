@@ -36,10 +36,11 @@ export default function SectorPage() {
   return (
     <>
       <Head>
-        <title>Coastal Pub</title>
-        <meta name="description" content="Create your own coastal scene with trees, islands, and water" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Coastal Pub - {sector?.toString().replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</title>
+        <meta name="description" content="Interactive coastal protection game control panel" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="icon" href="/favicon.png" />
+        <link rel="manifest" href={`/manifest-${sector}.json`} />
       </Head>
       <GameProvider>
         <SectorControl sector={sector as string} />
