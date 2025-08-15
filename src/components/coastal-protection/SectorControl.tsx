@@ -32,6 +32,7 @@ import PostRoundModal from '@/components/PostRoundModal';
 
 interface SectorControlProps {
   sector: string;
+  roomId?: string;
 }
 
 // Helper function to get player number from sector
@@ -64,9 +65,9 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 
 
-const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
+const SectorControl: React.FC<SectorControlProps> = ({ sector, roomId }) => {
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, 'default'));
+  const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, roomId || 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
@@ -762,23 +763,29 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
                 currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
               return (
                 <>
-                  {/* Top bar: Budget left and Timer right */}
-                  <div className="w-full flex flex-row items-start justify-between">
-                    {/* Budget display left */}
-                    <div className="flex-1 flex items-start justify-start">
-                      <BudgetDisplay totalCoins={totalCoins} />
-                    </div>
-                    {/* Timer right */}
-                    <div className="flex-1 flex items-start justify-end">
-                      <Timer 
-                        key={`${currentRound}-${currentPhase}`}
-                        duration={showCutscene ? 0 : phaseDuration}
-                        onTimeUp={handleTimeUp} 
-                        isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
-                        syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-                      />
-                    </div>
-                  </div>
+                   {/* Top bar: Budget left and Timer right */}
+                   <div className="w-full flex flex-row items-start justify-between">
+                     {/* Budget display left */}
+                     <div className="flex-1 flex items-start justify-start">
+                       <BudgetDisplay totalCoins={totalCoins} />
+                       {/* Debug: Room ID display */}
+                       {roomId && (
+                         <div className="ml-4 px-3 py-1 bg-black/50 rounded text-white text-sm font-mono">
+                           Room: {roomId}
+                         </div>
+                       )}
+                     </div>
+                     {/* Timer right */}
+                     <div className="flex-1 flex items-start justify-end">
+                       <Timer 
+                         key={`${currentRound}-${currentPhase}`}
+                         duration={showCutscene ? 0 : phaseDuration}
+                         onTimeUp={handleTimeUp} 
+                         isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
+                         syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                       />
+                     </div>
+                   </div>
 
                   {/* Sector sections */}
                   <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">

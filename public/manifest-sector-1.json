@@ -8,7 +8,7 @@
   "theme_color": "#3b82f6",
   "orientation": "landscape-primary",
   "categories": ["games", "education"],
-  "scope": "/control/sector-1",
+  "scope": "/control/sector-1/",
   "icons": [
     {
       "src": "/favicon.png",
