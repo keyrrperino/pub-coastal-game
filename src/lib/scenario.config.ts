@@ -201,6 +201,8 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3B_3 },
 };
 
+console.log('lil here:',`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`)
+
 export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   "1_1A_None-None-0.7-1": { score: 70, cutscene: CutScenesEnum.R2_1A_0, coin: 0 },
   "1_1A_None-None-0.7-2": { score: 150, cutscene: CutScenesEnum.R2_1A_0, coin: 0 },
@@ -786,6 +788,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
 
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+
   // Land Reclamation (2m) -> Build Sea Wall (1.15m)
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
@@ -793,6 +798,12 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Land Reclamation (2m) -> Build Sea Wall (2m)
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
+
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_6 },
+  [`1_1A_None-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_6 },
 
   // Mangroves -> None
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: 115, coin: 0, cutscene: CutScenesEnum.R2_1A_2 },
@@ -896,6 +907,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
 
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+
   // Land Reclamation (2m) -> Build Sea Wall (1.15m)
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-1.15-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-1.15-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
@@ -903,6 +917,11 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Land Reclamation (2m) -> Build Sea Wall (2m)
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
 
   // Mangroves -> None
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: 115, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },

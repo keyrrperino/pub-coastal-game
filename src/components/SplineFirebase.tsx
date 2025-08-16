@@ -191,6 +191,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
   
   const [sectorPerformance, setSectorPerformance] = useState<SectorPerformance>('okay');
 
+  console.log(activities, "eyes here");
+
   const overAllScores = useSectorScores({
     activities: activities ?? [],
     lobbyState,

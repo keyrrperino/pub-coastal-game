@@ -32,7 +32,7 @@ export function useSplineTriggers({
 
       // Calculate total steps (max of state/events for each activity)
       let totalSteps = 0;
-      activities.reverse().forEach(act => {
+      [...activities].reverse().forEach(act => {
         const config = SplineTriggersConfig[act.action];
         if (config) {
           totalSteps += Math.max(config.state.length, config.events.length);
@@ -82,7 +82,7 @@ export function useSplineTriggers({
     if (!isLoaded || !splineAppRef.current) return;
 
     const runTriggers = async () => {
-      for (const act of newActivities.reverse()) {
+      for (const act of [...newActivities].reverse()) {
         const config = SplineTriggersConfig[act.action as ActivityTypeEnum];
         if (!config) continue;
         let actionName = act.action === ActivityTypeEnum.DEMOLISH ? `${act.subSector?.toLowerCase()} demolish` : act.action
