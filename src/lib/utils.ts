@@ -1015,11 +1015,13 @@ export function getSectorRoundScore(
           if (roundOneActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
-            const { score, coin } = sceneSectorConfigurations[key];
+            const data = sceneSectorConfigurations[key];
+            const score = ((data.coin ?? 0) + 1) * 10;
+            const coin = 1;
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
-            const key = `${sectorNumber}_${sectorNumber}A_${roundOneActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
@@ -1226,11 +1228,13 @@ export function getSectorRoundScore(
           if (roundOneActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
-            const { score, coin } = sceneSectorConfigurations[key];
+            const data = sceneSectorConfigurations[key];
+            const score = ((data.coin ?? 0) + 1) * 10;
+            const coin = 1;
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
-            const key = `${sectorNumber}_${sectorNumber}B_${roundOneActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 

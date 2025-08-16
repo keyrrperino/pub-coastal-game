@@ -575,6 +575,15 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-0.7-2`]: { score: 80, cutscene: CutScenesEnum.R2_3A_6, coin: 1 },
 
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: 15, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 2 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 2 },
+
   // Hybrid Measure (1.15m) upgrades
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 0 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-0.7-2`]: { score: 15, cutscene: CutScenesEnum.R2_3A_4, coin: 0 },
@@ -656,6 +665,15 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_5, coin: 1 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-0.7-2`]: { score: 80, cutscene: CutScenesEnum.R2_3B_6, coin: 1 },
+
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_4, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: 15, cutscene: CutScenesEnum.R2_3B_4, coin: 1 },
+
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
 
   // Hybrid Measure (1.15m) Upgrades
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 0 },
@@ -800,6 +818,12 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
 
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
+
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_7 },
+
   [`1_1A_None-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_6 },
   [`1_1A_None-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1A_6 },
 
@@ -918,8 +942,15 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
 
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+
+  [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-1.15-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+
   [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+
+  [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_7 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-1.15-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_7 },
 
   // Mangroves -> None
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-1.15-1`]: { score: 115, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },
@@ -1130,6 +1161,10 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 3 },
   [`3_3A_None-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 3 },
 
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+
+
   // Artificial Reef -> None
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-1.15-1`]: { score: 115, cutscene: CutScenesEnum.R2_3A_1, coin: 0 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-1.15-2`]: { score: 200, cutscene: CutScenesEnum.R2_3A_1, coin: 0 },
@@ -1141,6 +1176,10 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Artificial Reef -> Build Rocky Revetment Behind Reef (2m)
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
+
+  
+  [`3_3A_${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
 
   // Hybrid Measure (0.5m) -> None
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-None-1.15-1`]: { score: 45, cutscene: CutScenesEnum.R2_3A_4, coin: 0 },
@@ -1158,6 +1197,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 45, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 130, cutscene: CutScenesEnum.R2_3A_6, coin: 1 },
 
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: 65, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
   // Hybrid Measure (1.15m) -> None
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-1.15-1`]: { score: 20, cutscene: CutScenesEnum.R2_3A_4, coin: 0 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-None-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3A_4, coin: 0 },
@@ -1165,6 +1207,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Hybrid Measure (1.15m) -> Raise Revetment to 2m
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
+  [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
 
   // Hybrid Measure (1.15m) -> Add a bike path
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
@@ -1240,6 +1285,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_2, coin: 3 },
   [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_2, coin: 3 },
 
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_5, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_6, coin: 1 },
+
   // Artificial Reef -> Demolish
   // [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-Demolish-1.15-1`]: { score: 10, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
 
@@ -1271,6 +1319,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 45, cutscene: CutScenesEnum.R2_3B_5, coin: 1 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 130, cutscene: CutScenesEnum.R2_3B_6, coin: 1 },
 
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-0.7-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_4, coin: 1 },
+
   // Hybrid Measure (1.15m) -> None
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 0 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-None-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_4, coin: 0 },
@@ -1282,6 +1333,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Hybrid Measure (1.15m) -> Add a bike path
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_5, coin: 1 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_6, coin: 1 },
+
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 1 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_1_15_HYBRID_MEASURE}-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 1 },
 
   // Hybrid Measure (2m) -> None
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-None-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 0 },
@@ -1302,6 +1356,9 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   // Seawall (0.5m) -> Raise to 2m
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+
+  [`3_3B_${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
 
   // Seawall (0.5m) -> Build a promenade
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_3B_UPGRADE_SEAWALL_WALK_PATH}-1.15-1`]: { score: 65, cutscene: CutScenesEnum.R2_3B_7, coin: 1 },
