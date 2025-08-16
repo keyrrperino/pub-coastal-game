@@ -995,6 +995,7 @@ export function getSectorRoundScore(
         }
 
         if (currentRoundNumber === 3 && lastestPreviousRoundSectorActivity) {
+          console.log("Current Activity: ", activity, "activies: ", sectorActivitiesA, "previous activities: ", previousSectorActivitiesA, "latest previous round activity: ", lastestPreviousRoundSectorActivity, activities);
           if (lastestPreviousRoundSectorActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
