@@ -45,15 +45,15 @@ const getSectorTitles = (sector: string) => {
   const sectorTitles: Record<string, { sectorA: string; sectorB: string }> = {
     'sector-1': {
       sectorA: 'Sector 1A: Industrial',
-      sectorB: 'Sector 1B: Residential',
+      sectorB: 'Sector 1B: RECREATIONAL',
     },
     'sector-2': {
       sectorA: 'Sector 2A: CBD',
       sectorB: 'Sector 2B: Jurong',
     },
     'sector-3': {
-      sectorA: 'Sector 3A: Woodlands',
-      sectorB: 'Sector 3B: Punggol',
+      sectorA: 'Sector 3A: NATURE',
+      sectorB: 'Sector 3B: RESIDENTIAL',
     },
   };
   return sectorTitles[sector] || { sectorA: 'Sector A', sectorB: 'Sector B' };
