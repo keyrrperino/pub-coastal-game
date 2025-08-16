@@ -232,7 +232,7 @@ export default function ScoreBreakdownModal({
                         <span
                           className={"text-[clamp(16px,2.5vw,31px)] font-bold font-condensed"}
                           style={{
-                            color: playerScore < 0 ? "#FF0000" : "#202020"
+                            color: playerScore > 0 ? "#FF0000" : "#202020"
                           }}
                         >
                           {playerScore === 0 ? "" : "-"}{playerScore}
