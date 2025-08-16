@@ -201,8 +201,6 @@ export const roundOneScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_2_SEA_WALL}-0.3-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R1_3B_3 },
 };
 
-console.log('lil here:',`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`)
-
 export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   "1_1A_None-None-0.7-1": { score: 70, cutscene: CutScenesEnum.R2_1A_0, coin: 0 },
   "1_1A_None-None-0.7-2": { score: 150, cutscene: CutScenesEnum.R2_1A_0, coin: 0 },

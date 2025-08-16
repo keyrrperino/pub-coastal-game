@@ -6,7 +6,7 @@ import { GameRoomService } from "@/lib/gameRoom";
 import { ActivityLogType, LobbyStateType, OverallScoresTypes, RoundType } from "@/lib/types";
 import { PHASE_DURATIONS } from "./phaseUtils";
 import { useTimer } from "./useTimer";
-import { meanSeaLevels, roundOneScenarioConfiguration, sceneSectorConfigurations } from "@/lib/constants";
+import { meanSeaLevels, sceneSectorConfigurations } from "@/lib/constants";
 
 const getCutScenes = (round: RoundType, overAllScores: { [key in RoundType]?: OverallScoresTypes }): CutScenesEnum[] => {
   console.log(overAllScores);
