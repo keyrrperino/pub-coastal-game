@@ -2286,6 +2286,9 @@ export const optionalScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK}-None-0.7-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1A_8 },
   [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK}-None-0.7-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1A_8 },
 
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1A_8 },
+  [`1_1A_${ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK}-None-1.15-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1A_8 },
+
   
   [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH}-None-0.7-1`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1B_7 },
   [`1_1B_${ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH}-None-0.7-2`]: { score: 50, coin: 0, cutscene: CutScenesEnum.R2_1B_7 },

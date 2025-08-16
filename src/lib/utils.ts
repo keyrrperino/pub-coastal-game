@@ -642,6 +642,15 @@ export function getRoundBreakdownByPlayer(
   };
 }
 
+function getArrayFirstData(arrayData: ActivityLogType[]) {
+  let firstArrayData = null;
+  if (arrayData.length > 0) {
+    firstArrayData = arrayData[0];
+  }
+
+  return firstArrayData;
+}
+
 
 export function getSectorRoundScore(
   activities: ActivityLogType[],
@@ -725,6 +734,7 @@ export function getSectorRoundScore(
   if (isRoundOne && sectorActivitiesA.length <= 0) {
     // round1
     const key = `${sectorNumber}_${sectorNumber}A_None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    console.log("ERROR_KEY: ", key);
     const { coin, score } = sceneSectorConfigurations[key];
 
     scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
@@ -739,6 +749,7 @@ export function getSectorRoundScore(
       // is Demolished activity
       if (isLatestActivityIsDemolished && previousActivity) {
         const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        console.log("ERROR_KEY: ", key);
         const data = sceneSectorConfigurations[key];
         const score = ((data.coin ?? 0) + 1) * 10;
         const coin = 1;
@@ -749,6 +760,7 @@ export function getSectorRoundScore(
       // Still deduct all the activity that is not demolished status
       if (!isLatestActivityIsDemolished) {
         const key = `${sectorNumber}_${sectorNumber}A_${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        console.log("ERROR_KEY: ", key);
         const { score, coin } = sceneSectorConfigurations[key];
         scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
       }
@@ -761,6 +773,7 @@ export function getSectorRoundScore(
   if (isRoundOne && sectorActivitiesB.length <= 0) {
     // round1
     const key = `${sectorNumber}_${sectorNumber}B_None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    console.log("ERROR_KEY: ", key);
     const { coin, score } = sceneSectorConfigurations[key];
 
     scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
@@ -775,6 +788,7 @@ export function getSectorRoundScore(
       // is Demolished activity
       if (isLatestActivityIsDemolished && previousActivity) {
         const key = `${sectorNumber}_${sectorNumber}B_${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        console.log("ERROR_KEY: ", key);
         const data = sceneSectorConfigurations[key];
         const score = ((data.coin ?? 0) + 1) * 10;
         const coin = 1;
@@ -784,6 +798,7 @@ export function getSectorRoundScore(
       // Still deduct all the activity that is not demolished status
       if (!isLatestActivityIsDemolished) {
         const key = `${sectorNumber}_${sectorNumber}B_${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+        console.log("ERROR_KEY: ", key);
         const { score, coin } = sceneSectorConfigurations[key];
 
         scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
@@ -799,6 +814,7 @@ export function getSectorRoundScore(
   if (!isRoundOne && sectorActivitiesA.length <= 0 && previousSectorActivitiesA.length === 0) {
     // round1
     const key = `${sectorNumber}_${sectorNumber}A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    console.log("ERROR_KEY: ", key);
     const { coin, score } = sceneSectorConfigurations[key];
 
     scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
@@ -811,11 +827,13 @@ export function getSectorRoundScore(
     // if ang prevous activity kay demolished
     if (previousActivity?.isDemolished) {
       const key = `${sectorNumber}_${sectorNumber}A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+      console.log("ERROR_KEY: ", key);
       const { coin, score } = sceneSectorConfigurations[key];
 
       scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     } else { // if ang previous action has action and no activity in curent round
       const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+      console.log("ERROR_KEY: ", key);
       console.log(roundNumber, "newKey: ", key, "sectorActivitiesA: ", sectorActivitiesA, "previousSectorActivitiesA: ", previousSectorActivitiesA);
       try {
         const { coin, score } = sceneSectorConfigurations[key];
@@ -834,9 +852,9 @@ export function getSectorRoundScore(
     sectorActivitiesA.map((activity, index: number) => {
       // round 1 previous activity should be the current one
       const isLatestActivityIsDemolished = activity?.isDemolished;
-      const lastestPreviousRoundSectorActivity = previousSectorActivitiesA.shift();
+      const lastestPreviousRoundSectorActivity = getArrayFirstData(previousSectorActivitiesA);
       const previousActivity = sectorActivitiesA[index + 1];
-      const roundOneActivity = roundOneSectorActivitiesA.shift();
+      const roundOneActivity = getArrayFirstData(roundOneSectorActivitiesA);
 
 
       // if current activity is demolish and with has current previous activity
@@ -844,6 +862,7 @@ export function getSectorRoundScore(
         if (lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) { // if first round latest activity is demolish, set to None
             const key = `${sectorNumber}_${sectorNumber}A_None-${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -852,6 +871,7 @@ export function getSectorRoundScore(
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else { // if first round latest activity is legit or actual activity, set the first round activity
             const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -861,6 +881,7 @@ export function getSectorRoundScore(
           }
         } else { // if no activity in the first round, set to NONE first value
           const key = `${sectorNumber}_${sectorNumber}A_None-${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -873,7 +894,9 @@ export function getSectorRoundScore(
       // if current acitivty is demolish but no current previous activity
       if (isLatestActivityIsDemolished && !previousActivity) {
         if (lastestPreviousRoundSectorActivity) { // Note: this activity should not demolished because the user performed demoplish so the recent activity must be a CPM
+          console.log("previousSectorActivitiesA: ", previousSectorActivitiesA, "lastestPreviousRoundSectorActivity: ", lastestPreviousRoundSectorActivity, "roundNumber: ", roundNumber);
           const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
 
           const data = sceneSectorConfigurations[key];
           const score = ((data.coin ?? 0) + 1) * 10;
@@ -883,6 +906,7 @@ export function getSectorRoundScore(
         } else { // if no activity in the first round, set to NONE first value
           if (currentRoundNumber === 2) {
             const key = `${sectorNumber}_${sectorNumber}A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -894,6 +918,7 @@ export function getSectorRoundScore(
           if (currentRoundNumber === 3) {
             if (roundOneActivity) { // same logic, no demolish if first activity of round 3 is demolished
               const key = `${sectorNumber}_${sectorNumber}A_${roundOneActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+              console.log("ERROR_KEY: ", key);
               const data = sceneSectorConfigurations[key];
               const score = ((data.coin ?? 0) + 1) * 10;
               const coin = 1;
@@ -901,6 +926,7 @@ export function getSectorRoundScore(
               scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
             } else {
               const key = `${sectorNumber}_${sectorNumber}A_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+              console.log("ERROR_KEY: ", key);
               const data = sceneSectorConfigurations[key];
               const score = ((data.coin ?? 0) + 1) * 10;
               const coin = 1;
@@ -917,6 +943,7 @@ export function getSectorRoundScore(
         // if current round previous activity is demolish
         if (previousActivity?.isDemolished) {
           const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -924,6 +951,7 @@ export function getSectorRoundScore(
 
         if (!previousActivity?.isDemolished) {
           const key = `${sectorNumber}_${sectorNumber}A_${previousActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -934,6 +962,7 @@ export function getSectorRoundScore(
         // if round 2 and no activity in round 1
         if (currentRoundNumber === 2 && !lastestPreviousRoundSectorActivity) {
           const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -942,11 +971,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 2 && lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             console.log("key: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
@@ -957,6 +988,7 @@ export function getSectorRoundScore(
         // if round 3 but no activity on round 2 and round 1
         if (currentRoundNumber === 3 && !lastestPreviousRoundSectorActivity && !roundOneActivity) {
           const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -965,11 +997,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 3 && lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -979,11 +1013,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 3 && !lastestPreviousRoundSectorActivity && roundOneActivity) {
           if (roundOneActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}A_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}A_${roundOneActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -998,6 +1034,7 @@ export function getSectorRoundScore(
   if (!isRoundOne && sectorActivitiesB.length <= 0 && previousSectorActivitiesB.length === 0) {
     // round1
     const key = `${sectorNumber}_${sectorNumber}B_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+    console.log("ERROR_KEY: ", key);
     const { coin, score } = sceneSectorConfigurations[key];
 
     scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
@@ -1010,11 +1047,13 @@ export function getSectorRoundScore(
     // if ang prevous activity kay demolished
     if (previousActivity?.isDemolished) {
       const key = `${sectorNumber}_${sectorNumber}B_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+      console.log("ERROR_KEY: ", key);
       const { coin, score } = sceneSectorConfigurations[key];
 
       scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     } else { // if ang previous action has action and no activity in curent round
       const key = `${sectorNumber}_${sectorNumber}B_${previousActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+      console.log("ERROR_KEY: ", key);
       const { coin, score } = sceneSectorConfigurations[key];
       scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus);
     }
@@ -1026,9 +1065,9 @@ export function getSectorRoundScore(
     sectorActivitiesB.map((activity, index: number) => {
       // round 1 previous activity should be the current one
       const isLatestActivityIsDemolished = activity?.isDemolished;
-      const lastestPreviousRoundSectorActivity = previousSectorActivitiesB.shift();
+      const lastestPreviousRoundSectorActivity = getArrayFirstData(previousSectorActivitiesB);
       const previousActivity = sectorActivitiesB[index + 1];
-      const roundOneActivity = roundOneSectorActivitiesB.shift();
+      const roundOneActivity = getArrayFirstData(roundOneSectorActivitiesB);
 
 
       // if current activity is demolish and with has current previous activity
@@ -1036,6 +1075,7 @@ export function getSectorRoundScore(
         if (lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) { // if first round latest activity is demolish, set to None
             const key = `${sectorNumber}_${sectorNumber}B_None-${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -1044,6 +1084,7 @@ export function getSectorRoundScore(
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else { // if first round latest activity is legit or actual activity, set the first round activity
             const key = `${sectorNumber}_${sectorNumber}B_${lastestPreviousRoundSectorActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -1053,6 +1094,7 @@ export function getSectorRoundScore(
           }
         } else { // if no activity in the first round, set to NONE first value
           const key = `${sectorNumber}_${sectorNumber}B_None-${previousActivity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -1066,6 +1108,7 @@ export function getSectorRoundScore(
       if (isLatestActivityIsDemolished && !previousActivity) {
         if (lastestPreviousRoundSectorActivity) { // Note: this activity should not demolished because the user performed demoplish so the recent activity must be a CPM
           const key = `${sectorNumber}_${sectorNumber}B_${lastestPreviousRoundSectorActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
 
           const data = sceneSectorConfigurations[key];
           const score = ((data.coin ?? 0) + 1) * 10;
@@ -1075,6 +1118,7 @@ export function getSectorRoundScore(
         } else { // if no activity in the first round, set to NONE first value
           if (currentRoundNumber === 2) {
             const key = `${sectorNumber}_${sectorNumber}B_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
 
             const data = sceneSectorConfigurations[key];
             const score = ((data.coin ?? 0) + 1) * 10;
@@ -1086,6 +1130,7 @@ export function getSectorRoundScore(
           if (currentRoundNumber === 3) {
             if (roundOneActivity) { // same logic, no demolish if first activity of round 3 is demolished
               const key = `${sectorNumber}_${sectorNumber}B_${roundOneActivity.action}-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+              console.log("ERROR_KEY: ", key);
               const data = sceneSectorConfigurations[key];
               const score = ((data.coin ?? 0) + 1) * 10;
               const coin = 1;
@@ -1093,6 +1138,7 @@ export function getSectorRoundScore(
               scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
             } else {
               const key = `${sectorNumber}_${sectorNumber}B_None-None-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+              console.log("ERROR_KEY: ", key);
               const data = sceneSectorConfigurations[key];
               const score = ((data.coin ?? 0) + 1) * 10;
               const coin = 1;
@@ -1109,6 +1155,7 @@ export function getSectorRoundScore(
         // if current round previous activity is demolish
         if (previousActivity?.isDemolished) {
           const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1116,6 +1163,7 @@ export function getSectorRoundScore(
 
         if (!previousActivity?.isDemolished) {
           const key = `${sectorNumber}_${sectorNumber}B_${previousActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1126,6 +1174,7 @@ export function getSectorRoundScore(
         // if round 2 and no activity in round 1
         if (currentRoundNumber === 2 && !lastestPreviousRoundSectorActivity) {
           const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1134,11 +1183,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 2 && lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}B_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1148,6 +1199,7 @@ export function getSectorRoundScore(
         // if round 3 but no activity on round 2 and round 1
         if (currentRoundNumber === 3 && !lastestPreviousRoundSectorActivity && !roundOneActivity) {
           const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+          console.log("ERROR_KEY: ", key);
           const { score, coin } = sceneSectorConfigurations[key];
 
           scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1156,11 +1208,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 3 && lastestPreviousRoundSectorActivity) {
           if (lastestPreviousRoundSectorActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}B_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
@@ -1170,11 +1224,13 @@ export function getSectorRoundScore(
         if (currentRoundNumber === 3 && !lastestPreviousRoundSectorActivity && roundOneActivity) {
           if (roundOneActivity?.isDemolished) {
             const key = `${sectorNumber}_${sectorNumber}B_None-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
             const key = `${sectorNumber}_${sectorNumber}B_${roundOneActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
+            console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
 
             scores = addUpScoreAndCoinB(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
