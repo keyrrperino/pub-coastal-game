@@ -1002,6 +1002,7 @@ export function getSectorRoundScore(
 
             scores = addUpScoreAndCoinA(Object.assign(scores), userId, score ?? 0, coin ?? 0, key, roundNumber, currentRoundNumber, gameStatus); 
           } else {
+            console.log(activity, previousSectorActivitiesA, sectorActivitiesA);
             const key = `${sectorNumber}_${sectorNumber}A_${lastestPreviousRoundSectorActivity.action}-${activity.action}-${meanSeaLevels[roundNumber]}-${sessionRandomizeEffect}`;
             console.log("ERROR_KEY: ", key);
             const { score, coin } = sceneSectorConfigurations[key];
