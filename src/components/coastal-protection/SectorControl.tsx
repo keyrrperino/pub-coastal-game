@@ -122,6 +122,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
   const [showTeamNameInput, setShowTeamNameInput] = useState(false);
 
   const [showCutscene, setShowCutscene] = useState(false);
+  const [showPostRound, setShowPostRound] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [coinsLeft, setCoinsLeft] = useState(0);
@@ -177,6 +178,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
       
       case GameLobbyStatus.ROUND_STORYLINE:
@@ -186,6 +188,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
       
       case GameLobbyStatus.ROUND_GAMEPLAY:
@@ -195,6 +198,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
       
       case GameLobbyStatus.ROUND_CUTSCENES:
@@ -204,6 +208,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(true);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
         
       case GameLobbyStatus.ROUND_SCORE_BREAKDOWN:
@@ -212,6 +217,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowPostRound(true);
         setShowLeaderboardOverlay(false);
         // Fetch leaderboard data when entering this phase
         const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
@@ -227,6 +233,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         // Use totalScore from useSectorScores instead of calculated score
         setFinalScore(totalScore);
         break;
@@ -238,6 +245,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(true);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
       
       case GameLobbyStatus.LEADERBOARD_DISPLAY:
@@ -246,7 +254,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowEnding(false);
         setShowTeamNameInput(false);
         setShowCutscene(false);
+        setShowPostRound(true);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
       
       case GameLobbyStatus.RESTARTING:
@@ -262,6 +272,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowTeamNameInput(false);
         setShowCutscene(false);
         setShowLeaderboardOverlay(false);
+        setShowPostRound(false);
         break;
     }
   }, [currentPhase, activityLog, currentRound, showInsufficientBudgetModal, isLeaderboardOpen, gameRoomService]);
@@ -866,6 +877,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         duration={getPhaseDuration(GameLobbyStatus.ROUND_STORYLINE)}
         syncWithTimestamp={lobbyState?.[LobbyStateEnum.PHASE_START_TIME] || undefined}
         onDurationComplete={() => {}}
+      />
+
+      <PostRoundModal
+        isOpen={showPostRound}
+        performance={sectorPerformance}
+        overallScoresData={overallScoresData}
+        currentRound={firebaseRound}
+        sector={("user_sector_" + getPlayerNumber(sector)) as UserSectorEnum}
       />
       
       <CleanModal 

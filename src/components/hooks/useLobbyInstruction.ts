@@ -13,14 +13,16 @@ export function useLobbyInstruction(
   const [currentTutorial, setCurrentTutorial] = useState(0);
 
   const onTimeUp = () => {
-    if (gameRoomServiceRef.current) {
-      gameRoomServiceRef.current.updateLobbyState({
-        ...lobbyState, ...{
-        [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_STORYLINE,
-        [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-        [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_STORYLINE,
-      }});
-    }
+    setTimeout(() => {
+      if (gameRoomServiceRef.current) {
+        gameRoomServiceRef.current.updateLobbyState({
+          ...lobbyState, ...{
+          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_STORYLINE,
+          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_STORYLINE,
+        }});
+      }
+    }, 1000);
   }
 
   const {

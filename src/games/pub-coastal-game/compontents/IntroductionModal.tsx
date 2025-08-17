@@ -22,7 +22,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   const [timeRemaining, setTimeRemaining] = useState(duration);
   
   // Calculate duration for each tutorial screen (1/3 of total duration)
-  const screenDuration = Math.floor(duration / 3);
+  const screenDuration = Math.floor(duration / 4);
   
   // Calculate which screen should be shown based on elapsed time
   useEffect(() => {
@@ -39,8 +39,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
         setCurrentScreen(1);
       } else if (elapsed < screenDuration * 2) {
         setCurrentScreen(2);
-      } else if (elapsed < duration) {
+      } else if (elapsed < screenDuration * 3) {
         setCurrentScreen(3);
+      } else if (elapsed < duration) {
+        setCurrentScreen(4);
       } else {
         // Time is up, trigger completion
         onDurationComplete?.();
@@ -103,7 +105,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
         return <TutorialScreen2 onContinue={() => {}} />;
       case 3:
         return <TutorialScreen3 onContinue={() => {}} />;
-      case 3:
+      case 4:
         return <TutorialScreen4 onContinue={() => {}} timeRemaining={timeRemaining} />;
       default:
         return <TutorialScreen1 onContinue={() => {}} />;
