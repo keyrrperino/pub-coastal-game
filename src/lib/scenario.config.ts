@@ -1176,6 +1176,15 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
   [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
   [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3A_4, coin: 1 },
 
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3A_5, coin: 1 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_5, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_SEAWALL_WALK_PATH}-1.15-1`]: { score: 65, cutscene: CutScenesEnum.R2_3A_7, coin: 1 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_SEAWALL_WALK_PATH}-1.15-2`]: { score: 150, cutscene: CutScenesEnum.R2_3A_7, coin: 1 },
+
 
   // Artificial Reef -> None
   [`3_3A_${ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF}-None-1.15-1`]: { score: 115, cutscene: CutScenesEnum.R2_3A_1, coin: 0 },
@@ -1299,6 +1308,16 @@ export const roundThreeScenarioConfiguration: ScenarioConfigurationType = {
 
   [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_5, coin: 1 },
   [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_HYBRID_MEASURE_WALK_PATH}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_6, coin: 1 },
+
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 65, cutscene: CutScenesEnum.R2_3B_4, coin: 1 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-1.15-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_SEAWALL_WALK_PATH}-1.15-1`]: { score: 65, cutscene: CutScenesEnum.R2_3B_7, coin: 1 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_SEAWALL_WALK_PATH}-1.15-2`]: { score: 150, cutscene: CutScenesEnum.R2_3B_7, coin: 1 },
 
   // Artificial Reef -> Demolish
   // [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-Demolish-1.15-1`]: { score: 10, cutscene: CutScenesEnum.R2_3B_0, coin: 1 },
