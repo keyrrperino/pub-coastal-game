@@ -18,6 +18,7 @@ interface EndingConfig {
   subtitle: string;
   bgColor: string;
   borderGradient: string;
+  content: React.ReactNode;
   buttonColor: string;
   buttonHoverColor: string;
 }
@@ -25,15 +26,29 @@ interface EndingConfig {
 const endingConfigs: Record<EndingType, EndingConfig> = {
   success: {
     title: "Congratulations!",
-    subtitle: "You've successfully defended Singapore's shores from rising sea levels.",
+    subtitle: "You've successfully defended Singapore's shores from rising sea levels. ",
     bgColor: "rgba(175, 255, 178, 0.3)",
     borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)",
     buttonColor: "from-green-500 to-green-600",
-    buttonHoverColor: "from-green-600 to-green-700"
+    buttonHoverColor: "from-green-600 to-green-700",
+    content: <>
+      Your strategic choices have made a real difference in safeguarding our island for generations to come.
+      <br />
+      But remember: no solution is perfect, and the fight against the rising tides is far from over.
+      <br />
+      We need you - our coastal protector - to keep standing strong.
+    </>,
   },
   moderate: {
     title: "Well done!",
     subtitle: "You've made important progress protecting Singapore's coasts.",
+    content: <>
+      Not bad! There's still room to improve, but every step counts in this ongoing battle against sea level rise.
+      <br />
+      Keep learning, keep adapting - our island depends on it.
+      <br />
+      You are a vital part of the coastal protection effort.
+    </>,
     bgColor: "rgba(255, 238, 175, 0.3)",
     borderGradient: "linear-gradient(135deg, #FFEEAF 0%, #FFFFFF 100%)",
     buttonColor: "from-yellow-500 to-yellow-600",
@@ -41,11 +56,18 @@ const endingConfigs: Record<EndingType, EndingConfig> = {
   },
   failure: {
     title: "Oh no",
-    subtitle: "too many floods have breached Singapore's defenses this time. But don't give up!",
+    subtitle: "Oh no, too many floods have breached Singapore’s defenses.",
     bgColor: "rgba(255, 175, 175, 0.3)",
     borderGradient: "linear-gradient(135deg, rgba(17, 68, 153, 0) 0%, #FFFFFF 100%)",
     buttonColor: "from-red-500 to-red-600",
-    buttonHoverColor: "from-red-600 to-red-700"
+    buttonHoverColor: "from-red-600 to-red-700",
+    content: <>
+      Try again to improve your strategy.
+      <br />
+      Remember, no single solution is perfect, but we must act now and together to protect future generations.
+      <br />
+      We're counting on you, coastal protector.
+    </>,
   }
 };
 
@@ -102,14 +124,11 @@ export default function EndingScreen({
                 {config.subtitle}
               </p>
               
-              <p className="text-white text-3xl font-bold text-center leading-[1.2] max-w-screen drop-shadow-[0px_2px_2px_rgba(148,107,199,1)]">
-                YOUR FINAL SCORE: {finalScore.toLocaleString()}
-              </p>
             </div>
           </div>
 
           {/* Message Box */}
-          <div className="relative max-w-[75vw] w-full rounded-[56px] backdrop-blur-[37px] shadow-[0px_13px_63px_rgba(0,0,0,0.15)]">
+          <div className="relative max-w-[60vw] w-full rounded-[56px] backdrop-blur-[37px] shadow-[0px_13px_63px_rgba(0,0,0,0.15)]">
             {/* Border using ::after pseudo-element */}
             <style jsx>{`
               div::after {
@@ -139,36 +158,15 @@ export default function EndingScreen({
               style={{ backgroundColor: config.bgColor }}
             >
               <p className="text-white text-3xl font-bold text-center drop-shadow-[0px_2px_2px_rgba(148,107,199,1)] font-condensed">
-                {endingType === 'success' && (
-                  <>
-                    Your strategic choices have made a real difference in safeguarding our island for generations to come.
-                    <br />
-                    But remember: no solution is perfect, and the fight against the rising tides is far from over.
-                    <br />
-                    We need you - our coastal protector - to keep standing strong.
-                  </>
-                )}
-                {endingType === 'moderate' && (
-                  <>
-                    Your strategic choices have made a real difference in safeguarding our island for generations to come.
-                    <br />
-                    But remember: no solution is perfect, and the fight against the rising tides is far from over.
-                    <br />
-                    We need you - our coastal protector - to keep standing strong.
-                  </>
-                )}
-                {endingType === 'failure' && (
-                  <>
-                    Try again to improve your strategy and better protect our shores.
-                    <br />
-                    Remember, no single solution is perfect, but we must act now and together to protect future generations.
-                    <br />
-                    We're counting on you, coastal protector.
-                  </>
-                )}
+                {config.content}
               </p>
             </div>
           </div>
+
+          <p className="text-white text-3xl font-bold text-center leading-[1.2] max-w-screen drop-shadow-[0px_2px_2px_rgba(148,107,199,1)]">
+            YOUR FINAL SCORE: <br />
+            <span className="text-[#FFDD3D]">{finalScore.toLocaleString()}</span>
+          </p>
         </div>
       </div>
     </div>

@@ -32,6 +32,8 @@ import EndingScreen from "./EndingScreen";
 import TeamNameInputScreen from "./TeamNameInputScreen";
 import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
 import LeaderboardOverlay from "./LeaderboardOverlay";
+import TutorialScreen4 from "./TutorialScreen4";
+import { PlayerRound1Screen, PlayerRound2Screen, PlayerRound3Screen } from "./player-screens";
 
 interface SplineFirebaseProps {
 }
@@ -346,9 +348,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     >
       {currentTutorial === 0 && <TutorialScreen1 />}
       {currentTutorial === 1 && <TutorialScreen2 />}
-      {currentTutorial === 2 && <TutorialScreen3 timeRemaining={timeRemaining}  />}
+      {currentTutorial === 2 && <TutorialScreen3  />}
+      {currentTutorial === 3 && <TutorialScreen4 timeRemaining={timeRemaining}  />}
     </div>
   )
+
+  const showCountdown = timeRemaining <= 3;
 
   const renderStoryLine = (
     (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_STORYLINE) && 
@@ -356,9 +361,9 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
       className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
       style={{ borderRadius: 0 }}
     >
-      {lobbyState.round === 1 && <Round1Screen timeRemaining={timeRemainingStoryLine} />}
-      {lobbyState.round === 2 && <Round2Screen timeRemaining={timeRemainingStoryLine} />}
-      {lobbyState.round === 3 && <Round3Screen timeRemaining={timeRemainingStoryLine} />}
+      {lobbyState.round === 1 && <PlayerRound1Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
+      {lobbyState.round === 2 && <PlayerRound2Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
+      {lobbyState.round === 3 && <PlayerRound3Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
     </div>
   )
 

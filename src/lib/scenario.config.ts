@@ -420,6 +420,12 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
 
   [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_2A_5, coin: 3 },
   [`2_2A_None-${ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_2A_5, coin: 3 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_3, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_3, coin: 2 },
+
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3A_3, coin: 2 },
+  [`3_3A_None-${ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3A_3, coin: 2 },
   
   // Seawall 0.5 No uprades
   [`2_2A_${ActivityTypeEnum.R1_2A_BUILD_0_5_STORM_SURGE_BARRIER}-None-0.7-1`]: { score: 20, coin: 0, cutscene: CutScenesEnum.R2_2A_2 },
@@ -647,6 +653,12 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
 
   [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_2, coin: 3 },
   [`3_3B_None-${ActivityTypeEnum.R1_3B_BUILD_2_HYBRID_MEASURE}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_2, coin: 3 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-1`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
+  [`3_3B_None-${ActivityTypeEnum.R1_3B_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT}-0.7-2`]: { score: 0, cutscene: CutScenesEnum.R2_3B_3, coin: 2 },
 
   // Artificial Reef Upgrades
   [`3_3B_${ActivityTypeEnum.R1_3B_BUILD_ARTIFICIAL_REEF}-None-0.7-1`]: { score: 70, cutscene: CutScenesEnum.R2_3B_1, coin: 0 },

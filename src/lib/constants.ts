@@ -561,6 +561,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
   },
   
 };
+
 export const SectorsButtonConfig: SectorsButtonConfigType = {
   [UserSectorEnum.USER_SECTOR_ONE]: {
     [SectorEnum.SECTOR_A]: {
