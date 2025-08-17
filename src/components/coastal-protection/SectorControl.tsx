@@ -29,6 +29,8 @@ import PlayerBackToMenuScreen from '@/components/PlayerBackToMenuScreen';
 import LeaderboardOverlay from '@/components/LeaderboardOverlay';
 import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
+import Modal from '@/games/pub-coastal-game/compontents/Modal';
+import CleanModal from '@/games/pub-coastal-game/compontents/CleanModal';
 
 interface SectorControlProps {
   sector: string;
@@ -209,7 +211,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         setShowRoundInstructions(false);
         setShowEnding(false);
         setShowTeamNameInput(false);
-        setShowCutscene(true);
+        setShowCutscene(false);
         setShowLeaderboardOverlay(false);
         // Fetch leaderboard data when entering this phase
         const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
@@ -866,13 +868,14 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         onDurationComplete={() => {}}
       />
       
-      <PostRoundModal 
-        isOpen={showCutscene}
-        performance={sectorPerformance}
-        overallScoresData={overallScoresData}
-        currentRound={firebaseRound}
-        sector={("user_sector_" + getPlayerNumber(sector)) as UserSectorEnum}
-      />
+      <CleanModal 
+        isOpen={showCutscene}>
+        <img
+            key={'coin-postround-cutscene'}
+            src="/games/pub-coastal-spline/images/post-round-cutscene.svg"
+            alt="coin"
+          />
+      </CleanModal>
 
       <EndingModal 
         isOpen={showEnding}

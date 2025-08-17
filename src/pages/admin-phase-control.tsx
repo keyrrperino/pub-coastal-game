@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GameEnum, GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
+import { GameLobbyStatus, LobbyStateEnum } from '@/lib/enums';
 import { GameRoomService } from '@/lib/gameRoom';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { GAME_ROUND_TIMER, lobbyStateDefaultValue } from '@/lib/constants';
@@ -137,17 +137,17 @@ export default function AdminPhaseControl() {
   const resetFirebaseRoom = async () => {
     if (!isConnected) return;
 
-    // const confirmReset = window.confirm(
-    //   'Are you sure you want to reset the Firebase room? This will:\n\n' +
-    //   '• Reset all game state to defaults\n' +
-    //   '• Clear all activity logs\n' +
-    //   '• Reset all player ready states\n' +
-    //   '• Set phase back to INITIALIZING\n' +
-    //   '• Clear all coin spending data\n\n' +
-    //   'This action cannot be undone!'
-    // );
+    const confirmReset = window.confirm(
+      'Are you sure you want to reset the Firebase room? This will:\n\n' +
+      '• Reset all game state to defaults\n' +
+      '• Clear all activity logs\n' +
+      '• Reset all player ready states\n' +
+      '• Set phase back to INITIALIZING\n' +
+      '• Clear all coin spending data\n\n' +
+      'This action cannot be undone!'
+    );
 
-    // if (!confirmReset) return;
+    if (!confirmReset) return;
 
     try {
       // Reset lobby state to default
@@ -156,9 +156,6 @@ export default function AdminPhaseControl() {
       // Explicitly set phase to INTRODUCTION and round to 1
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INITIALIZING);
-
-      await gameRoomService.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
-      await gameRoomService.updateLobbyState(lobbyStateDefaultValue);
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, 0);
       
       // Clear all activities

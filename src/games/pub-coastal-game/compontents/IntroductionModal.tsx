@@ -3,6 +3,7 @@ import { useTimer } from '@/components/hooks/useTimer';
 import TutorialScreen1 from '@/components/TutorialScreen1';
 import TutorialScreen2 from '@/components/TutorialScreen2';
 import TutorialScreen3 from '@/components/TutorialScreen3';
+import TutorialScreen4 from '@/components/TutorialScreen4';
 
 interface IntroductionModalProps {
   isOpen: boolean;
@@ -101,7 +102,9 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       case 2:
         return <TutorialScreen2 onContinue={() => {}} />;
       case 3:
-        return <TutorialScreen3 onContinue={() => {}} timeRemaining={timeRemaining} />;
+        return <TutorialScreen3 onContinue={() => {}} />;
+      case 3:
+        return <TutorialScreen4 onContinue={() => {}} timeRemaining={timeRemaining} />;
       default:
         return <TutorialScreen1 onContinue={() => {}} />;
     }

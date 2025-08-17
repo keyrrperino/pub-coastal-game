@@ -30,10 +30,10 @@ export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialS
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center">
               <p className="text-white text-2xl font-bold">
-                IN EACH SECTOR, YOU HAVE A SELECTION OF THREE COASTAL PROTECTION MEASURES TO CHOOSE FROM: FROM PLANTING MANGROVES, TO BUILDING A SEAWALL OR A COASTAL BARRIER. ALL HAVE COSTS TIED TO THEM.
+              IN EACH SECTOR, CHOOSE OUT OF THREE MEASURES TO PROTECT YOUR COAST. EACH MEASURE HAS DIFFERENT STRENGTHS, WEAKNESSES AND COSTS. 
               </p>
               <p className="text-white text-2xl font-bold">
-                REMEMBER, EACH HAS ITS OWN STRENGTHS, WEAKNESSES, AND COSTS – TAKE A MOMENT TO EXPLORE YOUR OPTIONS.
+                YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. 
               </p>
             </div>
 

@@ -24,11 +24,11 @@ export default function TutorialScreen2({ onContinue }: TutorialScreen2Props) {
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
-        <div className="flex flex-col items-center gap-12 max-w-[90%] w-full h-full max-h-[80%]">
+        <div className="flex flex-col items-center gap-12 max-w-[80%] w-full h-full max-h-[80%]">
           {/* Description */}
           <div className="w-full">
-            <p className="text-white text-3xl text-center font-bold">
-              SINGAPORE IS DIVIDED INTO THREE SECTORS AND SIX SUBSECTORS. EACH WITH ITS OWN LAND USE. FOR EXAMPLE. SECTOR 1A IS INDUSTRIAL, SECTOR 2A IS COMMERCIAL, AND SECTOR 3B IS RESIDENTIAL. TAKE A LOOK AROUND — WHICH SECTOR ARE YOU IN CHARGE OF?
+            <p className="text-white text-[3vh] text-center font-bold">
+              SINGAPORE IS DIVIDED INTO THREE SECTORS AND SIX SUBSECTORS, EACH WITH ITS OWN LAND USE. TAKE A LOOK AROUND — WHICH SECTOR ARE YOU IN CHARGE OF?
             </p>
           </div>
 

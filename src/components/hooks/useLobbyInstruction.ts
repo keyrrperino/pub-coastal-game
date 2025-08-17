@@ -33,12 +33,14 @@ export function useLobbyInstruction(
   });
 
   useEffect(() => {
-    if (timeRemaining > 20) {
+    if (timeRemaining > 30) {
       setCurrentTutorial(0); // Tutorial 1
-    } else if (timeRemaining > 10) {
+    } else if (timeRemaining > 20) {
       setCurrentTutorial(1); // Tutorial 2
-    } else {
+    } else if (timeRemaining > 10) {
       setCurrentTutorial(2); // Tutorial 3
+    } else {
+      setCurrentTutorial(3); // Tutorial 3
     }
   }, [timeRemaining]);
 
