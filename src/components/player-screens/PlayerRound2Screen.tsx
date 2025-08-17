@@ -70,7 +70,7 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
           <div className="h-24 flex items-center justify-center">
             {timeRemaining !== undefined && (
               <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
-                {Math.ceil(timeRemaining) === 0 ? 'GO!' : Math.ceil(timeRemaining)}
+                {Math.ceil(timeRemaining) === 0 ? 'GO!' : `${Math.ceil(timeRemaining)}...`}
               </h3>
             )}
           </div>

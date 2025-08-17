@@ -353,7 +353,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     </div>
   )
 
-  const showCountdown = timeRemaining <= 3;
+  const showCountdown = timeRemainingStoryLine <= 3;
 
   const renderStoryLine = (
     (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_STORYLINE) && 

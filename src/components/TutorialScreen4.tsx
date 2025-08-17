@@ -73,14 +73,10 @@ export default function TutorialScreen4({ onContinue, timeRemaining }: TutorialS
               {/* Reserved space for countdown - always present to prevent layout shift */}
               <div className="flex flex-col items-center gap-6">
                 <h2 className="text-white text-[6vh] font-bold text-center leading-tight tracking-wide mt-8 min-h-[72px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 ? (
-                    <>
-                      {timeRemaining === 3 && "3..."}
-                      {timeRemaining === 2 && "2..."}
-                      {timeRemaining === 1 && "1..."}
-                      {timeRemaining === 0 && "GO!"}
-                    </>
-                  ) : null}
+                  {timeRemaining !== undefined && (
+                    timeRemaining === 0 ? 'GO!' : 
+                    (timeRemaining <= 3 && timeRemaining >= 1 ? `${Math.ceil(timeRemaining)}...` : null)
+                  )}
                 </h2>
                 
                 <p className="text-white text-xl text-center font-bold min-h-[28px] flex items-center">
