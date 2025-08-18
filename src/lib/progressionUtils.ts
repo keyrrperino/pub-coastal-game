@@ -185,6 +185,27 @@ export function getActiveCPMPath(
 }
 
 /**
+ * Helper function to check if a sector can be demolished
+ * Land Reclamation CPM cannot be demolished (special case)
+ */
+export function isSectorDemolishable(
+  sectorId: string,
+  activeActions: Set<ActivityTypeEnum>
+): boolean {
+  const sectorActions = getSectorActions(sectorId);
+  const activeCPMPath = getActiveCPMPath(sectorActions, activeActions);
+  
+  // Special case: Land Reclamation CPM cannot be demolished
+  if (activeCPMPath === 'land-reclamation') {
+    return false;
+  }
+  
+  return true;
+}
+
+
+
+/**
  * Helper function to process activity log and calculate active actions
  */
 export function calculateActiveActions(activityLog: ActivityLogType[]): Set<ActivityTypeEnum> {
@@ -198,6 +219,14 @@ export function calculateActiveActions(activityLog: ActivityLogType[]): Set<Acti
       // Demolish removes the entire active CPM for the specified sector
       // The sector is stored in log.value (e.g., '1A', '2B')
       const demolishSector = log.value;
+      
+      // Special case: Land Reclamation cannot be demolished
+      // Check if the sector's active CPM is demolishable before processing
+      if (!isSectorDemolishable(demolishSector, currentlyActive)) {
+        // Skip this demolish action - Land Reclamation CPM cannot be demolished
+        continue;
+      }
+      
       const actionsToRemove: ActivityTypeEnum[] = [];
       
       // Find all actions for this sector and remove them
@@ -267,8 +296,8 @@ export function getSectorActions(sector: string): ActionConfig[] {
 
 /**
  * Check if there are any constructions in a sector across the entire game session
- * This is used for demolish button availability - demolish should be available if there's
- * ANY construction in the sector, regardless of round
+ * This is used for demolish button availability - demolish should be available if there are
+ * constructions in the sector AND the sector's CPM is demolishable, regardless of round
  */
 export function hasAnyConstructionInSector(
   sector: string,
@@ -277,14 +306,17 @@ export function hasAnyConstructionInSector(
   const activeActions = calculateActiveActions(activityLog);
   
   // Check if any active action belongs to this sector
+  let hasConstructions = false;
   for (const activeAction of activeActions) {
     const actionConfig = progressionConfig[activeAction];
     if (actionConfig && actionConfig.sector === sector) {
-      return true;
+      hasConstructions = true;
+      break;
     }
   }
   
-  return false;
+  // Return true only if there are constructions AND the sector is demolishable
+  return hasConstructions && isSectorDemolishable(sector, activeActions);
 }
 
 /**
