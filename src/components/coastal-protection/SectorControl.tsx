@@ -14,7 +14,7 @@ import { useProgression } from '@/components/hooks/useProgression';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
 import { useSectorScores, SectorPerformance } from '@/components/hooks/useSectorScores';
-import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet } from '@/lib/progressionUtils';
+import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet, isSectorDemolishable } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -714,11 +714,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
       .filter(Boolean); // Remove null entries
 
     // Determine if there are any constructions in this sector across the entire game session
+    // This function now internally checks if the sector is demolishable (excludes Land Reclamation CPM)
     const canDemolish = hasAnyConstructionInSector(sectorId, activityLog);
     const isDemolishAllowedForSector = isDemolishAllowed(sectorId, firebaseRound);
     
     // Only show demolish option when it's actually clickable
     // Hide in R1, hide if already used in round, hide if other actions taken first, hide if nothing to demolish
+    // Also hide if sector has Land Reclamation CPM (handled in hasAnyConstructionInSector)
     const shouldShowDemolish = canDemolish && isDemolishAllowedForSector;
     
     const demolishOption = shouldShowDemolish ? {

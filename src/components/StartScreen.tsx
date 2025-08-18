@@ -52,7 +52,7 @@ export default function StartScreen({
               onClick={onStartGame}
               className="w-full py-9 px-11 bg-[#005DFF] text-white text-3xl font-bold rounded-full hover:bg-[#0052e6] transition-colors duration-200"
             >
-              START GAME
+              START GAME FOR ALL
             </button>
             
             <button

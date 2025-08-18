@@ -34,11 +34,11 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
       case 'mangroves':
         return '/assets/mangroves-icon-3a15a8.png';
       case 'storm-surge-barrier':
-        return '/assets/seawall-icon-41fadd.png'; // Using seawall icon as fallback
+        return '/assets/storm-surge-barrier-icon.png';
       case 'artificial-reef':
-        return '/assets/mangroves-icon-3a15a8.png'; // Using mangroves icon as fallback
+        return '/assets/artificial-reef-icon.png';
       case 'hybrid-measure':
-        return '/assets/land-reclamation-icon-6b707d.png'; // Using land reclamation icon as fallback
+        return '/assets/hybrid-measure-icon.png';
       case 'revetment':
         return '/assets/seawall-icon-41fadd.png'; // Using seawall icon as fallback
       default:
@@ -55,11 +55,11 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
       case 'mangroves':
         return '#BFFFBE';
       case 'storm-surge-barrier':
-        return '#FFD700'; // Gold color for premium protection
+        return '#8CFFEC'; // Matches Figma design
       case 'artificial-reef':
-        return '#87CEEB'; // Sky blue for eco-friendly solution
+        return '#BFFFBE'; // Matches Figma design
       case 'hybrid-measure':
-        return '#DDA0DD'; // Plum color for combined approach
+        return '#8CFFEC'; // Matches Figma design
       case 'revetment':
         return '#B0C4DE'; // Light steel blue for revetment
       default:
