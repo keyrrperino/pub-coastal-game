@@ -193,7 +193,7 @@ export default function ScoreBreakdownModal({
           {/* Header Section */}
           <div className="flex-1 bg-white flex items-center justify-center">
             <h1 className="text-[#202020] text-[clamp(24px,4vw,38px)] font-bold text-center leading-[1.2] tracking-wide pt-6 pb-2">
-              Round {roundNumber}<br />BREAKDOWN
+              Round {roundNumber} SCORE<br />BREAKDOWN
             </h1>
           </div>
           
@@ -203,7 +203,7 @@ export default function ScoreBreakdownModal({
               {/* Total Points */}
               <div className="flex items-center justify-between">
                 <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                  {roundNumber === 1 ? "TOTAL" : "ROUND " + (roundNumber - 1)} POINTS
+                  ROUND START SCORE
                 </span>
                 <div style={{
                     backgroundColor: roundColors[roundNumber].color2
@@ -224,7 +224,7 @@ export default function ScoreBreakdownModal({
                     <>
                       <div key={"sector_" + userSector} className="flex items-center justify-between">
                         <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                          {playerName} actions
+                          {playerName} SCORE DEDUCTION
                         </span>
                         <div style={{
                             backgroundColor: roundColors[roundNumber].color2
@@ -242,7 +242,7 @@ export default function ScoreBreakdownModal({
                       {/* P1 Money spent */}
                       <div className="flex items-center justify-between">
                         <span className="text-[#202020] text-[clamp(16px,2.5vw,31px)] font-bold font-condensed">
-                          {playerName} Money spent
+                          {playerName} COINS SPENT
                         </span>
                         <div style={{
                             backgroundColor: roundColors[roundNumber].color2
@@ -268,7 +268,7 @@ export default function ScoreBreakdownModal({
           }} className="px-8 py-6">
             <div className="text-center">
               <div className="text-[clamp(20px,3vw,34px)] font-bold text-white">
-                ROUND {roundNumber} POINTS
+                END OF ROUND {roundNumber} SCORE
               </div>
               <div className="text-[clamp(40px,8vw,73px)] font-bold text-white">
                 {(getTotalPoints() ?? 0)}
