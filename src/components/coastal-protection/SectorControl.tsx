@@ -30,7 +30,7 @@ import LeaderboardOverlay from '@/components/LeaderboardOverlay';
 import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
 import Modal from '@/games/pub-coastal-game/compontents/Modal';
-import CleanModal from '@/games/pub-coastal-game/compontents/CleanModal';
+import PlayerCutsceneModal from '@/games/pub-coastal-game/compontents/PlayerCutsceneModal';
 
 interface SectorControlProps {
   sector: string;
@@ -891,14 +891,9 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
         sector={("user_sector_" + getPlayerNumber(sector)) as UserSectorEnum}
       />
       
-      <CleanModal 
+      <PlayerCutsceneModal 
         isOpen={showCutscene}>
-        <img
-            key={'coin-postround-cutscene'}
-            src="/games/pub-coastal-spline/images/post-round-cutscene.svg"
-            alt="coin"
-          />
-      </CleanModal>
+      </PlayerCutsceneModal>
 
       <EndingModal 
         isOpen={showEnding}
