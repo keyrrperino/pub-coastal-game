@@ -71,7 +71,7 @@ export default function StartScreen({
                 className="min-w-[450px] h-[83px] py-4 px-8 bg-white text-[#005DFF] text-2xl rounded-full hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap"
                 style={{ fontFamily: 'Novecento Bold, sans-serif' }}
               >
-                Show Leaderboard
+                {isLeaderboardOpen ? 'Hide Leaderboard' : 'Show Leaderboard'}
               </button>
             </div>
           </div>
