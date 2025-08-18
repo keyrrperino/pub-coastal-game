@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { ActivityTypeEnum, CutScenesEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "./enums";
 import { ActivityLogType, LobbyStateType, NormalizedActivities, OverallScoresTypes, PlayerBreakdown, RoundBreakdown, RoundType, ScenarioConfigurationType, GameContentState, MainScreenContent } from "./types";
-import { meanSeaLevels, ROOM_NAME, sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
+import { meanSeaLevels, ROOMS, sceneSectorConfigurations, subSectors, userIdToSector } from "./constants";
 import { push, ref, set } from "firebase/database";
 import { database } from "./firebase";
 
@@ -660,7 +660,8 @@ export function getSectorRoundScore(
   roundNumber: RoundType,
   userId: UserSectorEnum,
   currentRoundNumber: RoundType,
-  gameStatus: GameLobbyStatus
+  gameStatus: GameLobbyStatus,
+  roomName: string
 ) {
   let ERROR_KEY = "";
   let scores: OverallScoresTypes = {
@@ -1268,7 +1269,7 @@ export function getSectorRoundScore(
         set(newEntryRef, {
           created: formattedDate,
           timestamp: Date.now(),
-          roomName: ROOM_NAME,
+          roomName,
           errorKey: ERROR_KEY,
           activities: activities
         });

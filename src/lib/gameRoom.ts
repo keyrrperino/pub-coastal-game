@@ -25,9 +25,13 @@ export class GameRoomService {
   private waterLevelCallback: ((waterLevel: number) => void) | null = null;
   private roundCallback: ((round: number) => void) | null = null;
 
-  constructor(customUserName?: string) {
+  constructor(customUserName?: string, roomName?: string) {
     this.userName = customUserName || this.generateUserName();
     this.userId = this.generateUserId(this.userName);
+
+    if (roomName) {
+      this.roomId = roomName;
+    }
   }
 
   private generateUserId(userName: string): string {

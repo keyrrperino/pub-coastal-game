@@ -209,7 +209,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     setSector3Performance: setSectorPerformance,
     setTotalPerformance,
     triggersLoading,
-    newActivities
+    newActivities,
+    roomName
   });
 
   const { cutSceneStatus, currentCutScene } = 
