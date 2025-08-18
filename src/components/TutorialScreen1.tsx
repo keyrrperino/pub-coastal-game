@@ -80,24 +80,6 @@ export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props
                 />
             </div>
           </div>
-
-          {/* Disclaimer */}
-          <div className="max-w-[890px]">
-            <p className="text-white text-[22px] leading-[1.3] text-center">
-              *Disclaimer: This game is a simplified simulation and might not reflect real-life situations or scenarios.
-            </p>
-          </div>
-        </div>
-
-        {/* PUB Logo - Fixed at bottom */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <Image
-            src="/assets/pub-logo-white-7ae72a.png"
-            alt="PUB Logo"
-            width={238}
-            height={46}
-            className="object-contain"
-          />
         </div>
       </div>
     </div>

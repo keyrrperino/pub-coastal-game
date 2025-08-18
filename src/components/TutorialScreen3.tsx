@@ -121,17 +121,6 @@ export default function TutorialScreen3({ phaseStartTime, timeRemaining }: Tutor
             </div>
           </div>
         </div>
-
-        {/* PUB Logo - Fixed at bottom */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <Image
-            src="/assets/pub-logo-white-7ae72a.png"
-            alt="PUB Logo"
-            width={238}
-            height={46}
-            className="object-contain"
-          />
-        </div>
       </div>
     </div>
   );
