@@ -5,7 +5,7 @@ import BudgetDisplay from './BudgetDisplay';
 import Timer from './Timer';
 import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService, saveTeamScoreToGlobalLeaderboard, getGlobalLeaderboard, ProcessedLeaderboardData } from '@/lib/gameRoom';
-import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum, UserSectorEnum } from '@/lib/enums';
+import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum, UserSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
 import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
 import { SplineTriggerConfigItem } from '@/lib/types';
@@ -68,10 +68,8 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
-  console.log("sector, roomName", sector, roomName);
-
   const { triggerSingleBuild } = useGameContext();
-  const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, 'default'));
+  const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, roomName ?? GameEnum.DEFAULT_ROOM_NAME));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [localRound, setLocalRound] = useState(1);
   const [previousRound, setPreviousRound] = useState(1);
@@ -353,6 +351,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
     setSector2Performance: sectorNumber === '2' ? setSectorPerformance : undefined,
     setSector3Performance: sectorNumber === '3' ? setSectorPerformance : undefined,
     setTotalPerformance,
+    roomName
   });
 
   const handleMeasureClick = useCallback(async (activityType: ActivityTypeEnum, coinCost: number, sectorId: string) => {
@@ -568,11 +567,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
     const initializeGameRoom = async () => {
       try {
         // Try to join the existing room first
-        const joined = await gameRoomService.joinRoom('default');
+        const joined = await gameRoomService.joinRoom(roomName);
         if (!joined) {
           // If room doesn't exist, create it
           await gameRoomService.createRoom(roomName);
-          await gameRoomService.joinRoom('default');
+          await gameRoomService.joinRoom(roomName);
         }
         
         // Listen to activity changes
@@ -941,7 +940,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
               await saveTeamScoreToGlobalLeaderboard(
                 teamName, 
                 finalScore, 
-                'default',
+                roomName,
                 `Player ${sector.slice(-1)}`
               );
               console.log('Team score saved via standalone function:', teamName, 'Score:', finalScore);

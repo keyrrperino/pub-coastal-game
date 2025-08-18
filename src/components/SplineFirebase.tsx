@@ -51,6 +51,9 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     triggersLoading, setTriggersLoading,
     triggerProgress, setTriggerProgress,
   } = useInitialize(roomName);
+
+  console.log("activiies here: ", activities);
+
   const [totalScore, setTotalScore] = useState<number>(2500);
   useHideAllTriggers(isLoaded, splineAppRef, lobbyState);
   useLobbyPreparation({ lobbyState, gameRoomServiceRef });
@@ -206,7 +209,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     setSector3Performance: setSectorPerformance,
     setTotalPerformance,
     triggersLoading,
-    newActivities
+    newActivities,
+    roomName
   });
 
   const { cutSceneStatus, currentCutScene } = 
@@ -369,7 +373,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
   )
 
   const resetGame = async () => {
-    await gameRoomServiceRef.current?.deleteActivities(GameEnum.DEFAULT_ROOM_NAME);
+    await gameRoomServiceRef.current?.deleteActivities();
     await gameRoomServiceRef.current?.updateLobbyState(lobbyStateDefaultValue);
     window.location.reload(); 
   }

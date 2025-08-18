@@ -13,7 +13,7 @@ import {
 } from 'firebase/database';
 import { ActivityLogType, LobbyStateType, SubSectorType, UserPresenceType } from './types';
 import { ActivityTypeEnum, GameEnum, GameLobbyStatus, LobbyStateEnum } from './enums';
-import { lobbyStateDefaultValue, ROOM_NAME } from './constants';
+import { lobbyStateDefaultValue, ROOMS } from './constants';
 
 export class GameRoomService {
   private roomId: string | null = null;
@@ -25,10 +25,13 @@ export class GameRoomService {
   private waterLevelCallback: ((waterLevel: number) => void) | null = null;
   private roundCallback: ((round: number) => void) | null = null;
 
-  constructor(customUserName?: string, roomId?: string) {
+  constructor(customUserName?: string, roomName?: string) {
     this.userName = customUserName || this.generateUserName();
     this.userId = this.generateUserId(this.userName);
-    this.roomId = roomId ?? "default";
+
+    if (roomName) {
+      this.roomId = roomName;
+    }
   }
 
   private generateUserId(userName: string): string {
@@ -48,8 +51,8 @@ export class GameRoomService {
   }
 
   async createRoom(roomName: string): Promise<string> {
-    const newRoomId = roomName ?? GameEnum.DEFAULT_ROOM_NAME;
-    const roomRef = ref(database, `${ROOM_NAME}/${newRoomId}`);
+    this.roomId = roomName ?? GameEnum.DEFAULT_ROOM_NAME;
+    const roomRef = ref(database, `${ROOMS}/${this.roomId}`);
     
     await set(roomRef, {
       createdAt: serverTimestamp(),
@@ -57,11 +60,11 @@ export class GameRoomService {
       lobbyState: lobbyStateDefaultValue
     });
 
-    return newRoomId;
+    return this.roomId;
   }
 
   async joinRoom(roomId: string): Promise<boolean> {
-    const roomRef = ref(database, `${ROOM_NAME}/${roomId}`);
+    const roomRef = ref(database, `${ROOMS}/${roomId}`);
     const snapshot = await get(roomRef);
     
     if (!snapshot.exists()) {
@@ -83,8 +86,8 @@ export class GameRoomService {
     return true;
   }
 
-  async getActivities(roomId: string): Promise<ActivityLogType[]> {
-    const activitiesRef = ref(database, `${ROOM_NAME}/${roomId}/activity`);
+  async getActivities(): Promise<ActivityLogType[]> {
+    const activitiesRef = ref(database, `${ROOMS}/${this.roomId}/activity`);
     const snapshot = await get(activitiesRef);
 
     if (!snapshot.exists()) return [];
@@ -97,7 +100,7 @@ export class GameRoomService {
   private setupPresence() {
     if (!this.roomId) return;
 
-    const userPresenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/presence/${this.userId}`);
+    const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
     const userPresenceData = {
       id: this.userId,
       name: this.userName,
@@ -122,7 +125,7 @@ export class GameRoomService {
   private listenToActivity() {
     if (!this.roomId || !this.activityCallback) return;
 
-    const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
+    const activityRef = ref(database, `${ROOMS}/${this.roomId}/activity`);
     onValue(activityRef, (snapshot) => {
       if (snapshot.exists()) {
         const activities = Object.values(snapshot.val()) as ActivityLogType[];
@@ -137,7 +140,7 @@ export class GameRoomService {
   private listenToPresence() {
     if (!this.roomId || !this.presenceCallback) return;
 
-    const presenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/presence`);
+    const presenceRef = ref(database, `${ROOMS}/${this.roomId}/presence`);
     onValue(presenceRef, (snapshot) => {
       if (snapshot.exists()) {
         const users = Object.values(snapshot.val()) as UserPresenceType[];
@@ -159,7 +162,7 @@ export class GameRoomService {
   private listenToLobbyState() {
     if (!this.roomId || !this.gobalStateCallback) return;
 
-    const presenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState`);
+    const presenceRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState`);
     onValue(presenceRef, (snapshot) => {
       if (snapshot.exists()) {
         const lobbyState = snapshot.val();
@@ -174,7 +177,7 @@ export class GameRoomService {
   private listenToWaterLevel() {
     if (!this.roomId || !this.waterLevelCallback) return;
 
-    const presenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/waterLevel`);
+    const presenceRef = ref(database, `${ROOMS}/${this.roomId}/waterLevel`);
     onValue(presenceRef, (snapshot) => {
       if (snapshot.exists()) {
         const waterLevel = snapshot.val();
@@ -190,7 +193,7 @@ export class GameRoomService {
     if (!this.roomId || !this.roundCallback) return;
 
     console.log('Setting up round listener for room:', this.roomId);
-    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/round`);
+    const roundRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/round`);
     onValue(roundRef, (snapshot) => {
       console.log('Round snapshot received:', snapshot.exists(), snapshot.val());
       if (snapshot.exists()) {
@@ -219,8 +222,8 @@ export class GameRoomService {
     const finalCost = activityType === ActivityTypeEnum.DEMOLISH ? 1 : Math.max(0, cost | 0);
 
     // Transactionally spend coins for this round under lobbyState/coinsSpentByRound/{round}
-    const coinsRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsSpentByRound/${round}`);
-    const totalPerRoundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/coinsTotalPerRound`);
+    const coinsRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/coinsSpentByRound/${round}`);
+    const totalPerRoundRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/coinsTotalPerRound`);
 
     // Read total per round once (fallback to 10 if missing)
     let coinsTotalPerRound = 10;
@@ -250,7 +253,7 @@ export class GameRoomService {
   private async logActivity(activityType: ActivityTypeEnum, activityValue: string, round?: number, isCpm: boolean = false, subSector?: SubSectorType) {
     if (!this.roomId) return;
 
-    const activityRef = ref(database, `${ROOM_NAME}/${this.roomId}/activity`);
+    const activityRef = ref(database, `${ROOMS}/${this.roomId}/activity`);
     const newActivityRef = push(activityRef);
     
     const activity: ActivityLogType = {
@@ -272,7 +275,7 @@ export class GameRoomService {
   async updateWaterLevel(waterLevel: number): Promise<void> {
     if (!this.roomId) return;
 
-    const waterLevelRef = ref(database, `${ROOM_NAME}/${this.roomId}/waterLevel`);
+    const waterLevelRef = ref(database, `${ROOMS}/${this.roomId}/waterLevel`);
     const newWaterLevelRef = push(waterLevelRef);
 
     await set(newWaterLevelRef, waterLevel);
@@ -280,21 +283,21 @@ export class GameRoomService {
 
   async updateLobbyState(lobbyState: LobbyStateType): Promise<void> {
     if (!this.roomId) return;
-    const lobbyStateRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState`);
+    const lobbyStateRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState`);
     await set(lobbyStateRef, lobbyState); // Overwrites the object
   }
 
   async updateLobbyStateKeyValue(key: LobbyStateEnum, value: string | number| boolean | GameLobbyStatus): Promise<void> {
     if (!this.roomId) return;
 
-    const lobbyStateRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/${key}`);
+    const lobbyStateRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/${key}`);
     await set(lobbyStateRef, value); // This sets the value at the specific key
   }
 
   async updateRound(round: number): Promise<void> {
     if (!this.roomId) return;
 
-    const roundRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/round`);
+    const roundRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/round`);
     await set(roundRef, round);
   }
 
@@ -350,8 +353,8 @@ export class GameRoomService {
     }
   }
 
-  async deleteActivities(roomId: string): Promise<void> {
-    const activitiesRef = ref(database, `${ROOM_NAME}/${roomId}/activity`);
+  async deleteActivities(): Promise<void> {
+    const activitiesRef = ref(database, `${ROOMS}/${this.roomId}/activity`);
     await remove(activitiesRef);
   }
 
@@ -371,7 +374,7 @@ export class GameRoomService {
   async setPlayerReady(isReady: boolean = true): Promise<void> {
     if (!this.roomId) return;
 
-    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    const readyPlayersRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/readyPlayers`);
     await update(readyPlayersRef, {
       [this.userId]: isReady
     });
@@ -384,7 +387,7 @@ export class GameRoomService {
   async resetAllPlayersReady(): Promise<void> {
     if (!this.roomId) return;
 
-    const readyPlayersRef = ref(database, `${ROOM_NAME}/${this.roomId}/lobbyState/readyPlayers`);
+    const readyPlayersRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/readyPlayers`);
     await set(readyPlayersRef, {});
   }
 
@@ -407,7 +410,7 @@ export class GameRoomService {
 
   disconnect() {
     if (this.roomId) {
-      const userPresenceRef = ref(database, `${ROOM_NAME}/${this.roomId}/presence/${this.userId}`);
+      const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
       update(userPresenceRef, {
         isOnline: false,
         lastSeen: serverTimestamp()

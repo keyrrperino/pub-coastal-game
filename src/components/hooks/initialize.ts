@@ -7,6 +7,7 @@ import { lobbyStateDefaultValue } from "@/lib/constants";
 import { CutScenesEnum, GameEnum } from "@/lib/enums";
 
 export function useInitialize(roomName: string) {
+  console.log("roomNameawefawef", roomName)
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const splineAppRef = useRef<Application | null>(null);
@@ -39,7 +40,7 @@ export function useInitialize(roomName: string) {
   useEffect(() => {
     const setupRoom = async () => {
       gameRoomServiceRef.current = new GameRoomService(GameEnum.DEFAULT_USERNAME);
-      const joined = await gameRoomServiceRef.current.joinRoom(roomName ?? GameEnum.DEFAULT_ROOM_NAME);
+      const joined = await gameRoomServiceRef.current.joinRoom(roomName);
 
       if (!joined) {
         await gameRoomServiceRef.current.createRoom(roomName);
@@ -69,7 +70,7 @@ export function useInitialize(roomName: string) {
         setWaterLevel(level);
       });
 
-      gameRoomServiceRef.current.getActivities(GameEnum.DEFAULT_ROOM_NAME).then((updatedActivities) => {
+      gameRoomServiceRef.current.getActivities().then((updatedActivities) => {
         if (updatedActivities.length === 0) {
           setTriggerProgress(100);
           setTriggersLoading(false);
@@ -83,7 +84,7 @@ export function useInitialize(roomName: string) {
     return () => {
       gameRoomServiceRef.current?.disconnect();
     };
-  }, []);
+  }, [roomName]);
 
   return {
     canvasRef,

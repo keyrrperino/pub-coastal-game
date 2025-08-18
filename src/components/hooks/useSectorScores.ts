@@ -9,6 +9,7 @@ export type SectorPerformance = 'good' | 'okay' | 'bad';
 interface UseSectorScoresProps {
   activities: ActivityLogType[];
   newActivities: ActivityLogType[];
+  roomName: string;
   lobbyState: LobbyStateType;
   setTotalScore: (score: number) => void;
   setCoinsLeft: (coins: number) => void;
@@ -88,7 +89,8 @@ export function useSectorScores({
   setSector2Performance,
   setSector3Performance,
   setTotalPerformance,
-  triggersLoading
+  triggersLoading,
+  roomName
 }: UseSectorScoresProps) {
   const [overallScoresData, setOverallScoreData] = useState<{ [key in RoundType]?: OverallScoresTypes }>({});
 
@@ -99,7 +101,8 @@ export function useSectorScores({
       1 as RoundType,
       UserSectorEnum.USER_SECTOR_ONE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector2R1 = getSectorRoundScore(
       activities ?? [],
@@ -107,7 +110,8 @@ export function useSectorScores({
       1 as RoundType,
       UserSectorEnum.USER_SECTOR_TWO,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector3R1 = getSectorRoundScore(
       activities ?? [],
@@ -115,7 +119,8 @@ export function useSectorScores({
       1 as RoundType,
       UserSectorEnum.USER_SECTOR_THREE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
 
     const sector1R2 = getSectorRoundScore(
@@ -124,7 +129,8 @@ export function useSectorScores({
       2 as RoundType,
       UserSectorEnum.USER_SECTOR_ONE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector2R2 = getSectorRoundScore(
       activities ?? [],
@@ -132,7 +138,8 @@ export function useSectorScores({
       2 as RoundType,
       UserSectorEnum.USER_SECTOR_TWO,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector3R2 = getSectorRoundScore(
       activities ?? [],
@@ -140,7 +147,8 @@ export function useSectorScores({
       2 as RoundType,
       UserSectorEnum.USER_SECTOR_THREE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
 
     const sector1R3 = getSectorRoundScore(
@@ -149,7 +157,8 @@ export function useSectorScores({
       3 as RoundType,
       UserSectorEnum.USER_SECTOR_ONE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector2R3 = getSectorRoundScore(
       activities ?? [],
@@ -157,7 +166,8 @@ export function useSectorScores({
       3 as RoundType,
       UserSectorEnum.USER_SECTOR_TWO,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
     const sector3R3 = getSectorRoundScore(
       activities ?? [],
@@ -165,7 +175,8 @@ export function useSectorScores({
       3 as RoundType,
       UserSectorEnum.USER_SECTOR_THREE,
       lobbyState.round ?? 1,
-      lobbyState.gameLobbyStatus
+      lobbyState.gameLobbyStatus,
+      roomName
     );
 
     setOverallScoreData({
