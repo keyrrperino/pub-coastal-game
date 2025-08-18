@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { usePreparingProgress } from "./usePreparingProgress";
 import { GameLobbyStatus, LobbyStateEnum } from "@/lib/enums";
 import { LobbyStateType } from "@/lib/types"; // Assuming this type exists
 import { GameRoomService } from "@/lib/gameRoom";
@@ -35,14 +34,16 @@ export function useLobbyInstruction(
   });
 
   useEffect(() => {
-    if (timeRemaining > 30) {
+    if (timeRemaining > 48) {
       setCurrentTutorial(0); // Tutorial 1
-    } else if (timeRemaining > 20) {
+    } else if (timeRemaining > 36) {
       setCurrentTutorial(1); // Tutorial 2
-    } else if (timeRemaining > 10) {
+    } else if (timeRemaining > 24) {
       setCurrentTutorial(2); // Tutorial 3
+    } else if (timeRemaining > 12) {
+      setCurrentTutorial(3); // Tutorial 4
     } else {
-      setCurrentTutorial(3); // Tutorial 3
+      setCurrentTutorial(4); // Tutorial 5
     }
   }, [timeRemaining]);
 

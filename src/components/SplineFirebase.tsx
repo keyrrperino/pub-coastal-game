@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Image from 'next/image';
 import { Application, SplineEventName } from "@splinetool/runtime";
 import { GameRoomService, getGlobalLeaderboard, ProcessedLeaderboardData } from "@/lib/gameRoom";
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
@@ -34,6 +35,7 @@ import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
 import LeaderboardOverlay from "./LeaderboardOverlay";
 import TutorialScreen4 from "./TutorialScreen4";
 import { PlayerRound1Screen, PlayerRound2Screen, PlayerRound3Screen } from "./player-screens";
+import TutorialScreen5 from "./TutorialScreen5";
 
 interface SplineFirebaseProps {
   roomName: string;
@@ -336,7 +338,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
   const renderProgressBar = (
     (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && 
       <ProgressBar
-          containerClassName="fixed z-10 top-[9vh] left-[30vw]"
+          containerClassName="fixed z-10 top-[9vh] left-[30vw] px-[1vw] py-[1.3vw] w-[40vw]"
           key={`${lobbyState.round ?? 1}-${lobbyState.gameLobbyStatus}`}
           duration={lobbyState.phaseDuration}
           onTimeUp={onRoundGameplayTimeUp}
@@ -351,10 +353,11 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
       style={{ borderRadius: 0 }}
     >
-      {currentTutorial === 0 && <TutorialScreen1 />}
-      {currentTutorial === 1 && <TutorialScreen2 />}
-      {currentTutorial === 2 && <TutorialScreen3  />}
-      {currentTutorial === 3 && <TutorialScreen4 timeRemaining={timeRemaining}  />}
+      {currentTutorial === 0 && <TutorialScreen1 phaseStartTime={lobbyState.phaseStartTime} />}
+      {currentTutorial === 1 && <TutorialScreen2 phaseStartTime={lobbyState.phaseStartTime} />}
+      {currentTutorial === 2 && <TutorialScreen3 phaseStartTime={lobbyState.phaseStartTime} />}
+      {currentTutorial === 3 && <TutorialScreen4 phaseStartTime={lobbyState.phaseStartTime} />}
+      {currentTutorial === 4 && <TutorialScreen5 phaseStartTime={lobbyState.phaseStartTime} />}
     </div>
   )
 
@@ -366,6 +369,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
       style={{ borderRadius: 0 }}
     >
+
       {lobbyState.round === 1 && <PlayerRound1Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
       {lobbyState.round === 2 && <PlayerRound2Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
       {lobbyState.round === 3 && <PlayerRound3Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
