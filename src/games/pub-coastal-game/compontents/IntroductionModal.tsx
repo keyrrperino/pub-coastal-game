@@ -4,6 +4,10 @@ import TutorialScreen1 from '@/components/TutorialScreen1';
 import TutorialScreen2 from '@/components/TutorialScreen2';
 import TutorialScreen3 from '@/components/TutorialScreen3';
 import TutorialScreen4 from '@/components/TutorialScreen4';
+import PlayerTutorialScreen1 from '@/components/PlayerTutorialScreen1';
+import PlayerTutorialScreen2 from '@/components/PlayerTutorialScreen2';
+import PlayerTutorialScreen3 from '@/components/PlayerTutorialScreen3';
+import PlayerTutorialScreen4 from '@/components/PlayerTutorialScreen4';
 
 interface IntroductionModalProps {
   isOpen: boolean;
@@ -110,15 +114,15 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
 
     switch (currentScreen) {
       case 1:
-        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
+        return <PlayerTutorialScreen1 {...screenTimingProps} />;
       case 2:
-        return <TutorialScreen2 onContinue={() => {}} {...screenTimingProps} />;
+        return <PlayerTutorialScreen2 {...screenTimingProps} />;
       case 3:
-        return <TutorialScreen3 onContinue={() => {}} {...screenTimingProps} />;
+        return <PlayerTutorialScreen3 {...screenTimingProps} />;
       case 4:
-        return <TutorialScreen4 onContinue={() => {}} {...screenTimingProps} />;
+        return <PlayerTutorialScreen4 {...screenTimingProps} />;
       default:
-        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
+        return <PlayerTutorialScreen1 {...screenTimingProps} />;
     }
   };
 
