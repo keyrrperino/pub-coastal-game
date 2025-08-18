@@ -3,7 +3,7 @@ import Image from 'next/image';
 import ProgressBar from '@/games/pub-coastal-game/compontents/ProcessBar';
 
 interface TutorialScreen1Props {
-  phaseStartTime: number;
+  phaseStartTime?: number;
 }
 
 export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props) {
