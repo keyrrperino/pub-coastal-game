@@ -26,26 +26,26 @@ const getRoundSectorPerformance = (deduction: number, round: number): SectorPerf
   
   switch (round) {
     case 1:
-      // Round 1: Light 0 to -39.99, Medium -40 to -60, Heavy -60.01+
-      if (absoluteDeduction <= 39.99) return 'good';   // Light/No Flooding
-      if (absoluteDeduction <= 60) return 'okay';      // Medium Flooding
+      // Round 1: No Flooding 0 to -5, Moderate -5.01 to -60, Heavy -60.01 to -120
+      if (absoluteDeduction <= 5) return 'good';       // No Flooding
+      if (absoluteDeduction <= 60) return 'okay';      // Moderate Flooding
       return 'bad';                                     // Heavy Flooding
       
     case 2:
-      // Round 2: Light 0 to -70, Medium -70.01 to -140, Heavy -140.01+
-      if (absoluteDeduction <= 70) return 'good';      // Light/No Flooding
-      if (absoluteDeduction <= 140) return 'okay';     // Medium Flooding
+      // Round 2: No Flooding 0 to -5, Moderate -5.01 to -100, Heavy -100.01 to -300
+      if (absoluteDeduction <= 5) return 'good';       // No Flooding
+      if (absoluteDeduction <= 100) return 'okay';     // Moderate Flooding
       return 'bad';                                     // Heavy Flooding
       
     case 3:
-      // Round 3: Light 0 to -70, Medium -70.01 to -230, Heavy -230.01+
-      if (absoluteDeduction <= 70) return 'good';      // Light/No Flooding
-      if (absoluteDeduction <= 230) return 'okay';     // Medium Flooding
+      // Round 3: No Flooding 0 to -5, Moderate -5.01 to -110, Heavy -110.01 to -400
+      if (absoluteDeduction <= 5) return 'good';       // No Flooding
+      if (absoluteDeduction <= 110) return 'okay';     // Moderate Flooding
       return 'bad';                                     // Heavy Flooding
       
     default:
       // Fallback to Round 1 thresholds
-      if (absoluteDeduction <= 39.99) return 'good';
+      if (absoluteDeduction <= 5) return 'good';
       if (absoluteDeduction <= 60) return 'okay';
       return 'bad';
   }
