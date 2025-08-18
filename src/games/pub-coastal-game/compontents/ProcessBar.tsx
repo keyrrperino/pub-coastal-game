@@ -1,4 +1,5 @@
 import { useTimer } from '@/components/hooks/useTimer';
+import { useTimerBar } from '@/components/hooks/useTimerBar';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -11,6 +12,7 @@ interface TimerProps {
   showHint?: boolean;
   containerClassName?: string;
   style?: React.CSSProperties; // <-- added
+  clockStyle?: React.CSSProperties;
 }
 
 const ProgressBar: React.FC<TimerProps> = ({ 
@@ -20,10 +22,11 @@ const ProgressBar: React.FC<TimerProps> = ({
   syncWithTimestamp,
   containerClassName,
   style,
+  clockStyle
 }) => {
   const {
     progressPercentage,
-  } = useTimer({
+  } = useTimerBar({
     duration,
     onTimeUp,
     startImmediately: isRunning,
@@ -33,7 +36,7 @@ const ProgressBar: React.FC<TimerProps> = ({
 
   useEffect(() => {
     // Trigger fade-in after a short delay (e.g., 10ms)
-    const timer = setTimeout(() => setVisible(true), 1500);
+    const timer = setTimeout(() => setVisible(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -42,8 +45,8 @@ const ProgressBar: React.FC<TimerProps> = ({
       <div
         className={
           clsx(
-            "flex items-center w-[40vw] h-[1vw] rounded-xl bg-white shadow-md px-[1vw] py-[1.4vw]",
-            containerClassName
+            containerClassName,
+            "flex items-center h-[1vw] rounded-xl bg-white shadow-md",
           )
         }
         style={{
@@ -54,20 +57,20 @@ const ProgressBar: React.FC<TimerProps> = ({
       >
         {/* Clock Icon */}
         <span
-          style={{
+          style={{...{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '2vw',
-            height: '2vw',
             borderRadius: '50%',
             background: '#fff',
-            border: '0.3vw solid #060606',
+            width: '1.5vw',
+            height: '1.5vw',
+            border: '0.2vw solid #060606',
             marginRight: '1vw',
-          }}
+          }, ...(clockStyle ?? {})}}
         >
           {/* Simple clock SVG */}
-          <svg width="20" height="20" viewBox="0 0 20 20">
+          <svg width="18" height="20" viewBox="0 0 20 20">
             <rect x="8" y="5" width="3" height="6" fill="#565660" />
             <rect x="8" y="10" width="5" height="3" fill="#565660" transform="rotate(0 0 0)" />
           </svg>
