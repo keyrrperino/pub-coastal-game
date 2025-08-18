@@ -25,7 +25,7 @@ interface PerformanceConfig {
 const performanceConfigs: Record<PostRoundPerformance, PerformanceConfig> = {
   good: {
     title: "NO FLOODING",
-    message: "You've successfully protected our coasts!continue to implement further adaptive measures",
+    message: "You've successfully protected our coasts! Continue to implement further adaptive measures",
     bgColor: "rgba(123, 255, 215, 0.5)",
     borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)"
   },

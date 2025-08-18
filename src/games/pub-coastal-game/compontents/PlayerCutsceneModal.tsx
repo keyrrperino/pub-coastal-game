@@ -1,14 +1,12 @@
 import React from "react";
 import styles from '@/components/coastal-protection/styles.module.css';
 
-type ModalProps = {
+type PlayerCutsceneModalProps = {
   isOpen: boolean;
   onClose?: () => void;
-  children?: React.ReactNode;
-  title?: string;
 };
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
+const PlayerCutsceneModal: React.FC<PlayerCutsceneModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -94,4 +92,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
   );
 };
 
-export default Modal;
+export default PlayerCutsceneModal;
