@@ -1,11 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
+import TimerBar from '@/components/coastal-protection/TimerBar';
 
 interface TutorialScreen1Props {
   onContinue?: () => void;
+  screenDuration?: number;
 }
 
-export default function TutorialScreen1({ onContinue }: TutorialScreen1Props) {
+export default function TutorialScreen1({ onContinue, screenDuration = 15 }: TutorialScreen1Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -21,6 +23,14 @@ export default function TutorialScreen1({ onContinue }: TutorialScreen1Props) {
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
+
+      {/* Timer Bar - Fixed at top */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <TimerBar
+          duration={screenDuration}
+          isRunning={true}
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">

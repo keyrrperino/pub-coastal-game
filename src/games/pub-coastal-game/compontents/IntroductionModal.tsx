@@ -98,17 +98,22 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
 
   // Render the appropriate tutorial screen
   const renderCurrentScreen = () => {
+    const screenTimingProps = {
+      screenDuration: screenDuration,
+      timeRemaining: timeRemaining
+    };
+
     switch (currentScreen) {
       case 1:
-        return <TutorialScreen1 onContinue={() => {}} />;
+        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
       case 2:
-        return <TutorialScreen2 onContinue={() => {}} />;
+        return <TutorialScreen2 onContinue={() => {}} {...screenTimingProps} />;
       case 3:
-        return <TutorialScreen3 onContinue={() => {}} />;
+        return <TutorialScreen3 onContinue={() => {}} {...screenTimingProps} />;
       case 4:
-        return <TutorialScreen4 onContinue={() => {}} timeRemaining={timeRemaining} />;
+        return <TutorialScreen4 onContinue={() => {}} {...screenTimingProps} />;
       default:
-        return <TutorialScreen1 onContinue={() => {}} />;
+        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
     }
   };
 
