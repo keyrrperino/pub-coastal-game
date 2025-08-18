@@ -33,7 +33,7 @@ const TimerBar: React.FC<TimerBarProps> = ({
       
       setProgressPercentage(Math.max(0, Math.min(100, percentage)));
       
-      if (remaining <= 0) {
+      if (remaining <= 0.1) { // Call slightly before true zero to account for timing
         onTimeUp?.();
       }
     };
@@ -67,7 +67,7 @@ const TimerBar: React.FC<TimerBarProps> = ({
       {/* Progress bar container - much larger */}
       <div className="relative flex-1 h-[21px] rounded-[10px] overflow-hidden bg-gray-200">
         <div
-          className="absolute left-0 top-0 h-full transition-all duration-1000 ease-linear bg-[#002CFF] rounded-[10px]"
+          className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear bg-[#002CFF] rounded-[10px]"
           style={{
             width: `${Math.max(0, Math.min(100, progressPercentage))}%`,
           }}
