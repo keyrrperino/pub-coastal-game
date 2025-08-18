@@ -176,29 +176,11 @@ export default function TutorialScreen3({
               </div>
             </div>
 
-            {/* Bottom Section - Game Instructions and Countdown */}
+            {/* Bottom Section - Game Instructions */}
             <div className="flex flex-col items-center gap-6 text-center">
               <p className="text-white text-2xl font-bold">
                 DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE WITH YOUR TEAMMATES.
               </p>
-              
-              {/* Reserved space for countdown - always present to prevent layout shift */}
-              <div className="flex flex-col items-center gap-6">
-                <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8 min-h-[72px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 ? (
-                    <>
-                      {timeRemaining === 3 && "3..."}
-                      {timeRemaining === 2 && "2..."}
-                      {timeRemaining === 1 && "1..."}
-                      {timeRemaining === 0 && "GO!"}
-                    </>
-                  ) : null}
-                </h2>
-                
-                <p className="text-white text-xl text-center font-bold min-h-[28px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 && "THE TIDES ARE RISING. START PLANNING!"}
-                </p>
-              </div>
             </div>
           </div>
         </div>
