@@ -34,6 +34,7 @@ import CleanModal from '@/games/pub-coastal-game/compontents/CleanModal';
 
 interface SectorControlProps {
   sector: string;
+  roomName: string;
 }
 
 // Helper function to get player number from sector
@@ -66,7 +67,9 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 
 
-const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
+const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
+  console.log("sector, roomName", sector, roomName);
+
   const { triggerSingleBuild } = useGameContext();
   const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, 'default'));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
@@ -568,7 +571,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector }) => {
         const joined = await gameRoomService.joinRoom('default');
         if (!joined) {
           // If room doesn't exist, create it
-          await gameRoomService.createRoom(true);
+          await gameRoomService.createRoom(roomName);
           await gameRoomService.joinRoom('default');
         }
         

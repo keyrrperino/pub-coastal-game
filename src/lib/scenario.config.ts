@@ -261,19 +261,19 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH}-0.7-1`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R2_1A_6 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL}-${ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH}-0.7-2`]: { score: 10, coin: 1, cutscene: CutScenesEnum.R2_1A_6 },
 
-  // Seawall 2 No uprades land reclamations
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-0.7-1`]: { score: 20, coin: 0, cutscene: CutScenesEnum.R2_1A_0},
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-0.7-2`]: { score: 100, coin: 0, cutscene: CutScenesEnum.R2_1A_0 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-0.7-2`]: { score: 25, coin: 0, cutscene: CutScenesEnum.R2_1A_0 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
+  // // Seawall 2 No uprades land reclamations
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-0.7-1`]: { score: 20, coin: 0, cutscene: CutScenesEnum.R2_1A_0},
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-None-0.7-2`]: { score: 100, coin: 0, cutscene: CutScenesEnum.R2_1A_0 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-None-0.7-2`]: { score: 25, coin: 0, cutscene: CutScenesEnum.R2_1A_0 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_2_LAND_RECLAMATION}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_3 },
 
-  // Land and build seawall
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
-  [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
+  // // Land and build seawall
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
+  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_2_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1A_7 },
 
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1A_UPGRADE_1_15_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1A_7 },
@@ -368,35 +368,35 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1B_6 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-None-0.7-2`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1B_6 },
 
-  // Land and build seawall
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // // Land and build seawall
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
 
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
 
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
 
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-1`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_1_15}-0.7-2`]: { score: 0, coin: 2, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-1`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_LR_TO_SEAWALL_2}-0.7-2`]: { score: 0, coin: 3, cutscene: CutScenesEnum.R2_1B_6 },
   
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
-  [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_2_LAND_RECLAMATION}-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-1`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
+  // [`1_1B_None-${ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL}-0.7-2`]: { score: 0, coin: 4, cutscene: CutScenesEnum.R2_1B_6 },
 
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-0.7-1`]: { score: 70, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-0.7-2`]: { score: 140, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-0.7-1`]: { score: 70, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-None-0.7-2`]: { score: 140, coin: 0, cutscene: CutScenesEnum.R2_1B_3 },
 
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK}-0.7-1`]: { score: 70, coin: 0, cutscene: CutScenesEnum.R2_1B_8 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK}-0.7-2`]: { score: 140, coin: 0, cutscene: CutScenesEnum.R2_1B_8 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK}-0.7-1`]: { score: 70, coin: 0, cutscene: CutScenesEnum.R2_1B_8 },
+  // [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES}-${ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK}-0.7-2`]: { score: 140, coin: 0, cutscene: CutScenesEnum.R2_1B_8 },
 
 
   // SECTOR 2A
