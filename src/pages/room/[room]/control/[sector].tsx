@@ -8,7 +8,7 @@ const SectorControl = dynamic(() => import('@/components/coastal-protection/Sect
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: false
+    fallback: "blocking"
   };
 };
 
