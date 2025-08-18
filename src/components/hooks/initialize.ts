@@ -6,7 +6,7 @@ import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { lobbyStateDefaultValue } from "@/lib/constants";
 import { CutScenesEnum, GameEnum } from "@/lib/enums";
 
-export function useInitialize() {
+export function useInitialize(roomName: string) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const splineAppRef = useRef<Application | null>(null);
@@ -39,10 +39,10 @@ export function useInitialize() {
   useEffect(() => {
     const setupRoom = async () => {
       gameRoomServiceRef.current = new GameRoomService(GameEnum.DEFAULT_USERNAME);
-      const joined = await gameRoomServiceRef.current.joinRoom(GameEnum.DEFAULT_ROOM_NAME);
+      const joined = await gameRoomServiceRef.current.joinRoom(roomName ?? GameEnum.DEFAULT_ROOM_NAME);
 
       if (!joined) {
-        await gameRoomServiceRef.current.createRoom(true);
+        await gameRoomServiceRef.current.createRoom(roomName);
       }
 
       gameRoomServiceRef.current.onLobbyStateChange((lobbyState: LobbyStateType) => {

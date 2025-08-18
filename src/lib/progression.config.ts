@@ -175,12 +175,12 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_1_15: {
-    displayName: 'Sloping Revet 1.15m', cost: 2, unlocksInRound: 2,
+    displayName: 'Rocky Revet 1.15m', cost: 2, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_2: {
-    displayName: 'Sloping Revet 2m', cost: 3, unlocksInRound: 2,
+    displayName: 'Rocky Revet 2m', cost: 3, unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     replaces: ['BUILD_REVETMENT_1_15'],
     measureType: 'artificial-reef',

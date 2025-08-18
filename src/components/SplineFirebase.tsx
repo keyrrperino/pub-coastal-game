@@ -36,9 +36,10 @@ import TutorialScreen4 from "./TutorialScreen4";
 import { PlayerRound1Screen, PlayerRound2Screen, PlayerRound3Screen } from "./player-screens";
 
 interface SplineFirebaseProps {
+  roomName: string;
 }
 
-const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
+const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
   const {
     canvasRef,
     splineAppRef,
@@ -49,7 +50,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = () => {
     lobbyState,
     triggersLoading, setTriggersLoading,
     triggerProgress, setTriggerProgress,
-  } = useInitialize();
+  } = useInitialize(roomName);
   const [totalScore, setTotalScore] = useState<number>(2500);
   useHideAllTriggers(isLoaded, splineAppRef, lobbyState);
   useLobbyPreparation({ lobbyState, gameRoomServiceRef });

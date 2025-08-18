@@ -19,6 +19,7 @@ interface OnlineStatus {
 
 export default function SectorSelection() {
   const router = useRouter();
+  console.log("router.query", router.query);
   const [onlineStatus, setOnlineStatus] = useState<OnlineStatus>({
     [UserSectorEnum.USER_SECTOR_ONE]: false,
     [UserSectorEnum.USER_SECTOR_TWO]: false,

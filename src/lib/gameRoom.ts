@@ -47,8 +47,8 @@ export class GameRoomService {
     return 'room_' + Math.random().toString(36).substr(2, 8).toUpperCase();
   }
 
-  async createRoom(isDefault?: true): Promise<string> {
-    const newRoomId = isDefault ? GameEnum.DEFAULT_ROOM_NAME : this.generateRoomId();
+  async createRoom(roomName: string): Promise<string> {
+    const newRoomId = roomName ?? GameEnum.DEFAULT_ROOM_NAME;
     const roomRef = ref(database, `${ROOM_NAME}/${newRoomId}`);
     
     await set(roomRef, {
