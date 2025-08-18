@@ -9,7 +9,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: [],
-    fallback: false, // or true, depending on your needs
+    fallback: "blocking", // generate on-demand for any room
   };
 };
 

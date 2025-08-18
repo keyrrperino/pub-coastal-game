@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: [],
-    fallback: false, // or true, depending on your needs
+    fallback: "blocking", // generate on-demand for any room
   };
 };
 
@@ -102,7 +102,7 @@ export default function SectorSelection({ roomName }: {roomName: string}) {
     const service = new GameRoomService(userName);
     service.joinRoom(roomName).then(() => {
       // Optionally, store service in context or global state
-      router.push(`/control/${sectorSlug}`);
+      router.push(`/room/${roomName}/control/${sectorSlug}`);
     });
   };
 
