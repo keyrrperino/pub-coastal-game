@@ -61,10 +61,11 @@ export default function PostRoundModal({
 
     let performance = "okay";
     if (currentRound === 1) {
-      if (totalScoreRound >= 0 && totalScoreRound <= 30) {
+      // Round 1: No Flooding 0 to -5, Moderate -5.01 to -60, Heavy -60.01 to -120
+      if (totalScoreRound >= 0 && totalScoreRound <= 5) {
         performance = "good";
       }
-      if (totalScoreRound > 30 && totalScoreRound <= 60) {
+      if (totalScoreRound > 5 && totalScoreRound <= 60) {
         performance = "okay";
       }
       if (totalScoreRound > 60 && totalScoreRound <= 120) {
@@ -73,25 +74,27 @@ export default function PostRoundModal({
     }
 
     if (currentRound === 2) {
-      if (totalScoreRound >= 0 && totalScoreRound <= 69.99) {
+      // Round 2: No Flooding 0 to -5, Moderate -5.01 to -100, Heavy -100.01 to -300
+      if (totalScoreRound >= 0 && totalScoreRound <= 5) {
         performance = "good";
       }
-      if (totalScoreRound > 70 && totalScoreRound <= 160) {
+      if (totalScoreRound > 5 && totalScoreRound <= 100) {
         performance = "okay";
       }
-      if (totalScoreRound > 160 && totalScoreRound <= 300) {
+      if (totalScoreRound > 100 && totalScoreRound <= 300) {
         performance = "bad";
       }
     }
 
     if (currentRound === 3) {
-      if (totalScoreRound >= 0 && totalScoreRound <= 89.99) {
+      // Round 3: No Flooding 0 to -5, Moderate -5.01 to -110, Heavy -110.01 to -400
+      if (totalScoreRound >= 0 && totalScoreRound <= 5) {
         performance = "good";
       }
-      if (totalScoreRound > 90 && totalScoreRound <= 230) {
+      if (totalScoreRound > 5 && totalScoreRound <= 110) {
         performance = "okay";
       }
-      if (totalScoreRound > 230 && totalScoreRound <= 400) {
+      if (totalScoreRound > 110 && totalScoreRound <= 400) {
         performance = "bad";
       }
     }
