@@ -21,8 +21,8 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   const [currentScreen, setCurrentScreen] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(duration);
   
-  // Calculate duration for each tutorial screen (1/3 of total duration)
-  const screenDuration = Math.floor(duration / 4);
+  // Calculate duration for each tutorial screen (1/4 of total duration)
+  const screenDuration = duration / 4;
   
   // Calculate which screen should be shown based on elapsed time
   useEffect(() => {
@@ -78,6 +78,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     }, screenDuration * 2 * 1000);
 
     timer3 = setTimeout(() => {
+      setCurrentScreen(4);
+    }, screenDuration * 3 * 1000);
+
+    const timer4 = setTimeout(() => {
       onDurationComplete?.();
     }, duration * 1000);
 
@@ -90,6 +94,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
+      clearTimeout(timer4);
       clearInterval(countdownInterval);
     };
   }, [isOpen, onDurationComplete, duration, screenDuration, syncWithTimestamp]);
@@ -98,17 +103,22 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
 
   // Render the appropriate tutorial screen
   const renderCurrentScreen = () => {
+    const screenTimingProps = {
+      screenDuration: screenDuration,
+      timeRemaining: timeRemaining
+    };
+
     switch (currentScreen) {
       case 1:
-        return <TutorialScreen1 onContinue={() => {}} />;
+        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
       case 2:
-        return <TutorialScreen2 onContinue={() => {}} />;
+        return <TutorialScreen2 onContinue={() => {}} {...screenTimingProps} />;
       case 3:
-        return <TutorialScreen3 onContinue={() => {}} />;
+        return <TutorialScreen3 onContinue={() => {}} {...screenTimingProps} />;
       case 4:
-        return <TutorialScreen4 onContinue={() => {}} timeRemaining={timeRemaining} />;
+        return <TutorialScreen4 onContinue={() => {}} {...screenTimingProps} />;
       default:
-        return <TutorialScreen1 onContinue={() => {}} />;
+        return <TutorialScreen1 onContinue={() => {}} {...screenTimingProps} />;
     }
   };
 

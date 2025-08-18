@@ -1,12 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
+import TimerBar from '@/components/coastal-protection/TimerBar';
 
 interface TutorialScreen3Props {
   onContinue?: () => void;
+  screenDuration?: number;
   timeRemaining?: number;
 }
 
-export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialScreen3Props) {
+export default function TutorialScreen3({ 
+  onContinue, 
+  timeRemaining,
+  screenDuration = 15
+}: TutorialScreen3Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -22,6 +28,14 @@ export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialS
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
+
+      {/* Timer Bar - Fixed at top */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <TimerBar
+          duration={screenDuration}
+          isRunning={true}
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
@@ -162,31 +176,24 @@ export default function TutorialScreen3({ onContinue, timeRemaining }: TutorialS
               </div>
             </div>
 
-            {/* Bottom Section - Game Instructions and Countdown */}
+            {/* Bottom Section - Game Instructions */}
             <div className="flex flex-col items-center gap-6 text-center">
               <p className="text-white text-2xl font-bold">
                 DURING GAMEPLAY, YOUR COASTAL MEASURE IS LOCKED IN FOR THE ROUND ONCE DEPLOYED. CHOOSE WISELY. STRATEGIZE WITH YOUR TEAMMATES.
               </p>
-              
-              {/* Reserved space for countdown - always present to prevent layout shift */}
-              <div className="flex flex-col items-center gap-6">
-                <h2 className="text-white text-6xl font-bold text-center leading-tight tracking-wide mt-8 min-h-[72px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 ? (
-                    <>
-                      {timeRemaining === 3 && "3..."}
-                      {timeRemaining === 2 && "2..."}
-                      {timeRemaining === 1 && "1..."}
-                      {timeRemaining === 0 && "GO!"}
-                    </>
-                  ) : null}
-                </h2>
-                
-                <p className="text-white text-xl text-center font-bold min-h-[28px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 && "THE TIDES ARE RISING. START PLANNING!"}
-                </p>
-              </div>
             </div>
           </div>
+        </div>
+
+        {/* PUB Logo - Fixed at bottom */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <Image
+            src="/assets/pub-logo-white-7ae72a.png"
+            alt="PUB Logo"
+            width={238}
+            height={46}
+            className="object-contain"
+          />
         </div>
       </div>
     </div>

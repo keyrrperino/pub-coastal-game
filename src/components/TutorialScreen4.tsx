@@ -1,12 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
+import TimerBar from '@/components/coastal-protection/TimerBar';
 
-interface TutorialScreen3Props {
+interface TutorialScreen4Props {
   onContinue?: () => void;
+  screenDuration?: number;
   timeRemaining?: number;
 }
 
-export default function TutorialScreen4({ onContinue, timeRemaining }: TutorialScreen3Props) {
+export default function TutorialScreen4({ 
+  onContinue, 
+  timeRemaining,
+  screenDuration = 15
+}: TutorialScreen4Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -22,6 +28,14 @@ export default function TutorialScreen4({ onContinue, timeRemaining }: TutorialS
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
+
+      {/* Timer Bar - Fixed at top */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <TimerBar
+          duration={screenDuration}
+          isRunning={true}
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
@@ -67,24 +81,19 @@ export default function TutorialScreen4({ onContinue, timeRemaining }: TutorialS
               </div>
             </div>
 
-            {/* Bottom Section - Game Instructions and Countdown */}
-            <div className="flex flex-col items-center gap-6 text-center">
-              
-              {/* Reserved space for countdown - always present to prevent layout shift */}
-              <div className="flex flex-col items-center gap-6">
-                <h2 className="text-white text-[6vh] font-bold text-center leading-tight tracking-wide mt-8 min-h-[72px] flex items-center">
-                  {timeRemaining !== undefined && (
-                    timeRemaining === 0 ? 'GO!' : 
-                    (timeRemaining <= 3 && timeRemaining >= 1 ? `${Math.ceil(timeRemaining)}...` : null)
-                  )}
-                </h2>
-                
-                <p className="text-white text-xl text-center font-bold min-h-[28px] flex items-center">
-                  {timeRemaining !== undefined && timeRemaining <= 3 && "ONTO THE YEAR 2025-2050!"}
-                </p>
-              </div>
-            </div>
+
           </div>
+        </div>
+
+        {/* PUB Logo - Fixed at bottom */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <Image
+            src="/assets/pub-logo-white-7ae72a.png"
+            alt="PUB Logo"
+            width={238}
+            height={46}
+            className="object-contain"
+          />
         </div>
       </div>
     </div>

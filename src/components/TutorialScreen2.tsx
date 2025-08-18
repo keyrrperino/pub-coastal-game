@@ -1,11 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
+import TimerBar from '@/components/coastal-protection/TimerBar';
 
 interface TutorialScreen2Props {
   onContinue?: () => void;
+  screenDuration?: number;
 }
 
-export default function TutorialScreen2({ onContinue }: TutorialScreen2Props) {
+export default function TutorialScreen2({ onContinue, screenDuration = 15 }: TutorialScreen2Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -21,6 +23,14 @@ export default function TutorialScreen2({ onContinue }: TutorialScreen2Props) {
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
+
+      {/* Timer Bar - Fixed at top */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <TimerBar
+          duration={screenDuration}
+          isRunning={true}
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
@@ -95,6 +105,17 @@ export default function TutorialScreen2({ onContinue }: TutorialScreen2Props) {
               }
             `}</style>
           </div>
+        </div>
+
+        {/* PUB Logo - Fixed at bottom */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <Image
+            src="/assets/pub-logo-white-7ae72a.png"
+            alt="PUB Logo"
+            width={238}
+            height={46}
+            className="object-contain"
+          />
         </div>
       </div>
     </div>

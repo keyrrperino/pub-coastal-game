@@ -19,7 +19,7 @@ export default function StartScreen({
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/assets/start-screen-bg.png"
+          src="/assets/start-screen-bg-updated.png"
           alt="Coastal background"
           fill
           className="object-cover"
@@ -27,41 +27,65 @@ export default function StartScreen({
         />
       </div>
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/80" />
+      {/* Dark Overlay with Blur */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-[12px]" />
 
             {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full gap-36 py-20">
-        {/* Title */}
-        <h1 className="text-white text-8xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)] max-w-[645px]">
-          Coastal Protectors
-        </h1>
-        
-        {/* Player and Buttons Section */}
-        <div className="flex flex-col items-center gap-4 max-w-[406px] w-full">
-          {/* Player Indicator */}
-          <div className="px-3 py-2.5 bg-white/10 backdrop-blur-sm rounded-lg">
-            <span className="text-white text-3xl font-bold">
-              ˗ˏˋ PLAYER {playerNumber} ˎˊ˗
-            </span>
+      <div className="relative z-10 flex flex-col items-center justify-center h-full py-8">
+        {/* Main Content Centered */}
+        <div className="flex flex-col items-center gap-20">
+          {/* Title Section */}
+          <div className="flex flex-col items-center gap-4 max-w-[645px]">
+            <h1 className="text-white text-8xl text-center leading-[0.9] tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+              COASTAL PROTECTORS
+            </h1>
+            <h2 className="text-white text-7xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+              2025-2100
+            </h2>
+            <p className="text-white text-4xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+              an interactive timeline game
+            </p>
           </div>
           
-          {/* Buttons */}
-          <div className="flex flex-col gap-5 w-full">
-            <button
-              onClick={onStartGame}
-              className="w-full py-9 px-11 bg-[#005DFF] text-white text-3xl font-bold rounded-full hover:bg-[#0052e6] transition-colors duration-200"
-            >
-              START GAME FOR ALL
-            </button>
+          {/* Player and Buttons Section */}
+          <div className="flex flex-col items-center gap-4 w-full">
+            {/* Player Indicator */}
+            <div className="px-3 py-2.5">
+            <span className="text-white text-3xl" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+              ˗ˏˋ Player {playerNumber} ˎˊ˗
+            </span>
+            </div>
             
-            <button
-              onClick={onShowLeaderboard}
-              className="w-full py-9 px-11 bg-white text-[#005DFF] text-3xl font-bold rounded-full hover:bg-gray-100 transition-colors duration-200"
-            >
-              {isLeaderboardOpen ? 'HIDE LEADERBOARD' : 'SHOW LEADERBOARD'}
-            </button>
+            {/* Buttons */}
+            <div className="flex flex-row justify-center gap-5 w-full">
+              <button
+                onClick={onStartGame}
+                className="min-w-[450px] h-[83px] py-4 px-8 bg-[#005DFF] text-white text-2xl rounded-full hover:bg-[#0052e6] transition-colors duration-200 whitespace-nowrap"
+                style={{ fontFamily: 'Novecento Bold, sans-serif' }}
+              >
+                Start Game For All
+              </button>
+              
+              <button
+                onClick={onShowLeaderboard}
+                className="min-w-[450px] h-[83px] py-4 px-8 bg-white text-[#005DFF] text-2xl rounded-full hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap"
+                style={{ fontFamily: 'Novecento Bold, sans-serif' }}
+              >
+                {isLeaderboardOpen ? 'Hide Leaderboard' : 'Show Leaderboard'}
+              </button>
+            </div>
           </div>
+        </div>
+
+        {/* PUB Logo - Fixed at bottom */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <Image
+            src="/assets/pub-logo-white-7ae72a.png"
+            alt="PUB Logo"
+            width={238}
+            height={46}
+            className="object-contain"
+          />
         </div>
       </div>
     </div>
