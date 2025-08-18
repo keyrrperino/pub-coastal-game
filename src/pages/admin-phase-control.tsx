@@ -45,11 +45,12 @@ export default function AdminPhaseControl() {
   const [isConnected, setIsConnected] = useState(false);
   const [currentRound, setCurrentRound] = useState<number>(1);
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState<number>(0);
+  const [room, setRoom] = useState<string>('default');
 
   useEffect(() => {
     const initializeConnection = async () => {
       try {
-        await gameRoomService.joinRoom('default');
+        await gameRoomService.joinRoom(room ?? 'default');
         setIsConnected(true);
         
 
@@ -84,7 +85,7 @@ export default function AdminPhaseControl() {
     return () => {
       gameRoomService.disconnect();
     };
-  }, []);
+  }, [room]);
 
   const updatePhase = async (newPhase: GameLobbyStatus) => {
     console.log(`🚀 updatePhase called with: ${newPhase} (current: ${currentPhase})`);
@@ -159,7 +160,7 @@ export default function AdminPhaseControl() {
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, 0);
       
       // Clear all activities
-      await gameRoomService.deleteActivities('default');
+      await gameRoomService.deleteActivities();
       
       // Reset all players ready state
       await gameRoomService.resetAllPlayersReady();
@@ -246,6 +247,18 @@ export default function AdminPhaseControl() {
 
         {/* Phase Selection */}
         <div>
+        <label className="block text-sm font-medium mb-2">
+            Specify Room:
+          </label>
+          <input
+            type="text"
+            value={room}
+            onChange={(e) => {
+              setRoom(e.target.value);
+            }}
+            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter room name"
+          />
           <label className="block text-sm font-medium mb-2">
             Select Phase:
           </label>

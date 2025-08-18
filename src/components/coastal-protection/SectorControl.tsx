@@ -7,7 +7,7 @@ import InsufficientBudgetModal from './InsufficientBudgetModal';
 import { GameRoomService, saveTeamScoreToGlobalLeaderboard, getGlobalLeaderboard, ProcessedLeaderboardData } from '@/lib/gameRoom';
 import { ActivityTypeEnum, GameLobbyStatus, LobbyStateEnum, SubSectorEnum, UserSectorEnum } from '@/lib/enums';
 import { ActivityLogType, LobbyStateType } from '@/lib/types';
-import { SplineTriggersConfig, GAME_ROUND_TIMER } from '@/lib/constants';
+import { SplineTriggersConfig, GAME_ROUND_TIMER, ROOM_NAME } from '@/lib/constants';
 import { SplineTriggerConfigItem } from '@/lib/types';
 import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContext';
 import { useProgression } from '@/components/hooks/useProgression';
@@ -568,11 +568,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
     const initializeGameRoom = async () => {
       try {
         // Try to join the existing room first
-        const joined = await gameRoomService.joinRoom('default');
+        const joined = await gameRoomService.joinRoom(roomName);
         if (!joined) {
           // If room doesn't exist, create it
           await gameRoomService.createRoom(roomName);
-          await gameRoomService.joinRoom('default');
+          await gameRoomService.joinRoom(roomName);
         }
         
         // Listen to activity changes
@@ -941,7 +941,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
               await saveTeamScoreToGlobalLeaderboard(
                 teamName, 
                 finalScore, 
-                'default',
+                roomName,
                 `Player ${sector.slice(-1)}`
               );
               console.log('Team score saved via standalone function:', teamName, 'Score:', finalScore);

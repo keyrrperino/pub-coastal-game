@@ -34,7 +34,7 @@ export default function Room({ roomName }: {roomName: string}) {
                 <link rel="icon" href="/favicon.png" />
             </Head>
             <main className="h-screen w-screen">
-                <AppWithoutSSR roomName={roomName} />
+                {roomName && <AppWithoutSSR roomName={roomName} />}
             </main>
         </>
     );

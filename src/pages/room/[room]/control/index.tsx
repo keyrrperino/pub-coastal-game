@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { GameRoomService } from "@/lib/gameRoom";
 import { GameEnum, UserSectorEnum } from "@/lib/enums";
 import { UserPresenceType } from "@/lib/types";
+import { GetStaticPaths, GetStaticProps } from "next";
 
 const SECTORS = [
   { id: 1, slug: "sector-1", username: UserSectorEnum.USER_SECTOR_ONE, label: "Sector 1" },
@@ -17,9 +18,28 @@ interface OnlineStatus {
   [key: string]: boolean;
 }
 
-export default function SectorSelection() {
+export const getStaticPaths: GetStaticPaths = async () => {
+  // Define some static paths if needed, or leave empty
+
+  return {
+    paths: [],
+    fallback: false, // or true, depending on your needs
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { room } = params as { room: string };
+
+  // Use the room parameter directly
+  return {
+    props: {
+      roomName: room,
+    },
+  };
+};
+
+export default function SectorSelection({ roomName }: {roomName: string}) {
   const router = useRouter();
-  console.log("router.query", router.query);
   const [onlineStatus, setOnlineStatus] = useState<OnlineStatus>({
     [UserSectorEnum.USER_SECTOR_ONE]: false,
     [UserSectorEnum.USER_SECTOR_TWO]: false,
@@ -37,7 +57,7 @@ export default function SectorSelection() {
 
     const service = new GameRoomService(GameEnum.DEFAULT_USERNAME);
     // Join the room for presence tracking (roomId = sector.slug)
-    service.joinRoom(GameEnum.DEFAULT_ROOM_NAME).then(() => {
+    service.joinRoom(roomName).then(() => {
       service.onPresenceChange((users: UserPresenceType[]) => {
         console.log(users);
         setOnlineStatus((prev) => {
@@ -80,7 +100,7 @@ export default function SectorSelection() {
     // For now, just use the same naming convention
     const userName = `user-${sectorSlug}`;
     const service = new GameRoomService(userName);
-    service.joinRoom('default').then(() => {
+    service.joinRoom(roomName).then(() => {
       // Optionally, store service in context or global state
       router.push(`/control/${sectorSlug}`);
     });
