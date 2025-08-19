@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useTimer } from '@/components/hooks/useTimer';
-import TutorialScreen1 from '@/components/TutorialScreen1';
-import TutorialScreen2 from '@/components/TutorialScreen2';
-import TutorialScreen3 from '@/components/TutorialScreen3';
-import TutorialScreen4 from '@/components/TutorialScreen4';
 import PlayerTutorialScreen1 from '@/components/PlayerTutorialScreen1';
 import PlayerTutorialScreen2 from '@/components/PlayerTutorialScreen2';
 import PlayerTutorialScreen3 from '@/components/PlayerTutorialScreen3';
 import PlayerTutorialScreen4 from '@/components/PlayerTutorialScreen4';
+import PlayerTutorialScreen5 from "@/components/PlayerTutorialScreen5";
 
 interface IntroductionModalProps {
   isOpen: boolean;
@@ -24,9 +20,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
 }) => {
   const [currentScreen, setCurrentScreen] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(duration);
+  const [phaseStartTime] = useState(Date.now());
   
-  // Calculate duration for each tutorial screen (1/4 of total duration)
-  const screenDuration = duration / 4;
+  // Calculate duration for each tutorial screen (1/5 of total duration since we have 5 screens now)
+  const screenDuration = duration / 5;
   
   // Calculate which screen should be shown based on elapsed time
   useEffect(() => {
@@ -45,8 +42,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
         setCurrentScreen(2);
       } else if (elapsed < screenDuration * 3) {
         setCurrentScreen(3);
-      } else if (elapsed < duration) {
+      } else if (elapsed < screenDuration * 4) {
         setCurrentScreen(4);
+      } else if (elapsed < duration) {
+        setCurrentScreen(5);
       } else {
         // Time is up, trigger completion
         onDurationComplete?.();
@@ -86,6 +85,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     }, screenDuration * 3 * 1000);
 
     const timer4 = setTimeout(() => {
+      setCurrentScreen(5);
+    }, screenDuration * 4 * 1000);
+
+    const timer5 = setTimeout(() => {
       onDurationComplete?.();
     }, duration * 1000);
 
@@ -99,6 +102,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
+      clearTimeout(timer5);
       clearInterval(countdownInterval);
     };
   }, [isOpen, onDurationComplete, duration, screenDuration, syncWithTimestamp]);
@@ -108,7 +112,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   // Render the appropriate tutorial screen
   const renderCurrentScreen = () => {
     const screenTimingProps = {
-      screenDuration: screenDuration,
+      phaseStartTime: phaseStartTime,
       timeRemaining: timeRemaining
     };
 
@@ -121,6 +125,8 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
         return <PlayerTutorialScreen3 {...screenTimingProps} />;
       case 4:
         return <PlayerTutorialScreen4 {...screenTimingProps} />;
+      case 5:
+        return <PlayerTutorialScreen5 {...screenTimingProps} />;
       default:
         return <PlayerTutorialScreen1 {...screenTimingProps} />;
     }

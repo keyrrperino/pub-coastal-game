@@ -7,7 +7,7 @@ interface TutorialScreen3Props {
   phaseStartTime: number;
 }
 
-export default function TutorialScreen5({ timeRemaining }: TutorialScreen3Props) {
+export default function PlayerTutorialScreen5({ timeRemaining }: TutorialScreen3Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -52,7 +52,7 @@ export default function TutorialScreen5({ timeRemaining }: TutorialScreen3Props)
             <div className="flex gap-8 justify-center items-stretch">
               <div className="bg-white/20 backdrop-blur-sm border border-white/70 rounded-lg p-6 shadow-lg flex flex-col justify-between h-[auto] w-auto">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center">
                     <span className="text-white text-[5vh] font-bold">OVERALL BUDGET</span>
                   </div>
                   
@@ -73,6 +73,9 @@ export default function TutorialScreen5({ timeRemaining }: TutorialScreen3Props)
                         <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
                       </div>
                     </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-white text-[3vh] font-bold">10 coins PER ROUND</span>
                   </div>
                 </div>
               </div>
