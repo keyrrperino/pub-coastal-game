@@ -32,10 +32,12 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
         />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col h-full px-4">
+      {/* Main container to center content vertically */}
+      <div className="relative z-10 h-full flex items-center justify-center">
+        {/* Content Container */}
+        <div className="flex flex-col px-4" style={{ height: 'calc(80vh - 60px)' }}>
         {/* Top spacer for timer */}
-        <div className="h-[20vh]"></div>
+        <div className="h-[8vh]"></div>
         
         {/* Description */}
         <div className="w-full mb-4">
@@ -44,8 +46,8 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
           </p>
         </div>
 
-        {/* Map Container - Fill remaining height */}
-        <div className="relative w-full max-w-4xl flex-1 flex items-center justify-center mx-auto">
+        {/* Map Container */}
+        <div className="relative w-full max-w-4xl mx-auto flex-1">
             {/* Base Singapore Map */}
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
@@ -107,16 +109,18 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
             `}</style>
         </div>
 
-        {/* Logo at bottom */}
-        <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-          <Image
-              src="/assets/PUB logo_white_transparent.svg"
-              alt="pub logo"
-              width={180}
-              height={35}
-              className="object-contain"
-            />
         </div>
+      </div>
+      
+      {/* Logo at bottom */}
+      <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
+        <Image
+          src="/assets/PUB logo_white_transparent.svg"
+          alt="pub logo"
+          width={180}
+          height={35}
+          className="object-contain"
+        />
       </div>
     </div>
   );
