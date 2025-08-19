@@ -16,12 +16,13 @@ import { CutScenesStatusEnum, useCutSceneSequence } from "./hooks/useSplineCutSc
 import { useHideAllTriggers } from "./hooks/useHideAllSplineTriggers";
 import AnimatedModal from "@/games/pub-coastal-game/compontents/AnimatedModal";
 import AnimatedTitle from "@/games/pub-coastal-game/compontents/AnimatedTitle";
+import RoundStartAnimationModal from "@/games/pub-coastal-game/compontents/RoundStartAnimationModal";
 import { usePreparingProgress } from "./hooks/usePreparingProgress";
 import ScoreBreakdownModal from "@/games/pub-coastal-game/compontents/ScoreBreakdownModal";
 import { SectorPerformance, useSectorScores } from "./hooks/useSectorScores";
-import TutorialScreen3 from "./TutorialScreen3";
-import TutorialScreen2 from "./TutorialScreen2";
-import TutorialScreen1 from "./TutorialScreen1";
+import TutorialScreen3 from "@/components/TutorialScreen3";
+import TutorialScreen2 from "@/components/TutorialScreen2";
+import TutorialScreen1 from "@/components/TutorialScreen1";
 import { useLobbyInstruction } from "./hooks/useLobbyInstruction";
 import Round1Screen from "./Round1Screen";
 import { useLobbyStoryline } from "./hooks/useLobbyStoryline";
@@ -33,9 +34,11 @@ import EndingScreen from "./EndingScreen";
 import TeamNameInputScreen from "./TeamNameInputScreen";
 import EndingLeaderboardOverlay from "./EndingLeaderboardOverlay";
 import LeaderboardOverlay from "./LeaderboardOverlay";
-import TutorialScreen4 from "./TutorialScreen4";
+import TutorialScreen4 from "@/components/TutorialScreen4";
 import { PlayerRound1Screen, PlayerRound2Screen, PlayerRound3Screen } from "./player-screens";
-import TutorialScreen5 from "./TutorialScreen5";
+import TutorialScreen5 from "@/components/TutorialScreen5";
+import { useLobbyRoundBreakdown } from "./hooks/useLobbyRoundBreakdown";
+import { useLobbyRoundAnimation } from "./hooks/useLobbyRoundAnimation";
 
 interface SplineFirebaseProps {
   roomName: string;
@@ -114,45 +117,13 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     }
   };
 
-  const {currentTutorial, timeRemaining} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
+  const {currentTutorial} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
   const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
-
-  const isScoreBreakdownTimesUp = () => {
-    if (gameRoomServiceRef.current) {
-      if (lobbyState.round === 3) {
-        gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ENDING,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ENDING,
-        }});
-      } else {
-        gameRoomServiceRef.current.updateLobbyState({
-          ...lobbyState, ...{
-          [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_STORYLINE,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
-          [LobbyStateEnum.ROUND]: (lobbyState.round + 1) as RoundType,
-          [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_STORYLINE,
-        }});
-      }
-    }
-  };
-
-  const {timeRemaining: timeRemainingScoreBreakdown } = useTimer({
-    duration: lobbyState.phaseDuration,
-    onTimeUp: isScoreBreakdownTimesUp,
-    startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
-    syncWithTimestamp: lobbyState.phaseStartTime,
-  });
-
-  useEffect(() => {
-    if (timeRemainingScoreBreakdown <= 0 && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
-      isScoreBreakdownTimesUp();
-    }
-  }, [timeRemainingScoreBreakdown]);
+  const showCountdown = timeRemainingStoryLine <= 3;
+  useLobbyRoundBreakdown(lobbyState, triggersLoading, gameRoomServiceRef);
+  useLobbyRoundAnimation(lobbyState, triggersLoading, gameRoomServiceRef);
 
 
-  
   const isScoreEndingModalTimesUp = () => {
     if (gameRoomServiceRef.current) {
       if (lobbyState.gameLobbyStatus === GameLobbyStatus.ENDING) {
@@ -172,12 +143,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     startImmediately: !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ENDING,
     syncWithTimestamp: lobbyState.phaseStartTime,
   });
-
-  useEffect(() => {
-    if (timeRemainingScoreBreakdown <= 0 && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
-      isScoreBreakdownTimesUp();
-    }
-  }, [timeRemainingScoreBreakdown]);
 
   const [leaderboardData, setLeaderboardData] = useState<ProcessedLeaderboardData>({
     topWinner: null,
@@ -361,8 +326,6 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     </div>
   )
 
-  const showCountdown = timeRemainingStoryLine <= 3;
-
   const renderStoryLine = (
     (!triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_STORYLINE) && 
     <div 
@@ -375,6 +338,27 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       {lobbyState.round === 3 && <PlayerRound3Screen timeRemaining={showCountdown ? timeRemainingStoryLine : undefined} />}
     </div>
   )
+
+  const renderRoundAnimation = (
+    !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_ANIMATION && (
+      <RoundStartAnimationModal
+        isOpen={true}
+        round={lobbyState.round ?? 1}
+      />
+    )
+  );
+
+  const renderRoundScoreBreakdown = (
+    !triggersLoading && lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
+      <ScoreBreakdownModal
+        isOpen={true}
+        key={lobbyState.round + "-breakdownmodal"}
+        breakdown={overAllScores}
+        totalScore={totalScore}
+        roundNumber={(lobbyState.round ?? 1) as 1|2|3}
+      />
+    )
+  );
 
   const resetGame = async () => {
     await gameRoomServiceRef.current?.deleteActivities();
@@ -410,17 +394,8 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       {renderEndingScreen}
       {renderInputTeamName}
       {renderEndingLeaderBoard}
-
-      {/* Score Breakdown Modal */}
-      {lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_SCORE_BREAKDOWN && (
-        <ScoreBreakdownModal
-          isOpen={true}
-          key={lobbyState.round + "-breakdownmodal"}
-          breakdown={overAllScores}
-          totalScore={totalScore}
-          roundNumber={(lobbyState.round ?? 1) as 1|2|3}
-        />
-      )}
+      {renderRoundAnimation}
+      {renderRoundScoreBreakdown}
 
       {/* Loading overlay with percentage */}
       {(triggersLoading) && (

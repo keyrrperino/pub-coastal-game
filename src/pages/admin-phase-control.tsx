@@ -11,6 +11,7 @@ const ROUND_PHASES = [
   GameLobbyStatus.ROUND_STORYLINE,
   GameLobbyStatus.ROUND_GAMEPLAY,
   GameLobbyStatus.ROUND_CUTSCENES,
+  GameLobbyStatus.ROUND_ANIMATION,
   GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
 ];
 
