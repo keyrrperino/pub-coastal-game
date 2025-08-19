@@ -46,10 +46,10 @@ export default function TutorialScreen3({ phaseStartTime, timeRemaining }: Tutor
           <div className="flex flex-col items-center gap-[2vh] uppercase">
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-[1vh] text-center">
-              <p className="text-[#FFDD3D] text-[3.5vh] font-bold">
+              <p className="text-[#FFDD3D] text-[4vh] font-bold">
                 Once you select your coastal protection, it is locked in for the round.
               </p>
-              <p className="text-white text-[3.5vh] font-bold">
+              <p className="text-white text-[4vh] font-bold">
                 Remember to build them according to the right height of sea level rise for maximum protection.
               </p>
             </div>
