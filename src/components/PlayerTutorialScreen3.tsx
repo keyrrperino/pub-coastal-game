@@ -80,22 +80,22 @@ export default function PlayerTutorialScreen3({ phaseStartTime, timeRemaining }:
             </div>
 
             {/* Middle Section - Three Protection Measure Cards */}
-            <div className="flex gap-2 justify-center items-stretch">
+            <div className="flex gap-4 justify-center items-stretch">
               {/* Mangroves Card */}
               {logos.map((logo) => {
                 return (
-                  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-3 shadow-lg flex flex-col justify-between h-auto w-[9vw]">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex flex-col text-center items-center gap-2">
-                        <div className="w-[6vw] h-[6vw] bg-green-400 rounded-full relative overflow-hidden">
+                  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-4 shadow-lg flex flex-col justify-between h-auto w-[12vw]">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex flex-col text-center items-center gap-3">
+                        <div className="w-[8vw] h-[8vw] bg-green-400 rounded-full relative overflow-hidden">
                           <Image
                             src={`/assets/${logo.logo}`}
-                            alt="Mangroves"
+                            alt={logo.value}
                             fill
                             className="object-cover"
                           />
                         </div>
-                        <span className="text-white text-[0.9vw] font-bold">{logo.value}</span>
+                        <span className="text-white text-[1.1vw] font-bold">{logo.value}</span>
                       </div>
                     </div>
                   </div>
