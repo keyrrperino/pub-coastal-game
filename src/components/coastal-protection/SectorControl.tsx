@@ -14,7 +14,7 @@ import { useProgression } from '@/components/hooks/useProgression';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
 import { useSectorScores, SectorPerformance } from '@/components/hooks/useSectorScores';
-import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet, isSectorDemolishable } from '@/lib/progressionUtils';
+import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet, isSectorDemolishable, getActionState } from '@/lib/progressionUtils';
 
 import { ActionStatus, ActionState } from '@/lib/types';
 
@@ -693,7 +693,18 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
           options: config.roundStartActions
             .map((roundStartActionState: any) => {
               // Find the current state of this action for proper button states
-              const currentActionState = config.currentActions.find((a: any) => a.config.id === roundStartActionState.config.id) || roundStartActionState;
+              let currentActionState = config.currentActions.find((a: any) => a.config.id === roundStartActionState.config.id);
+              
+              // If not found in current actions, recalculate the state based on current game state
+              if (!currentActionState) {
+                currentActionState = getActionState(
+                  roundStartActionState.config,
+                  activeActions,
+                  activeCPMPath,
+                  firebaseRound,
+                  activityLog
+                );
+              }
               
               const isSelected = currentActionState.status === ActionStatus.COMPLETED;
               const isAvailable = currentActionState.status === ActionStatus.SELECTABLE;
