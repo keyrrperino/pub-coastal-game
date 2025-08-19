@@ -48,38 +48,38 @@ export default function PlayerTutorialScreen5({ timeRemaining }: TutorialScreen3
               </p>
             </div>
 
-            {/* Middle Section - Three Protection Measure Cards */}
-            <div className="flex gap-4 justify-center items-stretch">
-              <div className="bg-white/20 backdrop-blur-sm border border-white/70 rounded-lg p-4 shadow-lg flex flex-col justify-between h-[auto] w-auto">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="flex items-center">
-                    <span className="text-white text-[3.5vh] font-bold">OVERALL BUDGET</span>
-                  </div>
-                  
-                  <div className="flex gap-1 w-full items-center justify-center">
-                    <div className="flex flex-col items-center gap-1 w-full justify-center">
-                      <div className="flex gap-1 w-full items-center justify-center">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                      </div>
-                      <div className="flex gap-1 w-full items-center justify-center">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={45} height={45} className="object-contain" />
+{/* Middle Section - Three Protection Measure Cards */}
+              <div className="flex gap-4 justify-center items-stretch">
+                <div className="bg-white/20 backdrop-blur-sm border border-white/70 rounded-lg p-6 shadow-lg flex flex-col justify-between h-[auto] w-auto">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="flex items-center">
+                      <span className="text-white text-[4.5vh] font-bold">OVERALL BUDGET</span>
+                    </div>
+                    
+                    <div className="flex gap-2 w-full items-center justify-center">
+                      <div className="flex flex-col items-center gap-2 w-full justify-center">
+                        <div className="flex gap-2 w-full items-center justify-center">
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                        </div>
+                        <div className="flex gap-2 w-full items-center justify-center">
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                          <Image src="/assets/coin-icon.png" alt="Coin" width={60} height={60} className="object-contain" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-white text-[2.2vh] font-bold">10 coins PER ROUND</span>
+                    <div className="flex items-center">
+                      <span className="text-white text-[3.2vh] font-bold">10 coins PER ROUND</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             <div className="flex flex-col gap-3 text-center  uppercase">
               <p className="text-white text-[2.8vh] font-bold">
               Every action deducts from the total score of 2,500
