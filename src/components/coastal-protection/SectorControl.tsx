@@ -31,6 +31,7 @@ import EndingLeaderboardOverlay from '@/components/EndingLeaderboardOverlay';
 import PostRoundModal from '@/components/PostRoundModal';
 import Modal from '@/games/pub-coastal-game/compontents/Modal';
 import PlayerCutsceneModal from '@/games/pub-coastal-game/compontents/PlayerCutsceneModal';
+import RoundStartAnimationModal from '@/games/pub-coastal-game/compontents/RoundStartAnimationModal';
 
 interface SectorControlProps {
   sector: string;
@@ -848,6 +849,15 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                     </div>
                   </div>
                 </div>
+              );
+            }
+
+            if (currentPhase === GameLobbyStatus.ROUND_ANIMATION) {
+              return (
+                <RoundStartAnimationModal
+                  isOpen={true}
+                  round={lobbyState.round ?? 1}
+                />
               );
             }
 
