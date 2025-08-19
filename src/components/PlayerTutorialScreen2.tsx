@@ -33,18 +33,19 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
-        <div className="flex flex-col items-center gap-3 max-w-[90%] w-full h-full max-h-[85%]">
+      <div className="relative z-10 flex flex-col h-full px-4">
+        {/* Top spacer for timer */}
+        <div className="h-[20vh]"></div>
+        
+        {/* Description */}
+        <div className="w-full mb-4">
+          <p className="text-white text-[2.8vh] text-center font-bold uppercase max-w-[90%] mx-auto">
+            Singapore is divided into three sectors and six subsectors, each with its own land use. Take a look around — which sector are you in charge of?
+          </p>
+        </div>
 
-          {/* Description */}
-          <div className="w-full">
-            <p className="text-white text-[2.8vh] text-center font-bold uppercase">
-              Singapore is divided into three sectors and six subsectors, each with its own land use. Take a look around — which sector are you in charge of?
-            </p>
-          </div>
-
-          {/* Map Container - Fill remaining height */}
-          <div className="relative w-full max-w-4xl flex-1 flex items-center justify-center">
+        {/* Map Container - Fill remaining height */}
+        <div className="relative w-full max-w-4xl flex-1 flex items-center justify-center mx-auto">
             {/* Base Singapore Map */}
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
@@ -104,17 +105,17 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
                 }
               }
             `}</style>
-          </div>
+        </div>
 
-          <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-            <Image
-                src="/assets/PUB logo_white_transparent.svg"
-                alt="pub logo"
-                width={180}
-                height={35}
-                className="object-contain"
-              />
-          </div>
+        {/* Logo at bottom */}
+        <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
+          <Image
+              src="/assets/PUB logo_white_transparent.svg"
+              alt="pub logo"
+              width={180}
+              height={35}
+              className="object-contain"
+            />
         </div>
       </div>
     </div>
