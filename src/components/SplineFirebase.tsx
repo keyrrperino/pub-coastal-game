@@ -353,11 +353,12 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10"
       style={{ borderRadius: 0 }}
     >
-      {currentTutorial === 0 && <TutorialScreen1 phaseStartTime={lobbyState.phaseStartTime} />}
+      <TutorialScreen4 phaseStartTime={lobbyState.phaseStartTime} />
+      {/* {currentTutorial === 0 && <TutorialScreen1 phaseStartTime={lobbyState.phaseStartTime} />}
       {currentTutorial === 1 && <TutorialScreen2 phaseStartTime={lobbyState.phaseStartTime} />}
       {currentTutorial === 2 && <TutorialScreen3 phaseStartTime={lobbyState.phaseStartTime} />}
       {currentTutorial === 3 && <TutorialScreen4 phaseStartTime={lobbyState.phaseStartTime} />}
-      {currentTutorial === 4 && <TutorialScreen5 phaseStartTime={lobbyState.phaseStartTime} />}
+      {currentTutorial === 4 && <TutorialScreen5 phaseStartTime={lobbyState.phaseStartTime} />} */}
     </div>
   )
 
