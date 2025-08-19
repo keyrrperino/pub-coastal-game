@@ -799,12 +799,13 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                         onTimeUp={handleTimeUp} 
                         isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
                         syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                        currentRound={currentRound}
                       />
                     </div>
                   </div>
 
                   {/* Sector sections */}
-                  <div className="flex flex-col gap-[25px] xl:gap-[40px] mt-[30px] xl:mt-[48px] w-full items-center">
+                  <div className="flex flex-col gap-[25px] xl:gap-[40px] mt-[70px] xl:mt-[48px] w-full items-center">
                     {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
                     {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
                   </div>

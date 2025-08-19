@@ -10,6 +10,7 @@ interface TimerProps {
   syncWithTimestamp?: number;
   hintText?: string;
   showHint?: boolean;
+  currentRound?: number;
 }
 
 const Timer: React.FC<TimerProps> = ({ 
@@ -19,6 +20,7 @@ const Timer: React.FC<TimerProps> = ({
   syncWithTimestamp,
   hintText = "HINT: DEMOLISH BEFORE YOU CAN BUILD A NEW COASTAL PROTECTION MEASURE",
   showHint = true,
+  currentRound,
 }) => {
   const {
     timeRemaining,
@@ -35,6 +37,12 @@ const Timer: React.FC<TimerProps> = ({
     <div className="flex flex-row items-center justify-center gap-4 xl:gap-8">
       {/* Left: column with white box (clock+bar) and hint below */}
       <div className="flex flex-col justify-start items-center" style={{ minWidth: 500, maxWidth: 700 }}>
+        {/* Round indicator */}
+        {currentRound && (
+          <div className={`${styles.novecentoBold} text-white text-lg xl:text-xl font-bold uppercase mb-2 text-center`}>
+            ROUND {currentRound}
+          </div>
+        )}
         {/* White box: clock + bar */}
         <div className="flex flex-row items-center w-full rounded-[12px] xl:rounded-[16px] bg-white px-3 xl:px-4 py-1.5 xl:py-2 mb-1.5 xl:mb-2">
           {/* Clock icon */}
