@@ -13,7 +13,7 @@ const BudgetDisplay: React.FC<BudgetDisplayProps> = ({ totalCoins = 10 }) => {
   return (
     <div className="flex flex-col items-start gap-2">
       <div className={`${styles.novecentoBold} text-[24.51px] font-bold leading-[19.61px] text-white uppercase text-left mb-1`}>
-        OVERALL BUDGET:
+        {totalCoins > 0 ? "OVERALL BUDGET:" : (<>NO MORE COINS</>)}
       </div>
       <CoinIndicator count={totalCoins} direction="row" size={35} columns={5} />    </div>
   );

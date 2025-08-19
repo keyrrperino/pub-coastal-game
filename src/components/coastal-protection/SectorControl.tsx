@@ -781,7 +781,11 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
               return (
                 <>
                   {/* Top bar: Budget left and Timer right */}
-                  <div className="w-full flex flex-row items-start justify-between">
+                  <div className="w-full flex flex-row justify-between"
+                    style={{
+                      alignItems: totalCoins > 0 ? "start" : "center"
+                    }}
+                  >
                     {/* Budget display left */}
                     <div className="flex-1 flex items-start justify-start">
                       <BudgetDisplay totalCoins={totalCoins} />

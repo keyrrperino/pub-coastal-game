@@ -250,7 +250,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       <div className="flex w-full justify-between px-8 py-4  text-white text-[2vw]">
         <div className="flex flex-col">
           <h1>
-            Overall budget
+            {coinsLeft > 0 ? "Overall budget" : "NO MORE COINS"}
           </h1>
           <div className="grid grid-cols-5 gap-2">
           {Array.from({ length: coinsLeft }).map((_, idx) => (
