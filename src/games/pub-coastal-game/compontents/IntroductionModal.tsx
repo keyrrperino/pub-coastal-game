@@ -8,14 +8,14 @@ import PlayerTutorialScreen5 from "@/components/PlayerTutorialScreen5";
 interface IntroductionModalProps {
   isOpen: boolean;
   onDurationComplete?: () => void;
-  duration?: number;
+  duration: number;
   syncWithTimestamp?: number;
 }
 
 const IntroductionModal: React.FC<IntroductionModalProps> = ({ 
   isOpen, 
   onDurationComplete, 
-  duration = 15,
+  duration,
   syncWithTimestamp
 }) => {
   const [currentScreen, setCurrentScreen] = useState(1);
@@ -113,7 +113,8 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   const renderCurrentScreen = () => {
     const screenTimingProps = {
       phaseStartTime: phaseStartTime,
-      timeRemaining: timeRemaining
+      timeRemaining: timeRemaining,
+      screenDuration: screenDuration
     };
 
     switch (currentScreen) {

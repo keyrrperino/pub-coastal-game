@@ -1,12 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
-import ProgressBar from '@/games/pub-coastal-game/compontents/ProcessBar';
+import TimerBar from '@/components/coastal-protection/TimerBar';
 
 interface TutorialScreen1Props {
   phaseStartTime?: number;
+  timeRemaining?: number;
+  screenDuration: number;
 }
 
-export default function PlayerTutorialScreen1({ phaseStartTime }: TutorialScreen1Props) {
+export default function PlayerTutorialScreen1({ phaseStartTime, timeRemaining, screenDuration }: TutorialScreen1Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -20,18 +22,12 @@ export default function PlayerTutorialScreen1({ phaseStartTime }: TutorialScreen
         />
       </div>
 
-      <ProgressBar
-        containerClassName="fixed w-[25vw] z-10 top-[1vh] left-[37.5vw] py-[0.8vw] px-[0.4vw]"
-        key={`Intro2`}
-        duration={12}
-        isRunning={true}
-        clockStyle={{
-          marginRight: 4,
-          width: '1.2vw',
-          height: '1.2vw',
-          border: '0.15vw solid #060606',
-        }}
-      />
+      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
+        <TimerBar
+          duration={screenDuration}
+          isRunning={true}
+        />
+      </div>
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
