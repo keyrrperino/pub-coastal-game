@@ -19,7 +19,13 @@ const getCutScenes = (round: RoundType, overAllScores: { [key in RoundType]?: Ov
     overAllScores[round]?.user_sector_3?.sectorB.keys[0],
   ].filter((key): key is string => typeof key === 'string'); // Filter out non-string values
 
-  return [...[CutScenesEnum.NEWS_INTRO], ...keys.map((value) => {
+  const newsIntro = {
+    1: CutScenesEnum.NEWS_INTRO_1,
+    2: CutScenesEnum.NEWS_INTRO_2,
+    3: CutScenesEnum.NEWS_INTRO_3,
+  }
+
+  return [...[newsIntro[round]], ...keys.map((value) => {
     return sceneSectorConfigurations[value].cutscene as CutScenesEnum;
   })];
 };
