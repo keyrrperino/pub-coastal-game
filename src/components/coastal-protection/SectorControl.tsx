@@ -780,18 +780,19 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                 currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
               return (
                 <>
-                  {/* Top bar: Budget left and Timer right */}
-                  <div className="w-full flex flex-row justify-between"
+                  {/* Top bar: Budget left, Timer taking remaining space */}
+                  <div className="w-full flex flex-row items-start gap-4"
                     style={{
                       alignItems: totalCoins > 0 ? "start" : "center"
                     }}
                   >
                     {/* Budget display left */}
-                    <div className="flex-1 flex items-start justify-start">
+                    <div className="flex-shrink-0">
                       <BudgetDisplay totalCoins={totalCoins} />
                     </div>
-                    {/* Timer right */}
-                    <div className="flex-1 flex items-start justify-end">
+                    
+                    {/* Timer taking remaining space */}
+                    <div className="flex-1 flex justify-center">
                       <Timer 
                         key={`${currentRound}-${currentPhase}`}
                         duration={showCutscene ? 0 : phaseDuration}

@@ -32,9 +32,9 @@ const Timer: React.FC<TimerProps> = ({
   });
 
   return (
-    <div className="flex flex-row items-center gap-4 xl:gap-8 w-full">
+    <div className="flex flex-row items-center justify-center gap-4 xl:gap-8">
       {/* Left: column with white box (clock+bar) and hint below */}
-      <div className="flex flex-col justify-center" style={{ minWidth: 400, maxWidth: 500 }}>
+      <div className="flex flex-col justify-start items-center" style={{ minWidth: 500, maxWidth: 700 }}>
         {/* White box: clock + bar */}
         <div className="flex flex-row items-center w-full rounded-[12px] xl:rounded-[16px] bg-white px-3 xl:px-4 py-1.5 xl:py-2 mb-1.5 xl:mb-2">
           {/* Clock icon */}
@@ -63,13 +63,13 @@ const Timer: React.FC<TimerProps> = ({
         </div>
         {/* Hint below, outside the white box */}
         {showHint && (
-          <div className="text-left mt-1 xl:mt-2">
+          <div className="text-center mt-3 xl:mt-4">
             <Hint text={hintText} />
           </div>
         )}
       </div>
       {/* Timer value */}
-      <div className={`flex items-baseline ml-2 xl:ml-4 ${isAlmostUp ? styles.timerWiggle : ''}`}>
+      <div className={`flex items-baseline ${isAlmostUp ? styles.timerWiggle : ''}`}>
         <div
           className={`${styles.novecentoBold} text-[80px] xl:text-[120px] font-bold leading-[1] text-white uppercase w-[100px] xl:w-[150px] text-center`}
         >
