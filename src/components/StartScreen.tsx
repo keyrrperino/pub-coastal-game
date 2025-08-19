@@ -60,7 +60,7 @@ export default function StartScreen({
             <div className="flex flex-row justify-center gap-5 w-full">
               <button
                 onClick={onStartGame}
-                className="min-w-[450px] h-[83px] py-4 px-8 bg-[#005DFF] text-white text-2xl rounded-full hover:bg-[#0052e6] transition-colors duration-200 whitespace-nowrap"
+                className="min-w-[450px] h-[83px] py-4 px-8 bg-[#005DFF] text-white text-2xl rounded-full hover:bg-[#0052e6] active:scale-95 transition-all duration-200 whitespace-nowrap"
                 style={{ fontFamily: 'Novecento Bold, sans-serif' }}
               >
                 Start Game For All
@@ -68,7 +68,7 @@ export default function StartScreen({
               
               <button
                 onClick={onShowLeaderboard}
-                className="min-w-[450px] h-[83px] py-4 px-8 bg-white text-[#005DFF] text-2xl rounded-full hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap"
+                className="min-w-[450px] h-[83px] py-4 px-8 bg-white text-[#005DFF] text-2xl rounded-full hover:bg-gray-100 active:scale-95 transition-all duration-200 whitespace-nowrap"
                 style={{ fontFamily: 'Novecento Bold, sans-serif' }}
               >
                 {isLeaderboardOpen ? 'Hide Leaderboard' : 'Show Leaderboard'}

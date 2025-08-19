@@ -771,7 +771,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
-        <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
+        <div className="w-full max-w-[900px] xl:max-w-[1160px] mx-auto px-[15px] xl:px-[20px] py-[15px] xl:py-[20px]">
           {/* Render content based on current phase */}
           {(() => {
             // Gameplay phases: Show Timer, Budget, and Sectors
@@ -780,30 +780,32 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                 currentPhase === GameLobbyStatus.ROUND_SCORE_BREAKDOWN) {
               return (
                 <>
-                  {/* Top bar: Budget left and Timer right */}
-                  <div className="w-full flex flex-row justify-between"
+                  {/* Top bar: Budget left, Timer taking remaining space */}
+                  <div className="w-full flex flex-row items-start gap-4"
                     style={{
                       alignItems: totalCoins > 0 ? "start" : "center"
                     }}
                   >
                     {/* Budget display left */}
-                    <div className="flex-1 flex items-start justify-start">
+                    <div className="flex-shrink-0">
                       <BudgetDisplay totalCoins={totalCoins} />
                     </div>
-                    {/* Timer right */}
-                    <div className="flex-1 flex items-start justify-end">
+                    
+                    {/* Timer taking remaining space */}
+                    <div className="flex-1 flex justify-center">
                       <Timer 
                         key={`${currentRound}-${currentPhase}`}
                         duration={showCutscene ? 0 : phaseDuration}
                         onTimeUp={handleTimeUp} 
                         isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
                         syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
+                        currentRound={currentRound}
                       />
                     </div>
                   </div>
 
                   {/* Sector sections */}
-                  <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+                  <div className="flex flex-col gap-[25px] xl:gap-[40px] mt-[70px] xl:mt-[48px] w-full items-center">
                     {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
                     {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
                   </div>
