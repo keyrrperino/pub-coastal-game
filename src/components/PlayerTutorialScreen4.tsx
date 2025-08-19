@@ -46,10 +46,10 @@ export default function PlayerTutorialScreen4({ phaseStartTime, timeRemaining }:
           <div className="flex flex-col items-center gap-[1.2vh] uppercase">
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-[0.8vh] text-center">
-              <p className="text-[#FFDD3D] text-[2.5vh] font-bold">
+              <p className="text-[#FFDD3D] text-[2.8vh] font-bold">
                 Once you select your coastal protection, it is locked in for the round.
               </p>
-              <p className="text-white text-[2.5vh] font-bold">
+              <p className="text-white text-[2.8vh] font-bold">
                 Remember to build them according to the right height of sea level rise for maximum protection.
               </p>
             </div>

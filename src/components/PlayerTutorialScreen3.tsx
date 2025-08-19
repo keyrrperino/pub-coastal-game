@@ -71,10 +71,10 @@ export default function PlayerTutorialScreen3({ phaseStartTime, timeRemaining }:
 
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-3 text-center">
-              <p className="text-white text-[1.4vw] font-bold">
+              <p className="text-white text-[2.8vh] font-bold">
               In each sector, choose out of three measures to protect your coast. 
               </p>
-              <p className="text-[#FFDD3D] text-[1.4vw] font-bold">
+              <p className="text-[#FFDD3D] text-[2.8vh] font-bold">
               Each measure has different strengths, weaknesses and costs.
               </p>
             </div>
@@ -105,7 +105,7 @@ export default function PlayerTutorialScreen3({ phaseStartTime, timeRemaining }:
 
             {/* Bottom Section - Game Instructions */}
             <div className="flex flex-col items-center gap-3 text-center">
-              <p className="text-[#FF6A6C] text-[1.5vw] font-bold max-w-[85%]">
+              <p className="text-[#FF6A6C] text-[3.2vh] font-bold max-w-[85%]">
                 Hint: Consider your sector's land use to help you make better decisions
               </p>
             </div>
