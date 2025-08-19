@@ -5,7 +5,7 @@ import { GameRoomService, getGlobalLeaderboard, ProcessedLeaderboardData } from 
 import ProgressBar from "@/games/pub-coastal-game/compontents/ProcessBar";
 import { ActivityLogType, LobbyStateType, RoundType } from "@/lib/types";
 import { GAME_ROUND_TIMER, GAME_STARST_IN_COUNTDOWN, lobbyStateDefaultValue, MODAL_CLOSE_COUNTDOWN_VALUE, OVERALL_SCORE_POINTS, SPLINE_URL, SplineTriggersConfig, TOTAL_COINS_PER_ROUND } from "@/lib/constants";
-import { GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "@/lib/enums";
+import { CutScenesEnum, GameEnum, GameLobbyStatus, LobbyStateEnum, UserSectorEnum } from "@/lib/enums";
 import { useInitialize } from "./hooks/initialize";
  
 import { useSplineTriggers } from "./hooks/useSplineTriggers";
@@ -215,16 +215,15 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       <EndingScreen performance={totalPerformance} finalScore={totalScore} />
     </div>
   )
-
-  const renderCutScenes = (
-    <>
-      {currentCutScene && (
+  const renderAllCutScences = (
+    Object.values(CutScenesEnum).map(value => {
+      return (
         <div
           className="fixed inset-0 w-screen h-screen m-0 p-0 bg-black z-10"
-          style={{ opacity: 1 }}
+          style={{ opacity: 1, display: value === currentCutScene ? "block" : "none" }}
         >
           <video
-            src={`/games/pub-coastal-spline/flash-reports/videos/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.webm?v=1.1`}
+            src={`/games/pub-coastal-spline/flash-reports/videos/${value?.replaceAll("-", " ").toLocaleLowerCase()}.webm?v=1.1`}
             autoPlay
             loop
             muted
@@ -235,17 +234,16 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
           {/* Frame Overlay */}
           <div className="fixed inset-0 z-20 flex items-center justify-center h-[100vh]">
             <img
-              src={`/games/pub-coastal-spline/flash-reports/images/${currentCutScene.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1.1`}
+              src={`/games/pub-coastal-spline/flash-reports/images/${value?.replaceAll("-", " ").toLocaleLowerCase()}.png?v=1.1`}
               className="pointer-events-none"
               // style={{ objectFit: "" }}
               alt="Frame Overlay"
             />
           </div>
         </div>
-      )}
-      {/* ...rest of your UI... */}
-    </>
-  );
+      )
+    })
+  )
 
   const renderScore = (
     (!triggersLoading && isGameOnGoing(lobbyState.gameLobbyStatus) && cutSceneStatus !== CutScenesStatusEnum.STARTED) && <div className="fixed inset-0 w-screen h-screen m-0 p-0 z-10">
@@ -379,7 +377,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     >
       {/* Only show Spline when triggers are done loading */}
       
-      {renderCutScenes}
+      {renderAllCutScences}
 
       <canvas
         ref={canvasRef}
