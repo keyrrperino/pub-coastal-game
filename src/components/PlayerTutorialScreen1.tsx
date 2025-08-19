@@ -21,15 +21,15 @@ export default function PlayerTutorialScreen1({ phaseStartTime }: TutorialScreen
       </div>
 
       <ProgressBar
-        containerClassName="fixed w-[30vw] z-10 top-[2vh] left-[35vw] py-[1vw] px-[0.5vw]"
+        containerClassName="fixed w-[25vw] z-10 top-[1vh] left-[37.5vw] py-[0.8vw] px-[0.4vw]"
         key={`Intro2`}
         duration={12}
         isRunning={true}
         clockStyle={{
-          marginRight: 5,
-          width: '1.5vw',
-          height: '1.5vw',
-          border: '0.2vw solid #060606',
+          marginRight: 4,
+          width: '1.2vw',
+          height: '1.2vw',
+          border: '0.15vw solid #060606',
         }}
       />
 
@@ -39,19 +39,19 @@ export default function PlayerTutorialScreen1({ phaseStartTime }: TutorialScreen
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8 overflow-scroll">
         {/* Dark Blue Central Panel with Light Gray Border */}
-        <div className="max-w-[70vw] max-h-[90%] h-full w-full px-12">
-          <div className="flex flex-col h-full justify-center uppercase gap-20">
+        <div className="max-w-[85vw] max-h-[85%] h-full w-full px-6">
+          <div className="flex flex-col h-full justify-center uppercase gap-8">
             {/* Welcome Title - Centered */}
 
             <div className="text-center">
-              <h1 className="text-white text-[5vh] font-bold leading-tight tracking-wide">
+              <h1 className="text-white text-[4.2vh] font-bold leading-tight tracking-wide">
               Welcome to the<br />
               Coastal Protection Taskforce!
               </h1>
             </div>
             
             {/* Mission Description - Centered */}
-            <div className="flex flex-col gap-6 text-center text-[3vh]">
+            <div className="flex flex-col gap-4 text-center text-[2.8vh]">
               <p className="text-white">
                 Singapore's sea levels are projected to rise <span className="text-[#FF6A6C]">by up to 1.15m by 2100</span>.
               </p>
@@ -64,18 +64,18 @@ export default function PlayerTutorialScreen1({ phaseStartTime }: TutorialScreen
             </div>
 
             {/* Disclaimer - Centered */}
-            <div className="mt-4 px-12">
-              <p className="text-white text-[2vh] text-center">
+            <div className="mt-3 px-6">
+              <p className="text-white text-[1.9vh] text-center">
                 *Disclaimer: This game is a simplified simulation and might not reflect real-life situations or scenarios.
               </p>
             </div>
 
-            <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
+            <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
               <Image
                   src="/assets/PUB logo_white_transparent.svg"
                   alt="pub logo"
-                  width={238}
-                  height={46}
+                  width={180}
+                  height={35}
                   className="object-contain"
                 />
             </div>
