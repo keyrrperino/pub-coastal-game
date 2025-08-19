@@ -799,7 +799,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                         onTimeUp={handleTimeUp} 
                         isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
                         syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-                        currentRound={currentRound}
+                        currentRound={firebaseRound}
                       />
                     </div>
                   </div>
