@@ -110,19 +110,18 @@ export function useCutSceneSequence(
       const elapsed = totalDuration - remainingSeconds;
       if (cutScenes.length === 0) return;
 
-      const hasIntro = cutScenes[0] === CutScenesEnum.NEWS_INTRO;
-      const introDuration = hasIntro ? 3 : 0;
+      const introDuration = 3;
 
       if (elapsed < introDuration) {
         if (currentCutSceneIndex !== 0) setCurrentCutSceneIndex(0);
         return;
       }
 
-      const remainingCount = Math.min(6, Math.max(0, cutScenes.length - (hasIntro ? 1 : 0)));
+      const remainingCount = Math.min(6, Math.max(0, cutScenes.length - 1));
       const remainingDuration = Math.max(0, totalDuration - introDuration);
 
       if (remainingCount <= 0 || remainingDuration <= 0) {
-        const boundedIndex = Math.min(cutScenes.length - 1, hasIntro ? 0 : 0);
+        const boundedIndex = Math.min(cutScenes.length - 1, 0);
         if (currentCutSceneIndex !== boundedIndex) setCurrentCutSceneIndex(boundedIndex);
         return;
       }
@@ -130,7 +129,7 @@ export function useCutSceneSequence(
       const elapsedAfterIntro = elapsed - introDuration;
       const segmentLength = remainingDuration / remainingCount; // 30s / N
       const nextIndexAfterIntro = Math.min(remainingCount - 1, Math.floor(elapsedAfterIntro / segmentLength));
-      const boundedIndex = Math.min(cutScenes.length - 1, (hasIntro ? 1 : 0) + nextIndexAfterIntro);
+      const boundedIndex = Math.min(cutScenes.length - 1, (1) + nextIndexAfterIntro);
 
       if (currentCutSceneIndex !== boundedIndex) {
         setCurrentCutSceneIndex(boundedIndex);
@@ -142,33 +141,6 @@ export function useCutSceneSequence(
       setCurrentCutSceneIndex(null);
     },
   });
-
-  //   // Drive cutscene index from a 30s timer split into N segments
-  // // If there are fewer than 6 cutscenes, divide 30s by the actual count
-  // useTimer({
-  //   duration: lobbyState.phaseDuration,
-  //   startImmediately: lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES,
-  //   syncWithTimestamp: lobbyState.phaseStartTime,
-  //   onTick: (remainingSeconds: number) => {
-  //     if (lobbyState.gameLobbyStatus !== GameLobbyStatus.ROUND_CUTSCENES) return;
-  //     const totalDuration = Math.max(1, lobbyState.phaseDuration || 30);
-  //     const elapsed = totalDuration - remainingSeconds;
-  //     if (cutScenes.length === 0) return;
-  //     const segmentCount = Math.min(6, cutScenes.length);
-  //     const segmentLength = totalDuration / segmentCount;
-  //     const nextIndex = Math.min(segmentCount - 1, Math.floor(elapsed / segmentLength));
-
-  //     const boundedIndex = Math.min(nextIndex, cutScenes.length - 1);
-  //     if (currentCutSceneIndex !== boundedIndex) {
-  //       setCurrentCutSceneIndex(boundedIndex);
-  //     }
-  //   },
-  //   onTimeUp: () => {
-  //     // End of cutscene phase
-  //     setCutScenesStatus(CutScenesStatusEnum.ENDED);
-  //     setCurrentCutSceneIndex(null);
-  //   },
-  // });
 
   // Clean up on unmount
   useEffect(() => {
