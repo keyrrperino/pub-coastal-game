@@ -771,7 +771,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
-        <div className="w-full max-w-[1160px] mx-auto px-[20px] py-[20px]">
+        <div className="w-full max-w-[900px] xl:max-w-[1160px] mx-auto px-[15px] xl:px-[20px] py-[15px] xl:py-[20px]">
           {/* Render content based on current phase */}
           {(() => {
             // Gameplay phases: Show Timer, Budget, and Sectors
@@ -803,7 +803,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                   </div>
 
                   {/* Sector sections */}
-                  <div className="flex flex-col gap-[40px] mt-[48px] w-full items-center">
+                  <div className="flex flex-col gap-[25px] xl:gap-[40px] mt-[30px] xl:mt-[48px] w-full items-center">
                     {renderSectorSection(sectorAId, sectorTitles.sectorA, progressionStateA)}
                     {renderSectorSection(sectorBId, sectorTitles.sectorB, progressionStateB)}
                   </div>

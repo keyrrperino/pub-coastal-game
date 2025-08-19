@@ -69,7 +69,7 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
 
   return (
     <div
-      className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-[20px] py-[20px] px-[30px] w-auto min-h-[194px]`}
+      className={`${styles.coastalProtectionCard} flex flex-col justify-center items-center gap-[15px] xl:gap-[20px] py-[15px] xl:py-[20px] px-[20px] xl:px-[30px] w-auto min-h-[160px] xl:min-h-[194px]`}
       style={{
         opacity: isActive ? 1 : 0.4,
         pointerEvents: isActive ? 'auto' : 'none',
@@ -77,29 +77,29 @@ const CoastalProtectionMeasure: React.FC<CoastalProtectionMeasureProps> = ({
         transition: 'opacity 0.3s, filter 0.3s'
       }}
     >
-      <div className="flex items-center gap-[14.13px] w-full">
+      <div className="flex items-center gap-[10px] xl:gap-[14.13px] w-full">
         <div 
-          className="flex justify-center items-center w-[36.95px] h-[36.95px] rounded-full overflow-hidden"
+          className="flex justify-center items-center w-[30px] h-[30px] xl:w-[36.95px] xl:h-[36.95px] rounded-full overflow-hidden"
           style={{ backgroundColor: getIconBgColor() }}
         >
           <img 
             src={getIconSrc()} 
             alt={title}
-            className="w-[43.73px] h-[43.73px] object-cover"
+            className="w-[35px] h-[35px] xl:w-[43.73px] xl:h-[43.73px] object-cover"
           />
         </div>
-        <div className="flex flex-col justify-center gap-1">
-          <div className={`${styles.novecentoBold} text-[22.07px] font-bold leading-[17.66px] text-white uppercase`} style={{lineHeight: '0.8em'}}>
+        <div className="flex flex-col justify-center gap-0.5 xl:gap-1">
+          <div className={`${styles.novecentoBold} text-[18px] xl:text-[22.07px] font-bold leading-[14px] xl:leading-[17.66px] text-white uppercase`} style={{lineHeight: '0.8em'}}>
             {title}
           </div>
           {subtitle && (
-            <div className={`${styles.novecentoBold} text-[12px] font-bold leading-[9.6px] text-white uppercase`} style={{lineHeight: '0.8em'}}>
+            <div className={`${styles.novecentoBold} text-[10px] xl:text-[12px] font-bold leading-[8px] xl:leading-[9.6px] text-white uppercase`} style={{lineHeight: '0.8em'}}>
               {subtitle}
             </div>
           )}
         </div>
       </div>
-      <div className="flex flex-row justify-center gap-[16.05px] w-full mt-2">
+      <div className="flex flex-row justify-center gap-[12px] xl:gap-[16.05px] w-full mt-1.5 xl:mt-2">
         {hasNoMoreAvailableUpgrades ? (
           <div className="flex flex-col items-center gap-[6px]" style={{gap: '6px'}}>
             <div className="flex flex-col justify-center items-center w-[76px] h-[76px]">

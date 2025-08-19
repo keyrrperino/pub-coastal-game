@@ -18,7 +18,7 @@ const Hint: React.FC<HintProps> = ({ text }) => {
   }, []);
 
   return (
-    <div className={`${styles.novecentoBold} text-[20.7px] font-bold text-center max-w-[600px] text-white uppercase leading-[1.1] flex items-center justify-center h-[28px] animate-pulse`}>
+    <div className={`${styles.novecentoBold} text-[16px] xl:text-[20.7px] font-bold text-center max-w-[400px] xl:max-w-[600px] text-white uppercase leading-[1.1] flex items-center justify-center h-[22px] xl:h-[28px] animate-pulse`}>
       {HINTS[currentHintIndex]}
     </div>
   );
