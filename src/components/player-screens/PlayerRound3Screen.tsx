@@ -12,7 +12,7 @@ export default function PlayerRound3Screen({ onContinue, timeRemaining }: Player
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/assets/start-screen-bg.png"
+          src="/assets/start-screen-bg-updated.png"
           alt="Coastal background"
           fill
           className="object-cover"
