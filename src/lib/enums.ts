@@ -15,7 +15,9 @@ export enum SplineEventName {
 
 
 export enum CutScenesEnum {
-  NEWS_INTRO = "news intro",
+  NEWS_INTRO_1 = "news intro 1",
+  NEWS_INTRO_2 = "news intro 2",
+  NEWS_INTRO_3 = "news intro 3",
 
   R1_1A_0 = "R1-1A-0",
   R1_1A_1 = "R1-1A-1",
