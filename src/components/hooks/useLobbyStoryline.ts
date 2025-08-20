@@ -15,20 +15,16 @@ export function useLobbyStoryline(
 
   const onTimeUp = () => {
     if (gameRoomServiceRef.current) {
-      setTimeout(() => {
-        if (gameRoomServiceRef.current) {
-          if (lobbyState.round <= 1) {
-            gameRoomServiceRef.current.addElement(ActivityTypeEnum.CHANGE_SCENE, "", 1, 0, false, SubSectorEnum.ONE_A);
-          }
+      if (lobbyState.round <= 1) {
+        gameRoomServiceRef.current.addElement(ActivityTypeEnum.CHANGE_SCENE, "", 1, 0, false, SubSectorEnum.ONE_A);
+      }
 
-          gameRoomServiceRef.current.updateLobbyState({
-            ...lobbyState, ...{
-            [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_GAMEPLAY,
-            [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
-            [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY,
-          }});
-        }
-      }, 1000); // 1000 milliseconds = 1 second
+      gameRoomServiceRef.current.updateLobbyState({
+        ...lobbyState, ...{
+        [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_GAMEPLAY,
+        [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
+        [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY,
+      }});
     }
   }
 

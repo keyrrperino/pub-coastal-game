@@ -54,12 +54,23 @@ export const useTimer = ({
   // Calculate time remaining based on Firebase sync with server time adjustment
   const calculateTimeRemaining = useCallback((): number => {
     if (!syncWithTimestamp || syncWithTimestamp === 0) {
+      console.log('🔍 [TIMER DEBUG] No sync timestamp, returning full duration:', duration);
       return duration; // Default to full duration if no sync timestamp
     }
 
     const currentTime = getAdjustedCurrentTime(); // Use server-adjusted time
     const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
     const remaining = Math.max(0, duration - elapsed);
+    
+    console.log('🔍 [TIMER DEBUG] Timer calculation:', {
+      syncTimestamp: syncWithTimestamp,
+      currentTime,
+      elapsed,
+      duration,
+      remaining,
+      syncTime: new Date(syncWithTimestamp).toLocaleTimeString(),
+      currentTimeStr: new Date(currentTime).toLocaleTimeString()
+    });
     
     return remaining;
   }, [syncWithTimestamp, duration, getAdjustedCurrentTime]);

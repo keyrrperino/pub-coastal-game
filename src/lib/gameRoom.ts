@@ -103,10 +103,12 @@ export class GameRoomService {
     if (!this.roomId) return;
 
     // Initial clock sync when setting up presence
+    console.log('🕒 [SETUP PRESENCE] Starting initial clock sync...');
     try {
-      await this.syncServerTime();
+      const syncResult = await this.syncServerTime();
+      console.log('🕒 [SETUP PRESENCE] Initial clock sync completed successfully:', syncResult);
     } catch (error) {
-      console.warn('🕒 Initial clock sync failed:', error);
+      console.warn('🕒 [SETUP PRESENCE] Initial clock sync failed:', error);
     }
 
     const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
@@ -317,6 +319,21 @@ export class GameRoomService {
     await set(phaseStartTimeRef, serverTimestamp());
   }
 
+  async updateRoundGameplayPhaseAtomic(gameDuration: number): Promise<void> {
+    if (!this.roomId) return;
+
+    const lobbyStateRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState`);
+    
+    // Update all three values atomically in a single operation
+    const updates: Record<string, any> = {
+      [LobbyStateEnum.PHASE_START_TIME]: serverTimestamp(),
+      [LobbyStateEnum.PHASE_DURATION]: gameDuration,
+      [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY
+    };
+
+    await update(lobbyStateRef, updates);
+  }
+
   async syncServerTime(): Promise<{ serverTime: number, localTime: number, clockOffset: number }> {
     if (!this.roomId) throw new Error('No room joined');
     
@@ -340,7 +357,13 @@ export class GameRoomService {
     this.clockOffset = clockOffset;
     this.lastSyncTime = Date.now();
     
-    console.log(`🕒 Clock sync complete: offset ${clockOffset}ms, delay ${estimatedNetworkDelay}ms`);
+    console.log(`🕒 [SYNC SERVER TIME] Clock sync complete:`, {
+      clockOffset: `${clockOffset}ms`,
+      networkDelay: `${estimatedNetworkDelay}ms`,
+      serverTime,
+      localTime: adjustedLocalTime,
+      syncTimestamp: new Date().toISOString()
+    });
     
     return { serverTime, localTime: adjustedLocalTime, clockOffset };
   }

@@ -22,36 +22,63 @@ interface ServerTimeProviderProps {
 }
 
 export const ServerTimeProvider: React.FC<ServerTimeProviderProps> = ({ children }) => {
-  const [clockOffset, setClockOffset] = useState(0);
-  const [lastSyncTime, setLastSyncTime] = useState(0);
-  const [isTimeSynced, setIsTimeSynced] = useState(false);
+  const [gameRoomServiceRef, setGameRoomServiceRef] = useState<GameRoomService | null>(null);
 
   const getAdjustedCurrentTime = () => {
-    return Date.now() + clockOffset;
+    if (!gameRoomServiceRef) {
+      // Fallback to local time if no service available
+      if (Math.random() < 0.01) { // 1% chance to log
+        console.log('🕒 [SERVER TIME] No GameRoomService reference, using local time');
+      }
+      return Date.now();
+    }
+
+    const adjustedTime = gameRoomServiceRef.getAdjustedCurrentTime();
+    // Log for debugging purposes - only log occasionally to avoid spam
+    if (Math.random() < 0.01) { // 1% chance to log
+      console.log('🕒 [SERVER TIME] getAdjustedCurrentTime called:', {
+        localTime: Date.now(),
+        clockOffset: gameRoomServiceRef.getClockOffset(),
+        adjustedTime,
+        deviceName: navigator.userAgent.includes('iPad') ? 'iPad' : 
+                   navigator.userAgent.includes('Android') ? 'Android' : 'PC'
+      });
+    }
+    return adjustedTime;
   };
 
   const updateFromGameRoomService = (gameRoomService: GameRoomService | null) => {
     if (!gameRoomService) {
-      setClockOffset(0);
-      setLastSyncTime(0);
-      setIsTimeSynced(false);
+      console.log('🕒 [SERVER TIME CONTEXT] No gameRoomService provided, clearing reference');
+      setGameRoomServiceRef(null);
       return;
     }
 
-    const offset = gameRoomService.getClockOffset();
-    const syncTime = gameRoomService.getLastSyncTime();
+    console.log('🕒 [SERVER TIME CONTEXT] Storing GameRoomService reference:', {
+      currentOffset: gameRoomService.getClockOffset(),
+      lastSyncTime: gameRoomService.getLastSyncTime(),
+      isTimeSynced: gameRoomService.getLastSyncTime() > 0,
+      syncTimeReadable: gameRoomService.getLastSyncTime() > 0 ? new Date(gameRoomService.getLastSyncTime()).toLocaleTimeString() : 'never'
+    });
     
-    setClockOffset(offset);
-    setLastSyncTime(syncTime);
-    setIsTimeSynced(syncTime > 0);
+    setGameRoomServiceRef(gameRoomService);
   };
 
-  // Update context when clock offset changes
+  // Computed values that are always fresh from the service
+  const clockOffset = gameRoomServiceRef?.getClockOffset() || 0;
+  const lastSyncTime = gameRoomServiceRef?.getLastSyncTime() || 0;
+  const isTimeSynced = lastSyncTime > 0;
+
+  // Log when GameRoomService reference changes
   useEffect(() => {
-    if (lastSyncTime > 0) {
-      console.log(`🕒 ServerTime context updated: offset ${clockOffset}ms, synced at ${new Date(lastSyncTime).toLocaleTimeString()}`);
+    if (gameRoomServiceRef) {
+      const syncTime = gameRoomServiceRef.getLastSyncTime();
+      const offset = gameRoomServiceRef.getClockOffset();
+      console.log(`🕒 ServerTime context reference updated: offset ${offset}ms, synced at ${syncTime > 0 ? new Date(syncTime).toLocaleTimeString() : 'never'}`);
+    } else {
+      console.log('🕒 ServerTime context reference cleared');
     }
-  }, [clockOffset, lastSyncTime]);
+  }, [gameRoomServiceRef]);
 
   return (
     <ServerTimeContext.Provider 

@@ -4,7 +4,7 @@ import { Application } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { lobbyStateDefaultValue } from "@/lib/constants";
-import { CutScenesEnum, GameEnum } from "@/lib/enums";
+import { CutScenesEnum, GameEnum, GameLobbyStatus } from "@/lib/enums";
 import { useServerTime } from "@/components/ServerTimeContext";
 
 export function useInitialize(roomName: string) {
@@ -80,7 +80,8 @@ export function useInitialize(roomName: string) {
         }
       });
 
-      // Update server time context after game room service is ready
+      // Update server time context with game room service reference
+      console.log('🕒 [INITIALIZE] Setting GameRoomService reference in ServerTimeContext');
       updateFromGameRoomService(gameRoomServiceRef.current);
     };
 
@@ -90,17 +91,6 @@ export function useInitialize(roomName: string) {
       gameRoomServiceRef.current?.disconnect();
     };
   }, [roomName, updateFromGameRoomService]);
-
-  // Periodic server time context sync (every 30 seconds)
-  useEffect(() => {
-    const syncInterval = setInterval(() => {
-      if (gameRoomServiceRef.current) {
-        updateFromGameRoomService(gameRoomServiceRef.current);
-      }
-    }, 30000);
-
-    return () => clearInterval(syncInterval);
-  }, [updateFromGameRoomService]);
 
   return {
     canvasRef,
