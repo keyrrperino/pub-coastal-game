@@ -231,6 +231,16 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
             muted
             playsInline
             controls={false}
+            onLoadedMetadata={(e) => {
+              if (![CutScenesEnum.NEWS_INTRO_1, CutScenesEnum.NEWS_INTRO_2, CutScenesEnum.NEWS_INTRO_3].includes(value)) {
+                e.currentTarget.playbackRate = 0.7143;
+              }
+            }}
+            onPlay={(e) => {
+              if (![CutScenesEnum.NEWS_INTRO_1, CutScenesEnum.NEWS_INTRO_2, CutScenesEnum.NEWS_INTRO_3].includes(value)) {
+                e.currentTarget.playbackRate = 0.7143;
+              }
+            }}
             className="fixed w-full h-full m-0 p-0 z-10"
           />
           {/* Frame Overlay */}

@@ -106,7 +106,7 @@ export function useCutSceneSequence(
     syncWithTimestamp: lobbyState.phaseStartTime,
     onTick: (remainingSeconds: number) => {
       if (lobbyState.gameLobbyStatus !== GameLobbyStatus.ROUND_CUTSCENES) return;
-      const totalDuration = Math.max(1, lobbyState.phaseDuration || 33);
+      const totalDuration = Math.max(1, lobbyState.phaseDuration || 45);
       const elapsed = totalDuration - remainingSeconds;
       if (cutScenes.length === 0) return;
 
