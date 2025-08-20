@@ -1,4 +1,5 @@
 import { database } from './firebase';
+import { v4 as uuidv4 } from 'uuid';
 import { 
   ref, 
   push, 
@@ -24,6 +25,9 @@ export class GameRoomService {
   private gobalStateCallback: ((lobbyState: LobbyStateType) => void) | null = null;
   private waterLevelCallback: ((waterLevel: number) => void) | null = null;
   private roundCallback: ((round: number) => void) | null = null;
+  private clockOffset: number = 0;
+  private lastSyncTime: number = 0;
+  private syncTimeoutId: NodeJS.Timeout | null = null;
 
   constructor(customUserName?: string, roomName?: string) {
     this.userName = customUserName || this.generateUserName();
@@ -47,7 +51,7 @@ export class GameRoomService {
   }
 
   generateRoomId(): string {
-    return 'room_' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    return 'room_' + Math.random().toString(36).substring(2, 10).toUpperCase();
   }
 
   async createRoom(roomName: string): Promise<string> {
@@ -76,7 +80,7 @@ export class GameRoomService {
     }
 
     this.roomId = roomId;
-    this.setupPresence();
+    await this.setupPresence();
     this.listenToActivity();
     this.listenToPresence();
     this.listenToWaterLevel();
@@ -97,8 +101,20 @@ export class GameRoomService {
     return activities;
   }
 
-  private setupPresence() {
+  private async setupPresence() {
     if (!this.roomId) return;
+
+    // Clear any existing sync timeout first
+    this.clearSyncTimeout();
+
+    // Initial clock sync when setting up presence
+    console.log('🕒 [SETUP PRESENCE] Starting initial clock sync...');
+    try {
+      const syncResult = await this.syncServerTime();
+      console.log('🕒 [SETUP PRESENCE] Initial clock sync completed successfully:', syncResult);
+    } catch (error) {
+      console.warn('🕒 [SETUP PRESENCE] Initial clock sync failed:', error);
+    }
 
     const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
     const userPresenceData = {
@@ -116,9 +132,28 @@ export class GameRoomService {
       lastSeen: serverTimestamp()
     });
 
-    // Update presence every 30 seconds
-    setInterval(() => {
-      update(userPresenceRef, { lastSeen: serverTimestamp() });
+    // Start the recursive presence update with clock sync
+    this.scheduleNextPresenceUpdate(userPresenceRef);
+  }
+
+  private scheduleNextPresenceUpdate(userPresenceRef: any): void {
+    // Clear any existing timeout
+    if (this.syncTimeoutId) {
+      clearTimeout(this.syncTimeoutId);
+    }
+
+    this.syncTimeoutId = setTimeout(async () => {
+      try {
+        await this.syncServerTime();
+        update(userPresenceRef, { lastSeen: serverTimestamp() });
+      } catch (error) {
+        console.warn('🕒 Clock sync failed during presence update:', error);
+        // Continue with presence update even if sync fails
+        update(userPresenceRef, { lastSeen: serverTimestamp() });
+      }
+      
+      // Schedule the next update only after this one completes
+      this.scheduleNextPresenceUpdate(userPresenceRef);
     }, 30000);
   }
 
@@ -294,6 +329,53 @@ export class GameRoomService {
     await set(lobbyStateRef, value); // This sets the value at the specific key
   }
 
+  async updatePhaseStartTimeWithServerTimestamp(): Promise<void> {
+    if (!this.roomId) return;
+
+    const phaseStartTimeRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/${LobbyStateEnum.PHASE_START_TIME}`);
+    await set(phaseStartTimeRef, serverTimestamp());
+  }
+
+  async syncServerTime(): Promise<{ serverTime: number, localTime: number, clockOffset: number }> {
+    if (!this.roomId) throw new Error('No room joined');
+    
+    const syncId = uuidv4();
+    const syncRef = ref(database, `${ROOMS}/${this.roomId}/timers/sync_${syncId}`);
+    
+    const localTimeBeforeWrite = Date.now();
+    await set(syncRef, serverTimestamp());
+    const snapshot = await get(syncRef);
+    const localTimeAfterRead = Date.now();
+    
+    // Cleanup immediately
+    await remove(syncRef);
+    
+    const serverTime = snapshot.val();
+    const estimatedNetworkDelay = (localTimeAfterRead - localTimeBeforeWrite) / 2;
+    const adjustedLocalTime = localTimeBeforeWrite + estimatedNetworkDelay;
+    const clockOffset = serverTime - adjustedLocalTime;
+    
+    // Store offset and sync time in instance
+    this.clockOffset = clockOffset;
+    this.lastSyncTime = Date.now();
+    
+    console.log(`🕒 [SYNC SERVER TIME] Clock sync complete`);
+    
+    return { serverTime, localTime: adjustedLocalTime, clockOffset };
+  }
+
+  getClockOffset(): number {
+    return this.clockOffset;
+  }
+
+  getLastSyncTime(): number {
+    return this.lastSyncTime;
+  }
+
+  getAdjustedCurrentTime(): number {
+    return Date.now() + this.clockOffset;
+  }
+
   async updateRound(round: number): Promise<void> {
     if (!this.roomId) return;
 
@@ -408,7 +490,17 @@ export class GameRoomService {
     return Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
   }
 
+  async deleteEntireRoom(): Promise<void> {
+    if (!this.roomId) return;
+    
+    const roomRef = ref(database, `${ROOMS}/${this.roomId}`);
+    await remove(roomRef);
+  }
+
   disconnect() {
+    // Clear any running sync timeout
+    this.clearSyncTimeout();
+    
     if (this.roomId) {
       const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
       update(userPresenceRef, {
@@ -416,6 +508,18 @@ export class GameRoomService {
         lastSeen: serverTimestamp()
       });
     }
+  }
+
+  private clearSyncTimeout(): void {
+    if (this.syncTimeoutId) {
+      clearTimeout(this.syncTimeoutId);
+      this.syncTimeoutId = null;
+    }
+  }
+
+  destroy(): void {
+    this.clearSyncTimeout();
+    this.disconnect();
   }
 }
 

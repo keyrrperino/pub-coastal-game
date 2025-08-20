@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { GAME_ROUND_TIMER } from "@/lib/constants";
 import { GameLobbyStatus } from "@/lib/enums";
 import { isGameOnGoing } from "@/lib/utils";
+import { useServerTime } from "@/components/ServerTimeContext";
 
 export function usePreparingProgress(
   countdown: number = GAME_ROUND_TIMER,
@@ -11,6 +12,7 @@ export function usePreparingProgress(
   countdownStartTime: number,
   delayBeforeStart: number = 0 // in seconds
 ) {
+  const { getAdjustedCurrentTime } = useServerTime();
   const [progress, setProgress] = useState(1);
   const [isStarting, setIsStarting] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -26,7 +28,7 @@ export function usePreparingProgress(
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
-      const now = Date.now();
+      const now = getAdjustedCurrentTime();
       const elapsed = now - countdownStartTime;
 
       if (elapsed < delayBeforeStart * 1000) {
@@ -52,7 +54,7 @@ export function usePreparingProgress(
 
   // Calculate the countdown number to display
   let countdownDisplay = 0;
-  const now = Date.now();
+  const now = getAdjustedCurrentTime();
   const elapsed = now - countdownStartTime;
   if (isStarting) {
     // During delay phase

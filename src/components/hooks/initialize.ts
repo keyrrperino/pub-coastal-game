@@ -4,7 +4,8 @@ import { Application } from "@splinetool/runtime";
 import { GameRoomService } from "@/lib/gameRoom";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { lobbyStateDefaultValue } from "@/lib/constants";
-import { CutScenesEnum, GameEnum } from "@/lib/enums";
+import { CutScenesEnum, GameEnum, GameLobbyStatus } from "@/lib/enums";
+import { useServerTime } from "@/components/ServerTimeContext";
 
 export function useInitialize(roomName: string) {
   console.log("roomNameawefawef", roomName)
@@ -12,6 +13,7 @@ export function useInitialize(roomName: string) {
   
   const splineAppRef = useRef<Application | null>(null);
   const gameRoomServiceRef = useRef<GameRoomService | null>(null);
+  const { updateFromGameRoomService } = useServerTime();
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [activities, setActivities] = useState<ActivityLogType[] | null>(null);
@@ -77,6 +79,10 @@ export function useInitialize(roomName: string) {
           setActivities([]);
         }
       });
+
+      // Update server time context with game room service reference
+      console.log('🕒 [INITIALIZE] Setting GameRoomService reference in ServerTimeContext');
+      updateFromGameRoomService(gameRoomServiceRef.current);
     };
 
     setupRoom();

@@ -1,13 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
-import ProgressBar from '@/games/pub-coastal-game/compontents/ProcessBar';
+import TimerBar from '@/components/coastal-protection/TimerBar';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface TutorialScreen2Props {
   phaseStartTime: number;
 }
 
 export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props) {
-  const localStartRef = React.useRef<number>(Date.now());
+  const { getAdjustedCurrentTime } = useServerTime();
+  const localStartRef = React.useRef<number>(getAdjustedCurrentTime());
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -24,18 +26,12 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
-      <ProgressBar
-        containerClassName="fixed w-[30vw] z-10 top-[2vh] left-[35vw] py-[1vw] px-[0.5vw]"
-        key={`Intro2`}
-        duration={12}
-        isRunning={true}
-        clockStyle={{
-          marginRight: 5,
-          width: '1.5vw',
-          height: '1.5vw',
-          border: '0.2vw solid #060606',
-        }}
-      />
+      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
+        <TimerBar
+          duration={12}
+          isRunning={true}
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">

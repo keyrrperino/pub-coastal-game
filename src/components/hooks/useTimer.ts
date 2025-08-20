@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 export interface UseTimerProps {
   duration: number;
@@ -34,6 +35,7 @@ export const useTimer = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const onTimeUpRef = useRef(onTimeUp);
   const onTickRef = useRef(onTick);
+  const { getAdjustedCurrentTime } = useServerTime();
 
   // Update refs when callbacks change
   useEffect(() => {
@@ -49,18 +51,18 @@ export const useTimer = ({
     }
   }, []);
 
-  // Calculate time remaining based on Firebase sync
+  // Calculate time remaining based on Firebase sync with server time adjustment
   const calculateTimeRemaining = useCallback((): number => {
     if (!syncWithTimestamp || syncWithTimestamp === 0) {
       return duration; // Default to full duration if no sync timestamp
     }
 
-    const currentTime = Date.now();
+    const currentTime = getAdjustedCurrentTime(); // Use server-adjusted time
     const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
     const remaining = Math.max(0, duration - elapsed);
     
     return remaining;
-  }, [syncWithTimestamp, duration]);
+  }, [syncWithTimestamp, duration, getAdjustedCurrentTime]);
 
   // Main timer effect - runs every second when timer is active
   useEffect(() => {

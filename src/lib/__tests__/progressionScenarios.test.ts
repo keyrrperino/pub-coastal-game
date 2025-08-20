@@ -24,9 +24,9 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(mangroveActions.length).toBe(1);
       expect(mangroveActions[0].status).toBe(ActionStatus.SELECTABLE);
       
-      // Check seawall base actions (all heights available in R1)
+      // Check seawall base actions (0.5m and 1.15m available in R1, 2m unlocks in R2)
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1);
-      expect(seawallActions.length).toBe(3);
+      expect(seawallActions.length).toBe(2);
       expect(seawallActions.every(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
       // Check land reclamation base actions (should show all R1 options: 0.5m, 1.15m, 2m)
@@ -61,9 +61,9 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       const plantMangrove = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES);
       expect(plantMangrove?.status).toBe(ActionStatus.COMPLETED);
       
-      // Seawall should be locked due to conflict (all heights)
+      // Seawall should be locked due to conflict (R1 heights)
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 1);
-      expect(seawallActions.length).toBe(3);
+      expect(seawallActions.length).toBe(2); // Only 0.5m and 1.15m available in R1
       expect(seawallActions.every(action => action.status === ActionStatus.LOCKED_CONFLICT)).toBe(true);
       
       // Land reclamation should be locked due to conflict (all heights)
@@ -93,7 +93,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(mangroveActions.length).toBe(2);
       
       const plantMangrove = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES);
-      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_BOARDWALK);
+      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK);
       
       expect(plantMangrove?.status).toBe(ActionStatus.COMPLETED);
       expect(boardwalk?.status).toBe(ActionStatus.SELECTABLE);
@@ -114,8 +114,8 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
           id: '2',
           userId: 'player1',
           userName: 'Player 1',
-          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK,
-          value: 'R1_1A_BUILD_BOARDWALK',
+          action: ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK,
+          value: 'R1_1A_UPGRADE_MANGROVES_BOARDWALK',
           timestamp: 2000,
           round: 2
         }
@@ -128,7 +128,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(mangroveActions.length).toBe(2);
       
       const plantMangrove = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES);
-      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_BOARDWALK);
+      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK);
       
       expect(plantMangrove?.status).toBe(ActionStatus.COMPLETED);
       expect(boardwalk?.status).toBe(ActionStatus.COMPLETED);
@@ -169,11 +169,11 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       expect(mangroveActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
       const seawallActions = getActionsForMeasureType('seawall', sectorActions, activeActions, activeCPMPath, 2);
-      expect(seawallActions.length).toBe(4); // All heights + Build Path (R2 unlocked)
+      expect(seawallActions.length).toBe(3); // All heights (0.5m, 1.15m, 2m) - Build Path unlocks in R3
       expect(seawallActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
       
       const landRecActions = getActionsForMeasureType('land-reclamation', sectorActions, activeActions, activeCPMPath, 2);
-      expect(landRecActions.length).toBe(5); // All LR heights + R2 upgrades
+      expect(landRecActions.length).toBe(6); // All LR heights (3) + R2 upgrades (3)
       expect(landRecActions.some(action => action.status === ActionStatus.SELECTABLE)).toBe(true);
     });
 
@@ -249,7 +249,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       const baseSeawall = seawallActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL);
       const seawall115 = seawallActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL);
       const seawall2 = seawallActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL);
-      const path = seawallActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_PATH);
+      const path = seawallActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_UPGRADE_SEAWALL_WALK_PATH);
       
       expect(baseSeawall?.status).toBe(ActionStatus.COMPLETED);
       expect(seawall115?.status).toBe(ActionStatus.SELECTABLE);
@@ -308,7 +308,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
       
       // In Round 1, boardwalk should not be available even though prerequisite is met
       const mangroveActions = getActionsForMeasureType('mangroves', sectorActions, activeActions, activeCPMPath, 1);
-      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_BUILD_BOARDWALK);
+      const boardwalk = mangroveActions.find(a => a.config.id === ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK);
       
       // Boardwalk should either not be shown or be LOCKED_PREREQUISITE due to round requirement
       if (boardwalk) {
@@ -361,7 +361,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
         },
         { 
           id: '2', 
-          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          action: ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK, 
           timestamp: 2000, 
           value: '', 
           userId: 'test', 
@@ -461,7 +461,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
         },
         { 
           id: '2', 
-          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          action: ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK, 
           timestamp: 2000, 
           value: '', 
           userId: 'test', 
@@ -511,7 +511,7 @@ describe('Progression Scenarios - Implementation Guide Test Cases', () => {
         },
         { 
           id: '2', 
-          action: ActivityTypeEnum.R1_1A_BUILD_BOARDWALK, 
+          action: ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK, 
           timestamp: 2000, 
           value: '', 
           userId: 'test', 

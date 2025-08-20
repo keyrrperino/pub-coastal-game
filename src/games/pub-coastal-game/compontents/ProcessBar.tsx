@@ -24,6 +24,21 @@ const ProgressBar: React.FC<TimerProps> = ({
   style,
   clockStyle
 }) => {
+  // Log for ROUND_GAMEPLAY phase
+  useEffect(() => {
+    if (duration === 30 && isRunning) {
+      console.log('🎮 [PROGRESSBAR] ROUND_GAMEPLAY ProgressBar rendered:', {
+        duration,
+        isRunning,
+        syncWithTimestamp,
+        syncTimeStr: syncWithTimestamp ? new Date(syncWithTimestamp).toISOString() : 'none',
+        currentTimeStr: new Date().toISOString(),
+        deviceName: navigator.userAgent.includes('iPad') ? 'iPad' : 
+                   navigator.userAgent.includes('Android') ? 'Android' : 'PC'
+      });
+    }
+  }, [duration, isRunning, syncWithTimestamp]);
+
   const {
     progressPercentage,
   } = useTimerBar({

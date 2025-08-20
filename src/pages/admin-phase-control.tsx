@@ -117,13 +117,13 @@ export default function AdminPhaseControl() {
       // Reset timer when entering ROUND_GAMEPLAY phase
       if (newPhase === GameLobbyStatus.ROUND_GAMEPLAY) {
         console.log('⏰ Updating timer for gameplay phase');
-        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updatePhaseStartTimeWithServerTimestamp();
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, GAME_ROUND_TIMER);
         console.log(`✅ Timer reset for gameplay phase: ${GAME_ROUND_TIMER}s`);
       } else {
         console.log('⏰ Updating timer for regular phase');
         // For other phases, just update duration and start time normally
-        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updatePhaseStartTimeWithServerTimestamp();
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, phaseDuration);
         console.log(`✅ Timer updated with duration: ${phaseDuration}s`);
       }
@@ -136,15 +136,16 @@ export default function AdminPhaseControl() {
 
 
 
-  const resetFirebaseRoom = async () => {
+  const resetAdminPhaseControl = async () => {
     if (!isConnected) return;
 
     const confirmReset = window.confirm(
-      'Are you sure you want to reset the Firebase room? This will:\n\n' +
+      'Are you sure you want to reset the Admin Phase Control? This will:\n\n' +
       '• Reset all game state to defaults\n' +
       '• Clear all activity logs\n' +
       '• Reset all player ready states\n' +
-      '• Set phase back to INITIALIZING\n' +
+      '• Set phase back to INTRODUCTION\n' +
+      '• Set round to 0\n' +
       '• Clear all coin spending data\n\n' +
       'This action cannot be undone!'
     );
@@ -155,9 +156,8 @@ export default function AdminPhaseControl() {
       // Reset lobby state to default
       await gameRoomService.updateLobbyState(lobbyStateDefaultValue);
       
-      // Explicitly set phase to INTRODUCTION and round to 1
+      // Explicitly set phase to INTRODUCTION and round to 0
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INTRODUCTION);
-      await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.GAME_LOBBY_STATUS, GameLobbyStatus.INITIALIZING);
       await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.ROUND, 0);
       
       // Clear all activities
@@ -166,10 +166,42 @@ export default function AdminPhaseControl() {
       // Reset all players ready state
       await gameRoomService.resetAllPlayersReady();
       
-      console.log('Firebase room has been completely reset to INTRODUCTION');
+      console.log('Admin Phase Control has been reset - phase: INTRODUCTION, round: 0');
     } catch (error) {
-      console.error('Failed to reset Firebase room:', error);
-      alert('Failed to reset Firebase room. Check console for details.');
+      console.error('Failed to reset Admin Phase Control:', error);
+      alert('Failed to reset Admin Phase Control. Check console for details.');
+    }
+  };
+
+  const deleteFirebaseRoom = async () => {
+    if (!isConnected) return;
+
+    const confirmDelete = window.confirm(
+      'Are you sure you want to DELETE and recreate the Firebase room? This will:\n\n' +
+      '• PERMANENTLY DELETE the entire room from Firebase\n' +
+      '• Remove all game data, activities, presence, and state\n' +
+      '• Recreate the room with default lobby state\n' +
+      '• Reset to INTRODUCTION phase with round 1\n\n' +
+      'WARNING: This action is IRREVERSIBLE!'
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      // Delete the entire room first
+      await gameRoomService.deleteEntireRoom();
+      console.log('Firebase room has been completely deleted');
+      
+      // Recreate the room with default state
+      await gameRoomService.createRoom(room);
+      console.log('Firebase room has been recreated with default state');
+      
+      // The room is recreated and we're still connected, so the listeners will pick up the new state
+      alert('Firebase room has been deleted and recreated with default settings.');
+      
+    } catch (error) {
+      console.error('Failed to delete and recreate Firebase room:', error);
+      alert('Failed to delete and recreate Firebase room. Check console for details.');
     }
   };
 
@@ -327,16 +359,32 @@ export default function AdminPhaseControl() {
 
         {/* Reset Controls */}
         <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-red-600">Danger Zone:</h3>
-          <button
-            onClick={resetFirebaseRoom}
-            className="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
-            Reset Firebase Room
-          </button>
-          <p className="text-sm text-gray-600 mt-2">
-            ⚠️ This will completely reset the game state, clear all activities, and reset all players to not ready.
-          </p>
+          <h3 className="text-lg font-semibold mb-3 text-red-600">Reset Options:</h3>
+          <div className="space-y-4">
+            <div>
+              <button
+                onClick={resetAdminPhaseControl}
+                className="px-6 py-3 bg-orange-600 text-white rounded hover:bg-orange-700 transition"
+              >
+                Reset Admin Phase Control
+              </button>
+              <p className="text-sm text-gray-600 mt-2">
+                🎮 <strong>For Admin Phase Control usage:</strong> Resets game state, sets round to 0, returns to INTRODUCTION phase. Use this when controlling the game through the admin interface.
+              </p>
+            </div>
+            
+            <div>
+              <button
+                onClick={deleteFirebaseRoom}
+                className="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700 transition"
+              >
+                DELETE & Recreate Firebase Room
+              </button>
+              <p className="text-sm text-gray-600 mt-2">
+                📱 <strong>For Main Screen/Player usage:</strong> Permanently deletes the entire Firebase room and recreates it with default lobby state. Use this when players need a completely fresh start. Cannot be undone!
+              </p>
+            </div>
+          </div>
         </div>
 
 

@@ -3,6 +3,7 @@ import { GameLobbyStatus } from '@/lib/enums';
 import { LobbyStateType } from '@/lib/types';
 import { lobbyStateDefaultValue } from '@/lib/constants';
 import { getPhaseDuration } from './phaseUtils';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface GameFlowControllerReturn {
   currentPhase: GameLobbyStatus;
@@ -44,6 +45,7 @@ export function useGameFlowController(
   lobbyState: LobbyStateType | null,
   setLobbyState: React.Dispatch<React.SetStateAction<LobbyStateType | null>>
 ): GameFlowControllerReturn {
+  const { getAdjustedCurrentTime } = useServerTime();
   const [currentPhase, setCurrentPhase] = useState<GameLobbyStatus>(GameLobbyStatus.INTRODUCTION);
   const [currentRound, setCurrentRound] = useState<number>(1);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
@@ -65,7 +67,7 @@ export function useGameFlowController(
       ...(prev || {}),
       gameLobbyStatus: GameLobbyStatus.INTRODUCTION,
       round: 1,
-      phaseStartTime: Date.now(),
+      phaseStartTime: getAdjustedCurrentTime(),
       phaseDuration: phaseDuration
     }));
   }, [setLobbyState, getPhaseDuration]);
@@ -80,7 +82,7 @@ export function useGameFlowController(
       ...(prev || {}),
       gameLobbyStatus: GameLobbyStatus.INTRODUCTION,
       round: 1,
-      phaseStartTime: Date.now(),
+      phaseStartTime: getAdjustedCurrentTime(),
       phaseDuration: phaseDuration,
       readyPlayers: {} // Reset ready players
     }));

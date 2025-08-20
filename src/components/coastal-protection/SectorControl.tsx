@@ -13,6 +13,7 @@ import { useGameContext } from '@/games/pub-coastal-game-spline/GlobalGameContex
 import { useProgression } from '@/components/hooks/useProgression';
 import { getPhaseDuration } from '@/components/hooks/phaseUtils';
 import { useGameFlowController, createDefaultLobbyState } from '@/components/hooks/useGameFlowController';
+import { useServerTime } from '@/components/ServerTimeContext';
 import { useSectorScores, SectorPerformance } from '@/components/hooks/useSectorScores';
 import { hasAnyConstructionInSector, hasAnySelectableActionsInMeasureType, getCPMCompletionRound, getSectorActions, calculateActiveActions, getActiveCPMPath, calculateRoundStartButtonSet, isSectorDemolishable, getActionState } from '@/lib/progressionUtils';
 
@@ -70,6 +71,7 @@ type RoundStartButtonSets = Record<string, Record<string, { config: any; status:
 
 const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
   const { triggerSingleBuild } = useGameContext();
+  const { updateFromGameRoomService } = useServerTime();
   const [gameRoomService] = useState(() => new GameRoomService(`sector-${sector.slice(-1)}`, roomName ?? GameEnum.DEFAULT_ROOM_NAME));
   const [activityLog, setActivityLog] = useState<ActivityLogType[]>([]);
   const [localRound, setLocalRound] = useState(1);
@@ -575,6 +577,10 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
           await gameRoomService.joinRoom(roomName);
         }
         
+        // Update server time context with game room service reference
+        console.log('🕒 [SECTOR CONTROL] Setting GameRoomService reference in ServerTimeContext');
+        updateFromGameRoomService(gameRoomService);
+        
         // Listen to activity changes
         gameRoomService.onActivityChange((activities) => {
           // Reset local state when Firebase activities are empty (new game)
@@ -804,14 +810,22 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
                     
                     {/* Timer taking remaining space */}
                     <div className="flex-1 flex justify-center">
-                      <Timer 
-                        key={`${currentRound}-${currentPhase}`}
-                        duration={showCutscene ? 0 : phaseDuration}
-                        onTimeUp={handleTimeUp} 
-                        isRunning={currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene}
-                        syncWithTimestamp={showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined)}
-                        currentRound={firebaseRound}
-                      />
+                      {(() => {
+                        const timerDuration = showCutscene ? 0 : phaseDuration;
+                        const timerIsRunning = currentPhase === GameLobbyStatus.ROUND_GAMEPLAY && !showCutscene;
+                        const timerSyncTimestamp = showCutscene ? undefined : (phaseStartTime > 0 ? phaseStartTime : undefined);
+
+                        return (
+                          <Timer 
+                            key={`${currentRound}-${currentPhase}`}
+                            duration={timerDuration}
+                            onTimeUp={handleTimeUp} 
+                            isRunning={timerIsRunning}
+                            syncWithTimestamp={timerSyncTimestamp}
+                            currentRound={firebaseRound}
+                          />
+                        );
+                      })()}
                     </div>
                   </div>
 
