@@ -27,6 +27,7 @@ export class GameRoomService {
   private roundCallback: ((round: number) => void) | null = null;
   private clockOffset: number = 0;
   private lastSyncTime: number = 0;
+  private syncTimeoutId: NodeJS.Timeout | null = null;
 
   constructor(customUserName?: string, roomName?: string) {
     this.userName = customUserName || this.generateUserName();
@@ -103,6 +104,9 @@ export class GameRoomService {
   private async setupPresence() {
     if (!this.roomId) return;
 
+    // Clear any existing sync timeout first
+    this.clearSyncTimeout();
+
     // Initial clock sync when setting up presence
     console.log('🕒 [SETUP PRESENCE] Starting initial clock sync...');
     try {
@@ -128,8 +132,17 @@ export class GameRoomService {
       lastSeen: serverTimestamp()
     });
 
-    // Update presence every 30 seconds WITH clock sync
-    setInterval(async () => {
+    // Start the recursive presence update with clock sync
+    this.scheduleNextPresenceUpdate(userPresenceRef);
+  }
+
+  private scheduleNextPresenceUpdate(userPresenceRef: any): void {
+    // Clear any existing timeout
+    if (this.syncTimeoutId) {
+      clearTimeout(this.syncTimeoutId);
+    }
+
+    this.syncTimeoutId = setTimeout(async () => {
       try {
         await this.syncServerTime();
         update(userPresenceRef, { lastSeen: serverTimestamp() });
@@ -138,6 +151,9 @@ export class GameRoomService {
         // Continue with presence update even if sync fails
         update(userPresenceRef, { lastSeen: serverTimestamp() });
       }
+      
+      // Schedule the next update only after this one completes
+      this.scheduleNextPresenceUpdate(userPresenceRef);
     }, 30000);
   }
 
@@ -482,6 +498,9 @@ export class GameRoomService {
   }
 
   disconnect() {
+    // Clear any running sync timeout
+    this.clearSyncTimeout();
+    
     if (this.roomId) {
       const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
       update(userPresenceRef, {
@@ -489,6 +508,18 @@ export class GameRoomService {
         lastSeen: serverTimestamp()
       });
     }
+  }
+
+  private clearSyncTimeout(): void {
+    if (this.syncTimeoutId) {
+      clearTimeout(this.syncTimeoutId);
+      this.syncTimeoutId = null;
+    }
+  }
+
+  destroy(): void {
+    this.clearSyncTimeout();
+    this.disconnect();
   }
 }
 
