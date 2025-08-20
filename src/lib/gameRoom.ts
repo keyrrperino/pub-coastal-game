@@ -474,6 +474,13 @@ export class GameRoomService {
     return Object.values(lobbyState.readyPlayers).filter(ready => ready).length;
   }
 
+  async deleteEntireRoom(): Promise<void> {
+    if (!this.roomId) return;
+    
+    const roomRef = ref(database, `${ROOMS}/${this.roomId}`);
+    await remove(roomRef);
+  }
+
   disconnect() {
     if (this.roomId) {
       const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
