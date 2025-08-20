@@ -1,14 +1,11 @@
 import { ActivityTypeEnum } from './enums';
 import { ActionConfig, DynamicCostConfig } from './types';
-import { createDynamicCostConfig, createDynamicCostRule } from './dynamicCosts';
 
 // Re-export ActionConfig for backward compatibility
 export type { ActionConfig } from './types';
 
 // Template-specific types for configuration
 interface TemplateDynamicCostRule {
-  /** The current round this rule applies to */
-  rounds: number[];
   /** Prerequisites that must be active for this cost to apply (template keys) */
   requiredActiveActions?: string[];
   /** The cost when this rule matches */
@@ -75,9 +72,15 @@ const zone1Template: Record<string, TemplateAction> = {
   },
   BUILD_SEAWALL_1_15: {
     displayName: '1.15m', 
-    cost: createDynamicCostConfig(2, [
-      createDynamicCostRule([2, 3], 1) // R2 & R3: upgrade from 0.5m to 1.15m costs only 1 coin
-    ]), 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
     unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
@@ -85,9 +88,15 @@ const zone1Template: Record<string, TemplateAction> = {
   },
   BUILD_SEAWALL_2: {
     displayName: '2m', 
-    cost: createDynamicCostConfig(3, [
-      createDynamicCostRule([2, 3], 2) // R2 & R3: upgrade from 0.5m to 2.00m costs only 2 coins
-    ]), 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        }
+      ]
+    }, 
     unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
@@ -161,9 +170,15 @@ const zone2Template: Record<string, TemplateAction> = {
   },
   BUILD_SEAWALL_1_15: {
     displayName: '1.15m', 
-    cost: createDynamicCostConfig(2, [
-      createDynamicCostRule([2, 3], 1) // R2 & R3: upgrade from 0.5m to 1.15m costs only 1 coin
-    ]), 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
     unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
@@ -171,9 +186,15 @@ const zone2Template: Record<string, TemplateAction> = {
   },
   BUILD_SEAWALL_2: {
     displayName: '2m', 
-    cost: createDynamicCostConfig(3, [
-      createDynamicCostRule([2, 3], 2) // R2 & R3: upgrade from 0.5m to 2.00m costs only 2 coins
-    ]), 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        }
+      ]
+    }, 
     unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
@@ -215,9 +236,15 @@ const zone3Template: Record<string, TemplateAction> = {
   },
   BUILD_REVETMENT_2: {
     displayName: 'Rocky Revet 2m', 
-    cost: createDynamicCostConfig(2, [
-      createDynamicCostRule([2, 3], 1, ['BUILD_ARTIFICIAL_REEF']) // R2 & R3: Artificial Reef + Rocky Revet 1.15 upgrade to Rocky Revet 2.0 costs only 1 coin
-    ]), 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_ARTIFICIAL_REEF'],
+          cost: 1 // Artificial Reef + Rocky Revet 1.15 upgrade to Rocky Revet 2.0 costs only 1 coin
+        }
+      ]
+    }, 
     unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     replaces: ['BUILD_REVETMENT_1_15'],
@@ -371,7 +398,6 @@ function createZoneActions(template: Record<string, TemplateAction>, enumMap: Re
     let cost = templateAction.cost;
     if (typeof cost === 'object' && cost !== null && 'dynamicRules' in cost) {
       const dynamicRules = cost.dynamicRules?.map(rule => ({
-        rounds: rule.rounds,
         cost: rule.cost,
         requiredActiveActions: rule.requiredActiveActions?.map(
           templateKey => enumMap[templateKey]

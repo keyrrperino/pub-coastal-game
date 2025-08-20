@@ -4,13 +4,11 @@ import { DynamicCostConfig, DynamicCostRule } from './types';
 /**
  * Calculate the dynamic cost for an action based on current game state
  * @param costConfig - Either a static number or DynamicCostConfig object
- * @param currentRound - The current game round
  * @param activeActions - Set of currently active actions
  * @returns The calculated cost as a number
  */
 export function calculateDynamicCost(
   costConfig: number | DynamicCostConfig,
-  currentRound: number,
   activeActions: Set<ActivityTypeEnum>
 ): number {
   // If it's a simple number, return it (backwards compatibility)
@@ -20,11 +18,6 @@ export function calculateDynamicCost(
   
   // Check dynamic rules in order
   for (const rule of costConfig.dynamicRules || []) {
-    // Check if current round matches
-    if (!rule.rounds.includes(currentRound)) {
-      continue;
-    }
-    
     // Check if required active actions are present
     if (rule.requiredActiveActions) {
       const hasAllRequired = rule.requiredActiveActions.every(
@@ -61,18 +54,15 @@ export function createDynamicCostConfig(
 
 /**
  * Helper function to create a dynamic cost rule
- * @param rounds - Array of rounds this rule applies to
  * @param cost - The cost when this rule matches
  * @param requiredActiveActions - Optional array of required active actions (can be string[] for template usage)
  * @returns DynamicCostRule object
  */
 export function createDynamicCostRule(
-  rounds: number[],
   cost: number,
   requiredActiveActions?: ActivityTypeEnum[] | string[]
 ): DynamicCostRule {
   return {
-    rounds,
     cost,
     requiredActiveActions: requiredActiveActions as ActivityTypeEnum[]
   };

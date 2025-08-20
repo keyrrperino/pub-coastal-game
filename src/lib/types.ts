@@ -162,8 +162,6 @@ export interface ActionState {
 
 // Forward declaration - ActionConfig will be imported from progression.config.ts
 export interface DynamicCostRule {
-  /** The current round this rule applies to */
-  rounds: number[];
   /** Prerequisites that must be active for this cost to apply */
   requiredActiveActions?: ActivityTypeEnum[];
   /** The cost when this rule matches */

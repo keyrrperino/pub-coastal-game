@@ -118,12 +118,10 @@ export function isBlockedByOneActionPerRound(
  */
 export function getActionWithDynamicCost(
   actionConfig: ActionConfig,
-  currentRound: number,
   activeActions: Set<ActivityTypeEnum>
 ): ActionConfig {
   const dynamicCost = calculateDynamicCost(
     actionConfig.cost,
-    currentRound,
     activeActions
   );
   
@@ -144,7 +142,7 @@ export function getActionState(
   activityLog?: ActivityLogType[]
 ): { config: ActionConfig; status: ActionStatus } {
   // Calculate dynamic cost for this action
-  const actionWithDynamicCost = getActionWithDynamicCost(actionConfig, currentRound, activeActions);
+  const actionWithDynamicCost = getActionWithDynamicCost(actionConfig, activeActions);
   let status: ActionStatus;
 
   // Check 1: Is the action already completed?
