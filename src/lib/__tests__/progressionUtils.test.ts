@@ -8,7 +8,8 @@ import {
   getActionsForMeasureType,
   getSectorActions,
   isActionReplaced,
-  hasAnyConstructionInSector
+  hasAnyConstructionInSector,
+  getActionWithDynamicCost
 } from '../progressionUtils';
 import { progressionConfig } from '../progression.config';
 
@@ -259,6 +260,99 @@ describe('Progression Utils', () => {
       const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL];
       const result = getActionState(config, activeActions, 'seawall', 2);
       expect(result.status).toBe(ActionStatus.REPLACED);
+    });
+
+    describe('with dynamic costs', () => {
+      it('should return SELECTABLE with default cost when no upgrade prerequisites exist', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Default cost for 1.15m seawall
+      });
+
+      it('should return SELECTABLE with upgrade cost when upgrade prerequisites exist', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 0.5m to 1.15m
+      });
+
+      it('should return SELECTABLE with default cost for 2m seawall when no 0.5m exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(3); // Default cost for 2m seawall
+      });
+
+      it('should return SELECTABLE with upgrade cost for 2m seawall when 0.5m exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
+      });
+
+      it('should return SELECTABLE with upgrade cost for revetment when artificial reef exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+        const result = getActionState(config, activeActions, 'artificial-reef', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost when artificial reef is active
+      });
+
+      it('should return LOCKED_PREREQUISITE with default cost for revetment when no artificial reef exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+        const result = getActionState(config, activeActions, 'artificial-reef', 2);
+        
+        expect(result.status).toBe(ActionStatus.LOCKED_PREREQUISITE);
+        expect(result.config.cost).toBe(2); // Default cost for 2m revetment
+      });
+
+      it('should return SELECTABLE with static cost for actions without dynamic pricing', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES];
+        const result = getActionState(config, activeActions, null, 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Static cost unchanged
+      });
+
+      it('should handle cross-sector dynamic costs correctly', () => {
+        // 0.5m seawall exists in different sector - should not affect cost
+        const activeActions = new Set([ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Default cost (different sector)
+      });
+
+      it('should return COMPLETED with dynamic cost for completed actions', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 1);
+        
+        expect(result.status).toBe(ActionStatus.COMPLETED);
+        expect(result.config.cost).toBe(2); // Should still return the cost
+      });
+
+      it('should return REPLACED with dynamic cost for replaced actions', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL];
+        const result = getActionState(config, activeActions, 'seawall', 1);
+        
+        expect(result.status).toBe(ActionStatus.REPLACED);
+        expect(result.config.cost).toBe(1); // Should still return the cost
+      });
     });
   });
 
@@ -677,6 +771,204 @@ describe('Progression Utils', () => {
       ];
       const result = hasAnyConstructionInSector('1A', activityLog);
       expect(result).toBe(true); // Should still return true because 1.15m seawall is active
+    });
+  });
+
+  describe('Construction-Based Dynamic Costs', () => {
+    describe('Seawall upgrade costs in Zone 1A', () => {
+      const seawall1_15Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+      const seawall2Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+
+      it('should charge default cost for 1.15m seawall when no 0.5m seawall exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const actionWithCost = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Default cost
+      });
+
+      it('should charge upgrade cost for 1.15m seawall when 0.5m seawall exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Upgrade cost from 0.5m to 1.15m
+      });
+
+      it('should charge default cost for 2m seawall when no 0.5m seawall exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(3); // Default cost
+      });
+
+      it('should charge upgrade cost for 2m seawall when 0.5m seawall exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
+      });
+
+      it('should still charge upgrade cost for 2m seawall when 1.15m seawall exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(3); // Default cost (no specific rule for 1.15m -> 2.00m)
+      });
+    });
+
+    describe('Seawall upgrade costs in Zone 2A', () => {
+      const seawall1_15Config = progressionConfig[ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL];
+      const seawall2Config = progressionConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL];
+
+      it('should charge upgrade cost for 1.15m seawall when 0.5m seawall exists in Zone 2A', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Upgrade cost from 0.5m to 1.15m
+      });
+
+      it('should charge upgrade cost for 2m seawall when 0.5m seawall exists in Zone 2A', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_2A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
+      });
+    });
+
+    describe('Artificial reef upgrade costs in Zone 3A', () => {
+      const revetment2Config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+
+      it('should charge default cost for Rocky Revet 2m when no artificial reef exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const actionWithCost = getActionWithDynamicCost(revetment2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Default cost
+      });
+
+      it('should charge upgrade cost for Rocky Revet 2m when artificial reef exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF]);
+        const actionWithCost = getActionWithDynamicCost(revetment2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Upgrade cost when artificial reef is active
+      });
+
+      it('should charge default cost when other structures exist but not artificial reef', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(revetment2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Default cost when artificial reef is not active
+      });
+    });
+
+    describe('Static cost actions', () => {
+      const plantMangroveConfig = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES];
+      const buildBoardwalkConfig = progressionConfig[ActivityTypeEnum.R1_1A_UPGRADE_MANGROVES_BOARDWALK];
+
+      it('should always charge static cost for plant mangroves', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(plantMangroveConfig, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Static cost
+      });
+
+      it('should always charge static cost for build boardwalk', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]);
+        const actionWithCost = getActionWithDynamicCost(buildBoardwalkConfig, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Static cost
+      });
+
+      it('should charge static cost even when no prerequisites are met', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const actionWithCost = getActionWithDynamicCost(buildBoardwalkConfig, activeActions);
+        
+        expect(actionWithCost.cost).toBe(1); // Static cost unchanged
+      });
+    });
+
+    describe('Complex construction scenarios', () => {
+      it('should handle multiple active actions affecting different upgrades', () => {
+        const seawall1_15Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const revetment2Config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+        
+        // Both 0.5m seawall and artificial reef are active
+        const activeActions = new Set([
+          ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL,
+          ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF
+        ]);
+        
+        const seawallCost = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        const revetmentCost = getActionWithDynamicCost(revetment2Config, activeActions);
+        
+        expect(seawallCost.cost).toBe(1); // Upgrade cost for seawall
+        expect(revetmentCost.cost).toBe(1); // Upgrade cost for revetment
+      });
+
+      it('should not apply upgrade costs when only partially matching requirements', () => {
+        const seawall2Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+        
+        // Only mangroves exist, not seawall
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_PLANT_MANGROVES]);
+        const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(3); // Default cost, no upgrade
+      });
+
+      it('should handle cross-sector requirements correctly', () => {
+        const seawall1_15Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        
+        // 0.5m seawall exists in different sector
+        const activeActions = new Set([ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL]);
+        const actionWithCost = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        
+        expect(actionWithCost.cost).toBe(2); // Default cost, no upgrade (different sector)
+      });
+    });
+
+    describe('Real-world progression scenarios', () => {
+      it('should simulate typical seawall upgrade path', () => {
+        const seawall0_5Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL];
+        const seawall1_15Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL];
+        const seawall2Config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+        
+        // Step 1: Build 0.5m seawall
+        let activeActions = new Set<ActivityTypeEnum>();
+        let cost0_5 = getActionWithDynamicCost(seawall0_5Config, activeActions);
+        expect(cost0_5.cost).toBe(1);
+        
+        // Step 2: Upgrade to 1.15m seawall
+        activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_0_5_SEAWALL]);
+        let cost1_15 = getActionWithDynamicCost(seawall1_15Config, activeActions);
+        expect(cost1_15.cost).toBe(1); // Upgrade cost
+        
+        // Step 3: Upgrade to 2m seawall (from 0.5m base)
+        let cost2 = getActionWithDynamicCost(seawall2Config, activeActions);
+        expect(cost2.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
+        
+        // Step 4: After upgrading to 1.15m, check 2m cost again
+        activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+        cost2 = getActionWithDynamicCost(seawall2Config, activeActions);
+        expect(cost2.cost).toBe(3); // Default cost (no specific rule for 1.15m -> 2.00m)
+      });
+
+      it('should simulate artificial reef to revetment upgrade path', () => {
+        const artificialReefConfig = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF];
+        const revetment1_15Config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_1_15_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+        const revetment2Config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
+        
+        // Step 1: Build artificial reef
+        let activeActions = new Set<ActivityTypeEnum>();
+        let costReef = getActionWithDynamicCost(artificialReefConfig, activeActions);
+        expect(costReef.cost).toBe(1);
+        
+        // Step 2: Build 1.15m revetment (static cost)
+        activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF]);
+        let costRevetment1_15 = getActionWithDynamicCost(revetment1_15Config, activeActions);
+        expect(costRevetment1_15.cost).toBe(1); // Static cost
+        
+        // Step 3: Upgrade to 2m revetment
+        let costRevetment2 = getActionWithDynamicCost(revetment2Config, activeActions);
+        expect(costRevetment2.cost).toBe(1); // Upgrade cost when artificial reef is active
+      });
     });
   });
 });
