@@ -353,6 +353,89 @@ describe('Progression Utils', () => {
         expect(result.status).toBe(ActionStatus.REPLACED);
         expect(result.config.cost).toBe(1); // Should still return the cost
       });
+
+      // Hybrid Measure dynamic cost tests
+      it('should return SELECTABLE with default cost for 1.15m hybrid measure when no 0.5m exists', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Default cost for 1.15m hybrid measure
+      });
+
+      it('should return SELECTABLE with upgrade cost for 1.15m hybrid measure when 0.5m exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 0.5m to 1.15m
+      });
+
+      it('should return SELECTABLE with default cost for 2m hybrid measure when no prerequisites exist', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(3); // Default cost for 2m hybrid measure
+      });
+
+      it('should return SELECTABLE with upgrade cost for 2m hybrid measure when 0.5m exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
+      });
+
+      it('should return SELECTABLE with upgrade cost for 2m hybrid measure when 1.15m exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_2_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
+      });
+
+      it('should return COMPLETED with dynamic cost for completed hybrid measure actions', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.COMPLETED);
+        expect(result.config.cost).toBe(2); // Should still return the cost
+      });
+
+      it('should return REPLACED with dynamic cost for replaced hybrid measure actions', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.REPLACED);
+        expect(result.config.cost).toBe(1); // Should still return the cost
+      });
+
+      it('should handle cross-sector hybrid measure dynamic costs correctly', () => {
+        // 0.5m hybrid measure exists in different sector - should not affect cost
+        const activeActions = new Set([ActivityTypeEnum.R1_3B_BUILD_0_5_HYBRID_MEASURE]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_1_15_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(2); // Default cost (different sector)
+      });
+
+      it('should return SELECTABLE with static cost for hybrid measure 0.5m (no dynamic pricing)', () => {
+        const activeActions = new Set<ActivityTypeEnum>();
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_0_5_HYBRID_MEASURE];
+        const result = getActionState(config, activeActions, 'hybrid-measure', 1);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Static cost unchanged
+      });
     });
   });
 
