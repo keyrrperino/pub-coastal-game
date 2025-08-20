@@ -1,4 +1,5 @@
 import { database } from './firebase';
+import { v4 as uuidv4 } from 'uuid';
 import { 
   ref, 
   push, 
@@ -337,7 +338,7 @@ export class GameRoomService {
   async syncServerTime(): Promise<{ serverTime: number, localTime: number, clockOffset: number }> {
     if (!this.roomId) throw new Error('No room joined');
     
-    const syncId = crypto.randomUUID();
+    const syncId = uuidv4();
     const syncRef = ref(database, `${ROOMS}/${this.roomId}/timers/sync_${syncId}`);
     
     const localTimeBeforeWrite = Date.now();
