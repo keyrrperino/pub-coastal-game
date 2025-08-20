@@ -320,21 +320,6 @@ export class GameRoomService {
     await set(phaseStartTimeRef, serverTimestamp());
   }
 
-  async updateRoundGameplayPhaseAtomic(gameDuration: number): Promise<void> {
-    if (!this.roomId) return;
-
-    const lobbyStateRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState`);
-    
-    // Update all three values atomically in a single operation
-    const updates: Record<string, any> = {
-      [LobbyStateEnum.PHASE_START_TIME]: serverTimestamp(),
-      [LobbyStateEnum.PHASE_DURATION]: gameDuration,
-      [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_GAMEPLAY
-    };
-
-    await update(lobbyStateRef, updates);
-  }
-
   async syncServerTime(): Promise<{ serverTime: number, localTime: number, clockOffset: number }> {
     if (!this.roomId) throw new Error('No room joined');
     
@@ -358,13 +343,7 @@ export class GameRoomService {
     this.clockOffset = clockOffset;
     this.lastSyncTime = Date.now();
     
-    console.log(`🕒 [SYNC SERVER TIME] Clock sync complete:`, {
-      clockOffset: `${clockOffset}ms`,
-      networkDelay: `${estimatedNetworkDelay}ms`,
-      serverTime,
-      localTime: adjustedLocalTime,
-      syncTimestamp: new Date().toISOString()
-    });
+    console.log(`🕒 [SYNC SERVER TIME] Clock sync complete`);
     
     return { serverTime, localTime: adjustedLocalTime, clockOffset };
   }

@@ -90,7 +90,7 @@ export function useInitialize(roomName: string) {
     return () => {
       gameRoomServiceRef.current?.disconnect();
     };
-  }, [roomName, updateFromGameRoomService]);
+  }, [roomName]);
 
   return {
     canvasRef,

@@ -623,7 +623,7 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
     return () => {
       gameRoomService.disconnect();
     };
-  }, [gameRoomService, resetLocalGameState, activityLog.length, updateFromGameRoomService]);
+  }, [gameRoomService, resetLocalGameState, activityLog.length]);
 
 
 

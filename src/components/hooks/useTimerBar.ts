@@ -54,7 +54,6 @@ export const useTimerBar = ({
   // Calculate time remaining based on Firebase sync with server time adjustment
   const calculateTimeRemaining = useCallback((): number => {
     if (!syncWithTimestamp || syncWithTimestamp === 0) {
-      console.log('🔍 [TIMERBAR DEBUG] No sync timestamp, returning full duration:', duration);
       return duration; // Default to full duration if no sync timestamp
     }
 
@@ -124,29 +123,9 @@ export const useTimerBar = ({
     }
     setTimeRemaining(remaining);
 
-    // Log for ROUND_GAMEPLAY phase initialization
-    if (duration === 30) {
-      console.log('🎮 [ROUND_GAMEPLAY INIT] Timer initialized:', {
-        duration,
-        syncTimestamp: syncWithTimestamp,
-        remaining,
-        startImmediately,
-        syncTimeStr: syncWithTimestamp ? new Date(syncWithTimestamp).toISOString() : 'none',
-        currentTimeStr: new Date().toISOString(),
-        willStart: startImmediately && remaining > 0,
-        deviceName: navigator.userAgent.includes('iPad') ? 'iPad' : 
-                   navigator.userAgent.includes('Android') ? 'Android' : 'PC'
-      });
-    }
-
     // Auto-start if requested and we still have time remaining
     if (startImmediately && remaining > 0) {
       setIsRunning(true);
-      
-      // Log timer start for ROUND_GAMEPLAY
-      if (duration === 30) {
-        console.log('🎮 [ROUND_GAMEPLAY START] Timer started with', remaining, 'seconds remaining');
-      }
     }
   }, [syncWithTimestamp, duration, calculateTimeRemaining, startImmediately]);
 
