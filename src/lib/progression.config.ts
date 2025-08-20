@@ -94,6 +94,10 @@ const zone1Template: Record<string, TemplateAction> = {
         {
           requiredActiveActions: ['BUILD_SEAWALL_0_5'],
           cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
         }
       ]
     }, 
@@ -192,6 +196,10 @@ const zone2Template: Record<string, TemplateAction> = {
         {
           requiredActiveActions: ['BUILD_SEAWALL_0_5'],
           cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
         }
       ]
     }, 
@@ -257,13 +265,37 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    displayName: '1.15m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2,
+    displayName: '2m', 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',

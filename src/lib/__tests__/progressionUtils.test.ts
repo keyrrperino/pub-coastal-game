@@ -299,6 +299,33 @@ describe('Progression Utils', () => {
         expect(result.config.cost).toBe(2); // Upgrade cost from 0.5m to 2.00m
       });
 
+      it('should return SELECTABLE with upgrade cost for 2m seawall when 1.15m exists', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_1A_BUILD_2_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
+      });
+
+      it('should return SELECTABLE with upgrade cost for 2m seawall when 1.15m exists in Zone 2', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_2A_BUILD_1_15_SEA_WALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_2A_BUILD_2_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
+      });
+
+      it('should return SELECTABLE with upgrade cost for 2m seawall when 1.15m exists in Zone 3', () => {
+        const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_1_15_SEA_WALL]);
+        const config = progressionConfig[ActivityTypeEnum.R1_3A_BUILD_2_SEA_WALL];
+        const result = getActionState(config, activeActions, 'seawall', 2);
+        
+        expect(result.status).toBe(ActionStatus.SELECTABLE);
+        expect(result.config.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
+      });
+
       it('should return SELECTABLE with upgrade cost for revetment when artificial reef exists', () => {
         const activeActions = new Set([ActivityTypeEnum.R1_3A_BUILD_ARTIFICIAL_REEF]);
         const config = progressionConfig[ActivityTypeEnum.R1_3A_UPGRADE_2_ARTIFICIAL_REEF_SLOPING_REVETMENT];
@@ -894,7 +921,7 @@ describe('Progression Utils', () => {
         const activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
         const actionWithCost = getActionWithDynamicCost(seawall2Config, activeActions);
         
-        expect(actionWithCost.cost).toBe(3); // Default cost (no specific rule for 1.15m -> 2.00m)
+        expect(actionWithCost.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
       });
     });
 
@@ -1030,7 +1057,7 @@ describe('Progression Utils', () => {
         // Step 4: After upgrading to 1.15m, check 2m cost again
         activeActions = new Set([ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL]);
         cost2 = getActionWithDynamicCost(seawall2Config, activeActions);
-        expect(cost2.cost).toBe(3); // Default cost (no specific rule for 1.15m -> 2.00m)
+        expect(cost2.cost).toBe(1); // Upgrade cost from 1.15m to 2.00m
       });
 
       it('should simulate artificial reef to revetment upgrade path', () => {
