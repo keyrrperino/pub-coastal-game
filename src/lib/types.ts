@@ -161,6 +161,22 @@ export interface ActionState {
 }
 
 // Forward declaration - ActionConfig will be imported from progression.config.ts
+export interface DynamicCostRule {
+  /** The current round this rule applies to */
+  rounds: number[];
+  /** Prerequisites that must be active for this cost to apply */
+  requiredActiveActions?: ActivityTypeEnum[];
+  /** The cost when this rule matches */
+  cost: number;
+}
+
+export interface DynamicCostConfig {
+  /** Default cost (current system) */
+  defaultCost: number;
+  /** Rules for dynamic costs */
+  dynamicRules?: DynamicCostRule[];
+}
+
 export interface ActionConfig {
   /** A unique identifier corresponding to an ActivityTypeEnum. */
   id: ActivityTypeEnum;
@@ -168,8 +184,8 @@ export interface ActionConfig {
   /** The human-readable name for the UI. */
   displayName: string;
 
-  /** The resource cost of the action (e.g., number of coins). */
-  cost: number;
+  /** The resource cost of action (e.g., number of coins). Can be static or dynamic. */
+  cost: number | DynamicCostConfig;
 
   /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
