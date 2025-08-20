@@ -1,0 +1,87 @@
+Sector,Subsector,Round 1 Measure,Round 2 Measure,randomizer,coins,score,cutscene
+1,1A,r1 1a sw ug wp,None,1,1,50,R2-1A-6
+1,1A,r1 1a sw ug wp,None,2,1,50,R2-1A-6
+1,1A,r1 1a lr ug sw 1.15,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 1.15,None,2,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 2,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 2,None,2,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 3,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 3,None,2,0,50,R2-1A-7
+1,1A,r1 1a mg ug bw,None,1,0,50,R2-1A-8
+1,1A,r1 1a mg ug bw,None,2,0,50,R2-1A-8
+1,1B,r1 1b sw ug wp,None,1,1,50,R2-1B-6
+1,1B,r1 1b sw ug wp,None,2,1,50,R2-1B-6
+1,1B,r1 1b lr ug sw 1.15,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 1.15,None,2,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 2,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 2,None,2,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 3,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 3,None,2,0,50,R2-1B-6
+1,1B,r1 1b mg ug bw,None,1,0,50,R2-1B-8
+1,1B,r1 1b mg ug bw,None,2,0,50,R2-1B-8
+2,2A,r1 2a sw ug wp,None,1,0,50,R2-2A-6
+2,2A,r1 2a sw ug wp,None,2,0,50,R2-2A-6
+2,2A,r1 2a mg ug bw,None,1,0,50,R2-2A-4
+2,2A,r1 2a mg ug bw,None,2,0,50,R2-2A-4
+2,2B,r1 2b sw ug wp,None,1,0,50,R2-2B-5
+2,2B,r1 2b sw ug wp,None,2,0,50,R2-2B-5
+2,2B,r1 2b mg ug bw,None,1,0,50,R2-2B-7
+2,2B,r1 2b mg ug bw,None,2,0,50,R2-2B-7
+3,3A,r1 3a ar ug sr 1.15,None,1,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 1.15,None,2,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 2,None,1,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 2,None,2,0,50,R2-3A-5
+3,3A,r1 3a sw ug wp,None,1,0,50,R2-3A-7
+3,3A,r1 3a sw ug wp,None,2,0,50,R2-3A-7
+3,3A,r1 3a hb ug wp,None,1,0,50,R2-3A-4
+3,3A,r1 3a hb ug wp,None,2,0,50,R2-3A-6
+3,3B,r1 3b sw ug wp,None,1,0,50,R2-3B-8
+3,3B,r1 3b sw ug wp,None,2,0,50,R2-3B-8
+3,3B,r1 3b ar ug sr 1.15,None,1,0,50,R2-3B-3
+3,3B,r1 3b ar ug sr 1.15,None,2,0,50,R2-3B-4
+3,3B,r1 3b ar ug sr 2,None,1,0,50,R2-3B-3
+3,3B,r1 3b ar ug sr 2,None,2,0,50,R2-3B-3
+3,3B,r1 3b hb ug wp,None,1,0,50,R2-3B-5
+3,3B,r1 3b hb ug wp,None,2,0,50,R2-3B-6
+1,1B,r1 1b lr ug sw 2,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 2,None,2,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 3,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 3,None,2,0,50,R2-1B-6
+1,1A,r1 1a sw ug wp,None,1,1,50,R2-1A-6
+1,1A,r1 1a sw ug wp,None,2,1,50,R2-1A-6
+1,1A,r1 1a lr ug sw 1.15,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 1.15,None,2,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 2,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 2,None,2,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 3,None,1,0,50,R2-1A-7
+1,1A,r1 1a lr ug sw 3,None,2,0,50,R2-1A-7
+1,1A,r1 1a mg ug bw,None,1,0,50,R2-1A-8
+1,1A,r1 1a mg ug bw,None,2,0,50,R2-1A-8
+1,1B,r1 1b sw ug wp,None,1,1,50,R2-1B-6
+1,1B,r1 1b sw ug wp,None,2,1,50,R2-1B-6
+1,1B,r1 1b lr ug sw 1.15,None,1,0,50,R2-1B-6
+1,1B,r1 1b lr ug sw 1.15,None,2,0,50,R2-1B-6
+2,2A,r1 2a sw ug wp,None,1,0,50,R2-2A-6
+2,2A,r1 2a sw ug wp,None,2,0,50,R2-2A-6
+2,2A,r1 2a mg ug bw,None,1,0,50,R2-2A-4
+2,2A,r1 2a mg ug bw,None,2,0,50,R2-2A-4
+2,2B,r1 2b sw ug wp,None,1,0,50,R2-2B-5
+2,2B,r1 2b sw ug wp,None,2,0,50,R2-2B-5
+2,2B,r1 2b mg ug bw,None,1,0,50,R2-2B-7
+2,2B,r1 2b mg ug bw,None,2,0,50,R2-2B-7
+3,3A,r1 3a ar ug sr 1.15,None,1,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 1.15,None,2,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 2,None,1,0,50,R2-3A-5
+3,3A,r1 3a ar ug sr 2,None,2,0,50,R2-3A-5
+3,3A,r1 3a sw ug wp,None,1,0,50,R2-3A-7
+3,3A,r1 3a sw ug wp,None,2,0,50,R2-3A-7
+3,3A,r1 3a hb ug wp,None,1,0,50,R2-3A-4
+3,3A,r1 3a hb ug wp,None,2,0,50,R2-3A-6
+3,3B,r1 3b sw ug wp,None,1,0,50,R2-3B-8
+3,3B,r1 3b sw ug wp,None,2,0,50,R2-3B-8
+3,3B,r1 3b ar ug sr 1.15,None,1,0,50,R2-3B-3
+3,3B,r1 3b ar ug sr 1.15,None,2,0,50,R2-3B-4
+3,3B,r1 3b ar ug sr 2,None,1,0,50,R2-3B-3
+3,3B,r1 3b ar ug sr 2,None,2,0,50,R2-3B-3
+3,3B,r1 3b hb ug wp,None,1,0,50,R2-3B-5
+3,3B,r1 3b hb ug wp,None,2,0,50,R2-3B-6
