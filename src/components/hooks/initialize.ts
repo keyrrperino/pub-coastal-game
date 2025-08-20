@@ -5,6 +5,7 @@ import { GameRoomService } from "@/lib/gameRoom";
 import { ActivityLogType, LobbyStateType } from "@/lib/types";
 import { lobbyStateDefaultValue } from "@/lib/constants";
 import { CutScenesEnum, GameEnum } from "@/lib/enums";
+import { useServerTime } from "@/components/ServerTimeContext";
 
 export function useInitialize(roomName: string) {
   console.log("roomNameawefawef", roomName)
@@ -12,6 +13,7 @@ export function useInitialize(roomName: string) {
   
   const splineAppRef = useRef<Application | null>(null);
   const gameRoomServiceRef = useRef<GameRoomService | null>(null);
+  const { updateFromGameRoomService } = useServerTime();
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [activities, setActivities] = useState<ActivityLogType[] | null>(null);
@@ -77,6 +79,9 @@ export function useInitialize(roomName: string) {
           setActivities([]);
         }
       });
+
+      // Update server time context after game room service is ready
+      updateFromGameRoomService(gameRoomServiceRef.current);
     };
 
     setupRoom();
@@ -84,7 +89,18 @@ export function useInitialize(roomName: string) {
     return () => {
       gameRoomServiceRef.current?.disconnect();
     };
-  }, [roomName]);
+  }, [roomName, updateFromGameRoomService]);
+
+  // Periodic server time context sync (every 30 seconds)
+  useEffect(() => {
+    const syncInterval = setInterval(() => {
+      if (gameRoomServiceRef.current) {
+        updateFromGameRoomService(gameRoomServiceRef.current);
+      }
+    }, 30000);
+
+    return () => clearInterval(syncInterval);
+  }, [updateFromGameRoomService]);
 
   return {
     canvasRef,

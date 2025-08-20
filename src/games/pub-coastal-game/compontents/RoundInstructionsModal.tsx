@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PlayerRound1Screen from '@/components/player-screens/PlayerRound1Screen';
 import PlayerRound2Screen from '@/components/player-screens/PlayerRound2Screen';
 import PlayerRound3Screen from '@/components/player-screens/PlayerRound3Screen';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface RoundInstructionsModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ const RoundInstructionsModal: React.FC<RoundInstructionsModalProps> = ({
   duration = 15,
   syncWithTimestamp
 }) => {
+  const { getAdjustedCurrentTime } = useServerTime();
   const [timeRemaining, setTimeRemaining] = useState(duration);
 
   // Synchronized timer with Firebase timestamp
@@ -29,7 +31,7 @@ const RoundInstructionsModal: React.FC<RoundInstructionsModalProps> = ({
     if (syncWithTimestamp) {
       // Use Firebase sync timestamp
       interval = setInterval(() => {
-        const now = Date.now();
+        const now = getAdjustedCurrentTime();
         const elapsed = (now - syncWithTimestamp) / 1000;
         const remaining = Math.max(0, duration - elapsed);
         

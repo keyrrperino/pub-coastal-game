@@ -39,12 +39,14 @@ import { PlayerRound1Screen, PlayerRound2Screen, PlayerRound3Screen } from "./pl
 import TutorialScreen5 from "@/components/TutorialScreen5";
 import { useLobbyRoundBreakdown } from "./hooks/useLobbyRoundBreakdown";
 import { useLobbyRoundAnimation } from "./hooks/useLobbyRoundAnimation";
+import { useServerTime } from './ServerTimeContext';
 
 interface SplineFirebaseProps {
   roomName: string;
 }
 
 const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
+  const { getAdjustedCurrentTime } = useServerTime();
   const {
     canvasRef,
     splineAppRef,
@@ -111,7 +113,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       gameRoomServiceRef.current.updateLobbyState({
         ...lobbyState, ...{
         [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_CUTSCENES,
-        [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+        [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
         [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_CUTSCENES,
       }});
     }
@@ -189,7 +191,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
         gameRoomServiceRef.current.updateLobbyState({
           ...lobbyState, ...{
           [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_SCORE_BREAKDOWN,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
           [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_SCORE_BREAKDOWN,
         }});
       }

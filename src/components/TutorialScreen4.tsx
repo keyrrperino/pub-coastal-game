@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import ProgressBar from '@/games/pub-coastal-game/compontents/ProcessBar';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface TutorialScreen3Props {
   phaseStartTime: number;
@@ -8,7 +9,8 @@ interface TutorialScreen3Props {
 }
 
 export default function TutorialScreen3({ phaseStartTime, timeRemaining }: TutorialScreen3Props) {
-  const localStartRef = React.useRef<number>(Date.now());
+  const { getAdjustedCurrentTime } = useServerTime();
+  const localStartRef = React.useRef<number>(getAdjustedCurrentTime());
   const coinSize = window.innerHeight / 90;
   
   return (

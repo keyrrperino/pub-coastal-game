@@ -117,13 +117,13 @@ export default function AdminPhaseControl() {
       // Reset timer when entering ROUND_GAMEPLAY phase
       if (newPhase === GameLobbyStatus.ROUND_GAMEPLAY) {
         console.log('⏰ Updating timer for gameplay phase');
-        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updatePhaseStartTimeWithServerTimestamp();
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, GAME_ROUND_TIMER);
         console.log(`✅ Timer reset for gameplay phase: ${GAME_ROUND_TIMER}s`);
       } else {
         console.log('⏰ Updating timer for regular phase');
         // For other phases, just update duration and start time normally
-        await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_START_TIME, Date.now());
+        await gameRoomService.updatePhaseStartTimeWithServerTimestamp();
         await gameRoomService.updateLobbyStateKeyValue(LobbyStateEnum.PHASE_DURATION, phaseDuration);
         console.log(`✅ Timer updated with duration: ${phaseDuration}s`);
       }

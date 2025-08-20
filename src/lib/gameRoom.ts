@@ -24,6 +24,8 @@ export class GameRoomService {
   private gobalStateCallback: ((lobbyState: LobbyStateType) => void) | null = null;
   private waterLevelCallback: ((waterLevel: number) => void) | null = null;
   private roundCallback: ((round: number) => void) | null = null;
+  private clockOffset: number = 0;
+  private lastSyncTime: number = 0;
 
   constructor(customUserName?: string, roomName?: string) {
     this.userName = customUserName || this.generateUserName();
@@ -47,7 +49,7 @@ export class GameRoomService {
   }
 
   generateRoomId(): string {
-    return 'room_' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    return 'room_' + Math.random().toString(36).substring(2, 10).toUpperCase();
   }
 
   async createRoom(roomName: string): Promise<string> {
@@ -76,7 +78,7 @@ export class GameRoomService {
     }
 
     this.roomId = roomId;
-    this.setupPresence();
+    await this.setupPresence();
     this.listenToActivity();
     this.listenToPresence();
     this.listenToWaterLevel();
@@ -97,8 +99,15 @@ export class GameRoomService {
     return activities;
   }
 
-  private setupPresence() {
+  private async setupPresence() {
     if (!this.roomId) return;
+
+    // Initial clock sync when setting up presence
+    try {
+      await this.syncServerTime();
+    } catch (error) {
+      console.warn('🕒 Initial clock sync failed:', error);
+    }
 
     const userPresenceRef = ref(database, `${ROOMS}/${this.roomId}/presence/${this.userId}`);
     const userPresenceData = {
@@ -116,9 +125,16 @@ export class GameRoomService {
       lastSeen: serverTimestamp()
     });
 
-    // Update presence every 30 seconds
-    setInterval(() => {
-      update(userPresenceRef, { lastSeen: serverTimestamp() });
+    // Update presence every 30 seconds WITH clock sync
+    setInterval(async () => {
+      try {
+        await this.syncServerTime();
+        update(userPresenceRef, { lastSeen: serverTimestamp() });
+      } catch (error) {
+        console.warn('🕒 Clock sync failed during presence update:', error);
+        // Continue with presence update even if sync fails
+        update(userPresenceRef, { lastSeen: serverTimestamp() });
+      }
     }, 30000);
   }
 
@@ -292,6 +308,53 @@ export class GameRoomService {
 
     const lobbyStateRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/${key}`);
     await set(lobbyStateRef, value); // This sets the value at the specific key
+  }
+
+  async updatePhaseStartTimeWithServerTimestamp(): Promise<void> {
+    if (!this.roomId) return;
+
+    const phaseStartTimeRef = ref(database, `${ROOMS}/${this.roomId}/lobbyState/${LobbyStateEnum.PHASE_START_TIME}`);
+    await set(phaseStartTimeRef, serverTimestamp());
+  }
+
+  async syncServerTime(): Promise<{ serverTime: number, localTime: number, clockOffset: number }> {
+    if (!this.roomId) throw new Error('No room joined');
+    
+    const syncId = crypto.randomUUID();
+    const syncRef = ref(database, `${ROOMS}/${this.roomId}/timers/sync_${syncId}`);
+    
+    const localTimeBeforeWrite = Date.now();
+    await set(syncRef, serverTimestamp());
+    const snapshot = await get(syncRef);
+    const localTimeAfterRead = Date.now();
+    
+    // Cleanup immediately
+    await remove(syncRef);
+    
+    const serverTime = snapshot.val();
+    const estimatedNetworkDelay = (localTimeAfterRead - localTimeBeforeWrite) / 2;
+    const adjustedLocalTime = localTimeBeforeWrite + estimatedNetworkDelay;
+    const clockOffset = serverTime - adjustedLocalTime;
+    
+    // Store offset and sync time in instance
+    this.clockOffset = clockOffset;
+    this.lastSyncTime = Date.now();
+    
+    console.log(`🕒 Clock sync complete: offset ${clockOffset}ms, delay ${estimatedNetworkDelay}ms`);
+    
+    return { serverTime, localTime: adjustedLocalTime, clockOffset };
+  }
+
+  getClockOffset(): number {
+    return this.clockOffset;
+  }
+
+  getLastSyncTime(): number {
+    return this.lastSyncTime;
+  }
+
+  getAdjustedCurrentTime(): number {
+    return Date.now() + this.clockOffset;
   }
 
   async updateRound(round: number): Promise<void> {

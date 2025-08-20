@@ -1,13 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 import ProgressBar from '@/games/pub-coastal-game/compontents/ProcessBar';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface TutorialScreen2Props {
   phaseStartTime: number;
 }
 
 export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props) {
-  const localStartRef = React.useRef<number>(Date.now());
+  const { getAdjustedCurrentTime } = useServerTime();
+  const localStartRef = React.useRef<number>(getAdjustedCurrentTime());
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}

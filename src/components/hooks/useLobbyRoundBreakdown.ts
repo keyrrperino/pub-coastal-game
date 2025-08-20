@@ -5,12 +5,14 @@ import { LobbyStateType, RoundType } from "@/lib/types"; // Assuming this type e
 import { GameRoomService } from "@/lib/gameRoom";
 import { PHASE_DURATIONS } from "./phaseUtils";
 import { useTimer } from "./useTimer";
+import { useServerTime } from "@/components/ServerTimeContext";
 
 export function useLobbyRoundBreakdown(
   lobbyState: LobbyStateType,
   triggersLoading: boolean,
   gameRoomServiceRef: React.RefObject<GameRoomService | null>
 ) {
+  const { getAdjustedCurrentTime } = useServerTime();
 
   const isScoreBreakdownTimesUp = () => {
     if (!gameRoomServiceRef.current) return;
@@ -19,7 +21,7 @@ export function useLobbyRoundBreakdown(
       gameRoomServiceRef.current.updateLobbyState({
         ...lobbyState, ...{
           [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ENDING,
-          [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+          [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
           [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ENDING,
         }
       });
@@ -29,7 +31,7 @@ export function useLobbyRoundBreakdown(
     gameRoomServiceRef.current.updateLobbyState({
       ...lobbyState, ...{
         [LobbyStateEnum.PHASE_DURATION]: PHASE_DURATIONS.ROUND_ANIMATION,
-        [LobbyStateEnum.PHASE_START_TIME]: Date.now(),
+        [LobbyStateEnum.PHASE_START_TIME]: getAdjustedCurrentTime(),
         [LobbyStateEnum.ROUND]: (lobbyState.round + 1) as RoundType,
         [LobbyStateEnum.GAME_LOBBY_STATUS]: GameLobbyStatus.ROUND_ANIMATION,
       }

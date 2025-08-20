@@ -4,6 +4,7 @@ import PlayerTutorialScreen2 from '@/components/PlayerTutorialScreen2';
 import PlayerTutorialScreen3 from '@/components/PlayerTutorialScreen3';
 import PlayerTutorialScreen4 from '@/components/PlayerTutorialScreen4';
 import PlayerTutorialScreen5 from "@/components/PlayerTutorialScreen5";
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface IntroductionModalProps {
   isOpen: boolean;
@@ -18,9 +19,10 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   duration,
   syncWithTimestamp
 }) => {
+  const { getAdjustedCurrentTime } = useServerTime();
   const [currentScreen, setCurrentScreen] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(duration);
-  const [phaseStartTime] = useState(Date.now());
+  const [phaseStartTime] = useState(getAdjustedCurrentTime());
   
   // Calculate duration for each tutorial screen (1/5 of total duration since we have 5 screens now)
   const screenDuration = duration / 5;
@@ -30,7 +32,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     if (!isOpen || !syncWithTimestamp) return;
 
     const updateCurrentScreen = () => {
-      const currentTime = Date.now();
+      const currentTime = getAdjustedCurrentTime();
       const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
       const remaining = Math.max(0, duration - elapsed);
       

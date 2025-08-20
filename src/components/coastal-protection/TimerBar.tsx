@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useServerTime } from '@/components/ServerTimeContext';
 
 interface TimerBarProps {
   duration: number;
@@ -11,6 +12,7 @@ const TimerBar: React.FC<TimerBarProps> = ({
   onTimeUp,
   isRunning = true,
 }) => {
+  const { getAdjustedCurrentTime } = useServerTime();
   const [progressPercentage, setProgressPercentage] = useState(100);
   const [startTime, setStartTime] = useState<number | null>(null);
 
@@ -18,7 +20,7 @@ const TimerBar: React.FC<TimerBarProps> = ({
     if (!isRunning) return;
 
     // Set start time when component mounts or isRunning becomes true
-    setStartTime(Date.now());
+    setStartTime(getAdjustedCurrentTime());
     setProgressPercentage(100);
   }, [isRunning]);
 
@@ -26,7 +28,7 @@ const TimerBar: React.FC<TimerBarProps> = ({
     if (!isRunning || !startTime) return;
 
     const updateProgress = () => {
-      const currentTime = Date.now();
+      const currentTime = getAdjustedCurrentTime();
       const elapsed = (currentTime - startTime) / 1000; // in seconds
       const remaining = Math.max(0, duration - elapsed);
       const percentage = (remaining / duration) * 100;
