@@ -71,6 +71,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     setIsLoaded
   );
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   
   const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -197,6 +198,39 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       }
     }
   }, [cutSceneStatus]);
+
+  // Start/stop background music with cutscene phase
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+
+    if (lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES) {
+      el.loop = true;
+      const playPromise = el.play();
+      playPromise?.catch(() => {});
+    } else {
+      el.pause();
+      el.currentTime = 0;
+    }
+  }, [lobbyState.gameLobbyStatus]);
+
+  // Adjust volume based on whether current cutscene is a news intro
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (lobbyState.gameLobbyStatus !== GameLobbyStatus.ROUND_CUTSCENES) return;
+
+    const isIntro =
+      currentCutScene === CutScenesEnum.NEWS_INTRO_1 ||
+      currentCutScene === CutScenesEnum.NEWS_INTRO_2 ||
+      currentCutScene === CutScenesEnum.NEWS_INTRO_3;
+
+    el.volume = isIntro ? 1.0 : 0.5;
+    if (el.paused) {
+      const playPromise = el.play();
+      playPromise?.catch(() => {});
+    }
+  }, [currentCutScene, lobbyState.gameLobbyStatus]);
 
   // Main Progress logic
 
@@ -390,6 +424,11 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       {/* Only show Spline when triggers are done loading */}
       
       {renderAllCutScences}
+
+      <audio
+        ref={audioRef}
+        src="/games/pub-coastal-spline/flash-reports/audio/news-background-music.mp3"
+      />
 
       <canvas
         ref={canvasRef}

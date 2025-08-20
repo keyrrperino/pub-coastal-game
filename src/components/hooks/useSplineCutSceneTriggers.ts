@@ -97,9 +97,9 @@ export function useCutSceneSequence(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCutSceneIndex, setCutScenesStatus]);
 
-  // Drive cutscene index from a 33s timer:
+  // Drive cutscene index from a 45s timer:
   // - First 3s reserved for intro news
-  // - Remaining 30s split evenly across up to 6 cutscenes
+  // - Then fixed 7s per cutscene (up to 6)
   useTimer({
     duration: lobbyState.phaseDuration,
     startImmediately: lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES,
@@ -127,9 +127,9 @@ export function useCutSceneSequence(
       }
 
       const elapsedAfterIntro = elapsed - introDuration;
-      const segmentLength = remainingDuration / remainingCount; // 30s / N
+      const segmentLength = 7; // fixed 7s per cutscene
       const nextIndexAfterIntro = Math.min(remainingCount - 1, Math.floor(elapsedAfterIntro / segmentLength));
-      const boundedIndex = Math.min(cutScenes.length - 1, (1) + nextIndexAfterIntro);
+      const boundedIndex = Math.min(cutScenes.length - 1, 1 + nextIndexAfterIntro);
 
       if (currentCutSceneIndex !== boundedIndex) {
         setCurrentCutSceneIndex(boundedIndex);
