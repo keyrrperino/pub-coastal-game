@@ -75,8 +75,8 @@ const getSectorPerformance = (
 
 const getTotalPerformance = (totalScore: number): SectorPerformance => {
   if (totalScore >= 2200) return 'good';
-  if (totalScore >= 1500) return 'okay';
-  return 'bad'; // < 1500
+  if (totalScore >= 1600) return 'okay';
+  return 'bad'; // < 1599
 };
 
 export function useSectorScores({
