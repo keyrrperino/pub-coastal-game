@@ -82,26 +82,20 @@ const RoundStartAnimationModal: React.FC<RoundStartAnimationModalProps> = ({ isO
 
   if (!isOpen) return null;
 
-  const roundColors: { [key in RoundType]: string; } = {
-    1: "#f0bf65",
-    2: "#f0bf65",
-    3: "#d5a9b7"
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0,0.7)]">
       <div ref={containerRef} className="flex flex-col items-center justify-center select-none">
         <div
           ref={roundTextRef}
-          className="font-bold tracking-[0.1em] text-center"
-          style={{ fontSize: "7vw", lineHeight: 1, color: roundColors[round as RoundType] }}
+          className="font-bold text-white tracking-[0.1em] text-center"
+          style={{ fontSize: "7vw", lineHeight: 1 }}
         >
           ROUND
         </div>
         <div
           ref={numberRef}
           className="text-white font-bold tracking-[0.05em] text-center"
-          style={{ fontSize: "13vw", lineHeight: 1, marginTop: "1vh", color: roundColors[round as RoundType] }}
+          style={{ fontSize: "13vw", lineHeight: 1, marginTop: "1vh" }}
         >
           {round}
         </div>

@@ -244,7 +244,6 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
 
   // Seawall 1.15 No uprades
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R2_1A_1 },
-  // [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-None-0.7-0.5`]: { score: 0, coin: 0, cutscene: CutScenesEnum.R1_1A_3 },
   [`1_1A_${ActivityTypeEnum.R1_1A_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: 35, coin: 0, cutscene: CutScenesEnum.R2_1A_0 },
 
   // Seawall 1.15 -> 2
@@ -343,12 +342,12 @@ export const roundTwoScenarioConfiguration: ScenarioConfigurationType = {
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_0_5_SEAWALL}-${ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH}-0.7-2`]: { score: 110, coin: 1, cutscene: CutScenesEnum.R2_1B_4 },
 
   // Seawall 1.15 No uprades
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 10, coin: 0, cutscene: CutScenesEnum.R2_1B_4 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: 35, coin: 0, cutscene: CutScenesEnum.R2_1B_4 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-0.7-1`]: { score: 10, coin: 0, cutscene: CutScenesEnum.R2_1B_2 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-None-0.7-2`]: { score: 35, coin: 0, cutscene: CutScenesEnum.R2_1B_2 },
 
   // Seawall 1.15 -> 2
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R2_1B_4 },
-  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R2_1B_4 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-1`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R2_1B_2 },
+  [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_BUILD_2_SEA_WALL}-0.7-2`]: { score: 5, coin: 1, cutscene: CutScenesEnum.R2_1B_2 },
   
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH}-0.7-1`]: { score: 0, coin: 1, cutscene: CutScenesEnum.R2_1B_7 },
   [`1_1B_${ActivityTypeEnum.R1_1B_BUILD_1_15_SEA_WALL}-${ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH}-0.7-2`]: { score: 45, coin: 1, cutscene: CutScenesEnum.R2_1B_7 },
