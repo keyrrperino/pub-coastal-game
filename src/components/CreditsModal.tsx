@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface CreditsModalProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ export default function CreditsModal({
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 5000); // Auto-hide after 5 seconds
+      }, 6000); // Auto-hide after 6 seconds
 
       return () => clearTimeout(timer);
     }
@@ -42,44 +43,94 @@ export default function CreditsModal({
     ],
   };
 
+
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Modal content */}
-      <div className="relative rounded-lg p-8 max-w-4xl w-full mx-4 overflow-y-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1
-            className="text-white text-xl mb-2"
-            style={{
-              fontFamily: 'Novecento Bold, sans-serif',
-              fontWeight: 700,
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          {/* Modal content */}
+          <motion.div
+            className="relative rounded-lg p-8 max-w-4xl w-full mx-4 overflow-y-auto"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 200,
+              damping: 20,
+              duration: 0.6
             }}
           >
-            Credits
-          </h1>
-        </div>
-
-        {/* Teams Grid */}
-        <div className="flex flex-col justify-center items-start gap-10">
-          {/* Coastal Protectors Team */}
-          <div className="flex flex-col justify-center w-full items-center gap-2">
-            <div className="w-full max-w-[606px]">
-              <h2
-                className="text-white text-2xl text-center mb-4"
+            {/* Header */}
+            <motion.div
+              className="text-center mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <motion.h1
+                className="text-white text-xl mb-2"
                 style={{
-                  fontFamily: 'novecento-sans-narrow, sans-serif',
-                  fontWeight: 400,
+                  fontFamily: 'Novecento Bold, sans-serif',
+                  fontWeight: 700,
                 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 }}
               >
-                COASTAL PROTECTORS TEAM
-              </h2>
-            </div>
+                Credits
+              </motion.h1>
+            </motion.div>
 
-            {teamMembers.coastalProtectors.map((member, index) => (
-              <div
-                key={index}
-                className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
+            {/* Teams Grid */}
+            <motion.div
+              className="flex flex-col justify-center items-start gap-10"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              {/* Coastal Protectors Team */}
+              <motion.div
+                className="flex flex-col justify-center w-full items-center gap-2"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
               >
+                <motion.div
+                  className="w-full max-w-[606px]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 1.2 }}
+                >
+                  <motion.h2
+                    className="text-white text-2xl text-center mb-4"
+                    style={{
+                      fontFamily: 'novecento-sans-narrow, sans-serif',
+                      fontWeight: 400,
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 1.4 }}
+                  >
+                    COASTAL PROTECTORS TEAM
+                  </motion.h2>
+                </motion.div>
+
+                {teamMembers.coastalProtectors.map((member, index) => (
+                  <motion.div
+                    key={index}
+                    className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 1.6 + index * 0.1 }}
+                  >
                 <span
                   className="text-white text-2xl"
                   style={{
@@ -98,30 +149,46 @@ export default function CreditsModal({
                   }}
                 >
                   {member.name}
-                </span>
-              </div>
-            ))}
-          </div>
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-          {/* Gallery Wall Team */}
-          <div className="flex flex-col justify-center w-full items-center gap-2">
-            <div className="w-full max-w-[606px]">
-              <h2
-                className="text-white text-2xl text-center mb-4"
-                style={{
-                  fontFamily: 'novecento-sans-narrow, sans-serif',
-                  fontWeight: 400,
-                }}
+              {/* Gallery Wall Team */}
+              <motion.div
+                className="flex flex-col justify-center w-full items-center gap-2"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.8 }}
               >
-                Gallery Wall Team
-              </h2>
-            </div>
+                <motion.div
+                  className="w-full max-w-[606px]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 2.0 }}
+                >
+                  <motion.h2
+                    className="text-white text-2xl text-center mb-4"
+                    style={{
+                      fontFamily: 'novecento-sans-narrow, sans-serif',
+                      fontWeight: 400,
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 2.2 }}
+                  >
+                    Gallery Wall Team
+                  </motion.h2>
+                </motion.div>
 
-            {teamMembers.galleryWall.map((member, index) => (
-              <div
-                key={index}
-                className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
-              >
+                {teamMembers.galleryWall.map((member, index) => (
+                  <motion.div
+                    key={index}
+                    className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 2.4 + index * 0.1 }}
+                  >
                 <span
                   className="text-white text-2xl"
                   style={{
@@ -140,30 +207,46 @@ export default function CreditsModal({
                   }}
                 >
                   {member.name}
-                </span>
-              </div>
-            ))}
-          </div>
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-          {/* Executive Team */}
-          <div className="flex flex-col justify-center w-full items-center gap-2">
-            <div className="w-full max-w-[606px]">
-              <h2
-                className="text-white text-2xl text-center mb-4"
-                style={{
-                  fontFamily: 'novecento-sans-narrow, sans-serif',
-                  fontWeight: 400,
-                }}
+              {/* Executive Team */}
+              <motion.div
+                className="flex flex-col justify-center w-full items-center gap-2"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 2.8 }}
               >
-                Executive team
-              </h2>
-            </div>
+                <motion.div
+                  className="w-full max-w-[606px]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 3.0 }}
+                >
+                  <motion.h2
+                    className="text-white text-2xl text-center mb-4"
+                    style={{
+                      fontFamily: 'novecento-sans-narrow, sans-serif',
+                      fontWeight: 400,
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 3.2 }}
+                  >
+                    Executive team
+                  </motion.h2>
+                </motion.div>
 
-            {teamMembers.executive.map((member, index) => (
-              <div
-                key={index}
-                className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
-              >
+                {teamMembers.executive.map((member, index) => (
+                  <motion.div
+                    key={index}
+                    className="w-full max-w-[606px] flex items-center gap-2 flex-wrap"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 3.4 + index * 0.1 }}
+                  >
                 <span
                   className="text-white text-2xl"
                   style={{
@@ -182,26 +265,36 @@ export default function CreditsModal({
                   }}
                 >
                   {member.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p
-            className="text-white text-xl"
-            style={{
-              fontFamily: 'Novecento Bold, sans-serif',
-              fontWeight: 700,
-            }}
-          >
-            ˗ˏˋ MADE WITH LOVE BY SYMPH ˎˊ˗
-          </p>
-        </div>
-      </div>
-    </div>
+            {/* Footer */}
+            <motion.div
+              className="text-center mt-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 3.8 }}
+            >
+              <motion.p
+                className="text-white text-xl"
+                style={{
+                  fontFamily: 'Novecento Bold, sans-serif',
+                  fontWeight: 700,
+                }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 4.0 }}
+              >
+                ˗ˏˋ MADE WITH LOVE BY SYMPH ˎˊ˗
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
