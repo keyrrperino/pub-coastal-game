@@ -74,27 +74,27 @@ export default function PostRoundModal({
     }
 
     if (currentRound === 2) {
-      // Round 2: No Flooding 0 to -5, Moderate -5.01 to -100, Heavy -100.01 to -300
+      // Round 2: No Flooding 0 to -5, Moderate -5.01 to -149.99, Heavy -150 to -300
       if (totalScoreRound >= 0 && totalScoreRound <= 5) {
         performance = "good";
       }
-      if (totalScoreRound > 5 && totalScoreRound <= 100) {
+      if (totalScoreRound > 5 && totalScoreRound <= 149.99) {
         performance = "okay";
       }
-      if (totalScoreRound > 100 && totalScoreRound <= 300) {
+      if (totalScoreRound > 149.99 && totalScoreRound <= 300) {
         performance = "bad";
       }
     }
 
     if (currentRound === 3) {
-      // Round 3: No Flooding 0 to -5, Moderate -5.01 to -110, Heavy -110.01 to -400
+      // Round 3: No Flooding 0 to -5, Moderate -5.01 to -179.99, Heavy -180 to -400
       if (totalScoreRound >= 0 && totalScoreRound <= 5) {
         performance = "good";
       }
-      if (totalScoreRound > 5 && totalScoreRound <= 110) {
+      if (totalScoreRound > 5 && totalScoreRound <= 179.99) {
         performance = "okay";
       }
-      if (totalScoreRound > 110 && totalScoreRound <= 400) {
+      if (totalScoreRound > 179.99 && totalScoreRound <= 400) {
         performance = "bad";
       }
     }
