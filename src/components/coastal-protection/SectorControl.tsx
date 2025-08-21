@@ -720,8 +720,8 @@ const SectorControl: React.FC<SectorControlProps> = ({ sector, roomName }) => {
               
               return {
                 title: currentActionState.config.displayName,
-                coinCount: currentActionState.config.cost,
-                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, currentActionState.config.cost, sectorId) : undefined,
+                coinCount: roundStartActionState.config.cost,
+                onClick: isAvailable && !disabled ? () => handleMeasureClick(currentActionState.config.id, roundStartActionState.config.cost, sectorId) : undefined,
                 isSelected,
                 disabled,
                 status: currentActionState.status, // Pass the status for potential UI enhancements
