@@ -72,6 +72,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
   );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const calmAudioRef = useRef<HTMLAudioElement | null>(null);
   
   const [coinsLeft, setCoinsLeft] = useState(TOTAL_COINS_PER_ROUND); // 1. Add new state
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -228,18 +229,26 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     }
   }, [cutSceneStatus]);
 
-  // Start/stop background music with cutscene phase
+  // Start/stop background music depending on cutscene phase
   useEffect(() => {
-    const el = audioRef.current;
-    if (!el) return;
+    const newsEl = audioRef.current;
+    const calmEl = calmAudioRef.current;
+    if (!newsEl || !calmEl) return;
 
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.ROUND_CUTSCENES) {
-      el.loop = true;
-      const playPromise = el.play();
+      // Play news background during cutscenes, pause calm music
+      calmEl.pause();
+      calmEl.currentTime = 0;
+      newsEl.loop = true;
+      const playPromise = newsEl.play();
       playPromise?.catch(() => {});
     } else {
-      el.pause();
-      el.currentTime = 0;
+      // Outside cutscenes, play calm background and pause news music
+      newsEl.pause();
+      newsEl.currentTime = 0;
+      calmEl.loop = true;
+      const playPromise = calmEl.play();
+      playPromise?.catch(() => {});
     }
   }, [lobbyState.gameLobbyStatus]);
 
@@ -457,6 +466,10 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       <audio
         ref={audioRef}
         src="/games/pub-coastal-spline/flash-reports/audio/news-background-music.mp3"
+      />
+      <audio
+        ref={calmAudioRef}
+        src="/games/pub-coastal-spline/flash-reports/audio/Calm Background Music.mp3"
       />
 
       <canvas
