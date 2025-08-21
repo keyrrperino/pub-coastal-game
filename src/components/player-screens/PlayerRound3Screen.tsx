@@ -47,7 +47,7 @@ export default function PlayerRound3Screen({ onContinue, timeRemaining }: Player
               </p>
 
               <p className="text-white text-[21px] mt-7 text-center leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
-                STRENGTHEN YOUR DEFENSES. CLOSE THE GAPS.
+                <span className="text-[#FFDD3D]">ENHANCE THE COASTS.</span> STRENGTHEN YOUR DEFENSES. CLOSE THE GAPS.
               </p>
               <p className="text-white text-[21px] mt-7 text-center leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
                 THE RISING TIDE WON’T WAIT.
