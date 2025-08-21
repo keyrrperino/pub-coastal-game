@@ -38,7 +38,7 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center  uppercase">
               <p className="text-white text-[3vh] font-bold">
-                Choose wisely, your team has a <span className="text-[#FFDD3D]">collective budget of 10 coins</span> per round
+                Choose wisely, your team has a <span className="text-[#FFDD3D]">collective budget of <span className="number-enhanced">10</span> coins</span> per round
               </p>
             </div>
 
@@ -69,14 +69,14 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-white text-[3vh] font-bold">10 coins PER ROUND</span>
+                    <span className="text-white text-[3vh] font-bold"><span className="number-enhanced">10</span> coins PER ROUND</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-6 text-center  uppercase">
               <p className="text-white text-[3vh] font-bold">
-              Every action deducts from the total score of 2,500
+              Every action deducts from the total score of <span className="number-enhanced">2,500</span>
               </p>
               <p className="text-[#FF8181] text-[4.5vh] font-bold">
                 Strategize with your teammates NOW!

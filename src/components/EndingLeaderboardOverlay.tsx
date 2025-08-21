@@ -63,7 +63,7 @@ export default function EndingLeaderboardOverlay({
                     style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
                 TOP 1
               </span>
-              <span className="text-white text-[44.95px] font-bold leading-[1.2]" 
+              <span className="text-white text-[44.95px] font-bold leading-[1.2] number-enhanced" 
                     style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
                 {topWinner?.points || 0} pts
               </span>
@@ -105,7 +105,7 @@ export default function EndingLeaderboardOverlay({
                       {displayPosition}. {entry.name}
                     </span>
                     <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-                    <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right" 
+                    <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right number-enhanced" 
                           style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
                       {entry.points}
                     </span>
@@ -124,7 +124,7 @@ export default function EndingLeaderboardOverlay({
                   {bottomHighlight.position}. {bottomHighlight.name}
                 </span>
                 <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-                <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right" 
+                <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2] text-right number-enhanced" 
                       style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
                   {bottomHighlight.points}
                 </span>

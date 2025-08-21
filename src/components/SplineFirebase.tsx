@@ -318,7 +318,7 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
           <h1 className="text-right">
             Overall Score:
           </h1>
-          <h2 className="text-right">
+          <h2 className="text-right number-enhanced">
             {totalScore} PTS
           </h2>
         </div>
