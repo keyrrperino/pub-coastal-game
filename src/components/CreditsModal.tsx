@@ -14,7 +14,7 @@ export default function CreditsModal({
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 6000); // Auto-hide after 6 seconds
+      }, 10000); // Auto-hide after 10 seconds
 
       return () => clearTimeout(timer);
     }
