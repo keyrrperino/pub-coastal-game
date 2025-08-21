@@ -168,6 +168,7 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_BUILD_PLANT_MANGROVES
   },
+
   [ActivityTypeEnum.R1_1B_UPGRADE_MANGROVES_BOARDWALK]: {
     state: [],
     events: [SplineEventName.MOUSEUP],
@@ -246,6 +247,13 @@ export const SplineTriggersConfig: SplineTriggersConfigType = {
     buttonValue: "R1 1B / BUILD PATH",
     subSector: SubSectorEnum.ONE_B,
     activityType: ActivityTypeEnum.R1_1B_UPGRADE_SEAWALL_WALK_PATH
+  },
+  [ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL]: {
+    state: [],
+    events: [SplineEventName.MOUSEUP],
+    buttonValue: "R1 1B / UPGRADE LR TO SEAWALL / 3M",
+    subSector: SubSectorEnum.ONE_A,
+    activityType: ActivityTypeEnum.R1_1B_UPGRADE_3_LAND_RECLAMATION_SEAWALL
   },
 
   // 2A
