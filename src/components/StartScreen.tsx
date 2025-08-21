@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
+import CreditsModal from './CreditsModal';
+import { cn } from '@/lib/utils';
 
 interface StartScreenProps {
   onStartGame: () => void;
@@ -14,6 +16,34 @@ export default function StartScreen({
   playerNumber,
   isLeaderboardOpen,
 }: StartScreenProps) {
+  const [isCreditsModalOpen, setIsCreditsModalOpen] = useState(false);
+  const clickCountRef = useRef(0);
+  const firstClickTimeRef = useRef<number | null>(null);
+
+  const handleLogoClick = () => {
+    const now = Date.now();
+    
+    // Reset if more than 15 seconds have passed since first click
+    if (firstClickTimeRef.current && now - firstClickTimeRef.current > 15000) {
+      clickCountRef.current = 0;
+      firstClickTimeRef.current = null;
+    }
+    
+    // Set first click time if this is the first click
+    if (firstClickTimeRef.current === null) {
+      firstClickTimeRef.current = now;
+    }
+    
+    clickCountRef.current++;
+    
+    // Check if we've reached 10 clicks within 15 seconds
+    if (clickCountRef.current >= 10 && firstClickTimeRef.current && now - firstClickTimeRef.current <= 15000) {
+      setIsCreditsModalOpen(true);
+      // Reset the counter
+      clickCountRef.current = 0;
+      firstClickTimeRef.current = null;
+    }
+  };
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -31,7 +61,7 @@ export default function StartScreen({
       <div className="absolute inset-0 bg-black/80 backdrop-blur-[12px]" />
 
             {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full py-8">
+      <div className={cn("relative z-10 flex flex-col items-center justify-center h-full py-8", isCreditsModalOpen && "opacity-0")}>
         {/* Main Content Centered */}
         <div className="flex flex-col items-center gap-20">
           {/* Title Section */}
@@ -79,15 +109,27 @@ export default function StartScreen({
 
         {/* PUB Logo - Fixed at bottom */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <Image
-            src="/assets/pub-logo-white-7ae72a.png"
-            alt="PUB Logo"
-            width={238}
-            height={46}
-            className="object-contain"
-          />
+          <button
+            onClick={handleLogoClick}
+            className="focus:outline-none"
+            aria-label="PUB Logo"
+          >
+            <Image
+              src="/assets/pub-logo-white-7ae72a.png"
+              alt="PUB Logo"
+              width={238}
+              height={46}
+              className="object-contain hover:opacity-80 transition-opacity duration-200"
+            />
+          </button>
         </div>
       </div>
+
+      {/* Credits Modal */}
+      <CreditsModal 
+        isOpen={isCreditsModalOpen} 
+        onClose={() => setIsCreditsModalOpen(false)} 
+      />
     </div>
   );
 }
