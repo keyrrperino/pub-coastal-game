@@ -36,13 +36,13 @@ export default function StartScreen({
         <div className="flex flex-col items-center gap-20">
           {/* Title Section */}
           <div className="flex flex-col items-center gap-4 max-w-[645px]">
-            <h1 className="text-white text-8xl text-center leading-[0.9] tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+            <h1 className="text-white text-8xl text-center leading-[0.9] tracking-wide drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
               COASTAL PROTECTORS
             </h1>
-            <h2 className="text-white text-7xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+            <h2 className="text-white text-7xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
               2025-2100
             </h2>
-            <p className="text-white text-4xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+            <p className="text-white text-4xl text-center leading-[0.8] drop-shadow-[0_4px_4px_rgba(148,107,199,1)]" style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
               an interactive timeline game
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function StartScreen({
           <div className="flex flex-col items-center gap-4 w-full">
             {/* Player Indicator */}
             <div className="px-3 py-2.5">
-            <span className="text-white text-3xl" style={{ fontFamily: 'Novecento Bold, sans-serif' }}>
+            <span className="text-white text-3xl" style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
               ˗ˏˋ Player {playerNumber} ˎˊ˗
             </span>
             </div>
@@ -61,7 +61,7 @@ export default function StartScreen({
               <button
                 onClick={onStartGame}
                 className="min-w-[450px] h-[83px] py-4 px-8 bg-[#005DFF] text-white text-2xl rounded-full hover:bg-[#0052e6] active:scale-95 transition-all duration-200 whitespace-nowrap"
-                style={{ fontFamily: 'Novecento Bold, sans-serif' }}
+                style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}
               >
                 Start Game For All
               </button>
@@ -69,7 +69,7 @@ export default function StartScreen({
               <button
                 onClick={onShowLeaderboard}
                 className="min-w-[450px] h-[83px] py-4 px-8 bg-white text-[#005DFF] text-2xl rounded-full hover:bg-gray-100 active:scale-95 transition-all duration-200 whitespace-nowrap"
-                style={{ fontFamily: 'Novecento Bold, sans-serif' }}
+                style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}
               >
                 {isLeaderboardOpen ? 'Hide Leaderboard' : 'Show Leaderboard'}
               </button>

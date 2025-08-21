@@ -118,5 +118,5 @@ import CoastalGameModal from '@/components/CoastalGameModal';
 
 Notes:
 - All routes above are available in this branch; integrate by either navigating to the page routes or embedding the components directly into your flow.
-- Fonts: Novecento Bold/Condensed are registered globally in `src/styles/globals.css`.
+- Fonts: novecento-sans-narrow (700 weight) is loaded from Typekit CSS in `src/pages/_document.tsx` and applied globally in `src/styles/globals.css`.
 - Text shadows follow the ending screens; use Tailwind `drop-shadow-[...]` classes as shown in components. 

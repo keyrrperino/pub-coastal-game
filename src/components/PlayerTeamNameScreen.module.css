@@ -62,7 +62,7 @@
 }
 
 .inputLabel {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 70.58px;
   line-height: 0.8em;
@@ -80,7 +80,7 @@
 }
 
 .letterInput {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 70.58px;
   line-height: 0.8em;
@@ -126,7 +126,7 @@
 }
 
 .saveButton {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 30.35px;
   line-height: 1.2em;
@@ -166,7 +166,7 @@
 }
 
 .infoTitle {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 70.58px;
   line-height: 0.8em;
@@ -176,7 +176,7 @@
 }
 
 .infoText {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 30.71px;
   line-height: 1.2em;

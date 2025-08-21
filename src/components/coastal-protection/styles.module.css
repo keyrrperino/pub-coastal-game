@@ -226,21 +226,21 @@
 }
 
 .coinText {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   color: #FFFFFF;
   text-shadow: 0px 0.1px 0.1px rgba(193, 129, 0, 1);
 }
 
 .coinTextLarge {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   color: #FFFFFF;
   text-shadow: 0px 0.22px 0.22px rgba(193, 129, 0, 1);
 }
 
 .novecentoBold {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
 }
 
