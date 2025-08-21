@@ -4,6 +4,9 @@ export default function Document() {
     return (
         <Html lang="en">
             <Head>
+                {/* Typekit Font Loading */}
+                <link rel="stylesheet" href="https://use.typekit.net/sam0gkj.css" />
+                
                 {/* Service Worker Registration */}
                 <script
                     dangerouslySetInnerHTML={{

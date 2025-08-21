@@ -4,12 +4,13 @@ const FontTest: React.FC = () => {
   return (
     <div style={{ 
       padding: '20px', 
-      fontFamily: 'Novecento Bold, Novecento, sans-serif',
+      fontFamily: 'novecento-sans-narrow, sans-serif',
+      fontWeight: 700,
       fontSize: '48px',
       color: 'black'
     }}>
-      <h1>Novecento Bold Font Test</h1>
-      <p>This should display in Novecento Bold font if loaded correctly.</p>
+      <h1>novecento-sans-narrow Font Test</h1>
+      <p>This should display in novecento-sans-narrow font if loaded correctly.</p>
       <p style={{ fontFamily: 'Arial, sans-serif' }}>This is Arial for comparison.</p>
     </div>
   );

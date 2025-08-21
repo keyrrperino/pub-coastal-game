@@ -53,7 +53,7 @@
 }
 
 .congratulationsTitle {
-  font-family: 'Novecento Bold', 'Novecento', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 98.84px;
   line-height: 0.8em;
@@ -65,7 +65,7 @@
 }
 
 .congratulationsText {
-  font-family: 'Novecento Bold', 'Novecento', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 43px;
   line-height: 1.2em;
@@ -85,7 +85,7 @@
 }
 
 .scoreText {
-  font-family: 'Novecento Bold', 'Novecento', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 60px;
   line-height: 1.2em;
@@ -96,7 +96,7 @@
 }
 
 .scoreValue {
-  font-family: 'Novecento Bold', 'Novecento', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 60px;
   line-height: 1.2em;
@@ -164,7 +164,7 @@
 }
 
 .inputLabel {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 3.5rem;
   line-height: 0.8em;
@@ -181,7 +181,7 @@
 }
 
 .letterInput {
-  font-family: 'Novecento Bold', sans-serif;
+  font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
   font-size: 70.58px;
   line-height: 0.8em;
