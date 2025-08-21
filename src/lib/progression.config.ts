@@ -248,7 +248,7 @@ const zone3Template: Record<string, TemplateAction> = {
       defaultCost: 2,
       dynamicRules: [
         {
-          requiredActiveActions: ['BUILD_ARTIFICIAL_REEF'],
+          requiredActiveActions: ['BUILD_REVETMENT_1_15'],
           cost: 1 // Artificial Reef + Rocky Revet 1.15 upgrade to Rocky Revet 2.0 costs only 1 coin
         }
       ]
