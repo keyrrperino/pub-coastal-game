@@ -79,7 +79,7 @@ const Timer: React.FC<TimerProps> = ({
       {/* Timer value */}
       <div className={`flex items-baseline ${isAlmostUp ? styles.timerWiggle : ''}`}>
         <div
-          className={`${styles.novecentoBold} text-[80px] xl:text-[120px] font-bold leading-[1] text-white uppercase w-[100px] xl:w-[150px] text-center`}
+          className={`${styles.novecentoBold} text-[80px] xl:text-[120px] font-bold leading-[1] text-white uppercase w-[100px] xl:w-[150px] text-center timer-number`}
         >
           {timeRemaining}
         </div>

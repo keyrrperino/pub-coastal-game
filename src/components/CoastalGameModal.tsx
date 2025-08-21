@@ -209,7 +209,7 @@ export default function CoastalGameModal({
             </div>
             
             <div className="flex items-end gap-2">
-              <span className="text-white text-[158px] font-bold leading-[0.8]">{budget}</span>
+              <span className="text-white text-[158px] font-bold leading-[0.8] number-enhanced">{budget}</span>
               <span className="text-white text-[43px] font-bold">s</span>
             </div>
           </div>
