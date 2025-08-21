@@ -153,6 +153,35 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     currentTeamEntry: null
   });
 
+  // Inactivity watchdog during TEAM_NAME_INPUT (monitor only team name input activity)
+  const lastInteractionRef = useRef<number>(Date.now());
+  const INACTIVITY_RESET_MS = 60000; // 60 seconds of inactivity triggers reset
+
+  // Bump interaction timestamp when team name changes
+  useEffect(() => {
+    // Any change (including clearing) counts as interaction
+    lastInteractionRef.current = Date.now();
+  }, [lobbyState?.[LobbyStateEnum.TEAM_NAME]]);
+
+  // Start/reset inactivity timer when entering TEAM_NAME_INPUT
+  useEffect(() => {
+    if (lobbyState.gameLobbyStatus !== GameLobbyStatus.TEAM_NAME_INPUT) return;
+
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      const elapsed = now - (lastInteractionRef.current || 0);
+      if (elapsed >= INACTIVITY_RESET_MS) {
+        clearInterval(intervalId);
+        // Reset game due to inactivity while waiting for team name input
+        resetGame();
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [lobbyState.gameLobbyStatus]);
+
   useEffect(() => {
     if (lobbyState.gameLobbyStatus === GameLobbyStatus.LEADERBOARD_DISPLAY) {
       const currentTeamNameScore = lobbyState?.[LobbyStateEnum.TEAM_NAME] || undefined;
