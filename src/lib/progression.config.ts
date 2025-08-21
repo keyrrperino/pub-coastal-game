@@ -1,8 +1,23 @@
 import { ActivityTypeEnum } from './enums';
-import { ActionConfig } from './types';
+import { ActionConfig, DynamicCostConfig } from './types';
 
 // Re-export ActionConfig for backward compatibility
 export type { ActionConfig } from './types';
+
+// Template-specific types for configuration
+interface TemplateDynamicCostRule {
+  /** Prerequisites that must be active for this cost to apply (template keys) */
+  requiredActiveActions?: string[];
+  /** The cost when this rule matches */
+  cost: number;
+}
+
+interface TemplateDynamicCostConfig {
+  /** Default cost (current system) */
+  defaultCost: number;
+  /** Rules for dynamic costs */
+  dynamicRules?: TemplateDynamicCostRule[];
+}
 
 // =========================================================================
 //  ACTION TEMPLATES - Generic logic for each Zone
@@ -11,8 +26,8 @@ export type { ActionConfig } from './types';
 interface TemplateAction {
   /** The human-readable name for the UI. */
   displayName: string;
-  /** The resource cost of the action (e.g., number of coins). */
-  cost: number;
+  /** The resource cost of the action (e.g., number of coins). Can be static or dynamic. */
+  cost: number | TemplateDynamicCostConfig;
   /** The minimum game round in which this action becomes available. */
   unlocksInRound: number;
   /**
@@ -56,13 +71,37 @@ const zone1Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    displayName: '1.15m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2,
+    displayName: '2m', 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_LAND_RECLAMATION_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
@@ -134,13 +173,37 @@ const zone2Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    displayName: '1.15m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 1,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2,
+    displayName: '2m', 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     conflicts: ['PLANT_MANGROVE', 'BUILD_COASTAL_BARRIER_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
@@ -180,7 +243,17 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'artificial-reef',
   },
   BUILD_REVETMENT_2: {
-    displayName: 'Rocky Revet 2m', cost: 2, unlocksInRound: 2,
+    displayName: 'Rocky Revet 2m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_ARTIFICIAL_REEF'],
+          cost: 1 // Artificial Reef + Rocky Revet 1.15 upgrade to Rocky Revet 2.0 costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     prerequisites: [['BUILD_ARTIFICIAL_REEF']],
     replaces: ['BUILD_REVETMENT_1_15'],
     measureType: 'artificial-reef',
@@ -192,13 +265,37 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'seawall',
   },
   BUILD_SEAWALL_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    displayName: '1.15m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5'],
     measureType: 'seawall',
   },
   BUILD_SEAWALL_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2,
+    displayName: '2m', 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_SEAWALL_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_HYBRID_MEASURE_0_5'],
     replaces: ['BUILD_SEAWALL_0_5', 'BUILD_SEAWALL_1_15'],
     measureType: 'seawall',
@@ -216,13 +313,37 @@ const zone3Template: Record<string, TemplateAction> = {
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_1_15: {
-    displayName: '1.15m', cost: 2, unlocksInRound: 1,
+    displayName: '1.15m', 
+    cost: {
+      defaultCost: 2,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_HYBRID_MEASURE_0_5'],
+          cost: 1 // Upgrade from 0.5m to 1.15m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 1,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5'],
     measureType: 'hybrid-measure',
   },
   BUILD_HYBRID_MEASURE_2: {
-    displayName: '2m', cost: 3, unlocksInRound: 2,
+    displayName: '2m', 
+    cost: {
+      defaultCost: 3,
+      dynamicRules: [
+        {
+          requiredActiveActions: ['BUILD_HYBRID_MEASURE_0_5'],
+          cost: 2 // Upgrade from 0.5m to 2.00m costs only 2 coins
+        },
+        {
+          requiredActiveActions: ['BUILD_HYBRID_MEASURE_1_15'],
+          cost: 1 // Upgrade from 1.15m to 2.00m costs only 1 coin
+        }
+      ]
+    }, 
+    unlocksInRound: 2,
     conflicts: ['BUILD_ARTIFICIAL_REEF', 'BUILD_SEAWALL_0_5'],
     replaces: ['BUILD_HYBRID_MEASURE_0_5', 'BUILD_HYBRID_MEASURE_1_15'],
     measureType: 'hybrid-measure',
@@ -329,9 +450,26 @@ function createZoneActions(template: Record<string, TemplateAction>, enumMap: Re
 
     if (!finalId) continue; // Skip if no enum mapping exists
 
+    // Handle dynamic cost configuration - map template keys to ActivityTypeEnum values
+    let cost = templateAction.cost;
+    if (typeof cost === 'object' && cost !== null && 'dynamicRules' in cost) {
+      const dynamicRules = cost.dynamicRules?.map(rule => ({
+        cost: rule.cost,
+        requiredActiveActions: rule.requiredActiveActions?.map(
+          templateKey => enumMap[templateKey]
+        ).filter(Boolean) as ActivityTypeEnum[]
+      }));
+      
+      cost = {
+        defaultCost: cost.defaultCost,
+        dynamicRules
+      } as DynamicCostConfig;
+    }
+
     const newAction: ActionConfig = {
       ...templateAction,
       id: finalId,
+      cost: cost as number | DynamicCostConfig,
       sector,
       prerequisites: templateAction.prerequisites?.map(orGroup =>
         orGroup.map(id => enumMap[id]).filter(Boolean)

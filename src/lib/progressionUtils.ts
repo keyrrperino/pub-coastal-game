@@ -1,6 +1,7 @@
 import { ActivityTypeEnum } from './enums';
 import { ActivityLogType, ActionStatus, ActionConfig } from './types';
 import { progressionConfig } from './progression.config';
+import { calculateDynamicCost } from './dynamicCosts';
 
 /**
  * Helper function to check if prerequisites are met
@@ -113,6 +114,24 @@ export function isBlockedByOneActionPerRound(
 }
 
 /**
+ * Helper function to get action config with dynamic cost calculated
+ */
+export function getActionWithDynamicCost(
+  actionConfig: ActionConfig,
+  activeActions: Set<ActivityTypeEnum>
+): ActionConfig {
+  const dynamicCost = calculateDynamicCost(
+    actionConfig.cost,
+    activeActions
+  );
+  
+  return {
+    ...actionConfig,
+    cost: dynamicCost
+  };
+}
+
+/**
  * Helper function to determine the status of any given action
  */
 export function getActionState(
@@ -122,6 +141,8 @@ export function getActionState(
   currentRound: number,
   activityLog?: ActivityLogType[]
 ): { config: ActionConfig; status: ActionStatus } {
+  // Calculate dynamic cost for this action
+  const actionWithDynamicCost = getActionWithDynamicCost(actionConfig, activeActions);
   let status: ActionStatus;
 
   // Check 1: Is the action already completed?
@@ -165,7 +186,7 @@ export function getActionState(
     status = ActionStatus.SELECTABLE;
   }
 
-  return { config: actionConfig, status };
+  return { config: actionWithDynamicCost, status };
 }
 
 /**
