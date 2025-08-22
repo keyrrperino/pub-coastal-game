@@ -45,7 +45,7 @@ const performanceConfigs: Record<
   bad: {
     title: 'HEAVY FLOODING',
     message:
-      'Your coastal defence is not water-tight. Immediate changes are required to ensure adequate  protection against rising sea levels.',
+      'Your coastal defence is not water-tight. Immediate changes are required to ensure adequate protection against rising sea levels.',
     bgColor: 'rgba(255, 176, 176, 0.5)',
     borderGradient:
       'linear-gradient(135deg, #FF7CE3 0%, #FFFFFF 100%)',
