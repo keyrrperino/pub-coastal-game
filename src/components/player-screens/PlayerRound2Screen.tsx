@@ -115,7 +115,13 @@ export default function PlayerRound2Screen({
           </div>
 
           {/* Countdown - always reserve space to prevent layout shift */}
-          <div className="h-24 flex items-center justify-center">
+          <div
+            className={cn(
+              'h-24 flex items-center justify-center',
+              !isControlScreen &&
+                'absolute bottom-0 -translate-y-1/2 left-1/2 -translate-x-1/2',
+            )}
+          >
             {timeRemaining !== undefined && (
               <h3 className="text-white text-7xl font-bold leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
                 {Math.ceil(timeRemaining) === 0
