@@ -159,7 +159,7 @@ export default function StartScreen({
             className="focus:outline-none"
             aria-label="PUB Logo"
           >
-            <Logo />
+            <Logo width={123} height={76} />
           </button>
         </div>
       </div>
@@ -172,3 +172,4 @@ export default function StartScreen({
     </div>
   );
 }
+

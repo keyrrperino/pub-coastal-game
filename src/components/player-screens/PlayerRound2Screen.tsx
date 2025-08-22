@@ -43,7 +43,7 @@ export default function PlayerRound2Screen({
             maxLevel={1.15}
             currentLevel={0.7}
             scaleMax={2}
-            containerHeight={900}
+            containerHeight={627}
             currentWaterColor={{
               from: 'rgba(255, 220, 156, 1)',
               to: 'rgba(255, 207, 117, 1)',
