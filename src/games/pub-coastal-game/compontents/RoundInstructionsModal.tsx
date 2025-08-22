@@ -72,13 +72,13 @@ const RoundInstructionsModal: React.FC<RoundInstructionsModalProps> = ({
     
     switch (round) {
       case 1:
-        return <PlayerRound1Screen timeRemaining={showCountdown ? timeRemaining : undefined} />;
+        return <PlayerRound1Screen isControlScreen timeRemaining={showCountdown ? timeRemaining : undefined} />;
       case 2:
-        return <PlayerRound2Screen timeRemaining={showCountdown ? timeRemaining : undefined} />;
+        return <PlayerRound2Screen isControlScreen timeRemaining={showCountdown ? timeRemaining : undefined} />;
       case 3:
-        return <PlayerRound3Screen timeRemaining={showCountdown ? timeRemaining : undefined} />;
+        return <PlayerRound3Screen isControlScreen timeRemaining={showCountdown ? timeRemaining : undefined} />;
       default:
-        return <PlayerRound1Screen timeRemaining={showCountdown ? timeRemaining : undefined} />;
+        return <PlayerRound1Screen isControlScreen timeRemaining={showCountdown ? timeRemaining : undefined} />;
     }
   };
 

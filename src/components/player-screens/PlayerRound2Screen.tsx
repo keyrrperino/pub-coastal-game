@@ -1,12 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
+import WaterLevelIndicator from '../WaterLevelIndicator';
 
 interface PlayerRound2ScreenProps {
   onContinue?: () => void;
   timeRemaining?: number;
+  isControlScreen?: boolean;
 }
 
-export default function PlayerRound2Screen({ onContinue, timeRemaining }: PlayerRound2ScreenProps) {
+export default function PlayerRound2Screen({
+  onContinue,
+  timeRemaining,
+  isControlScreen = false,
+}: PlayerRound2ScreenProps) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -25,6 +31,23 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full">
+        {!isControlScreen && (
+          <WaterLevelIndicator
+            minLevel={0.5}
+            maxLevel={2.0}
+            currentLevel={0.5}
+            scaleMax={2}
+            containerHeight={627}
+            currentWaterColor={{
+              from: 'rgba(152, 209, 255, 1)',
+              to: 'rgba(117, 193, 255, 1)'
+            }}
+            projectedWaterColor={{
+              from: 'rgba(66, 100, 255, 1)',
+              to: 'rgba(27, 68, 255, 1)'
+            }}
+          />
+        )}
         <div className="flex flex-col items-center gap-10 max-w-4xl w-full">
           {/* Round Title and Year */}
           <div className="flex flex-col items-center">
@@ -35,12 +58,20 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
               YEAR 2050-2075
             </h2>
           </div>
-          
+
           {/* Game Info Card */}
           <div className="max-w-4xl w-full mx-8">
             <div className="bg-[rgba(175,240,255,0.3)] backdrop-blur-[22px] border-2 border-gradient-to-br from-[#91E2FF] to-white rounded-[26px] px-6 py-4 shadow-[0_6px_30px_rgba(0,0,0,0.15)] gap-2 flex flex-col">
               <p className="text-white text-[22px] text-center leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
-                Between now and 2075, mean sea levels are projected to increase by <span className="text-[#FFDD3D]">0.7 to 1.5 metres</span>. It's time to <span className="text-[#FFDD3D]">upgrade</span>, or <span className="text-[#FFDD3D]">rethink</span> your strategy to cover any weak spots left behind.
+                Between now and 2075, mean sea levels are projected to
+                increase by{' '}
+                <span className="text-[#FFDD3D]">
+                  0.7 to 1.5 metres
+                </span>
+                . It's time to{' '}
+                <span className="text-[#FFDD3D]">upgrade</span>, or{' '}
+                <span className="text-[#FFDD3D]">rethink</span> your
+                strategy to cover any weak spots left behind.
               </p>
               <p className="text-white text-[22px] -mt-2 text-center leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
                 In this round, you may:
@@ -51,7 +82,8 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
                     Raise the heights of your existing defenses or,
                   </li>
                   <li className="text-white text-[22px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
-                    Demolish and explore alternatives, but be warned: this costs money and lowers your score.
+                    Demolish and explore alternatives, but be warned:
+                    this costs money and lowers your score.
                   </li>
                 </ul>
               </div>
@@ -70,7 +102,9 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
           <div className="h-24 flex items-center justify-center">
             {timeRemaining !== undefined && (
               <h3 className="text-white text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
-                {Math.ceil(timeRemaining) === 0 ? 'GO!' : `${Math.ceil(timeRemaining)}...`}
+                {Math.ceil(timeRemaining) === 0
+                  ? 'GO!'
+                  : `${Math.ceil(timeRemaining)}...`}
               </h3>
             )}
           </div>
@@ -78,4 +112,4 @@ export default function PlayerRound2Screen({ onContinue, timeRemaining }: Player
       </div>
     </div>
   );
-} 
+}
