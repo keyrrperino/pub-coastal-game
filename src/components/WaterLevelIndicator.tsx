@@ -48,7 +48,6 @@ export default function WaterLevelIndicator({
       await Promise.all([
         textControls.start({
           opacity: 1,
-          x: 32,
           y: -(maxLevel / scaleMax) * (containerHeight - 4) + 100,
           transition: { duration: 0.8, ease: 'easeOut' }
         }),
@@ -107,7 +106,7 @@ export default function WaterLevelIndicator({
       {/* Text Information */}
       <motion.div
         className="flex w-full flex-col items-end gap-2 relative"
-        initial={{ opacity: 0, x: 32 }}
+        initial={{ opacity: 0 }}
         animate={textControls}
       >
         <div className="text-white text-[40px] font-bold text-nowrap leading-[1.3] text-right drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
