@@ -47,13 +47,13 @@ export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props
             {/* Mission Description - Centered */}
             <div className="flex flex-col gap-6 text-center text-[3vh]">
               <p className="text-white">
-                Singapore's sea levels are projected to rise <span className="text-[#FF6A6C]">by up to 1.15m by 2100</span>.
+                Sea levels around Singapore are rising due to climate change.
               </p>
               <p className="text-white">
-                Your goal is to protect every sector of our nation's coast from coastal flooding. You have three rounds to carefully place your coastal defences - balancing the <span className="text-[#FFDD3D]">time</span>, <span className="text-[#FFDD3D]">budget</span>, and <span className="text-[#FFDD3D]">effectiveness</span>.
+                Your goal is to protect every sector of our nation from coastal flooding. You have three rounds to carefully place your coastal defences - balancing the <span className="text-[#FFDD3D]">time</span>, <span className="text-[#FFDD3D]">budget</span>, and <span className="text-[#FFDD3D]">effectiveness</span>.
               </p>
               <p className="text-white">
-                The future of our island is in your hands. Are you ready to defend our shores?
+                The future of our island is in your hands. Are you ready to protect our shores?
               </p>
             </div>
 

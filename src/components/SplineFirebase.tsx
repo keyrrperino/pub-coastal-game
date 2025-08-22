@@ -26,6 +26,9 @@ import TutorialScreen1 from "@/components/TutorialScreen1";
 import { useLobbyInstruction } from "./hooks/useLobbyInstruction";
 import Round1Screen from "./Round1Screen";
 import { useLobbyStoryline } from "./hooks/useLobbyStoryline";
+
+// DEV MODE TOGGLE - Set to true to enable manual tutorial controls
+const DEV_MODE_MANUAL_TUTORIALS = false; //process.env.NODE_ENV === 'development';
 import Round2Screen from "./Round2Screen";
 import Round3Screen from "./Round3Screen";
 import { useTimer } from "./hooks/useTimer";
@@ -121,8 +124,14 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
     }
   };
 
-  const {currentTutorial} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
+  // Dev mode manual tutorial state
+  const [manualTutorialIndex, setManualTutorialIndex] = useState(0);
+  
+  const {currentTutorial: timerBasedTutorial} = useLobbyInstruction(lobbyState, triggersLoading, gameRoomServiceRef);
   const {timeRemaining: timeRemainingStoryLine} = useLobbyStoryline(lobbyState, triggersLoading, gameRoomServiceRef);
+  
+  // Use manual tutorial index in dev mode, otherwise use timer-based
+  const currentTutorial = DEV_MODE_MANUAL_TUTORIALS ? manualTutorialIndex : timerBasedTutorial;
   const showCountdown = timeRemainingStoryLine <= 3;
   useLobbyRoundBreakdown(lobbyState, triggersLoading, gameRoomServiceRef);
   useLobbyRoundAnimation(lobbyState, triggersLoading, gameRoomServiceRef);
@@ -405,6 +414,29 @@ const SplineFirebase: React.FC<SplineFirebaseProps> = ({ roomName }) => {
       {currentTutorial === 2 && <TutorialScreen3 phaseStartTime={lobbyState.phaseStartTime} />}
       {currentTutorial === 3 && <TutorialScreen4 phaseStartTime={lobbyState.phaseStartTime} />}
       {currentTutorial === 4 && <TutorialScreen5 phaseStartTime={lobbyState.phaseStartTime} />}
+      
+      {/* DEV MODE MANUAL CONTROLS */}
+      {DEV_MODE_MANUAL_TUTORIALS && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
+          <button
+            onClick={() => setManualTutorialIndex(Math.max(0, manualTutorialIndex - 1))}
+            disabled={manualTutorialIndex === 0}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600"
+          >
+            Previous ({manualTutorialIndex > 0 ? manualTutorialIndex : 'Start'})
+          </button>
+          <div className="px-4 py-2 bg-gray-200 text-black rounded">
+            Tutorial {manualTutorialIndex + 1} of 5
+          </div>
+          <button
+            onClick={() => setManualTutorialIndex(Math.min(4, manualTutorialIndex + 1))}
+            disabled={manualTutorialIndex === 4}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600"
+          >
+            Next ({manualTutorialIndex < 4 ? manualTutorialIndex + 2 : 'End'})
+          </button>
+        </div>
+      )}
     </div>
   )
 
