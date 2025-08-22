@@ -22,25 +22,34 @@ interface PerformanceConfig {
   borderGradient: string;
 }
 
-const performanceConfigs: Record<PostRoundPerformance, PerformanceConfig> = {
+const performanceConfigs: Record<
+  PostRoundPerformance,
+  PerformanceConfig
+> = {
   good: {
-    title: "NO FLOODING",
-    message: "You've successfully protected our coasts! Continue to implement further adaptive measures",
-    bgColor: "rgba(123, 255, 215, 0.5)",
-    borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)"
+    title: 'NO FLOODING',
+    message:
+      "You've successfully protected our coasts - continue to implement further adaptive measures.",
+    bgColor: 'rgba(123, 255, 215, 0.5)',
+    borderGradient:
+      'linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)',
   },
   okay: {
-    title: "MODERATE FLOODING",
-    message: "Build measures higher in response to sea level rise to avoid flooding in your sector",
-    bgColor: "rgba(251, 255, 176, 0.5)",
-    borderGradient: "linear-gradient(135deg, #F7FF69 0%, #FFFFFF 100%)"
+    title: 'MODERATE FLOODING',
+    message:
+      'Build your measures higher in response to sea level rise to avoid flooding in your sector',
+    bgColor: 'rgba(251, 255, 176, 0.5)',
+    borderGradient:
+      'linear-gradient(135deg, #F7FF69 0%, #FFFFFF 100%)',
   },
   bad: {
-    title: "heavy flooding",
-    message: "Immediate changes are required to ensure adequate protection against rising sea levels",
-    bgColor: "rgba(255, 176, 176, 0.5)",
-    borderGradient: "linear-gradient(135deg, #FF7CE3 0%, #FFFFFF 100%)"
-  }
+    title: 'HEAVY FLOODING',
+    message:
+      'Your coastal defence is not water-tight. Immediate changes are required to ensure adequate  protection against rising sea levels.',
+    bgColor: 'rgba(255, 176, 176, 0.5)',
+    borderGradient:
+      'linear-gradient(135deg, #FF7CE3 0%, #FFFFFF 100%)',
+  },
 };
 
 export default function PostRoundModal({
@@ -50,58 +59,60 @@ export default function PostRoundModal({
   sector,
   overallScoresData,
   currentRound,
-  onContinue
+  onContinue,
 }: PostRoundModalProps) {
   if (!isOpen) return null;
 
   const getPerformanceRound = (): PostRoundPerformance => {
-    const roundData = overallScoresData[(currentRound ?? 1) as RoundType];
+    const roundData =
+      overallScoresData[(currentRound ?? 1) as RoundType];
 
-    const totalScoreRound = roundData ? (roundData[sector]?.totalScoreToDeduct ?? 0) : 0;
+    const totalScoreRound = roundData
+      ? (roundData[sector]?.totalScoreToDeduct ?? 0)
+      : 0;
 
-    let performance = "okay";
+    let performance = 'okay';
     if (currentRound === 1) {
       // Round 1: No Flooding 0 to -5, Moderate -5.01 to -60, Heavy -60.01 to -120
       if (totalScoreRound >= 0 && totalScoreRound <= 5) {
-        performance = "good";
+        performance = 'good';
       }
       if (totalScoreRound > 5 && totalScoreRound <= 60) {
-        performance = "okay";
+        performance = 'okay';
       }
       if (totalScoreRound > 60 && totalScoreRound <= 120) {
-        performance = "bad";
+        performance = 'bad';
       }
     }
 
     if (currentRound === 2) {
       // Round 2: No Flooding 0 to -5, Moderate -5.01 to -149.99, Heavy -150 to -300
       if (totalScoreRound >= 0 && totalScoreRound <= 5) {
-        performance = "good";
+        performance = 'good';
       }
       if (totalScoreRound > 5 && totalScoreRound <= 149.99) {
-        performance = "okay";
+        performance = 'okay';
       }
       if (totalScoreRound > 149.99 && totalScoreRound <= 300) {
-        performance = "bad";
+        performance = 'bad';
       }
     }
 
     if (currentRound === 3) {
       // Round 3: No Flooding 0 to -5, Moderate -5.01 to -179.99, Heavy -180 to -400
       if (totalScoreRound >= 0 && totalScoreRound <= 5) {
-        performance = "good";
+        performance = 'good';
       }
       if (totalScoreRound > 5 && totalScoreRound <= 179.99) {
-        performance = "okay";
+        performance = 'okay';
       }
       if (totalScoreRound > 179.99 && totalScoreRound <= 400) {
-        performance = "bad";
+        performance = 'bad';
       }
     }
 
     return performance as PostRoundPerformance;
-  }
-
+  };
 
   const config = performanceConfigs[getPerformanceRound()];
 
@@ -112,15 +123,15 @@ export default function PostRoundModal({
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
       onClick={handleBackdropClick}
     >
       {/* Main Modal Container */}
-      <div 
+      <div
         className="relative w-[812px] max-w-[70vw] w-full py-4 rounded-[26px] backdrop-blur-[17px] shadow-lg"
         style={{
-          backgroundColor: config.bgColor
+          backgroundColor: config.bgColor,
         }}
       >
         {/* Border using ::after pseudo-element */}
@@ -135,12 +146,12 @@ export default function PostRoundModal({
             border-radius: 26px;
             padding: 2px;
             background: ${config.borderGradient};
-            -webkit-mask: 
-              linear-gradient(#fff 0 0) content-box, 
+            -webkit-mask:
+              linear-gradient(#fff 0 0) content-box,
               linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
-            mask: 
-              linear-gradient(#fff 0 0) content-box, 
+            mask:
+              linear-gradient(#fff 0 0) content-box,
               linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
@@ -158,4 +169,4 @@ export default function PostRoundModal({
       </div>
     </div>
   );
-} 
+}

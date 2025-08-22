@@ -312,3 +312,32 @@
 .timerWiggle {
   animation: timerWiggle 1s infinite;
 }
+
+@keyframes ellipsis {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+  100% {
+    content: '...';
+  }
+}
+
+.ellipsis {
+  display: inline-block;
+  width: 2ch;
+  text-align: left;
+}
+
+.ellipsis::after {
+  content: '';
+  animation: ellipsis 1.5s infinite;
+}
