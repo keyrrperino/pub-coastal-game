@@ -33,18 +33,18 @@ export default function PlayerRound2Screen({
       <div className="relative z-10 flex flex-col items-center justify-center h-full">
         {!isControlScreen && (
           <WaterLevelIndicator
-            minLevel={0.5}
-            maxLevel={2.0}
-            currentLevel={0.5}
+            minLevel={0.7}
+            maxLevel={1.15}
+            currentLevel={0.7}
             scaleMax={2}
             containerHeight={627}
             currentWaterColor={{
-              from: 'rgba(152, 209, 255, 1)',
-              to: 'rgba(117, 193, 255, 1)'
+              from: 'rgba(255, 220, 156, 1)',
+              to: 'rgba(255, 207, 117, 1)'
             }}
             projectedWaterColor={{
-              from: 'rgba(66, 100, 255, 1)',
-              to: 'rgba(27, 68, 255, 1)'
+              from: 'rgba(255, 123, 47, 1)',
+              to: 'rgba(255, 94, 2, 1)'
             }}
           />
         )}

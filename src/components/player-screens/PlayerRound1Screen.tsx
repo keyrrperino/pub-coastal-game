@@ -33,7 +33,7 @@ export default function PlayerRound1Screen({
       {/* Content Container */}
       <div
         className={cn(
-          'relative z-10 flex flex-row items-center justify-between gap-16 h-full w-[calc(100vw-120px)] mx-auto',
+          'relative z-10 flex flex-row items-center justify-between gap-16 h-full px-[60px] min-w-[calc(100vw-120px)] w-full',
           isControlScreen && 'justify-center',
         )}
       >
@@ -72,27 +72,29 @@ export default function PlayerRound1Screen({
           </div>
 
           {/* Game Info Card */}
-          <div
-            className={cn(
-              'w-full',
-              isControlScreen && 'max-w-[80%] mx-8',
-            )}
-          >
-            <div className="bg-[rgba(175,240,255,0.3)] backdrop-blur-[22px] border-2 border-gradient-to-br from-[#91E2FF] to-white rounded-[26px] px-6 py-4 shadow-[0_6px_30px_rgba(0,0,0,0.15)]">
-              <p className="text-white text-2xl leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
-                Sea levels are beginning to rise — slowly, but
-                steadily. By 2050, they could climb anywhere between{' '}
-                <span className="text-[#FFDD3D]">
-                  0.2 and 0.6 metres
-                </span>
-                . You now have{' '}
-                <span className="text-[#FFDD3D]">30 seconds</span> to
-                choose.
-              </p>
-              <p className="text-white text-2xl leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
-                Remember you can only deploy one measure at a time.
-                Budget is limited, use it wisely!
-              </p>
+          <div className="w-full">
+            <div className="bg-[rgba(175,240,255,0.3)] backdrop-blur-[22px] border-2 rounded-[33px] shadow-[0_7px_37px_rgba(0,0,0,0.15)]">
+              <div className="px-8 py-6 space-y-6">
+                <p className="text-white text-2xl leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+                  Sea levels are beginning to rise — slowly, but
+                  steadily. By 2050, they could climb anywhere between{' '}
+                  <span className="text-[#FF6A6C]">
+                    0.2 and 0.6 metres
+                  </span>
+                  .
+                </p>
+
+                <p className="text-white text-2xl leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+                  You now have{' '}
+                  <span className="text-[#FFDD3D]">30 seconds</span>{' '}
+                  to choose your coastal defences. Remember you can
+                  only deploy one measure per sector at a time.
+                </p>
+
+                <p className="text-white text-2xl leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+                  Budget is limited, use it wisely!
+                </p>
+              </div>
             </div>
           </div>
 
