@@ -33,7 +33,7 @@ export default function PlayerRound1Screen({
       {/* Content Container */}
       <div
         className={cn(
-          'relative z-10 flex flex-row items-center justify-between gap-16 h-full px-[60px] min-w-[calc(100vw-120px)] w-full',
+          'relative z-10 flex flex-row items-center gap-16 h-full px-[60px] min-w-[calc(100vw-120px)] w-full',
           isControlScreen && 'justify-center',
         )}
       >
