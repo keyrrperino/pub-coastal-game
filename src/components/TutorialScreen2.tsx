@@ -2,14 +2,19 @@ import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
 import { useServerTime } from '@/components/ServerTimeContext';
+import Logo from './Logo';
 
 interface TutorialScreen2Props {
   phaseStartTime: number;
 }
 
-export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props) {
+export default function TutorialScreen2({
+  phaseStartTime,
+}: TutorialScreen2Props) {
   const { getAdjustedCurrentTime } = useServerTime();
-  const localStartRef = React.useRef<number>(getAdjustedCurrentTime());
+  const localStartRef = React.useRef<number>(
+    getAdjustedCurrentTime(),
+  );
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -27,20 +32,18 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar
-          duration={12}
-          isRunning={true}
-        />
+        <TimerBar duration={12} isRunning={true} />
       </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
         <div className="flex flex-col items-center gap-5 max-w-[80%] w-full h-full max-h-[80%]">
-
           {/* Description */}
           <div className="w-full">
             <p className="text-white text-[3vh] text-center font-bold uppercase">
-              Singapore is divided into three sectors with two subsectors, each with its own land use. Take a look around — which sector are you in charge of?
+              Singapore is divided into three sectors with two
+              subsectors, each with its own land use. Take a look
+              around — which sector are you in charge of?
             </p>
           </div>
 
@@ -67,10 +70,10 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
                 height={598}
                 className="object-contain absolute opacity-0 animate-fadeIn"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 0.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 0.5s forwards',
                 }}
               />
-              
+
               {/* Sector 2 Highlight */}
               <Image
                 src="/assets/sector2-highlight-v2.svg"
@@ -79,10 +82,10 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
                 height={598}
                 className="object-contain absolute opacity-0"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 1.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 1.5s forwards',
                 }}
               />
-              
+
               {/* Sector 3 Highlight */}
               <Image
                 src="/assets/sector3-highlight-v2.svg"
@@ -91,10 +94,10 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
                 height={598}
                 className="object-contain absolute opacity-0"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 2.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 2.5s forwards',
                 }}
               />
-            </div>          
+            </div>
             <style jsx>{`
               @keyframes fadeIn {
                 from {
@@ -108,16 +111,10 @@ export default function TutorialScreen2({ phaseStartTime }: TutorialScreen2Props
           </div>
 
           <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
-            <Image
-                src="/assets/PUB logo_white_transparent.svg"
-                alt="pub logo"
-                width={238}
-                height={46}
-                className="object-contain"
-              />
+            <Logo />
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

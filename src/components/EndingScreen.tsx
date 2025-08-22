@@ -15,7 +15,6 @@ interface EndingScreenProps {
 
 interface EndingConfig {
   title: string;
-  subtitle: string;
   bgColor: string;
   borderGradient: string;
   content: React.ReactNode;
@@ -25,48 +24,45 @@ interface EndingConfig {
 
 const endingConfigs: Record<EndingType, EndingConfig> = {
   success: {
-    title: "Congratulations!",
-    subtitle: "You've successfully defended Singapore's shores from rising sea levels. ",
+    title: "Well done!",
     bgColor: "rgba(175, 255, 178, 0.3)",
     borderGradient: "linear-gradient(135deg, #91E2FF 0%, #FFFFFF 100%)",
     buttonColor: "from-green-500 to-green-600",
     buttonHoverColor: "from-green-600 to-green-700",
     content: <>
       Your strategic choices have made a real difference in safeguarding our island for generations to come.
-      <br />
-      But remember: no solution is perfect, and the fight against the rising tides is far from over.
-      <br />
-      We need you - our coastal protector - to keep standing strong.
+      <br /><br />
+      But no solution is perfect. We'll strengthen our defences against the rising seas and work with stakeholders to create coastlines that everyone cherishes.
+      <br /><br />
+      Together, we can protect Singapore's future!
     </>,
   },
   moderate: {
-    title: "Well done!",
-    subtitle: "You've made important progress protecting Singapore's coasts.",
-    content: <>
-      Not bad! There's still room to improve, but every step counts in this ongoing battle against sea level rise.
-      <br />
-      Keep learning, keep adapting - our island depends on it.
-      <br />
-      You are a vital part of the coastal protection effort.
-    </>,
+    title: "Good Effort!",
     bgColor: "rgba(255, 238, 175, 0.3)",
     borderGradient: "linear-gradient(135deg, #FFEEAF 0%, #FFFFFF 100%)",
     buttonColor: "from-yellow-500 to-yellow-600",
-    buttonHoverColor: "from-yellow-600 to-yellow-700"
+    buttonHoverColor: "from-yellow-600 to-yellow-700",
+    content: <>
+      There's still room to improve, but you've made important progress to protect Singapore's coasts.
+      <br /><br />
+      Keep learning, keep adapting, and keep engaging stakeholders!
+      <br /><br />
+      Thank you for being part of our coastal protection journey!
+    </>,
   },
   failure: {
-    title: "Oh no",
-    subtitle: "Oh no, too many floods have breached Singapore’s defenses.",
+    title: "Oh no!",
     bgColor: "rgba(255, 175, 175, 0.3)",
     borderGradient: "linear-gradient(135deg, rgba(17, 68, 153, 0) 0%, #FFFFFF 100%)",
     buttonColor: "from-red-500 to-red-600",
     buttonHoverColor: "from-red-600 to-red-700",
     content: <>
-      Try again to improve your strategy.
-      <br />
-      Remember, no single solution is perfect, but we must act now and together to protect future generations.
-      <br />
-      We're counting on you, coastal protector.
+      The floods have breached Singapore's coastal defences and caused severe damages everywhere.
+      <br /><br />
+      Coastal protection requires careful planning and balancing many considerations.
+      <br /><br />
+      Learn from this game and plan a stronger defence next time.
     </>,
   }
 };
@@ -118,13 +114,6 @@ export default function EndingScreen({
             <h1 className="text-white text-7xl font-bold text-center leading-[0.8] drop-shadow-[0px_4px_4px_rgba(148,107,199,1)]">
               {config.title}
             </h1>
-            
-            <div className='flex flex-col gap-6 max-w-[75vw]'>
-              <p className="text-white text-3xl uppercase font-bold text-center leading-[1.2] max-w-screen drop-shadow-[0px_2px_2px_rgba(148,107,199,1)]">
-                {config.subtitle}
-              </p>
-              
-            </div>
           </div>
 
           {/* Message Box */}

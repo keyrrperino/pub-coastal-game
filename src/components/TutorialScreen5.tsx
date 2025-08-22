@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
+import Logo from './Logo';
 
 interface TutorialScreen3Props {
   timeRemaining?: number;
@@ -155,13 +156,7 @@ export default function TutorialScreen5({
             </div>
 
             <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
-              <Image
-                src="/assets/PUB logo_white_transparent.svg"
-                alt="pub logo"
-                width={238}
-                height={46}
-                className="object-contain"
-              />
+              <Logo />
             </div>
           </div>
         </div>

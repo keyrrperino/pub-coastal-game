@@ -2,41 +2,49 @@ import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
 import { useServerTime } from '@/components/ServerTimeContext';
+import Logo from './Logo';
 
 interface TutorialScreen3Props {
   phaseStartTime: number;
   timeRemaining?: number;
 }
 
-export default function TutorialScreen3({ phaseStartTime, timeRemaining }: TutorialScreen3Props) {
+export default function TutorialScreen3({
+  phaseStartTime,
+  timeRemaining,
+}: TutorialScreen3Props) {
   const { getAdjustedCurrentTime } = useServerTime();
-  const localStartRef = React.useRef<number>(getAdjustedCurrentTime());
+  const localStartRef = React.useRef<number>(
+    getAdjustedCurrentTime(),
+  );
 
-  const logos = [{
-    value: "Mangroves",
-    logo: "mangrove.svg"
-  },
-  {
-    value: "Seawall",
-    logo: "seawall.svg"
-  },
-  {
-    value: "LAND RECLAMATION",
-    logo: "land-reclemation.svg"
-  },
-  {
-    value: "COASTAL BARRIERS",
-    logo: "coastal-barriers.svg"
-  },
-  {
-    value: "HYBRID MEASURE",
-    logo: "hybrid-measure.svg"
-  },
-  {
-    value: "Artificial reef",
-    logo: "artificial-reef.svg"
-  }];
-  
+  const logos = [
+    {
+      value: 'Mangroves',
+      logo: 'mangrove.svg',
+    },
+    {
+      value: 'Seawall',
+      logo: 'seawall.svg',
+    },
+    {
+      value: 'LAND RECLAMATION',
+      logo: 'land-reclemation.svg',
+    },
+    {
+      value: 'COASTAL BARRIERS',
+      logo: 'coastal-barriers.svg',
+    },
+    {
+      value: 'HYBRID MEASURE',
+      logo: 'hybrid-measure.svg',
+    },
+    {
+      value: 'Artificial reef',
+      logo: 'artificial-reef.svg',
+    },
+  ];
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -54,24 +62,22 @@ export default function TutorialScreen3({ phaseStartTime, timeRemaining }: Tutor
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar
-          duration={12}
-          isRunning={true}
-        />
+        <TimerBar duration={12} isRunning={true} />
       </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
         <div className="px-12 max-w-[100%] w-full uppercase">
           <div className="flex flex-col items-center gap-10">
-
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center">
               <p className="text-white text-[1.8vw] font-bold">
-              In each sector, choose one measure to protect your coast.
+                In each sector, choose one measure to protect your
+                coast.
               </p>
               <p className="text-[#FFDD3D] text-[1.8vw] font-bold">
-              Each measure has different strengths, weaknesses and costs.
+                Each measure has different strengths, weaknesses and
+                costs.
               </p>
             </div>
 
@@ -91,33 +97,30 @@ export default function TutorialScreen3({ phaseStartTime, timeRemaining }: Tutor
                             className="object-cover"
                           />
                         </div>
-                        <span className="text-white text-[1.2vw] font-bold">{logo.value}</span>
+                        <span className="text-white text-[1.2vw] font-bold">
+                          {logo.value}
+                        </span>
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
 
             {/* Bottom Section - Game Instructions */}
             <div className="flex flex-col items-center gap-6 text-center">
               <p className="text-[#FF6A6C] text-[2vw] font-bold max-w-[75%]">
-                Hint: Consider your sector’s land use to help you make better decisions
+                Hint: Consider your sector’s land use to help you make
+                better decisions
               </p>
             </div>
 
             <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
-              <Image
-                  src="/assets/PUB logo_white_transparent.svg"
-                  alt="pub logo"
-                  width={238}
-                  height={46}
-                  className="object-contain"
-                />
+              <Logo />
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

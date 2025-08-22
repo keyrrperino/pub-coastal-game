@@ -1,12 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
+import Logo from './Logo';
 
 interface TutorialScreen1Props {
   phaseStartTime?: number;
 }
 
-export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props) {
+export default function TutorialScreen1({
+  phaseStartTime,
+}: TutorialScreen1Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -21,10 +24,7 @@ export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props
       </div>
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar
-          duration={12}
-          isRunning={true}
-        />
+        <TimerBar duration={12} isRunning={true} />
       </div>
 
       {/* Dark Overlay with Blur */}
@@ -39,39 +39,42 @@ export default function TutorialScreen1({ phaseStartTime }: TutorialScreen1Props
 
             <div className="text-center">
               <h1 className="text-white text-[5vh] font-bold leading-tight tracking-wide">
-              Welcome to the<br />
-              Coastal Protection Taskforce!
+                Welcome to the
+                <br />
+                Coastal Protection Taskforce!
               </h1>
             </div>
-            
+
             {/* Mission Description - Centered */}
             <div className="flex flex-col gap-6 text-center text-[3vh]">
               <p className="text-white">
-                Sea levels around Singapore are rising due to climate change.
+                Sea levels around Singapore are rising due to climate
+                change.
               </p>
               <p className="text-white">
-                Your goal is to protect every sector of our nation from coastal flooding. You have three rounds to carefully place your coastal defences - balancing the <span className="text-[#FFDD3D]">time</span>, <span className="text-[#FFDD3D]">budget</span>, and <span className="text-[#FFDD3D]">effectiveness</span>.
+                Your goal is to protect every sector of our nation
+                from coastal flooding. You have three rounds to
+                carefully place your coastal defences - balancing the{' '}
+                <span className="text-[#FFDD3D]">time</span>,{' '}
+                <span className="text-[#FFDD3D]">budget</span>, and{' '}
+                <span className="text-[#FFDD3D]">effectiveness</span>.
               </p>
               <p className="text-white">
-                The future of our island is in your hands. Are you ready to protect our shores?
+                The future of our island is in your hands. Are you
+                ready to protect our shores?
               </p>
             </div>
 
             {/* Disclaimer - Centered */}
             <div className="mt-4 px-12">
               <p className="text-white text-[2vh] text-center">
-                *Disclaimer: This game is a simplified simulation and might not reflect real-life situations or scenarios.
+                *Disclaimer: This game is a simplified simulation and
+                might not reflect real-life situations or scenarios.
               </p>
             </div>
 
             <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
-              <Image
-                  src="/assets/PUB logo_white_transparent.svg"
-                  alt="pub logo"
-                  width={238}
-                  height={46}
-                  className="object-contain"
-                />
+              <Logo />
             </div>
           </div>
         </div>
