@@ -19,7 +19,7 @@ export default function PlayerRound1Screen({
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/assets/start-screen-bg-updated.png"
+          src="/assets/start-screen-bg-updated.webp"
           alt="Coastal background"
           fill
           className="object-cover"
