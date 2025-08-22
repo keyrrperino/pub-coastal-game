@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
+import Logo from './Logo';
 
 interface TutorialScreen2Props {
   phaseStartTime?: number;
@@ -8,7 +9,11 @@ interface TutorialScreen2Props {
   screenDuration: number;
 }
 
-export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, screenDuration }: TutorialScreen2Props) {
+export default function PlayerTutorialScreen2({
+  phaseStartTime,
+  timeRemaining,
+  screenDuration,
+}: TutorialScreen2Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -26,28 +31,30 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar
-          duration={screenDuration}
-          isRunning={true}
-        />
+        <TimerBar duration={screenDuration} isRunning={true} />
       </div>
 
       {/* Main container to center content vertically */}
       <div className="relative z-10 h-full flex items-center justify-center">
         {/* Content Container */}
-        <div className="flex flex-col px-4" style={{ height: 'calc(80vh - 60px)' }}>
-        {/* Top spacer for timer */}
-        <div className="h-[8vh]"></div>
-        
-        {/* Description */}
-        <div className="w-full mb-4">
-          <p className="text-white text-[2.8vh] text-center font-bold uppercase max-w-[90%] mx-auto">
-            Singapore is divided into three sectors with two subsectors, each with its own land use. Take a look around — which sector are you in charge of?
-          </p>
-        </div>
+        <div
+          className="flex flex-col px-4"
+          style={{ height: 'calc(80vh - 60px)' }}
+        >
+          {/* Top spacer for timer */}
+          <div className="h-[8vh]"></div>
 
-        {/* Map Container */}
-        <div className="relative w-full max-w-4xl mx-auto flex-1">
+          {/* Description */}
+          <div className="w-full mb-4">
+            <p className="text-white text-[2.8vh] text-center font-bold uppercase max-w-[90%] mx-auto">
+              Singapore is divided into three sectors with two
+              subsectors, each with its own land use. Take a look
+              around — which sector are you in charge of?
+            </p>
+          </div>
+
+          {/* Map Container */}
+          <div className="relative w-full max-w-4xl mx-auto flex-1">
             {/* Base Singapore Map */}
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
@@ -69,10 +76,10 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
                 height={430}
                 className="object-contain absolute opacity-0 animate-fadeIn"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 0.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 0.5s forwards',
                 }}
               />
-              
+
               {/* Sector 2 Highlight */}
               <Image
                 src="/assets/sector2-highlight-v2.svg"
@@ -81,10 +88,10 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
                 height={430}
                 className="object-contain absolute opacity-0"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 1.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 1.5s forwards',
                 }}
               />
-              
+
               {/* Sector 3 Highlight */}
               <Image
                 src="/assets/sector3-highlight-v2.svg"
@@ -93,10 +100,10 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
                 height={430}
                 className="object-contain absolute opacity-0"
                 style={{
-                  animation: 'fadeIn 1s ease-in-out 2.5s forwards'
+                  animation: 'fadeIn 1s ease-in-out 2.5s forwards',
                 }}
               />
-            </div>          
+            </div>
             <style jsx>{`
               @keyframes fadeIn {
                 from {
@@ -107,21 +114,14 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
                 }
               }
             `}</style>
-        </div>
-
+          </div>
         </div>
       </div>
-      
+
       {/* Logo at bottom */}
       <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-        <Image
-          src="/assets/PUB logo_white_transparent.svg"
-          alt="pub logo"
-          width={180}
-          height={35}
-          className="object-contain"
-        />
+        <Logo />
       </div>
     </div>
   );
-} 
+}

@@ -12,14 +12,14 @@
 
 .backgroundImage {
   position: absolute;
-  top: -71px;
-  left: -322px;
-  width: 2563px;
-  height: 1223px;
-  background-image: url('/assets/input-team-name-bg.png');
-  background-size: cover;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/start-screen-bg-updated.webp');
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
   z-index: 1;
 }
 
