@@ -14,6 +14,9 @@ export function useLobbyStoryline(
   const { getAdjustedCurrentTime } = useServerTime();
 
   const onTimeUp = () => {
+    console.log("onTimeUp");
+    return;
+
     if (gameRoomServiceRef.current) {
       setTimeout(() => {
         if (gameRoomServiceRef.current) {
