@@ -42,7 +42,7 @@ export default function PlayerTutorialScreen2({ phaseStartTime, timeRemaining, s
         {/* Description */}
         <div className="w-full mb-4">
           <p className="text-white text-[2.8vh] text-center font-bold uppercase max-w-[90%] mx-auto">
-            Singapore is divided into three sectors and six subsectors, each with its own land use. Take a look around — which sector are you in charge of?
+            Singapore is divided into three sectors with two subsectors, each with its own land use. Take a look around — which sector are you in charge of?
           </p>
         </div>
 

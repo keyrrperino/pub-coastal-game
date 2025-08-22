@@ -7,7 +7,10 @@ interface TutorialScreen3Props {
   phaseStartTime: number;
 }
 
-export default function TutorialScreen5({ timeRemaining, phaseStartTime }: TutorialScreen3Props) {
+export default function TutorialScreen5({
+  timeRemaining,
+  phaseStartTime,
+}: TutorialScreen3Props) {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -22,10 +25,7 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
       </div>
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar
-          duration={12}
-          isRunning={true}
-        />
+        <TimerBar duration={12} isRunning={true} />
       </div>
 
       {/* Dark Overlay with Blur */}
@@ -38,7 +38,12 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center  uppercase">
               <p className="text-white text-[3vh] font-bold">
-                Choose wisely, your team has a <span className="text-[#FFDD3D]">collective budget of <span className="number-enhanced">10</span> coins</span> per round
+                Spend wisely, your team has a{' '}
+                <span className="text-[#FFDD3D]">
+                  collective budget of{' '}
+                  <span className="number-enhanced">10</span> coins
+                  per round.
+                </span>
               </p>
             </div>
 
@@ -47,36 +52,102 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
               <div className="bg-white/20 backdrop-blur-sm border border-white/70 rounded-lg p-6 shadow-lg flex flex-col justify-between h-[auto] w-auto">
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center">
-                    <span className="text-white text-[5vh] font-bold">OVERALL BUDGET</span>
+                    <span className="text-white text-[5vh] font-bold">
+                      OVERALL BUDGET
+                    </span>
                   </div>
-                  
+
                   <div className="flex gap-2 w-full items-center justify-center">
                     <div className="flex flex-col items-center gap-1 w-full justify-center">
                       <div className="flex gap-1 w-full items-center justify-center">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
                       </div>
                       <div className="flex gap-1 w-full items-center justify-center">
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
-                        <Image src="/assets/coin-icon.png" alt="Coin" width={75} height={75} className="object-contain" />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
+                        <Image
+                          src="/assets/coin-icon.png"
+                          alt="Coin"
+                          width={75}
+                          height={75}
+                          className="object-contain"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-white text-[3vh] font-bold"><span className="number-enhanced">10</span> coins PER ROUND</span>
+                    <span className="text-white text-[3vh] font-bold">
+                      <span className="number-enhanced">10</span>{' '}
+                      coins PER ROUND
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-6 text-center  uppercase">
               <p className="text-white text-[3vh] font-bold">
-              Every action deducts from the total score of <span className="number-enhanced">2,500</span>
+                Your starting score is 2500. Each negative outcome
+                will deduct points from the total score.
               </p>
               <p className="text-[#FF8181] text-[4.5vh] font-bold">
                 Strategize with your teammates NOW!
@@ -85,16 +156,17 @@ export default function TutorialScreen5({ timeRemaining, phaseStartTime }: Tutor
 
             <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
               <Image
-                  src="/assets/PUB logo_white_transparent.svg"
-                  alt="pub logo"
-                  width={238}
-                  height={46}
-                  className="object-contain"
-                />
+                src="/assets/PUB logo_white_transparent.svg"
+                alt="pub logo"
+                width={238}
+                height={46}
+                className="object-contain"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
+

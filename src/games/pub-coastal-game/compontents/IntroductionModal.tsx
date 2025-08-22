@@ -6,6 +6,9 @@ import PlayerTutorialScreen4 from '@/components/PlayerTutorialScreen4';
 import PlayerTutorialScreen5 from "@/components/PlayerTutorialScreen5";
 import { useServerTime } from '@/components/ServerTimeContext';
 
+// DEV MODE TOGGLE - Set to true to enable manual tutorial controls
+const DEV_MODE_MANUAL_TUTORIALS = false; //process.env.NODE_ENV === 'development';
+
 interface IntroductionModalProps {
   isOpen: boolean;
   onDurationComplete?: () => void;
@@ -20,9 +23,13 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   syncWithTimestamp
 }) => {
   const { getAdjustedCurrentTime } = useServerTime();
-  const [currentScreen, setCurrentScreen] = useState(1);
+  const [timerBasedScreen, setTimerBasedScreen] = useState(1);
+  const [manualScreen, setManualScreen] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(duration);
   const [phaseStartTime] = useState(getAdjustedCurrentTime());
+  
+  // Use manual screen in dev mode, otherwise use timer-based
+  const currentScreen = DEV_MODE_MANUAL_TUTORIALS ? manualScreen : timerBasedScreen;
   
   // Calculate duration for each tutorial screen (1/5 of total duration since we have 5 screens now)
   const screenDuration = duration / 5;
@@ -39,15 +46,15 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       setTimeRemaining(remaining);
       
       if (elapsed < screenDuration) {
-        setCurrentScreen(1);
+        setTimerBasedScreen(1);
       } else if (elapsed < screenDuration * 2) {
-        setCurrentScreen(2);
+        setTimerBasedScreen(2);
       } else if (elapsed < screenDuration * 3) {
-        setCurrentScreen(3);
+        setTimerBasedScreen(3);
       } else if (elapsed < screenDuration * 4) {
-        setCurrentScreen(4);
+        setTimerBasedScreen(4);
       } else if (elapsed < duration) {
-        setCurrentScreen(5);
+        setTimerBasedScreen(5);
       } else {
         // Time is up, trigger completion
         onDurationComplete?.();
@@ -75,19 +82,19 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
 
     // Set up sequential timers
     timer1 = setTimeout(() => {
-      setCurrentScreen(2);
+      setTimerBasedScreen(2);
     }, screenDuration * 1000);
 
     timer2 = setTimeout(() => {
-      setCurrentScreen(3);
+      setTimerBasedScreen(3);
     }, screenDuration * 2 * 1000);
 
     timer3 = setTimeout(() => {
-      setCurrentScreen(4);
+      setTimerBasedScreen(4);
     }, screenDuration * 3 * 1000);
 
     const timer4 = setTimeout(() => {
-      setCurrentScreen(5);
+      setTimerBasedScreen(5);
     }, screenDuration * 4 * 1000);
 
     const timer5 = setTimeout(() => {
@@ -138,6 +145,29 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   return (
     <div className="fixed inset-0 z-50">
       {renderCurrentScreen()}
+      
+      {/* DEV MODE MANUAL CONTROLS */}
+      {DEV_MODE_MANUAL_TUTORIALS && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
+          <button
+            onClick={() => setManualScreen(Math.max(1, manualScreen - 1))}
+            disabled={manualScreen === 1}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600"
+          >
+            Previous ({manualScreen > 1 ? manualScreen - 1 : 'Start'})
+          </button>
+          <div className="px-4 py-2 bg-gray-200 text-black rounded">
+            Tutorial {manualScreen} of 5
+          </div>
+          <button
+            onClick={() => setManualScreen(Math.min(5, manualScreen + 1))}
+            disabled={manualScreen === 5}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600"
+          >
+            Next ({manualScreen < 5 ? manualScreen + 1 : 'End'})
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -66,7 +66,7 @@ export default function PlayerTutorialScreen3({ phaseStartTime, timeRemaining, s
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-3 text-center">
               <p className="text-white text-[2.8vh] font-bold">
-              In each sector, choose out of three measures to protect your coast. 
+              In each sector, choose one measure to protect your coast.
               </p>
               <p className="text-[#FFDD3D] text-[2.8vh] font-bold">
               Each measure has different strengths, weaknesses and costs.

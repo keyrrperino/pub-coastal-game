@@ -40,11 +40,8 @@ export default function PlayerTutorialScreen4({ phaseStartTime, timeRemaining, s
           <div className="flex flex-col items-center gap-[1.2vh] uppercase">
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-[0.8vh] text-center">
-              <p className="text-[#FFDD3D] text-[2.8vh] font-bold">
-                Once you select your coastal protection, it is locked in for the round.
-              </p>
               <p className="text-white text-[2.8vh] font-bold">
-                Remember to build them according to the right height of sea level rise for maximum protection.
+                Once you select your measure and the sea level rise that you are planning for, it is locked in for the round.
               </p>
             </div>
 
@@ -303,6 +300,13 @@ export default function PlayerTutorialScreen4({ phaseStartTime, timeRemaining, s
                   </div>
                 </div>
               </div>
+            </div>
+            
+            {/* Hint Section */}
+            <div className="flex flex-col gap-3 text-center  uppercase">
+              <p className="text-[#FF6A6C] text-[3.2vh] font-bold">
+                Hint: What is the projected sea level rise in that period? Can your measure be raised over time?
+              </p>
             </div>
           </div>
         </div>

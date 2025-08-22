@@ -38,8 +38,13 @@ export default function PlayerTutorialScreen5({ timeRemaining, phaseStartTime, s
           <div className="flex flex-col items-center gap-8">
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-3 text-center  uppercase">
-              <p className="text-white text-[2.8vh] font-bold">
-                Choose wisely, your team has a <span className="text-[#FFDD3D]">collective budget of <span className="number-enhanced">10</span> coins</span> per round
+              <p className="text-white text-[3vh] font-bold">
+                Spend wisely, your team has a{' '}
+                <span className="text-[#FFDD3D]">
+                  collective budget of{' '}
+                  <span className="number-enhanced">10</span> coins
+                  per round.
+                </span>
               </p>
             </div>
 
@@ -77,7 +82,7 @@ export default function PlayerTutorialScreen5({ timeRemaining, phaseStartTime, s
               </div>
             <div className="flex flex-col gap-3 text-center  uppercase">
               <p className="text-white text-[2.8vh] font-bold">
-              Every action deducts from the total score of <span className="number-enhanced">2,500</span>
+              Your starting score is 2500. Each negative outcome will deduct points from the total score.
               </p>
               <p className="text-[#FF8181] text-[3.2vh] font-bold">
                 Strategize with your teammates NOW!
