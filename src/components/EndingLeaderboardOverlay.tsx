@@ -102,7 +102,7 @@ export default function EndingLeaderboardOverlay({
             {/* Regular leaderboard section (white) */}
             <div
               className={cn(
-                'w-full bg-white px-[57px] py-[26px]',
+                'w-full bg-white px-[114px] py-[26px]',
                 bottomHighlight ? 'h-[632px]' : 'h-[826px]',
               )}
             >
@@ -122,8 +122,7 @@ export default function EndingLeaderboardOverlay({
                   Team name
                 </motion.span>
                 <motion.div
-                  className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
-                  style={{ borderWidth: '3.7px' }}
+                  className="flex-1 mx-4 border-b-[3.7px] border-dashed border-[#2A81FA]"
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, ease: 'easeInOut' }}
@@ -176,8 +175,7 @@ export default function EndingLeaderboardOverlay({
                         {displayPosition}. {entry.name}
                       </motion.span>
                       <motion.div
-                        className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
-                        style={{ borderWidth: '3.7px' }}
+                        className="flex-1 mx-4 border-b-[3.7px] border-dashed border-[#2A81FA]"
                         initial={{ opacity: 0, x: -100 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{
@@ -210,7 +208,7 @@ export default function EndingLeaderboardOverlay({
             </div>
             {/* Bottom highlight section (yellow) - current team */}
             {bottomHighlight && (
-              <div className="w-full h-[194px] bg-[#FFE169] rounded-b-[48px] px-[57px] flex items-center">
+              <div className="w-full h-[194px] bg-[#FFE169] rounded-b-[48px] px-[114px] flex items-center">
                 <motion.span
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -225,8 +223,7 @@ export default function EndingLeaderboardOverlay({
                   {bottomHighlight.position}. {bottomHighlight.name}
                 </motion.span>
                 <motion.div
-                  className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
-                  style={{ borderWidth: '3.7px' }}
+                  className="flex-1 mx-4 border-b-[3.7px] border-dashed border-[#2A81FA]"
                   initial={{ width: '0%' }}
                   animate={{ width: '100%' }}
                   transition={{ duration: 0.4, ease: 'easeIn' }}

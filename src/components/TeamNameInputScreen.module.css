@@ -55,10 +55,10 @@
 .congratulationsTitle {
   font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
-  font-size: 98.84px;
-  line-height: 0.8em;
+  font-size: 180px;
+  line-height: 0.8;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   text-shadow: 0px 3.95px 3.95px 0px rgba(148, 107, 199, 1);
   margin: 0;
   width: 100%;
@@ -70,7 +70,7 @@
   font-size: 43px;
   line-height: 1.2em;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
   margin: 0;
   width: 1160px;
@@ -87,22 +87,20 @@
 .scoreText {
   font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
-  font-size: 60px;
+  font-size: 80px;
   line-height: 1.2em;
   text-align: center;
-  color: #FFFFFF;
-  text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
+  color: #ffffff;
   margin: 0;
 }
 
 .scoreValue {
   font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
-  font-size: 60px;
+  font-size: 80px;
   line-height: 1.2em;
   text-align: center;
-  color: #FFFFFF;
-  text-shadow: 0px 2.37px 2.37px 0px rgba(148, 107, 199, 1);
+  color: #ffdd3d;
   margin: 0;
 }
 
@@ -111,15 +109,12 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  width: 1490px;
-  max-width: 90vw;
-  border-radius: 55.7px;
+  width: 2980px;
+  border-radius: 112px;
   box-shadow: 0px 12.62px 63.12px 0px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(37.13px);
   position: relative;
 }
-
-
 
 .inputContainer {
   display: flex;
@@ -129,7 +124,7 @@
   width: 100%;
   justify-content: center;
   border-radius: 55.7px;
-  padding: 42.71px 64.06px;
+  padding: 85px 128px;
 }
 
 .inputWrapper {
@@ -145,10 +140,10 @@
 .inputLabel {
   font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
-  font-size: 3.5rem;
+  font-size: 142px;
   line-height: 0.8em;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   white-space: nowrap;
   margin: 0;
 }
@@ -162,15 +157,14 @@
 .letterInput {
   font-family: 'novecento-sans-narrow', sans-serif;
   font-weight: 700;
-  font-size: 70.58px;
+  font-size: 142px;
+  content: '_';
   line-height: 0.8em;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   background: transparent;
   border: none;
   outline: none;
-  width: 80px;
-  height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,19 +177,18 @@
 }
 
 .letterDisplay {
-  height: 70px;
+  font-size: 142px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .dashUnderneath {
-  height: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 70.58px;
-  color: #FFFFFF;
+  font-size: 142px;
+  color: #ffffff;
   line-height: 0.8em;
 }
 
@@ -206,7 +199,8 @@
 
 .input::placeholder {
   color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0px 2.823094606399536px 2.823094606399536px 0px rgba(148, 107, 199, 0.7);
+  text-shadow: 0px 2.823094606399536px 2.823094606399536px 0px
+    rgba(148, 107, 199, 0.7);
 }
 
 /* Responsive Design */
@@ -214,26 +208,26 @@
   .congratulationsTitle {
     font-size: 70px;
   }
-  
+
   .congratulationsText {
     font-size: 32px;
   }
-  
+
   .scoreText,
   .scoreValue {
     font-size: 45px;
   }
-  
+
   .letterInput {
     font-size: 50px;
     width: 60px;
     height: 60px;
   }
-  
+
   .letterDisplay {
     height: 50px;
   }
-  
+
   .dashUnderneath {
     height: 10px;
     font-size: 50px;
@@ -244,59 +238,71 @@
   .content {
     gap: 40px;
   }
-  
+
   .congratulationsSection {
     gap: 30px;
   }
-  
+
   .congratulationsTitle {
     font-size: 50px;
   }
-  
+
   .congratulationsText {
     font-size: 24px;
   }
-  
+
   .scoreText,
   .scoreValue {
     font-size: 32px;
   }
-  
+
   .inputSection {
     padding: 30px 20px;
     gap: 30px;
   }
-  
+
   .inputContainer {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .inputWrapper {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .inputLabel {
     font-size: 36px;
   }
-  
+
   .letterInput {
     font-size: 36px;
     width: 50px;
     height: 50px;
   }
-  
+
   .letterDisplay {
     height: 40px;
   }
-  
+
   .dashUnderneath {
     height: 10px;
     font-size: 36px;
   }
-  
+
   .letterInputContainer {
     gap: 15px;
   }
-} 
+}
+
+@media (min-width: 2160px) {
+  .inputWrapper {
+    gap: 80px;
+  }
+
+  .letterInput {
+    font-size: 180px;
+    height: 100%;
+    width: 100%;
+  }
+}
