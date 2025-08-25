@@ -106,7 +106,7 @@ export default function TutorialScreen3({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
                       duration: 0.5,
-                      delay: index * 0.25,
+                      delay: index * 0.25 + 1.5,
                     }}
                   >
                     <div className="flex items-center justify-center">

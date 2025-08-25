@@ -103,7 +103,7 @@ export default function PlayerTutorialScreen1({
             </motion.p>
 
             <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-              <Logo />
+              <Logo width={123} height={76} />
             </div>
           </div>
         </div>
