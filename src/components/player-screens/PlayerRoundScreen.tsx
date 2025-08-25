@@ -3,7 +3,6 @@ import Image from 'next/image';
 import WaterLevelIndicator from '../WaterLevelIndicator';
 import { cn } from '@/lib/utils';
 import TimerBar from '../coastal-protection/TimerBar';
-import { useTimer } from '../hooks/useTimer';
 
 interface PlayerRoundScreenProps {
   onContinue?: () => void;
@@ -28,7 +27,6 @@ export default function PlayerRoundScreen({
   waterLevelIndicator,
   screenDuration,
 }: PlayerRoundScreenProps) {
-  useTimer
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
