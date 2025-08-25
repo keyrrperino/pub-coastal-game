@@ -66,6 +66,7 @@ export default function PlayerRound3Screen({
       year="2075-2100"
       info={info}
       waterLevelIndicator={waterLevelIndicator}
+      screenDuration={30}
     />
   );
 }

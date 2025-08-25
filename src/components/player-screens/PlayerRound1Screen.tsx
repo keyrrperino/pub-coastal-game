@@ -41,7 +41,7 @@ export default function PlayerRound1Screen({
       onContinue={onContinue}
       timeRemaining={timeRemaining}
       isControlScreen={isControlScreen}
-      isCenterScreen={isControlScreen}
+      isCenterScreen
       round={1}
       year="2025-2050"
       info={info}
@@ -61,6 +61,7 @@ export default function PlayerRound1Screen({
           }}
         />
       }
+      screenDuration={30}
     />
   );
 }
