@@ -28,7 +28,7 @@ import Round1Screen from "./Round1Screen";
 import { useLobbyStoryline } from "./hooks/useLobbyStoryline";
 
 // DEV MODE TOGGLE - Set to true to enable manual tutorial controls
-const DEV_MODE_MANUAL_TUTORIALS = true; //process.env.NODE_ENV === 'development';
+const DEV_MODE_MANUAL_TUTORIALS = false; //process.env.NODE_ENV === 'development';
 import Round2Screen from "./Round2Screen";
 import Round3Screen from "./Round3Screen";
 import { useTimer } from "./hooks/useTimer";
