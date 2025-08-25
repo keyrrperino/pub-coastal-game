@@ -12,7 +12,7 @@ export default function Logo({
       src="/assets/PUB_RidingTheTides_White.png"
       alt="PUB Riding the Tides Logo"
       className={cn(
-        'w-[171px] h-[106px] 4k:w-[342px] 4k:h-[212px]',
+        'w-[171px] h-[106px] 4k:!w-[342px] 4k:!h-[212px]',
         'object-contain',
       )}
       style={{
