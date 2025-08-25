@@ -15,7 +15,7 @@ export default function PlayerRound3Screen({
   isControlScreen = false,
 }: PlayerRound3ScreenProps) {
   const info = (
-    <div className="px-8 py-6 space-y-6">
+    <div className="px-9 py-6 4k:px-[80px] 4k:py-[50px] space-y-6">
       <p className="text-white text-3xl 4k:text-[80px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
         This is the final stretch!
       </p>

@@ -40,9 +40,9 @@ export default function PlayerRoundScreen({
         />
       </div>
 
-      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
+      {/* <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
         <TimerBar duration={screenDuration} isRunning={true} />
-      </div>
+      </div> */}
 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/80" />
