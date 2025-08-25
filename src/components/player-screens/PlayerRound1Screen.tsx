@@ -16,24 +16,22 @@ export default function PlayerRound1Screen({
   isControlScreen = false,
 }: PlayerRound1ScreenProps) {
   const info = (
-    <>
-      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+    <div className="flex flex-col gap-4 py-6 px-9 4k:px-[80px] 4k:py-[50px]">
+      <p className="text-white text-3xl 4k:text-[80px] leading-tight drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
         Sea levels are beginning to rise — slowly, but steadily. By
         2050, they could climb anywhere between{' '}
         <span className="text-[#FF6A6C]">0.2 and 0.6 metres</span>.
-      </p>
-
-      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+        <br />
+        <br />
         You now have{' '}
         <span className="text-[#FFDD3D]">30 seconds</span> to choose
         your coastal defences. Remember you can only deploy one
         measure per sector at a time.
-      </p>
-
-      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
+        <br />
+        <br />
         Budget is limited, use it wisely!
       </p>
-    </>
+    </div>
   );
 
   return (
@@ -41,7 +39,7 @@ export default function PlayerRound1Screen({
       onContinue={onContinue}
       timeRemaining={timeRemaining}
       isControlScreen={isControlScreen}
-      isCenterScreen
+      isCenterScreen={isControlScreen}
       round={1}
       year="2025-2050"
       info={info}

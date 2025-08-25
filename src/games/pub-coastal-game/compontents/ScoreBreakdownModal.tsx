@@ -205,7 +205,7 @@ export default function ScoreBreakdownModal({
 
           {/* Breakdown List in White Section */}
           <div className="flex-1 bg-white px-[100px] py-20">
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-5">
               {/* Total Points */}
               <div className="flex items-center justify-between">
                 <span className="text-[#202020] text-6xl font-bold font-condensed">
