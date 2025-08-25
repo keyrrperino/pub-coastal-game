@@ -38,7 +38,7 @@ export default function WaterLevelIndicator({
   // Get responsive height based on screen size
   const getContainerHeight = () => {
     if (typeof window !== 'undefined' && window.innerWidth >= 2560) {
-      return 1104; // 4K screens
+      return 1254; // 4K screens
     }
     return 627; // Non-4K screens
   };
@@ -64,7 +64,7 @@ export default function WaterLevelIndicator({
       await Promise.all([
         textControls.start({
           opacity: 1,
-          y: -(maxLevel / scaleMax) * (containerHeight - 4) + 100,
+          y: -(maxLevel / scaleMax) * (containerHeight - 4) + (containerHeight >= 1254 ? 200 : 100),
           transition: { duration: 0.8, ease: 'easeOut' },
         }),
         scaleControls.start({
@@ -128,7 +128,7 @@ export default function WaterLevelIndicator({
   return (
     <div
       className={cn(
-        'flex w-auto items-end gap-4 h-[627px] 4k:h-[1104px]',
+        'flex w-auto items-end gap-4 h-[627px] 4k:h-[1254px]',
         className,
       )}
     >
@@ -158,7 +158,7 @@ export default function WaterLevelIndicator({
           {scaleLabels.map((value, index) => (
             <span
               key={index}
-              className="text-white text-[20px] font-bold leading-[1.3] drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
+              className="text-white text-[20px] 4k:text-[40px] font-bold leading-[1.3] drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
             >
               {value}
               {unit.charAt(0)}
@@ -174,12 +174,12 @@ export default function WaterLevelIndicator({
         >
           {/* Main container with border */}
           <div
-            className="w-[49px] border-2 border-white rounded-[24px] relative overflow-hidden"
+            className="w-[49px] 4k:w-[100px] border-2 border-white rounded-full relative overflow-hidden"
             style={{ height: `${containerHeight}px` }}
           >
             {/* Current water level */}
             <motion.div
-              className="absolute bottom-0 left-0 right-0 rounded-b-[22px]"
+              className="absolute bottom-0 left-0 right-0 rounded-b-full"
               initial={{ height: 0 }}
               animate={currentWaterControls}
               style={{

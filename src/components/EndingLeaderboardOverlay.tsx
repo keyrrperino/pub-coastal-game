@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
 import React from 'react';
 
 interface LeaderboardDisplayEntry {
@@ -29,7 +31,11 @@ const figmaLeaderboard: LeaderboardDisplayEntry[] = [
   { name: 'TOM', points: 2400, position: 4 },
   { name: 'KIR', points: 2300, position: 5 },
 ];
-const figmaBottomHighlight = { name: 'RfF', points: 500, position: 15 };
+const figmaBottomHighlight = {
+  name: 'RfF',
+  points: 500,
+  position: 15,
+};
 
 export default function EndingLeaderboardOverlay({
   isOpen,
@@ -41,97 +47,205 @@ export default function EndingLeaderboardOverlay({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
       {/* Main Container - match Figma dimensions */}
-      <div className="relative w-[656px] h-[817px]">
+      <div className="relative w-[1256px] h-[1570px]">
         {/* Background container */}
         <div className="absolute inset-0 w-full h-full">
-          {/* Blue background rounded rectangle */}
-          <div className="absolute top-[32px] left-[28px] w-[628px] h-[785px] bg-[#8491C6] rounded-[24px]" />
-          
-          {/* Header section (white) */}
-          <div className="absolute top-0 left-0 w-[636px] h-[145px] bg-white rounded-t-[24px] flex items-center justify-center">
-            <h2 className="text-[#202020] text-[6vh] font-bold text-center leading-[1.2] tracking-wide" 
-                style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
-              LEADERBOARD
-            </h2>
-          </div>
-
-          {/* Top winner section (blue) */}
-          <div className="absolute top-[145px] left-0 w-[636px] h-[239px] bg-[#2A81FA] flex flex-col items-center justify-center px-[84px] py-[34px]">
-            <div className="flex items-stretch justify-between w-full mb-2">
-              <span className="text-white text-[44.95px] font-bold leading-[1.2]" 
-                    style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
-                TOP 1
-              </span>
-              <span className="text-white font-bold leading-[1.2] number-enhanced" 
-                    style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700, fontSize: "4vh" }}>
-                {topWinner?.points || 0} pts
-              </span>
-            </div>
-            <div className="text-white text-[10vh] font-bold text-center leading-[1.2] tracking-wide" 
-                 style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700 }}>
-              {topWinner?.name || 'N/A'}
-            </div>
-          </div>
-
-          {/* Regular leaderboard section (white) */}
-          <div className="absolute top-[384px] left-0 w-[636px] bg-white px-[57px] py-[26px]">
-            {/* Header Row */}
-            <div className="flex items-center justify-between mb-[18px]">
-              <span className="text-[#2A81FA] text-[24px] font-bold leading-[1.2]" 
-                    style={{ fontFamily: 'novecento-sans-condensed, sans-serif', fontWeight: 700 }}>
-                Team name
-              </span>
-              <div className="flex-1 mx-[9px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-              <span className="text-[#2A81FA] text-[24px] font-bold leading-[1.2] text-right" 
-                    style={{ fontFamily: 'novecento-sans-condensed, sans-serif', fontWeight: 700 }}>
-                Total points
-              </span>
+          <div className="absolute top-0 left-0 w-full h-full z-20 drop-shadow-[40px_40px_0_#8491C6]">
+            {/* Header section (white) */}
+            <div className="w-full h-[290px] bg-white rounded-t-[48px] flex items-center justify-center">
+              <h2
+                className="text-[#202020] text-[6vh] font-bold text-center leading-[1.2] tracking-wide"
+                style={{
+                  fontFamily: 'novecento-sans-narrow, sans-serif',
+                  fontWeight: 700,
+                }}
+              >
+                LEADERBOARD
+              </h2>
             </div>
 
-            {/* Leaderboard entries */}
-            <div className="space-y-[18px]">
-              {leaderboardData.map((entry, index) => {
-                // Calculate position based on bottomHighlight position
-                const basePosition = bottomHighlight && bottomHighlight.position <= 5 
-                  ? bottomHighlight.position + 1 
-                  : 2;
-                const displayPosition = basePosition + index;
-                
-                return (
-                  <div key={entry.name} className="flex items-center justify-between">
-                    <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2]" 
-                          style={{ fontFamily: 'novecento-sans-condensed, sans-serif', fontWeight: 700 }}>
-                      {displayPosition}. {entry.name}
-                    </span>
-                    <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-                    <span className="text-[#202020] font-bold leading-[1.2] text-right number-enhanced" 
-                          style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700, fontSize: "3vh" }}>
-                      {entry.points}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Bottom highlight section (yellow) - current team */}
-          {bottomHighlight && (
-            <div className="absolute top-[700px] left-0 w-[636px] h-[97px] bg-[#FFE169] rounded-b-[24px] px-[57px] flex items-center">
-              <div className="flex items-center justify-between w-full">
-                <span className="text-[#202020] text-[34.28px] font-bold leading-[1.2]" 
-                      style={{ fontFamily: 'novecento-sans-condensed, sans-serif', fontWeight: 700 }}>
-                  {bottomHighlight.position}. {bottomHighlight.name}
+            {/* Top winner section (blue) */}
+            <div className="w-full h-[478px] bg-[#2A81FA] flex flex-col items-center justify-center px-[84px] py-[34px]">
+              <div className="flex items-stretch justify-between w-full mb-2">
+                <span
+                  className="text-white text-[90px] font-bold leading-[1.2]"
+                  style={{
+                    fontFamily: 'novecento-sans-narrow, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  TOP 1
                 </span>
-                <div className="flex-1 mx-[10px] border-b border-dotted border-[#2A81FA]" style={{ borderWidth: '1.84px' }} />
-                <span className="text-[#202020] font-bold leading-[1.2] text-right number-enhanced" 
-                      style={{ fontFamily: 'novecento-sans-narrow, sans-serif', fontWeight: 700, fontSize: "3vh" }}>
-                  {bottomHighlight.points}
+                <span
+                  className="text-white font-bold leading-[1.2] text-[90px]"
+                  style={{
+                    fontFamily: 'novecento-sans-narrow, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  {topWinner?.points || 0} pts
                 </span>
               </div>
+              <div
+                className="text-white text-[10vh] font-bold text-center leading-[1.2] tracking-wide"
+                style={{
+                  fontFamily: 'novecento-sans-narrow, sans-serif',
+                  fontWeight: 700,
+                }}
+              >
+                {topWinner?.name || 'N/A'}
+              </div>
             </div>
-          )}
+
+            {/* Regular leaderboard section (white) */}
+            <div
+              className={cn(
+                'w-full bg-white px-[57px] py-[26px]',
+                bottomHighlight ? 'h-[632px]' : 'h-[826px]',
+              )}
+            >
+              {/* Header Row */}
+              <div className="flex items-center justify-between mb-[18px]">
+                <motion.span
+                  initial={{ opacity: 0, x: -100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="text-[#2A81FA] text-5xl font-bold leading-[1.2]"
+                  style={{
+                    fontFamily:
+                      'novecento-sans-condensed, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  Team name
+                </motion.span>
+                <motion.div
+                  className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
+                  style={{ borderWidth: '3.7px' }}
+                  initial={{ opacity: 0, x: -100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                />
+                <motion.span
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="text-[#2A81FA] text-5xl font-bold leading-[1.2] text-right"
+                  style={{
+                    fontFamily:
+                      'novecento-sans-condensed, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  Total points
+                </motion.span>
+              </div>
+
+              {/* Leaderboard entries */}
+              <div className="space-y-[18px]">
+                {leaderboardData.map((entry, index) => {
+                  // Calculate position based on bottomHighlight position
+                  const basePosition =
+                    bottomHighlight && bottomHighlight.position <= 5
+                      ? bottomHighlight.position + 1
+                      : 2;
+                  const displayPosition = basePosition + index;
+
+                  return (
+                    <div
+                      key={entry.name}
+                      className="flex items-center justify-between"
+                    >
+                      <motion.span
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: 0.2 * index,
+                          ease: 'easeInOut',
+                        }}
+                        className="text-[#202020] text-7xl font-bold leading-[1.2]"
+                        style={{
+                          fontFamily:
+                            'novecento-sans-condensed, sans-serif',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {displayPosition}. {entry.name}
+                      </motion.span>
+                      <motion.div
+                        className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
+                        style={{ borderWidth: '3.7px' }}
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: 0.2 * index,
+                          ease: 'easeInOut',
+                        }}
+                      />
+                      <motion.span
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: 0.2 * index,
+                          ease: 'easeInOut',
+                        }}
+                        className="text-[#202020] text-7xl font-bold leading-[1.2] text-right"
+                        style={{
+                          fontFamily:
+                            'novecento-sans-narrow, sans-serif',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {entry.points}
+                      </motion.span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Bottom highlight section (yellow) - current team */}
+            {bottomHighlight && (
+              <div className="w-full h-[194px] bg-[#FFE169] rounded-b-[48px] px-[57px] flex items-center">
+                <motion.span
+                  initial={{ opacity: 0, x: -100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="text-[#202020] text-7xl font-bold leading-[1.2]"
+                  style={{
+                    fontFamily:
+                      'novecento-sans-condensed, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  {bottomHighlight.position}. {bottomHighlight.name}
+                </motion.span>
+                <motion.div
+                  className="flex-1 mx-4 border-b border-dotted border-[#2A81FA]"
+                  style={{ borderWidth: '3.7px' }}
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 0.4, ease: 'easeIn' }}
+                />
+                <motion.span
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="text-[#202020] text-7xl font-bold leading-[1.2] text-right"
+                  style={{
+                    fontFamily: 'novecento-sans-narrow, sans-serif',
+                    fontWeight: 700,
+                  }}
+                >
+                  {bottomHighlight.points}
+                </motion.span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Optional close */}
@@ -148,3 +262,4 @@ export default function EndingLeaderboardOverlay({
     </div>
   );
 }
+

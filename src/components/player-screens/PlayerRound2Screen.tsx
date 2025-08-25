@@ -16,66 +16,37 @@ export default function PlayerRound2Screen({
   isControlScreen = false,
 }: PlayerRound2ScreenProps) {
   const info = (
-    <>
-      <p
-        className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+    <div className="4k:px-[80px] 4k:py-[50px] py-6 px-9">
+      <p className="text-white text-2xl 4k:text-[60px] leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)]">
         Between now and 2075, mean sea levels are projected to rise by{' '}
         <span className="text-[#FF6A6C]">0.7 to 1.5 metres</span>.
-      </p>
-
-      <p
-        className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+        <br />
+        <br />
         It's time to{' '}
         <span className="text-[#FFDD3D]">
           upgrade or rethink your strategy
         </span>{' '}
         to strengthen any remaining weak spots.
-      </p>
-
-      <div>
-        <p
-          className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-          style={{ fontSize: 'var(--text-2xl)' }}
-        >
-          In this round, you may:
-        </p>
-        <ul
-          className="list-disc"
-          style={{
-            marginTop: 'var(--space-2)',
-            paddingLeft: 'var(--padding-xl)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-2)',
-          }}
-        >
-          <li
-            className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-            style={{ fontSize: 'var(--text-2xl)' }}
-          >
-            Raise the heights of your existing defences or,
-          </li>
-          <li
-            className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-            style={{ fontSize: 'var(--text-2xl)' }}
-          >
-            Demolish and explore alternatives - but be warned: this
-            costs money and lowers your score.
-          </li>
-        </ul>
-      </div>
-
-      <p
-        className="text-white leading-normal drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+        <br />
+        <br />
+        <div>
+          <p className="text-white leading-normal text-2xl 4k:text-[60px] drop-shadow-[0_1px_1px_rgba(148,107,199,1)]">
+            In this round, you may:
+          </p>
+          <ul className="list-disc mt-2 4k:pl-12 pl-6 flex flex-col gap-4">
+            <li className="text-white leading-normal text-2xl 4k:text-[60px] drop-shadow-[0_1px_1px_rgba(148,107,199,1)]">
+              Raise the heights of your existing defences or,
+            </li>
+            <li className="text-white leading-normal text-2xl 4k:text-[60px] drop-shadow-[0_1px_1px_rgba(148,107,199,1)]">
+              Demolish and explore alternatives - but be warned: this
+              costs money and lowers your score.
+            </li>
+          </ul>
+        </div>
+        <br />
         The stakes are higher. The waters are too.
       </p>
-    </>
+    </div>
   );
 
   return (
@@ -102,6 +73,7 @@ export default function PlayerRound2Screen({
           }}
         />
       }
+      screenDuration={30}
     />
   );
 }
