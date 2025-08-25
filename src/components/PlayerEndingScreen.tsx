@@ -84,7 +84,17 @@ export default function PlayerEndingScreen({
               {config.title}
             </h1>
 
-            <div className="relative max-w-[60vw] w-full rounded-[56px] backdrop-blur-[37px] shadow-[0px_13px_63px_rgba(0,0,0,0.15)]">
+            <div className="max-w-[75vw]">
+              <p className="text-white text-4xl font-bold text-center leading-[1.2] max-w-screen drop-shadow-[0px_2px_2px_rgba(148,107,199,1)]">
+                YOUR FINAL SCORE:
+                <br />
+                <span className="text-[#FFDD3D]">
+                  {finalScore.toLocaleString()}
+                </span>
+              </p>
+            </div>
+
+            <div className="relative max-w-[85vw] w-full rounded-[56px] backdrop-blur-[37px] shadow-[0px_13px_63px_rgba(0,0,0,0.15)]">
               {/* Border using ::after pseudo-element */}
               <style jsx>{`
                 div::after {
@@ -120,16 +130,6 @@ export default function PlayerEndingScreen({
                   }}
                 />
               </div>
-            </div>
-
-            <div className="max-w-[75vw]">
-              <p className="text-white text-4xl font-bold text-center leading-[1.2] max-w-screen drop-shadow-[0px_2px_2px_rgba(148,107,199,1)]">
-                YOUR FINAL SCORE:
-                <br />
-                <span className="text-[#FFDD3D]">
-                  {finalScore.toLocaleString()}
-                </span>
-              </p>
             </div>
           </div>
         </div>

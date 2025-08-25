@@ -92,9 +92,9 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
           <h1 className={styles.congratulationsTitle}>
             {config.title}
           </h1>
-          <p className={styles.congratulationsText}>
+          {/* <p className={styles.congratulationsText}>
             {config.subtitle}
-          </p>
+          </p> */}
           <div className={styles.scoreSection}>
             <p className={styles.scoreText}>
               YOUR FINAL SCORE:
@@ -136,6 +136,7 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
             <div className={styles.inputWrapper}>
               <label className={`${styles.inputLabel} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
                 PLAYER 1, INPUT TEAM NAME:
+                <br />
               </label>
               <div className={styles.letterInputContainer}>
                 {[0, 1, 2].map((index) => (
@@ -148,12 +149,12 @@ const TeamNameInputScreen: React.FC<TeamNameInputScreenProps> = ({
                     onBlur={() => setCurrentFocus(-1)}
                     onFocus={() => setCurrentFocus(index)}
                   >
-                    <div className={styles.letterDisplay}>
+                    <span className={styles.letterDisplay}>
                       {newTeamName[index] || ''}
-                    </div>
-                    <div className={`${styles.dashUnderneath} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
-                      {newTeamName[index] ? '' : '-'}
-                    </div>
+                    </span>
+                    <span className={`${styles.dashUnderneath} drop-shadow-[0px_2.823094606399536px_2.823094606399536px_0px_rgba(148,107,199,1)]`}>
+                      {newTeamName[index] ? '' : '_'}
+                    </span>
                   </div>
                 ))}
               </div>

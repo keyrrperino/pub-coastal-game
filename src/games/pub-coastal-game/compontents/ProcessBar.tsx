@@ -15,33 +15,39 @@ interface TimerProps {
   clockStyle?: React.CSSProperties;
 }
 
-const ProgressBar: React.FC<TimerProps> = ({ 
+const ProgressBar: React.FC<TimerProps> = ({
   duration,
   onTimeUp,
   isRunning = true,
   syncWithTimestamp,
   containerClassName,
   style,
-  clockStyle
+  clockStyle,
 }) => {
   // Log for ROUND_GAMEPLAY phase
   useEffect(() => {
     if (duration === 30 && isRunning) {
-      console.log('🎮 [PROGRESSBAR] ROUND_GAMEPLAY ProgressBar rendered:', {
-        duration,
-        isRunning,
-        syncWithTimestamp,
-        syncTimeStr: syncWithTimestamp ? new Date(syncWithTimestamp).toISOString() : 'none',
-        currentTimeStr: new Date().toISOString(),
-        deviceName: navigator.userAgent.includes('iPad') ? 'iPad' : 
-                   navigator.userAgent.includes('Android') ? 'Android' : 'PC'
-      });
+      console.log(
+        '🎮 [PROGRESSBAR] ROUND_GAMEPLAY ProgressBar rendered:',
+        {
+          duration,
+          isRunning,
+          syncWithTimestamp,
+          syncTimeStr: syncWithTimestamp
+            ? new Date(syncWithTimestamp).toISOString()
+            : 'none',
+          currentTimeStr: new Date().toISOString(),
+          deviceName: navigator.userAgent.includes('iPad')
+            ? 'iPad'
+            : navigator.userAgent.includes('Android')
+              ? 'Android'
+              : 'PC',
+        },
+      );
     }
   }, [duration, isRunning, syncWithTimestamp]);
 
-  const {
-    progressPercentage,
-  } = useTimerBar({
+  const { progressPercentage } = useTimerBar({
     duration,
     onTimeUp,
     startImmediately: isRunning,
@@ -58,12 +64,10 @@ const ProgressBar: React.FC<TimerProps> = ({
   return (
     <>
       <div
-        className={
-          clsx(
-            containerClassName,
-            "flex items-center h-[1vw] rounded-xl bg-white shadow-md",
-          )
-        }
+        className={clsx(
+          containerClassName,
+          'flex items-center h-[1vw] rounded-xl bg-white shadow-md',
+        )}
         style={{
           opacity: visible ? 1 : 0,
           transition: 'opacity 1.5s cubic-bezier(0.4,0,0.2,1)',
@@ -71,25 +75,38 @@ const ProgressBar: React.FC<TimerProps> = ({
         }}
       >
         {/* Clock Icon */}
-        <span
-          style={{...{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            background: '#fff',
-            width: '1.5vw',
-            height: '1.5vw',
-            border: '0.2vw solid #060606',
-            marginRight: '1vw',
-          }, ...(clockStyle ?? {})}}
-        >
-          {/* Simple clock SVG */}
-          <svg width="18" height="20" viewBox="0 0 20 20">
-            <rect x="8" y="5" width="3" height="6" fill="#565660" />
-            <rect x="8" y="10" width="5" height="3" fill="#565660" transform="rotate(0 0 0)" />
+        <div className="flex-shrink-0 mr-4">
+          <svg
+            width="74"
+            height="74"
+            viewBox="0 0 34 35"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="16.7614"
+              cy="17.5001"
+              r="14.6122"
+              stroke="black"
+              strokeWidth="3.96262"
+            />
+            <rect
+              x="14.5332"
+              y="9.32715"
+              width="3.96262"
+              height="9.41121"
+              fill="black"
+            />
+            <rect
+              x="22.458"
+              y="16.7571"
+              width="3.96262"
+              height="7.92523"
+              transform="rotate(90 22.458 16.7571)"
+              fill="black"
+            />
           </svg>
-        </span>
+        </div>
         {/* Progress Bar Track */}
         <div
           className="relative flex-1 h-[1vw] bg-white border-0"
@@ -112,3 +129,4 @@ const ProgressBar: React.FC<TimerProps> = ({
 };
 
 export default ProgressBar;
+

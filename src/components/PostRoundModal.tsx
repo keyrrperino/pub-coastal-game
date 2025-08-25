@@ -129,40 +129,18 @@ export default function PostRoundModal({
     >
       {/* Main Modal Container */}
       <div
-        className="relative w-[812px] max-w-[70vw] w-full py-4 rounded-[26px] backdrop-blur-[17px] shadow-lg"
+        className="relative w-[752px] max-w-[70vw] px-[30px] py-5 rounded-[26px] backdrop-blur-[17px] shadow-lg border-2"
         style={{
           backgroundColor: config.bgColor,
+          borderColor: config.borderGradient,
         }}
       >
-        {/* Border using ::after pseudo-element */}
-        <style jsx>{`
-          div::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 26px;
-            padding: 2px;
-            background: ${config.borderGradient};
-            -webkit-mask:
-              linear-gradient(#fff 0 0) content-box,
-              linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask:
-              linear-gradient(#fff 0 0) content-box,
-              linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            pointer-events: none;
-          }
-        `}</style>
         {/* Content */}
         <div className="flex flex-col items-center gap-5 text-center">
           <h2 className="text-white text-3xl font-bold max-w-full w-full uppercase">
             {config.title}
           </h2>
-          <p className="text-white text-xl font-bold max-w-[60%] uppercase leading-relaxed">
+          <p className="text-white text-xl font-bold uppercase leading-relaxed">
             {config.message}
           </p>
         </div>
