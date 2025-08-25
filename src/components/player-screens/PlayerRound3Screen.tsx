@@ -39,9 +39,9 @@ export default function PlayerRound3Screen({
       >
         {!isControlScreen && (
           <WaterLevelIndicator
-            minLevel={1.5}
+            minLevel={1.15}
             maxLevel={2.0}
-            currentLevel={1.5}
+            currentLevel={1.15}
             scaleMax={2}
             containerHeight={627}
             currentWaterColor={{

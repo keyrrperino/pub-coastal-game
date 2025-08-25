@@ -36,13 +36,14 @@ export function useLobbyInstruction(
   });
 
   useEffect(() => {
-    if (timeRemaining > 48) {
+    console.log("timeRemaining: ", timeRemaining);
+    if (timeRemaining > 60) {
       setCurrentTutorial(0); // Tutorial 1
-    } else if (timeRemaining > 36) {
+    } else if (timeRemaining > 45) {
       setCurrentTutorial(1); // Tutorial 2
-    } else if (timeRemaining > 24) {
+    } else if (timeRemaining > 30) {
       setCurrentTutorial(2); // Tutorial 3
-    } else if (timeRemaining > 12) {
+    } else if (timeRemaining > 15) {
       setCurrentTutorial(3); // Tutorial 4
     } else {
       setCurrentTutorial(4); // Tutorial 5

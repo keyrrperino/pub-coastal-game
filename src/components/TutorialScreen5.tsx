@@ -26,7 +26,7 @@ export default function TutorialScreen5({
       </div>
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar duration={12} isRunning={true} />
+        <TimerBar duration={15} isRunning={true} />
       </div>
 
       {/* Dark Overlay with Blur */}

@@ -33,7 +33,7 @@ export default function WaterLevelIndicator({
 }: WaterLevelIndicatorProps) {
   // Motion values for smooth number animation
   const animatedMaxLevelValue = useMotionValue(minLevel);
-  const displayMaxLevel = useTransform(animatedMaxLevelValue, (value) => value.toFixed(1));
+  const displayMaxLevel = useTransform(animatedMaxLevelValue, (value: number) => value.toFixed(1));
   
   const textControls = useAnimation();
   const scaleControls = useAnimation();

@@ -40,7 +40,7 @@ export default function PlayerRound2Screen({
         {!isControlScreen && (
           <WaterLevelIndicator
             minLevel={0.7}
-            maxLevel={1.15}
+            maxLevel={1.5}
             currentLevel={0.7}
             scaleMax={2}
             containerHeight={627}
