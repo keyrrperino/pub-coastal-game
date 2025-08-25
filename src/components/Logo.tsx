@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 export default function Logo({
   width = 171,
@@ -8,12 +8,17 @@ export default function Logo({
   height?: number;
 }) {
   return (
-    <Image
+    <img
       src="/assets/PUB_RidingTheTides_White.png"
       alt="PUB Riding the Tides Logo"
-      width={width}
-      height={height}
-      className="object-contain"
+      className={cn(
+        'w-[171px] h-[106px] 4k:w-[342px] 4k:h-[212px]',
+        'object-contain',
+      )}
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
     />
   );
 }

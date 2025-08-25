@@ -1008,3 +1008,36 @@ export const demolishConfigData: {
   [SubSectorEnum.THREE_A]: Object.values(ActivityDemolishTypeSector3AEnum),
   [SubSectorEnum.THREE_B]: Object.values(ActivityDemolishTypeSector3BEnum),
 }
+
+
+export const TUTORIAL_4_CARDS = [
+  {
+    name: 'MANGROVES',
+    icon: '/assets/mangroves-icon-3a15a8.png',
+    bg: '#BFFFBE',
+    action: [{ name: 'plant', cost: 3, selected: false }],
+    active: false,
+  },
+  {
+    name: 'SEAWALL',
+    icon: '/assets/seawall-icon-41fadd.png',
+    bg: '#B6FFF3',
+    action: [
+      { name: '0.5M', cost: 1, selected: false },
+      { name: '1.15M', cost: 2, selected: true },
+      { name: '2M', cost: 3, selected: false },
+    ],
+    active: true,
+  },
+  {
+    name: 'LAND RECLAMATION',
+    icon: '/assets/land-reclamation-icon-6b707d.png',
+    bg: '#B6FFF3',
+    action: [
+      { name: '0.5M', cost: 1, selected: false },
+      { name: '1.15M', cost: 2, selected: false },
+      { name: '2M', cost: 3, selected: false },
+    ],
+    active: false,
+  },
+];

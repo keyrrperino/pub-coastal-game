@@ -2,6 +2,9 @@ import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
 import Logo from './Logo';
+import { TUTORIAL_4_CARDS } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
 
 interface TutorialScreen3Props {
   phaseStartTime?: number;
@@ -32,503 +35,177 @@ export default function PlayerTutorialScreen4({
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
-      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
+      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
         <TimerBar duration={screenDuration} isRunning={true} />
       </div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col gap-[0.5vh] items-center justify-center h-full px-4 pt-[1vh]">
-        <div className="px-6 max-w-[95%] w-full">
-          <div className="flex flex-col items-center gap-[1.2vh] uppercase">
+        <div className=" w-full">
+          <div className="flex flex-col items-center gap-10 uppercase">
             {/* Top Section - Instructional Text */}
-            <div className="flex flex-col gap-[0.8vh] text-center">
-              <p className="text-white text-[2.8vh] font-bold">
-                Once you select your measure and the sea level rise
-                that you are planning for, it is locked in for the
-                round.
-              </p>
-            </div>
+            <p className="text-white text-3xl font-bold text-center max-w-[80%] mx-auto">
+              Once you select your measure and the sea level rise that
+              you are planning for, it is locked in for the round.
+            </p>
 
-            {/* Middle Section - Three Protection Measure Cards */}
-            <div className="flex gap-[2.5vh] justify-center items-stretch">
-              {/* Mangroves Card */}
-              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-green-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/mangroves-icon-3a15a8.png"
-                        alt="Mangroves"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      MANGROVES
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col items-center gap-[0.5vh]">
-                    <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                      <span className="text-black text-[1.6vh] font-bold">
-                        PLANT
+            <div className="flex flex-col items-center">
+              {/* Middle Section - Three Protection Measure Cards */}
+              <div className="flex gap-[2.5vh] justify-center items-stretch">
+                {TUTORIAL_4_CARDS.map((card, index) => (
+                  <motion.div
+                    key={card.name}
+                    className="bg-white/20 backdrop-blur-sm border-2 border-[#91E2FF] gap-4 rounded-[25px] px-6 py-4 shadow-lg flex flex-col justify-center items-center h-full w-auto"
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.4 }}
+                  >
+                    <div className="flex flex-row items-center gap-[1vh]">
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={card.icon}
+                          alt={card.name}
+                          className="object-cover w-[37px] h-[37px] rounded-full bg-[#BFFFBE] aspect-square"
+                        />
+                      </div>
+                      <span className="text-white text-lg font-bold">
+                        {card.name}
                       </span>
                     </div>
-                    <div className="flex gap-[0.5vh]">
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
+                    <div
+                      className="grid"
+                      style={{
+                        gridTemplateColumns: `repeat(${card.action.length}, 1fr)`,
+                      }}
+                    >
+                      {card.action.map((action) => (
+                        <div
+                          key={action.name}
+                          className="flex flex-col justify-center items-center gap-[1vh] h-auto"
+                        >
+                          <span className="text-black text-sm font-bold bg-[#B6FFF3] to-[#14F4CF] rounded-full aspect-square h-full w-auto p-6 flex items-center justify-center">
+                            {action.name}
+                          </span>
+                          <div className="flex gap-[1vh]">
+                            {Array.from({ length: action.cost }).map(
+                              (_) => (
+                                <Image
+                                  src="/assets/coin-icon.png"
+                                  alt="Coin"
+                                  width={coinSize}
+                                  height={coinSize}
+                                  className="object-contain"
+                                />
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
               </div>
 
-              {/* Seawall Card */}
-              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-blue-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/seawall-icon-41fadd.png"
-                        alt="Seawall"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      SEAWALL
-                    </span>
-                  </div>
+              <motion.img
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                src="/assets/arrows-down.svg"
+                alt="Mangroves"
+                width={window.innerHeight / 2}
+                height={8}
+                className="position"
+              />
 
-                  <div className="flex gap-[1vh]">
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          0.5M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
+              {/* Middle Section - Three Protection Measure Cards */}
+              <div className="flex gap-[2.5vh] justify-center items-stretch">
+                {TUTORIAL_4_CARDS.map((card, index) => (
+                  <motion.div
+                    key={card.name}
+                    className="bg-white/20 backdrop-blur-sm border-2 border-[#91E2FF] gap-4 rounded-[25px] px-6 py-4 shadow-lg flex flex-col justify-center items-center h-full w-auto"
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: card.active ? 1 : 0.4, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.1 + 1.7,
+                    }}
+                  >
+                    <div className="flex flex-row items-center gap-[1vh]">
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={card.icon}
+                          alt={card.name}
+                          className="object-cover w-[37px] h-[37px] rounded-full bg-[#BFFFBE] aspect-square"
                         />
                       </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          1.15M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          2M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Land Reclamation Card */}
-              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-orange-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/land-reclamation-icon-6b707d.png"
-                        alt="Land Reclamation"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      LAND RECLAMATION
-                    </span>
-                  </div>
-
-                  <div className="flex gap-[1vh]">
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          0.5M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          1.15M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          2M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Image
-              src="/assets/arrows-down.svg"
-              alt="Mangroves"
-              width={window.innerHeight / 2}
-              height={8}
-              className="position"
-            />
-
-            {/* Middle Section - Three Protection Measure Cards */}
-            <div className="flex gap-[2.5vh] justify-center items-stretch">
-              {/* Mangroves Card */}
-              <div className="bg-white/20 opacity-50 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-green-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/mangroves-icon-3a15a8.png"
-                        alt="Mangroves"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      MANGROVES
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col items-center gap-[0.5vh]">
-                    <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                      <span className="text-black text-[1.6vh] font-bold">
-                        PLANT
+                      <span className="text-white text-lg font-bold">
+                        {card.name}
                       </span>
                     </div>
-                    <div className="flex gap-[0.5vh]">
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
-                      <Image
-                        src="/assets/coin-icon.png"
-                        alt="Coin"
-                        width={coinSize * 1.3}
-                        height={coinSize * 1.3}
-                        className="object-contain"
-                      />
+                    <div
+                      className="grid"
+                      style={{
+                        gridTemplateColumns: `repeat(${card.action.length}, 1fr)`,
+                      }}
+                    >
+                      {card.action.map((action) => (
+                        <div
+                          key={action.name}
+                          className="flex flex-col justify-center items-center gap-[1vh] h-auto"
+                        >
+                          <motion.span
+                            initial={
+                              action.selected
+                                ? {
+                                    background:
+                                      'radial-gradient(279.64% 279.64% at 10.52% 83.59%, #B6FFF3 0%, #14F4CF 100%)',
+                                    boxShadow:
+                                      '0 12.57px 62.851px 0 rgba(0, 0, 0, 0.15)',
+                                  }
+                                : { opacity: 1 }
+                            }
+                            animate={
+                              action.selected
+                                ? {
+                                    background:
+                                      'radial-gradient(279.64% 279.64% at 10.52% 83.59%, #FFEF3E 0%, #FFA557 100%)',
+                                    boxShadow:
+                                      '0 12.57px 62.851px 0 rgba(0, 0, 0, 0.15)',
+                                  }
+                                : { opacity: 0.4 }
+                            }
+                            transition={{
+                              duration: 0.5,
+                              ease: 'easeInOut',
+                              delay: index * 0.1 + 2,
+                            }}
+                            className="text-black text-sm font-bold bg-[#B6FFF3] to-[#14F4CF] rounded-full aspect-square h-full w-auto p-6 flex items-center justify-center"
+                          >
+                            {action.name}
+                          </motion.span>
+                          <div className="flex gap-[1vh]">
+                            {Array.from({ length: action.cost }).map(
+                              (_) => (
+                                <Image
+                                  src="/assets/coin-icon.png"
+                                  alt="Coin"
+                                  width={coinSize}
+                                  height={coinSize}
+                                  className="object-contain"
+                                />
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Seawall Card */}
-              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-blue-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/seawall-icon-41fadd.png"
-                        alt="Seawall"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      SEAWALL
-                    </span>
-                  </div>
-                  <div className="flex gap-[1vh]">
-                    <div className="flex flex-col items-center gap-[0.5vh] opacity-50">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          0.5M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#FFEF3E] to-[#FFA557] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          1.15M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh] opacity-50">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          2M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Land Reclamation Card */}
-              <div className="bg-white/20 opacity-50 backdrop-blur-sm border border-white/30 rounded-lg p-5 shadow-lg flex flex-col justify-between h-auto w-auto">
-                <div className="flex flex-col items-center gap-[2vh]">
-                  <div className="flex items-center gap-[1vh]">
-                    <div className="w-[3vh] h-[3vh] bg-orange-400 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/assets/land-reclamation-icon-6b707d.png"
-                        alt="Land Reclamation"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white text-[2vh] font-bold">
-                      LAND RECLAMATION
-                    </span>
-                  </div>
-
-                  <div className="flex gap-[1vh]">
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          0.5M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          1.15M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center gap-[0.5vh]">
-                      <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#B6FFF3] to-[#14F4CF] rounded-full flex items-center justify-center">
-                        <span className="text-black text-[1.6vh] font-bold">
-                          2M
-                        </span>
-                      </div>
-                      <div className="flex gap-[0.3vh]">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={coinSize * 1.3}
-                          height={coinSize * 1.3}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
-
             {/* Hint Section */}
-            <div className="flex flex-col gap-3 text-center  uppercase">
-              <p className="text-[#FF6A6C] text-[3.2vh] font-bold">
+            <div className="flex flex-col gap-3 text-center uppercase max-w-[80%] mx-auto">
+              <p className="text-[#FF6A6C] text-3xl font-bold">
                 Hint: What is the projected sea level rise in that
                 period? Can your measure be raised over time?
               </p>

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
 import { useServerTime } from '@/components/ServerTimeContext';
 import Logo from './Logo';
+import { motion } from 'motion/react';
 
 interface TutorialScreen3Props {
   phaseStartTime: number;
@@ -22,10 +23,12 @@ export default function TutorialScreen3({
     {
       value: 'Mangroves',
       logo: 'mangrove.svg',
+      bg: '#BFFFBE',
     },
     {
       value: 'Seawall',
       logo: 'seawall.svg',
+      bg: '#8CFFEC',
     },
     {
       value: 'LAND RECLAMATION',
@@ -61,8 +64,8 @@ export default function TutorialScreen3({
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
-      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
-        <TimerBar duration={15} isRunning={true} />
+      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
+        <TimerBar duration={12} isRunning={true} />
       </div>
 
       {/* Content Container */}
@@ -71,48 +74,70 @@ export default function TutorialScreen3({
           <div className="flex flex-col items-center gap-10">
             {/* Top Section - Instructional Text */}
             <div className="flex flex-col gap-6 text-center">
-              <p className="text-white text-[1.8vw] font-bold">
+              <motion.p 
+                className="text-white text-[1.8vw] 4k:text-[74px] font-bold"
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
                 In each sector, choose one measure to protect your
                 coast.
-              </p>
-              <p className="text-[#FFDD3D] text-[1.8vw] font-bold">
+              </motion.p>
+              <motion.p 
+                className="text-[#FFDD3D] text-[1.8vw] 4k:text-[74px] font-bold"
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5 }}
+              >
                 Each measure has different strengths, weaknesses and
                 costs.
-              </p>
+              </motion.p>
             </div>
 
             {/* Middle Section - Three Protection Measure Cards */}
-            <div className="flex gap-4 justify-center items-stretch">
+            <div className="flex gap-4 4k:gap-9 justify-center items-stretch">
               {/* Mangroves Card */}
-              {logos.map((logo) => {
+              {logos.map((logo, index) => {
                 return (
-                  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-6 shadow-lg flex flex-col justify-between h-auto w-[12vw]">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="flex flex-col text-center items-center gap-3">
-                        <div className="w-[8vw] h-[8vw] bg-green-400 rounded-full relative overflow-hidden">
-                          <Image
-                            src={`/assets/${logo.logo}`}
-                            alt="Mangroves"
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <span className="text-white text-[1.2vw] font-bold">
-                          {logo.value}
-                        </span>
-                      </div>
+                  <motion.div
+                    key={logo.value}
+                    className="bg-white/20 text-center items-center gap-9 backdrop-blur-sm border-2 border-[#91E2FF] 4k:border-4 rounded-lg 4k:rounded-[54px] p-6 4k:px-[60px] 4k:py-[40px] shadow-lg grid grid-rows-[auto_1fr] h-auto w-[12vw] 4k:w-[480px]"
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.25,
+                    }}
+                  >
+                    <div className="flex items-center justify-center">
+                      <img
+                        src={`/assets/${logo.logo}`}
+                        alt="Mangroves"
+                        className="object-cover w-[8vw] h-[8vw] 4k:w-[370px] 4k:h-[370px] aspect-square rounded-full "
+                        style={{ backgroundColor: logo.bg }}
+                      />
                     </div>
-                  </div>
+                    <div className="flex justify-center items-center">
+                      <span className="text-white text-[1.2vw] 4k:text-[74px] font-bold leading-none">
+                        {logo.value}
+                      </span>
+                    </div>
+                  </motion.div>
                 );
               })}
             </div>
 
             {/* Bottom Section - Game Instructions */}
             <div className="flex flex-col items-center gap-6 text-center">
-              <p className="text-[#FF6A6C] text-[2vw] font-bold max-w-[75%]">
-                Hint: Consider your sector’s land use to help you make
+              <motion.p 
+                className="text-[#FF6A6C] text-[2vw] 4k:text-[74px] font-bold"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 2 }}
+              >
+                Hint: Consider your sector's land use to help you make
                 better decisions
-              </p>
+              </motion.p>
             </div>
 
             <div className="absolute inset-x-0 bottom-5 flex justify-center items-center">
@@ -124,3 +149,4 @@ export default function TutorialScreen3({
     </div>
   );
 }
+

@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import TimerBar from '@/components/coastal-protection/TimerBar';
 import Logo from './Logo';
+import { motion } from 'motion/react';
 
 interface TutorialScreen3Props {
   timeRemaining?: number;
@@ -27,7 +28,7 @@ export default function PlayerTutorialScreen5({
         />
       </div>
 
-      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2 scale-75">
+      <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
         <TimerBar duration={screenDuration} isRunning={true} />
       </div>
 
@@ -52,95 +53,39 @@ export default function PlayerTutorialScreen5({
 
             {/* Middle Section - Three Protection Measure Cards */}
             <div className="flex gap-4 justify-center items-stretch">
-              <div className="bg-white/20 backdrop-blur-sm border border-white/70 rounded-lg p-6 shadow-lg flex flex-col justify-between h-[auto] w-auto">
+              <div className="bg-white/20 backdrop-blur-sm border-2 border-[#91E2FF] rounded-[25px] p-6 shadow-lg flex flex-col justify-between h-[auto] w-auto">
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center">
-                    <span className="text-white text-[4.5vh] font-bold">
+                    <span className="text-white text-5xl font-bold">
                       OVERALL BUDGET
                     </span>
                   </div>
 
                   <div className="flex gap-2 w-full items-center justify-center">
-                    <div className="flex flex-col items-center gap-2 w-full justify-center">
-                      <div className="flex gap-2 w-full items-center justify-center">
-                        <Image
+                    <div className="grid grid-cols-5 grid-rows-2 gap-x-4 gap-y-2.5 w-full items-center justify-center">
+                      {Array.from({ length: 10 }).map((_, index) => (
+                        <motion.img
+                          key={'coin-' + index}
                           src="/assets/coin-icon.png"
                           alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
+                          className="object-contain w-[75px] h-[75px] 4k:w-[160px] 4k:h-[160px]"
+                          initial={{ opacity: 0, y: 100 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.25, delay: index * 0.25 }}
                         />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="flex gap-2 w-full items-center justify-center">
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/assets/coin-icon.png"
-                          alt="Coin"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                      </div>
+                      ))}
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-white text-[3.2vh] font-bold">
-                      <span className="number-enhanced">10</span>{' '}
+                    <span className="text-white text-3xl font-bold">
+                      <motion.span 
+                        className="number-enhanced"
+                        initial={{ content: "0" }}
+                        animate={{ content: "10" }}
+                        transition={{ duration: 2.0, delay: 2.0 }}
+                      >
+                        10
+                      </motion.span>{' '}
                       coins PER ROUND
                     </span>
                   </div>
@@ -148,11 +93,11 @@ export default function PlayerTutorialScreen5({
               </div>
             </div>
             <div className="flex flex-col gap-3 text-center  uppercase">
-              <p className="text-white text-[2.8vh] font-bold">
+              <p className="text-white text-3xl font-bold">
                 Your starting score is 2500. Each negative outcome
                 will deduct points from the total score.
               </p>
-              <p className="text-[#FF8181] text-[3.2vh] font-bold">
+              <p className="text-[#FF8181] text-3xl font-bold">
                 Strategize with your teammates NOW!
               </p>
             </div>
@@ -166,3 +111,4 @@ export default function PlayerTutorialScreen5({
     </div>
   );
 }
+
