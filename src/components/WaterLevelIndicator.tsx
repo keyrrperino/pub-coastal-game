@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useAnimation, useMotionValue, useTransform, animate } from 'framer-motion';
+import {
+  motion,
+  useAnimation,
+  useMotionValue,
+  useTransform,
+  animate,
+} from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface WaterLevelIndicatorProps {
@@ -9,7 +15,6 @@ interface WaterLevelIndicatorProps {
   unit?: string;
   className?: string;
   scaleMax: number;
-  containerHeight: number;
   currentWaterColor: {
     from: string;
     to: string;
@@ -27,14 +32,25 @@ export default function WaterLevelIndicator({
   unit = 'metres',
   className = '',
   scaleMax,
-  containerHeight,
   currentWaterColor,
   projectedWaterColor,
 }: WaterLevelIndicatorProps) {
+  // Get responsive height based on screen size
+  const getContainerHeight = () => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 2560) {
+      return 1104; // 4K screens
+    }
+    return 627; // Non-4K screens
+  };
+
+  const containerHeight = getContainerHeight();
   // Motion values for smooth number animation
   const animatedMaxLevelValue = useMotionValue(minLevel);
-  const displayMaxLevel = useTransform(animatedMaxLevelValue, (value: number) => value.toFixed(1));
-  
+  const displayMaxLevel = useTransform(
+    animatedMaxLevelValue,
+    (value: number) => value.toFixed(1),
+  );
+
   const textControls = useAnimation();
   const scaleControls = useAnimation();
   const containerControls = useAnimation();
@@ -49,43 +65,56 @@ export default function WaterLevelIndicator({
         textControls.start({
           opacity: 1,
           y: -(maxLevel / scaleMax) * (containerHeight - 4) + 100,
-          transition: { duration: 0.8, ease: 'easeOut' }
+          transition: { duration: 0.8, ease: 'easeOut' },
         }),
         scaleControls.start({
           opacity: 1,
           x: 0,
-          transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 }
+          transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 },
         }),
         containerControls.start({
           opacity: 1,
           y: 0,
-          transition: { duration: 0.8, ease: 'easeOut', delay: 0.4 }
-        })
+          transition: { duration: 0.8, ease: 'easeOut', delay: 0.4 },
+        }),
       ]);
 
-      await currentWaterControls.start({
-        height: (currentLevel / scaleMax) * (containerHeight - 4),
-        transition: { duration: 1.2, ease: 'easeOut' }
-      });
-      await Promise.all([
-        projectedWaterControls.start({
-          height: ((maxLevel - currentLevel) / scaleMax) * (containerHeight - 4),
-          transition: { duration: 1.0, ease: 'easeOut' }
-        }),
+              await currentWaterControls.start({
+          height: (currentLevel / scaleMax) * (containerHeight - 4),
+          transition: { duration: 1.2, ease: 'easeOut' },
+        });
+        await Promise.all([
+          projectedWaterControls.start({
+            height:
+              ((maxLevel - currentLevel) / scaleMax) *
+              (containerHeight - 4),
+            transition: { duration: 1.0, ease: 'easeOut' },
+          }),
         animate(animatedMaxLevelValue, maxLevel, {
           duration: 1.0,
-          ease: 'easeOut'
-        })
+          ease: 'easeOut',
+        }),
       ]);
     };
 
     animateSequence();
-  }, [currentLevel, maxLevel, scaleMax, containerHeight, textControls, scaleControls, containerControls, currentWaterControls, projectedWaterControls, animatedMaxLevelValue]);
+  }, [
+    currentLevel,
+    maxLevel,
+    scaleMax,
+    containerHeight,
+    textControls,
+    scaleControls,
+    containerControls,
+    currentWaterControls,
+    projectedWaterControls,
+    animatedMaxLevelValue,
+  ]);
 
   // Calculate the position of maxLevel on the scale for text positioning (use final maxLevel, not animated)
   // Text should align with the TOP of the maxLevel water (where the line would be)
-  // Container is 627px, scale goes from 0 to 2m, maxLevel is 0.6m
-  // maxLevel position from bottom = (0.6/2) * 623 = 187px from bottom
+  // Container is 627px (non-4K) or 1104px (4K), scale goes from 0 to 2m, maxLevel is 0.6m
+  // maxLevel position from bottom = (0.6/2) * (containerHeight - 4) = varies by screen size
   // Text should be at that level, so move UP by that amount from bottom
 
   // Generate scale labels dynamically
@@ -99,7 +128,7 @@ export default function WaterLevelIndicator({
   return (
     <div
       className={cn(
-        'flex w-auto items-end gap-4 h-[627px]',
+        'flex w-auto items-end gap-4 h-[627px] 4k:h-[1104px]',
         className,
       )}
     >
@@ -109,11 +138,12 @@ export default function WaterLevelIndicator({
         initial={{ opacity: 0 }}
         animate={textControls}
       >
-        <div className="text-white text-[40px] font-bold text-nowrap leading-[1.3] text-right drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
+        <div className="text-white text-[80px] font-bold text-nowrap leading-[1.3] text-right drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
           Seawater level rise:
         </div>
-        <div className="text-[#FF6A6C] text-[40px] font-bold text-nowrap leading-[1.3] text-right drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
-          {minLevel} to <motion.span>{displayMaxLevel}</motion.span> {unit}
+        <div className="text-[#FF6A6C] text-[80px] font-bold text-nowrap leading-[1.3] text-right drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
+          {minLevel} to <motion.span>{displayMaxLevel}</motion.span>{' '}
+          {unit}
         </div>
       </motion.div>
 
@@ -165,7 +195,11 @@ export default function WaterLevelIndicator({
               style={{
                 bottom: `${(currentLevel / scaleMax) * (containerHeight - 4)}px`,
                 background: `linear-gradient(180deg, ${projectedWaterColor.from} 0%, ${projectedWaterColor.to} 100%)`,
-                borderRadius: ((maxLevel / scaleMax) * (containerHeight - 4)) >= containerHeight - 4 ? '22px 22px 0 0' : '0',
+                                  borderRadius:
+                    (maxLevel / scaleMax) * (containerHeight - 4) >=
+                    containerHeight - 4
+                      ? '22px 22px 0 0'
+                      : '0',
               }}
             />
           </div>

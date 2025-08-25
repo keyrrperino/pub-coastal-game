@@ -17,29 +17,20 @@ export default function PlayerRound1Screen({
 }: PlayerRound1ScreenProps) {
   const info = (
     <>
-      <p
-        className="text-white leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
         Sea levels are beginning to rise — slowly, but steadily. By
         2050, they could climb anywhere between{' '}
         <span className="text-[#FF6A6C]">0.2 and 0.6 metres</span>.
       </p>
 
-      <p
-        className="text-white leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
         You now have{' '}
         <span className="text-[#FFDD3D]">30 seconds</span> to choose
         your coastal defences. Remember you can only deploy one
         measure per sector at a time.
       </p>
 
-      <p
-        className="text-white leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed"
-        style={{ fontSize: 'var(--text-2xl)' }}
-      >
+      <p className="text-white text-3xl 4k:text-[40px] leading-relaxed drop-shadow-[0_1px_1px_rgba(148,107,199,1)] font-condensed">
         Budget is limited, use it wisely!
       </p>
     </>
