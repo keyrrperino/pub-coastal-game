@@ -31,16 +31,9 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
   // Use manual screen in dev mode, otherwise use timer-based
   const currentScreen = DEV_MODE_MANUAL_TUTORIALS ? manualScreen : timerBasedScreen;
   
-  // Per-screen durations: first screen 20s, screens 2-5 are 15s
-  const screenDurations = [20, 15, 15, 15, 15] as const;
-  const cumulativeDurations = [
-    screenDurations[0],
-    screenDurations[0] + screenDurations[1],
-    screenDurations[0] + screenDurations[1] + screenDurations[2],
-    screenDurations[0] + screenDurations[1] + screenDurations[2] + screenDurations[3],
-    screenDurations[0] + screenDurations[1] + screenDurations[2] + screenDurations[3] + screenDurations[4],
-  ];
-  const totalScreensDuration = cumulativeDurations[cumulativeDurations.length - 1];
+  // Calculate duration for each tutorial screen (1/5 of total duration since we have 5 screens now)
+  const screenDuration = duration / 5;
+
   
   // Calculate which screen should be shown based on elapsed time
   useEffect(() => {
@@ -49,19 +42,19 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     const updateCurrentScreen = () => {
       const currentTime = getAdjustedCurrentTime();
       const elapsed = Math.floor((currentTime - syncWithTimestamp) / 1000);
-      const remaining = Math.max(0, totalScreensDuration - elapsed);
+      const remaining = Math.max(0, duration - elapsed);
       
       setTimeRemaining(remaining);
       
-      if (elapsed < cumulativeDurations[0]) {
+      if (elapsed < screenDuration) {
         setTimerBasedScreen(1);
-      } else if (elapsed < cumulativeDurations[1]) {
+      } else if (elapsed < screenDuration * 2) {
         setTimerBasedScreen(2);
-      } else if (elapsed < cumulativeDurations[2]) {
+      } else if (elapsed < screenDuration * 3) {
         setTimerBasedScreen(3);
-      } else if (elapsed < cumulativeDurations[3]) {
+      } else if (elapsed < screenDuration * 4) {
         setTimerBasedScreen(4);
-      } else if (elapsed < totalScreensDuration) {
+      } else if (elapsed < duration) {
         setTimerBasedScreen(5);
       } else {
         // Time is up, trigger completion
@@ -77,7 +70,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     const interval = setInterval(updateCurrentScreen, 1000);
 
     return () => clearInterval(interval);
-  }, [isOpen, syncWithTimestamp, onDurationComplete, getAdjustedCurrentTime]);
+  }, [isOpen, syncWithTimestamp, screenDuration, duration, onDurationComplete]);
 
   // Fallback timer for when sync is not available
   useEffect(() => {
@@ -91,23 +84,23 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     // Set up sequential timers
     timer1 = setTimeout(() => {
       setTimerBasedScreen(2);
-    }, cumulativeDurations[0] * 1000);
+    }, screenDuration * 1000);
 
     timer2 = setTimeout(() => {
       setTimerBasedScreen(3);
-    }, cumulativeDurations[1] * 1000);
+    }, screenDuration * 2 * 1000);
 
     timer3 = setTimeout(() => {
       setTimerBasedScreen(4);
-    }, cumulativeDurations[2] * 1000);
+    }, screenDuration * 3 * 1000);
 
     const timer4 = setTimeout(() => {
       setTimerBasedScreen(5);
-    }, cumulativeDurations[3] * 1000);
+    }, screenDuration * 4 * 1000);
 
     const timer5 = setTimeout(() => {
       onDurationComplete?.();
-    }, totalScreensDuration * 1000);
+    }, duration * 1000);
 
     // Countdown timer for fallback mode
     countdownInterval = setInterval(() => {
@@ -122,7 +115,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
       clearTimeout(timer5);
       clearInterval(countdownInterval);
     };
-  }, [isOpen, onDurationComplete, syncWithTimestamp]);
+  }, [isOpen, onDurationComplete, duration, screenDuration, syncWithTimestamp]);
 
   if (!isOpen) return null;
 
@@ -131,7 +124,7 @@ const IntroductionModal: React.FC<IntroductionModalProps> = ({
     const screenTimingProps = {
       phaseStartTime: phaseStartTime,
       timeRemaining: timeRemaining,
-      screenDuration: screenDurations[Math.max(0, currentScreen - 1)]
+      screenDuration: screenDuration
     };
 
     switch (currentScreen) {

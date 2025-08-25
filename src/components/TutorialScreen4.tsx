@@ -39,7 +39,7 @@ export default function TutorialScreen3({
       <div className="absolute inset-0 bg-black/50 backdrop-blur-[64px]" />
 
       <div className="fixed z-10 top-[2vh] left-1/2 transform -translate-x-1/2">
-        <TimerBar duration={coinSize} isRunning={true} />
+        <TimerBar duration={15} isRunning={true} />
       </div>
 
       {/* Content Container */}
