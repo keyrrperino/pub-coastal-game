@@ -42,6 +42,7 @@ export default function PlayerRound1Screen({
             minLevel={0.2}
             maxLevel={0.6}
             currentLevel={0.2}
+            toFixedValue={1}
             scaleMax={2}
             containerHeight={627}
             currentWaterColor={{

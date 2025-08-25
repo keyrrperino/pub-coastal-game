@@ -93,8 +93,8 @@ const getSectorTitles = (sector: string) => {
       sectorB: 'Sector 1B: RECREATIONAL',
     },
     'sector-2': {
-      sectorA: 'Sector 2A: CBD',
-      sectorB: 'Sector 2B: Jurong',
+      sectorA: 'Sector 2A: Commercial',
+      sectorB: 'Sector 2B: Industrial',
     },
     'sector-3': {
       sectorA: 'Sector 3A: NATURE',

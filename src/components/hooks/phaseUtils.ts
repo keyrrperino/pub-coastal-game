@@ -2,7 +2,7 @@ import { GameLobbyStatus } from '@/lib/enums';
 
 // Phase duration configuration
 export const PHASE_DURATIONS: Record<GameLobbyStatus, number> = {
-  [GameLobbyStatus.INTRODUCTION]: 60,
+  [GameLobbyStatus.INTRODUCTION]: 80,
   [GameLobbyStatus.ROUND_STORYLINE]: 15,
   [GameLobbyStatus.ROUND_GAMEPLAY]: 30,
   [GameLobbyStatus.ROUND_CUTSCENES]: 45,
