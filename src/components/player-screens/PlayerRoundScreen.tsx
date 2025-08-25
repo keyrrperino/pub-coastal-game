@@ -44,60 +44,31 @@ export default function PlayerRoundScreen({
       <div className="relative z-10 flex flex-col items-center justify-center max-h-screen h-full">
         <div
           className={cn(
-            'relative z-10 flex flex-row justify-center items-center h-full w-screen',
+            'relative z-10 flex flex-row justify-center items-center h-full w-screen max-w-[90vw]',
             isControlScreen && 'justify-center',
           )}
-          style={{
-            gap: 'var(--space-16)',
-            padding: `0 var(--space-16)`,
-            minWidth: 'calc(100vw - calc(var(--space-16) * 2))',
-          }}
         >
           {!isControlScreen && waterLevelIndicator}
           <div
             className={cn(
-              'flex flex-col flex-grow w-full',
+              'flex flex-col flex-grow w-full gap-4 4k:gap-10',
               isControlScreen && 'justify-center items-center',
               isCenterScreen && 'text-center',
             )}
-            style={{
-              gap: 'var(--space-10)',
-            }}
           >
             {/* Round Title and Year */}
             <div className="flex flex-col">
-              <h1
-                className="text-white font-bold leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]"
-                style={{ fontSize: 'var(--text-5xl)' }}
-              >
+              <h1 className="text-white text-7xl 4k:text-[140px] font-bold leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
                 ROUND {round}
               </h1>
-              <h2
-                className="text-white font-bold leading-tight tracking-wide drop-shadow-[0_2px_2px_rgba(148,107,199,1)]"
-                style={{ fontSize: 'var(--text-5xl)' }}
-              >
+              <h2 className="text-white text-7xl 4k:text-[140px] font-bold leading-tight tracking-wide drop-shadow-[0_3px_3px_rgba(148,107,199,1)]">
                 YEAR {year}
               </h2>
             </div>
 
             {/* Game Info Card */}
-            <div
-              className="bg-[rgba(175,240,255,0.3)] w-full border-2 shadow-[0_7px_37px_rgba(0,0,0,0.15)]"
-              style={{
-                backdropFilter: 'blur(clamp(16px, 0.86vw, 32px))',
-                borderRadius: 'var(--radius-3xl)',
-              }}
-            >
-              <div
-                style={{
-                  padding: 'var(--space-6) var(--space-8)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-6)',
-                }}
-              >
-                {info}
-              </div>
+            <div className="bg-[rgba(175,240,255,0.3)] backdrop-blur-[22px] border-2 rounded-[33px] shadow-[0_7px_37px_rgba(0,0,0,0.15)]">
+              {info}
             </div>
           </div>
         </div>
