@@ -101,10 +101,6 @@ export default function PlayerTutorialScreen1({
               *Disclaimer: This game is a simplified simulation and
               might not reflect real-life situations or scenarios.
             </motion.p>
-
-            <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-              <Logo width={123} height={76} />
-            </div>
           </div>
         </div>
       </div>

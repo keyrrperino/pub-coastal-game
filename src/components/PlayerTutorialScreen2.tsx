@@ -147,11 +147,6 @@ export default function PlayerTutorialScreen2({
           </div>
         </div>
       </div>
-
-      {/* Logo at bottom */}
-      <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-        <Logo />
-      </div>
     </div>
   );
 }

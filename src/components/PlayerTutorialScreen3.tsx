@@ -133,10 +133,6 @@ export default function PlayerTutorialScreen3({
                 better decisions
               </motion.p>
             </div>
-
-            <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-              <Logo />
-            </div>
           </div>
         </div>
       </div>

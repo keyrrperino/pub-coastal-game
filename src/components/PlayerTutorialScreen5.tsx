@@ -101,10 +101,6 @@ export default function PlayerTutorialScreen5({
                 Strategize with your teammates NOW!
               </p>
             </div>
-
-            <div className="absolute inset-x-0 bottom-3 flex justify-center items-center">
-              <Logo />
-            </div>
           </div>
         </div>
       </div>
