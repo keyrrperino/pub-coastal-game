@@ -120,7 +120,7 @@ export default function TutorialScreen5({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 4 }}
               >
-                Strategize with your teammates NOW!
+                Strategise with your teammates NOW!
               </motion.p>
             </div>
 

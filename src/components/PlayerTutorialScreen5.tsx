@@ -98,7 +98,7 @@ export default function PlayerTutorialScreen5({
                 will deduct points from the total score.
               </p>
               <p className="text-[#FF8181] text-3xl font-bold">
-                Strategize with your teammates NOW!
+                Strategise with your teammates NOW!
               </p>
             </div>
           </div>
