@@ -577,17 +577,25 @@ export async function getGlobalLeaderboard(currentTeamName?: string): Promise<Pr
     const entries: LeaderboardEntry[] = Object.values(snapshot.val());
     const sortedEntries = entries.sort((a, b) => b.score - a.score);
 
-    // Find current team position
+    // Find current team's most recent entry and position
     let currentTeamEntry = null;
     if (currentTeamName) {
-      const currentTeamIndex = sortedEntries.findIndex(entry => entry.teamName === currentTeamName);
-      if (currentTeamIndex !== -1) {
-        const currentTeam = sortedEntries[currentTeamIndex];
-        currentTeamEntry = {
-          name: currentTeam.teamName,
-          points: currentTeam.score,
-          position: currentTeamIndex + 1
-        };
+      // Find all entries for the current team
+      const currentTeamEntries = entries.filter(entry => entry.teamName === currentTeamName);
+      if (currentTeamEntries.length > 0) {
+        // Sort by timestamp to get the most recent entry
+        const mostRecentEntry = currentTeamEntries.sort((a, b) => b.timestamp - a.timestamp)[0];
+        // Find position of this entry in the sorted list
+        const position = sortedEntries.findIndex(entry => 
+          entry.teamName === mostRecentEntry.teamName && entry.timestamp === mostRecentEntry.timestamp
+        );
+        if (position !== -1) {
+          currentTeamEntry = {
+            name: mostRecentEntry.teamName,
+            points: mostRecentEntry.score,
+            position: position + 1
+          };
+        }
       }
     }
 
@@ -596,15 +604,9 @@ export async function getGlobalLeaderboard(currentTeamName?: string): Promise<Pr
       ? { name: sortedEntries[0].teamName, points: sortedEntries[0].score }
       : null;
 
-    // Get top 2-5, excluding current team if it's in this range
-    const top5Candidates = sortedEntries
-      .slice(1, 6)  // Skip the top winner, take next 4 (positions 2-5)
-      .filter(entry => !currentTeamName || entry.teamName !== currentTeamName);
-    
-    // If we filtered out the current team, take one more to fill the gap
-    const top5 = top5Candidates.length < 4 && sortedEntries.length > 6
-      ? [...top5Candidates, ...sortedEntries.slice(6, 7).filter(entry => !currentTeamName || entry.teamName !== currentTeamName)].slice(0, 4)
-      : top5Candidates;
+    // Get top 5 entries (positions 2-6), excluding the top winner if it's the current team's most recent entry
+    // This ensures we show up to 5 entries in the main list, plus the current team's entry highlighted at the bottom
+    const top5 = sortedEntries.slice(1, 6);
 
     const processedTop5 = top5.map(entry => ({ name: entry.teamName, points: entry.score }));
 
